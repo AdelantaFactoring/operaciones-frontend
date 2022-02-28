@@ -1,0 +1,324 @@
+<div class="content-wrapper">
+  <div class="content-body">
+    <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <button class="btn btn-primary ml-1" rippleEffect (click)="onNuevo(modalINFO)">
+            <i class="mr-0 mr-sm-1" data-feather="plus"></i><span
+            class="d-none d-sm-inline-block">Nuevo</span>
+          </button>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <div class="d-flex justify-content-between align-items-center m-1">
+              <label class="d-flex align-items-center"
+              >Mostrar
+                <select class="form-control mx-25">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                filas</label
+              >
+            </div>
+          </div>
+          <div class="col-md-6 col-12 d-flex justify-content-md-end">
+            <div class="d-flex align-items-center justify-content-end pr-1 pb-1 pl-1 pl-md-0 pb-md-0">
+              <label class="d-flex align-items-center"
+              >Search<input
+                type="search"
+                placeholder="Search"
+                class="form-control ml-25"
+              /></label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>Acción</th>
+                <th>RUC</th>
+                <th>Razón Social</th>
+                <th>Dirección Principal</th>
+                <!--                <th>Contacto</th>-->
+                <!--                <th>Teléfono</th>-->
+                <!--                <th>Email</th>-->
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of clientes">
+                <td>
+                  <div class="d-flex align-items-center">
+                    <a href="javascript:void(0)" title="Editar">
+                      <i class="text-primary cursor-pointer" data-feather="edit"></i>
+                    </a>
+                    &nbsp;
+                    <a href="javascript:void(0)" title="Eliminar">
+                      <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                    </a>
+                  </div>
+                </td>
+                <td>{{item.ruc}}</td>
+                <td>{{item.razonSocial}}</td>
+                <td>{{item.direccionPrincipal}}</td>
+                <!--                <td>{{item.nombreContacto}}</td>-->
+                <!--                <td>{{item.telefonoContacto}}</td>-->
+                <!--                <td>{{item.emailContacto}}</td>-->
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #modalINFO let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel1">Gestión de Clientes</h4>
+        <button aria-label="Close" class="close" type="button" (click)="onCancelar()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ngbAutofocus tabindex="0">
+        <form [formGroup]="clienteForm">
+          <div class="row spaced">
+            <div class="col-md-12 col-12" hidden>
+              <div class="form-group">
+                <label>Id</label>
+                <input class="form-control" formControlName="idClientePagador" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-12 col-12">
+              <div class="form-group">
+                <label>RUC</label>
+                <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.ruc.errors }"
+                       class="form-control" formControlName="ruc" type="text"/>
+                <div *ngIf="ReactiveIUForm.ruc.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.ruc.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 col-12">
+              <div class="form-group">
+                <label>Razón Social</label>
+                <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.razonSocial.errors }"
+                       class="form-control" formControlName="razonSocial" type="text"/>
+                <div *ngIf="ReactiveIUForm.razonSocial.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.razonSocial.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Dirección Principal</label>
+                <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.direccionPrincipal.errors }"
+                       class="form-control" formControlName="direccionPrincipal" type="text"/>
+                <div *ngIf="ReactiveIUForm.direccionPrincipal.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.direccionPrincipal.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Dirección Facturación</label>
+                <input class="form-control" formControlName="direccionFacturacion" type="text"/>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Tasa Nominal Mensual (%)</label>
+                <input class="form-control" type="text" formControlName="tasaNominalMensual" placeholder="0.00" mask="separator" thousandSeparator="," />
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Tasa Nominal Anual (%)</label>
+                <input class="form-control" type="text" formControlName="tasaNominalAnual" placeholder="0.00" mask="separator" thousandSeparator="," />
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Financiamiento (%)</label>
+                <input class="form-control" type="text" formControlName="financiamiento" placeholder="0.00" mask="separator" thousandSeparator="," />
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Comision de Estructuración (%)</label>
+                <input class="form-control" type="text" formControlName="comisionEstructuracion" placeholder="0.00" mask="separator" thousandSeparator="," />
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-switch custom-control-inline">
+                  <input type="checkbox" class="custom-control-input"
+                         id="fact" formControlName="factoring"
+                  />
+                  <label class="custom-control-label"
+                         for="fact">Factoring</label>
+                </div>
+                <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-switch custom-control-inline">
+                  <input type="checkbox" class="custom-control-input"
+                         id="confir" formControlName="confirming"
+                  />
+                  <label class="custom-control-label"
+                         for="confir">Confirming</label>
+                </div>
+                <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-switch custom-control-inline">
+                  <input type="checkbox" class="custom-control-input"
+                         id="capitalTra" formControlName="capitalTrabajo"
+                  />
+                  <label class="custom-control-label"
+                         for="capitalTra">Capital de Trabajo</label>
+                </div>
+                <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
+              </div>
+            </div>
+            <div class="col-md-12 col-12">
+              <div class="form-group">
+                <label>Moneda</label>
+                <ng-select [clearable]="false" [items]="[]" bindLabel="descripcion"
+                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.idMoneda.errors }"
+                           formControlName="idMoneda" bindValue="idColumna">
+                </ng-select>
+                <div *ngIf="ReactiveIUForm.idMoneda.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.idMoneda.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Gastos de Contrato</label>
+                <input class="form-control" type="text" formControlName="gastosContrato" placeholder="0.00" mask="separator" thousandSeparator="," />
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Comisión de Carta Notarial</label>
+                <input class="form-control" type="text" formControlName="comisionCartaNotarial" placeholder="0.00" mask="separator" thousandSeparator="," />
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Servicio de Cobranza</label>
+                <input class="form-control" type="text" formControlName="servicioCobranza" placeholder="0.00" mask="separator" thousandSeparator="," />
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Servicio de Custodia</label>
+                <input class="form-control" type="text" formControlName="servicioCustodia" placeholder="0.00" mask="separator" thousandSeparator="," />
+              </div>
+            </div>
+            <div class="col-md-12 col-12">
+              <div class="form-group">
+                <label>Contactos</label>
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                    <tr>
+                      <th>Acción</th>
+                      <th>Nombre</th>
+                      <th>Ape. Paterno</th>
+                      <th>Ape. Materno</th>
+                      <th>Teléfono</th>
+                      <th>Correo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <a href="javascript:void(0)" title="Editar">
+                            <i class="text-primary cursor-pointer" data-feather="edit"></i>
+                          </a>
+                          &nbsp;
+                          <a href="javascript:void(0)" title="Eliminar">
+                            <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                          </a>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 col-12">
+              <div class="form-group">
+                <label>Datos de Cuenta de Banco</label>
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                    <tr>
+                      <th>Acción</th>
+                      <th>Banco</th>
+                      <th>Moneda</th>
+                      <th>N° Cuenta</th>
+                      <th>CCI</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <a href="javascript:void(0)" title="Editar">
+                            <i class="text-primary cursor-pointer" data-feather="edit"></i>
+                          </a>
+                          &nbsp;
+                          <a href="javascript:void(0)" title="Eliminar">
+                            <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                          </a>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer" style="display: block !important;">
+        <div class="row">
+          <div class="col-md-12 col-12">
+            <div style="float: right">
+              <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()">
+                <span [data-feather]="'save'"></span> Guardar
+              </button>
+              &nbsp;
+              <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()">
+                <span [data-feather]="'x-circle'"></span> Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <block-ui></block-ui>
+  </div>
+</div>
