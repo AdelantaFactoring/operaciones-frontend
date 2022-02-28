@@ -3,9 +3,244 @@
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
     <div class="card">
       <div class="card-body">
-
+        <div class="row">
+          <button class="btn btn-primary ml-1" rippleEffect (click)="onNuevo(modalINFO)">
+            <i class="mr-0 mr-sm-1" data-feather="plus"></i><span
+            class="d-none d-sm-inline-block">Nuevo</span>
+          </button>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <div class="d-flex justify-content-between align-items-center m-1">
+              <label class="d-flex align-items-center"
+              >Mostrar
+                <select class="form-control mx-25">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                filas</label
+              >
+            </div>
+          </div>
+          <div class="col-md-6 col-12 d-flex justify-content-md-end">
+            <div class="d-flex align-items-center justify-content-end pr-1 pb-1 pl-1 pl-md-0 pb-md-0">
+              <label class="d-flex align-items-center"
+              >Search<input
+                type="search"
+                placeholder="Search"
+                class="form-control ml-25"
+              /></label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>Acción</th>
+                <th>N° solicitud</th>
+                <th>Cliente</th>
+                <th>RUC Cliente</th>
+                <th>Aceptante</th>
+                <th>RUC Aceptante</th>
+                <th>N° Documento</th>
+                <th>Moneda</th>
+                <th>%TMN Op</th>
+                <th>%TNA Op</th>
+                <th>%Financiamiento</th>
+                <th>Monto Sin IGV</th>
+                <th>Monto Con IGV</th>
+                <th>Fondo Resguardado</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of solicitudes">
+                <td>
+                  <div class="d-flex align-items-center">
+                    <a href="javascript:void(0)" title="Editar">
+                      <i class="text-primary cursor-pointer" data-feather="edit"></i>
+                    </a>
+                    &nbsp;
+                    <a href="javascript:void(0)" title="Eliminar">
+                      <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                    </a>
+                  </div>
+                </td>
+                <td>{{item.ruc}}</td>
+                <td>{{item.razonSocial}}</td>
+                <td>{{item.direccionPrincipal}}</td>
+                <!--                <td>{{item.nombreContacto}}</td>-->
+                <!--                <td>{{item.telefonoContacto}}</td>-->
+                <!--                <td>{{item.emailContacto}}</td>-->
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
+    <ng-template #modalINFO let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel1">Gestión de Clientes</h4>
+        <button aria-label="Close" class="close" type="button" (click)="onCancelar()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ngbAutofocus tabindex="0">
+        <form [formGroup]="clienteForm">
+          <div class="row spaced">
+            <div class="col-12">
+              <div class="form-group">
+                <h4>Tipo de Servicio: </h4>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-radio">
+                  <input type="radio" id="Factoring" name="customRadio" class="custom-control-input" (change)="onRadioChange(1)"/>
+                  <label class="custom-control-label" for="Factoring">Factoring</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-radio">
+                  <input type="radio" id="capital" name="customRadio" class="custom-control-input" (change)="onRadioChange(2)"/>
+                  <label class="custom-control-label" for="capital">Capital de Trabajo</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-radio">
+                  <input type="radio" id="Confirming" name="customRadio" class="custom-control-input" (change)="onRadioChange(3)"/>
+                  <label class="custom-control-label" for="Confirming">Confirming</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="divider divider-warning">
+                <div class="divider-text">o</div>
+              </div>
+              <div class="form-group">
+                <h4>Selección de archivo: </h4>
+              </div>
+            </div>
+            <div class="col-12">
+              <fieldset class="form-group">
+                  <div class="custom-file">
+                      <input type="file" class="custom-file-input" type="file" ng2FileSelect
+                          [uploader]="uploader" id="file-upload-single" />
+                      <label class="custom-file-label">Elija el archivo</label>
+                  </div>
+              </fieldset>
+          </div>
+          <div class="col-lg-12 overflow-auto">
+              <div class="d-flex justify-content-between mb-1">
+                  <h4>Subir cola</h4>
+                  <p>Longitud de la cola: {{ uploader?.queue?.length }}</p>
+              </div>
+
+              <table class="table">
+                  <thead>
+                      <tr>
+                          <th width="40%">Nombre</th>
+                          <th>Tamaño</th>
+                          <th>Progreso</th>
+                          <th>Estado</th>
+                          <th>Acción</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let item of uploader.queue">
+                          <td>
+                              <strong>{{ item?.file?.name }}</strong>
+                          </td>
+                          <td *ngIf="uploader.options.isHTML5" nowrap>
+                              {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
+                          </td>
+                          <td *ngIf="uploader.options.isHTML5">
+                              <ngb-progressbar type="primary" [value]="item.progress">
+                              </ngb-progressbar>
+                          </td>
+                          <td class="text-center">
+                              <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
+                              <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
+                              <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
+                          </td>
+                          <td nowrap>
+                            <!-- <button
+                              type="button"
+                              class="btn btn-raised btn-outline-success btn-sm mr-50"
+                              (click)="item.upload()"
+                              [disabled]="item.isReady || item.isUploading || item.isSuccess"
+                              rippleEffect
+                            >
+                              <span data-feather="upload"></span>
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-raised btn-outline-warning btn-sm mr-50"
+                              (click)="item.cancel()"
+                              [disabled]="!item.isUploading"
+                              rippleEffect
+                            >
+                              <i data-feather="slash"></i>
+                            </button> -->
+                            <button
+                              type="button"
+                              class="btn btn-raised btn-outline-danger btn-sm"
+                              (click)="item.remove()"
+                              rippleEffect
+                            >
+                              <i data-feather="trash"></i>
+                            </button>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+          <div class="col-12">
+              <div id="">
+                  <p class="mt-1">Progreso de la cola:</p>
+                  <ngb-progressbar class="mb-1" type="primary" [value]="uploader.progress">
+                  </ngb-progressbar>
+              </div>
+          </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer" style="display: block !important;">
+        <div class="row">
+          <div class="col-md-12 col-12">
+            <div style="float: right">
+              <!--<div class="col-md-8 col-12" style="margin-bottom: 5px">
+                <button type="button" class="btn mr-1 btn-primary mb-1 mb-sm-0" (click)="uploader.uploadAll()"
+                    [disabled]="!uploader.getNotUploadedItems().length" rippleEffect>
+                    <span data-feather="upload" class="mr-25"></span> Subir todo
+                </button>
+                 <button type="button" class="btn btn-outline-danger mb-1 mb-sm-0"
+                    (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length" rippleEffect>
+                    <span data-feather="trash" class="mr-25"></span> Remover todo
+                </button>
+              </div> -->
+              <!-- <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()" -->
+              <button class="btn btn-primary" rippleEffect type="button" (click)="uploader.uploadAll()"
+              [disabled]="!uploader.getNotUploadedItems().length">
+                <span [data-feather]="'save'"></span> Procesar
+              </button>
+              &nbsp;
+              <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()">
+                <span [data-feather]="'x-circle'"></span> Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
     <block-ui></block-ui>
   </div>
 </div>

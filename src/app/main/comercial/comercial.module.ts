@@ -13,6 +13,7 @@ import {ContentHeaderModule} from "../../layout/components/content-header/conten
 import {CoreTouchspinModule} from "@core/components/core-touchspin/core-touchspin.module";
 import {NgSelectModule} from "@ng-select/ng-select";
 import {NgxMaskModule} from "ngx-mask";
+import { FileUploadModule } from 'ng2-file-upload';
 
 const routes: Routes = [
   {
@@ -71,7 +72,8 @@ const routes: Routes = [
     ContentHeaderModule,
     CoreTouchspinModule,
     NgSelectModule,
-    NgxMaskModule.forRoot()
+    NgxMaskModule.forRoot(),
+    FileUploadModule
   ]
 })
 export class ComercialModule { }
