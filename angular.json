@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "NgFrontBase": {
+    "AdelantaFactoring": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -92,10 +92,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "NgFrontBase:build:production"
+              "browserTarget": "AdelantaFactoring:build:production"
             },
             "development": {
-              "browserTarget": "NgFrontBase:build:development"
+              "browserTarget": "AdelantaFactoring:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -103,7 +103,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "NgFrontBase:build"
+            "browserTarget": "AdelantaFactoring:build"
           }
         },
         "test": {
@@ -127,5 +127,5 @@
       }
     }
   },
-  "defaultProject": "NgFrontBase"
+  "defaultProject": "AdelantaFactoring"
 }
