@@ -114,7 +114,7 @@ export const menu: CoreMenu[] = [
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'circle',
-      url: 'test/test'
+      url: 'operaciones/respuestaPagador'
     },{
       id: 'registroFactrack',
       title: 'Registro Factrack',
