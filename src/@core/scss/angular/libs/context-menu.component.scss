@@ -1,6 +1,6 @@
-@import '@core/scss/base/bootstrap-extended/include'; // Bootstrap includes
+@import '~@core/scss/base/bootstrap-extended/include'; // Bootstrap includes
 
-@import '@core/scss/base/plugins/extensions/ext-component-context-menu';
+@import '~@core/scss/base/plugins/extensions/ext-component-context-menu';
 
 .cdk-overlay-container {
   position: fixed;

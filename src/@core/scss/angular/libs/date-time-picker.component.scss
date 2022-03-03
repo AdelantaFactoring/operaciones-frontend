@@ -1,6 +1,6 @@
-@import '@core/scss/base/colors';
-@import '@core/scss/base/bootstrap-extended/include'; // Bootstrap includes
-@import '@core/scss/base/components/include'; // Bootstrap includes
+@import '~@core/scss/base/colors';
+@import '~@core/scss/base/bootstrap-extended/include'; // Bootstrap includes
+@import '~@core/scss/base/components/include'; // Bootstrap includes
 
 // variable declaration
 $date-time-picker-weekdays-color: $gray-700;
