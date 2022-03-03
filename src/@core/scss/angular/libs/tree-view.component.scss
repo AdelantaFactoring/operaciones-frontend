@@ -1,6 +1,6 @@
 @import '@circlon/angular-tree-component/css/angular-tree-component.css'; // vendor css
-@import '@core/scss/base/bootstrap-extended/include'; // Bootstrap includes
-@import '@core/scss/base/components/include'; // Components includes
+@import '~@core/scss/base/bootstrap-extended/include'; // Bootstrap includes
+@import '~@core/scss/base/components/include'; // Components includes
 
 // variables
 $treeview-border-color: $gray-700;

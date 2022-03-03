@@ -1,11 +1,14 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {RouterModule, Routes} from "@angular/router";
-import {LoginComponent} from "./login/login.component";
+import { NgModule } from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {CoreCommonModule} from "../../@core/common.module";
-import {BlockUIModule} from "ng-block-ui";
+import {RouterModule, Routes} from "@angular/router";
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
+import {CoreCommonModule} from "../../@core/common.module";
+
+import {BlockUIModule} from "ng-block-ui";
+import {LoginComponent} from "./login/login.component";
+
+
 
 const routes: Routes = [
   {

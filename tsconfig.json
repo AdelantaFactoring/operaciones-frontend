@@ -17,8 +17,8 @@
       "dom"
     ],
     "paths": {
-      "@core/*": ["@core/*"],
-      "environments/*": ["environments/*"]
+      "@core": ["@core/"],
+      "environments/": ["environments/"]
     }
   },
   "angularCompilerOptions": {

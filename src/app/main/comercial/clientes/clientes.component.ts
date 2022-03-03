@@ -100,7 +100,7 @@ export class ClientesComponent implements OnInit {
       apellidoPaterno: ['', Validators.required],
       apellidoMaterno: ['', Validators.required],
       telefono: ['', Validators.required],
-      correo: ['', Validators.required],
+      correo: ['', [Validators.required, Validators.email]],
       predeterminado: [{ value: false, disabled: true }]
     });
   }
@@ -138,7 +138,8 @@ export class ClientesComponent implements OnInit {
     setTimeout(() => {
       this.modalService.open(modal, {
         scrollable: true,
-        size: 'lg',
+        //size: 'lg',
+        windowClass: 'my-class',
         animation: true,
         centered: false,
         backdrop: "static",
@@ -179,7 +180,8 @@ export class ClientesComponent implements OnInit {
       setTimeout(() => {
         this.modalService.open(modal, {
           scrollable: true,
-          size: 'lg',
+          //size: 'lg',
+          windowClass: 'my-class',
           animation: true,
           centered: false,
           backdrop: "static",
