@@ -1,0 +1,12 @@
+.row-edicion {
+  background-color: lightgreen !important;
+  label {
+    color: white;
+  }
+}
+
+
+::ng-deep .my-class .modal-dialog {
+  min-width: 60%;
+  //width: 60%;
+}

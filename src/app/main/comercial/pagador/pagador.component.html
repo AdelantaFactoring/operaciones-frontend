@@ -3,75 +3,79 @@
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
     <div class="card">
       <div class="card-body">
-        <div class="card">
-          <div class="card-body">
-            <div class="row">
-              <button class="btn btn-primary ml-1" rippleEffect (click)="onNuevo(modalINFO)">
-                <i class="mr-0 mr-sm-1" data-feather="plus"></i><span
-                class="d-none d-sm-inline-block">Nuevo</span>
-              </button>
+        <div class="row">
+          <button class="btn btn-primary ml-1" rippleEffect (click)="onNuevo(modalINFO)">
+            <i class="mr-0 mr-sm-1" data-feather="plus"></i><span
+            class="d-none d-sm-inline-block">Nuevo</span>
+          </button>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <div class="d-flex justify-content-between align-items-center m-1">
+              <label class="d-flex align-items-center"
+              >Mostrar
+                <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }" (change)="onRefrescar()">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                filas</label
+              >
             </div>
-            <div class="row">
-              <div class="col-md-6 col-12">
-                <div class="d-flex justify-content-between align-items-center m-1">
-                  <label class="d-flex align-items-center"
-                  >Mostrar
-                    <select class="form-control mx-25">
-                      <option value="10">10</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                    filas</label
-                  >
-                </div>
-              </div>
-              <div class="col-md-6 col-12 d-flex justify-content-md-end">
-                <div class="d-flex align-items-center justify-content-end pr-1 pb-1 pl-1 pl-md-0 pb-md-0">
-                  <label class="d-flex align-items-center"
-                  >Search<input
-                    type="search"
-                    placeholder="Search"
-                    class="form-control ml-25"
-                  /></label>
-                </div>
-              </div>
+          </div>
+          <div class="col-md-6 col-12 d-flex justify-content-md-end">
+            <div class="d-flex align-items-center justify-content-end pr-1 pb-1 pl-1 pl-md-0 pb-md-0">
+              <label class="d-flex align-items-center"
+              >Buscar<input
+                type="Buscar"
+                placeholder="Buscar"
+                class="form-control ml-25"
+                [(ngModel)]="search"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="onRefrescar()"
+              /></label>
             </div>
-            <div class="row">
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead>
-                  <tr>
-                    <th>Acción</th>
-                    <th>RUC</th>
-                    <th>Razón Social</th>
-                    <th>Dirección</th>
-<!--                    <th>Contacto</th>-->
-<!--                    <th>Teléfono</th>-->
-<!--                    <th>Email</th>-->
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let item of pagadores">
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Editar">
-                          <i class="text-primary cursor-pointer" data-feather="edit"></i>
-                        </a>
-                        &nbsp;
-                        <a href="javascript:void(0)" title="Eliminar">
-                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
-                        </a>
-                      </div>
-                    </td>
-                    <td>{{item.ruc}}</td>
-                    <td>{{item.razonSocial}}</td>
-                    <td>{{item.direccion}}</td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>Acción</th>
+                <th>RUC</th>
+                <th>Razón Social</th>
+                <th>Dirección Principal</th>
+                <th>Dirección Facturación</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of pagadores">
+                <td>
+                  <div class="d-flex align-items-center">
+                    <a href="javascript:void(0)" title="Editar" (click)="onEditar(item, modalINFO)">
+                      <i class="text-primary cursor-pointer" data-feather="edit"></i>
+                    </a>
+                    &nbsp;
+                    <a href="javascript:void(0)" title="Eliminar" (click)="onEliminar(item)">
+                      <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                    </a>
+                  </div>
+                </td>
+                <td>{{item.ruc}}</td>
+                <td>{{item.razonSocial}}</td>
+                <td>{{item.direccionPrincipal}}</td>
+                <td>{{item.direccionFacturacion}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-12 d-flex justify-content-end">
+            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
+                            (pageChange)="onRefrescar()" [pageSize]="pageSize"></ngb-pagination>
           </div>
         </div>
       </div>
@@ -90,7 +94,7 @@
             <div class="col-md-12 col-12" hidden>
               <div class="form-group">
                 <label>Id</label>
-                <input class="form-control" formControlName="idClienteProveedor" type="text"/>
+                <input class="form-control" formControlName="idClientePagador" type="text"/>
               </div>
             </div>
             <div class="col-md-12 col-12">
@@ -113,19 +117,132 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-12 col-12">
+            <div class="col-12 col-md-6">
               <div class="form-group">
-                <label>Dirección</label>
-                <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.direccion.errors }"
-                       class="form-control" formControlName="direccion" type="text"/>
-                <div *ngIf="ReactiveIUForm.direccion.errors" class="invalid-feedback">
-                  <div *ngIf="ReactiveIUForm.direccion.errors.required">* Campo obligatorio</div>
+                <label>Dirección Principal</label>
+                <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.direccionPrincipal.errors }"
+                       class="form-control" formControlName="direccionPrincipal" type="text"/>
+                <div *ngIf="ReactiveIUForm.direccionPrincipal.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.direccionPrincipal.errors.required">* Campo obligatorio</div>
                 </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Dirección Facturación</label>
+                <input class="form-control" formControlName="direccionFacturacion" type="text"/>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Tasa Nominal Mensual (%)</label>
+                <input class="form-control" type="text" formControlName="tasaNominalMensual" placeholder="0.00"
+                       mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Tasa Nominal Anual (%)</label>
+                <input class="form-control" type="text" formControlName="tasaNominalAnual" placeholder="0.00"
+                       mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Financiamiento (%)</label>
+                <input class="form-control" type="text" formControlName="financiamiento" placeholder="0.00"
+                       mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Comision de Estructuración (%)</label>
+                <input class="form-control" type="text" formControlName="comisionEstructuracion" placeholder="0.00"
+                       mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-switch custom-control-inline">
+                  <input type="checkbox" class="custom-control-input"
+                         id="fact" formControlName="factoring"
+                  />
+                  <label class="custom-control-label"
+                         for="fact">Factoring</label>
+                </div>
+                <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-switch custom-control-inline">
+                  <input type="checkbox" class="custom-control-input"
+                         id="confir" formControlName="confirming"
+                  />
+                  <label class="custom-control-label"
+                         for="confir">Confirming</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-switch custom-control-inline">
+                  <input type="checkbox" class="custom-control-input"
+                         id="capitalTra" formControlName="capitalTrabajo"
+                  />
+                  <label class="custom-control-label"
+                         for="capitalTra">Capital de Trabajo</label>
+                </div>
+                <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
               </div>
             </div>
             <div class="col-md-12 col-12">
               <div class="form-group">
-                <label>Contactos</label>
+                <label>Moneda</label>
+                <ng-select [clearable]="false" [items]="monedas" bindLabel="descripcion"
+                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.idMoneda.errors }"
+                           formControlName="idMoneda" bindValue="idColumna">
+                </ng-select>
+                <div *ngIf="ReactiveIUForm.idMoneda.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.idMoneda.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Gastos de Contrato</label>
+                <input class="form-control" type="text" formControlName="gastosContrato" placeholder="0.00"
+                       mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Comisión de Carta Notarial</label>
+                <input class="form-control" type="text" formControlName="comisionCartaNotarial" placeholder="0.00"
+                       mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Servicio de Cobranza</label>
+                <input class="form-control" type="text" formControlName="servicioCobranza" placeholder="0.00"
+                       mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Servicio de Custodia</label>
+                <input class="form-control" type="text" formControlName="servicioCustodia" placeholder="0.00"
+                       mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row spaced">
+          <div class="col-md-12 col-12">
+            <div class="form-group">
+              <label>Contactos</label>
+              <form [formGroup]="contactoForm">
                 <div class="table-responsive">
                   <table class="table table-hover">
                     <thead>
@@ -136,34 +253,230 @@
                       <th>Ape. Materno</th>
                       <th>Teléfono</th>
                       <th>Correo</th>
+                      <th>Activo</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
                       <td>
+                        <a href="javascript:void(0)" title="Nuevo" (click)="onAgregarContacto()">
+                          <i class="text-info cursor-pointer" data-feather="plus-circle"></i>
+                        </a>
+                      </td>
+                      <td><input class="form-control" type="text" placeholder="Nombre"
+                                 [ngClass]="{ 'is-invalid': submittedContacto && ReactiveIUFormContacto.nombre.errors }"
+                                 formControlName="nombre"/></td>
+                      <td><input class="form-control" type="text" placeholder="Ape. Paterno" formControlName="apellidoPaterno"
+                                 [ngClass]="{ 'is-invalid': submittedContacto && ReactiveIUFormContacto.apellidoPaterno.errors }"/>
+                      </td>
+                      <td><input class="form-control" type="text" placeholder="Ape. Materno" formControlName="apellidoMaterno"
+                                 [ngClass]="{ 'is-invalid': submittedContacto && ReactiveIUFormContacto.apellidoMaterno.errors }"/>
+                      </td>
+                      <td><input class="form-control" type="text" placeholder="Teléfono" formControlName="telefono"
+                                 [ngClass]="{ 'is-invalid': submittedContacto && ReactiveIUFormContacto.telefono.errors }"/>
+                      </td>
+                      <td><input class="form-control" type="text" placeholder="Correo" formControlName="correo"
+                                 [ngClass]="{ 'is-invalid': submittedContacto && ReactiveIUFormContacto.correo.errors }"/>
+                      </td>
+                      <td>
+                        <div class="custom-control custom-switch custom-control-inline">
+                          <input type="checkbox" class="custom-control-input"
+                                 id="predeterminadoContacto" formControlName="predeterminado"
+                          />
+                          <label class="custom-control-label"
+                                 for="predeterminadoContacto"></label>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngFor="let item of contactos">
+                      <td>
                         <div class="d-flex align-items-center">
-                          <a href="javascript:void(0)" title="Editar">
+                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Editar"
+                             (click)="onEditarContacto(item)">
                             <i class="text-primary cursor-pointer" data-feather="edit"></i>
                           </a>
+                          <a *ngIf="item.edicion" href="javascript:void(0)" title="Cancelar"
+                             (click)="onCancelarContacto(item)">
+                            <i class="text-primary cursor-pointer" data-feather="corner-up-left"></i>
+                          </a>
                           &nbsp;
-                          <a href="javascript:void(0)" title="Eliminar">
+                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar">
                             <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                          </a>
+                          <a *ngIf="item.edicion" href="javascript:void(0)" title="Confirmar cambios"
+                             (click)="onConfirmarCambioContacto(item)">
+                            <i class="text-success cursor-pointer" data-feather="save"></i>
                           </a>
                         </div>
                       </td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <label *ngIf="!item.edicion">{{item.nombre}}</label>
+                        <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Nombre"
+                               [(ngModel)]="item.nombre"
+                               [ngModelOptions]="{standalone: true}"/>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <label *ngIf="!item.edicion">{{item.apellidoPaterno}}</label>
+                        <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Ape. Paterno"
+                               [(ngModel)]="item.apellidoPaterno"
+                               [ngModelOptions]="{standalone: true}"/>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <label *ngIf="!item.edicion">{{item.apellidoMaterno}}</label>
+                        <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Ape. Materno"
+                               [(ngModel)]="item.apellidoMaterno"
+                               [ngModelOptions]="{standalone: true}"/>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <label *ngIf="!item.edicion">{{item.telefono}}</label>
+                        <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Teléfono"
+                               [(ngModel)]="item.telefono"
+                               [ngModelOptions]="{standalone: true}"/>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <label *ngIf="!item.edicion">{{item.correo}}</label>
+                        <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Correo"
+                               [(ngModel)]="item.correo"
+                               [ngModelOptions]="{standalone: true}"/>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <label *ngIf="!item.edicion">{{(item.predeterminado ? 'Sí' : 'No')}}</label>
+                        <div *ngIf="item.edicion" class="custom-control custom-switch custom-control-inline">
+                          <input type="checkbox" class="custom-control-input" [disabled]="true"
+                                 id="{{'predeterminadoContacto' + item.idFila}}" [(ngModel)]="item.predeterminado"
+                                 [ngModelOptions]="{standalone: true}"
+                          />
+                          <label class="custom-control-label" for="{{'predeterminadoContacto' + item.idFila}}"></label>
+                        </div>
+                      </td>
                     </tr>
                     </tbody>
                   </table>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
-        </form>
+          <div class="col-md-12 col-12">
+            <div class="form-group">
+              <label>Datos de Cuenta de Banco</label>
+              <form [formGroup]="cuentaForm">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                    <tr>
+                      <th>Acción</th>
+                      <th>Titular</th>
+                      <th>Banco</th>
+                      <th>Moneda</th>
+                      <th>N° Cuenta</th>
+                      <th>CCI</th>
+                      <th>Activo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>
+                        <a href="javascript:void(0)" title="Nuevo" (click)="onAgregarCuenta()">
+                          <i class="text-info cursor-pointer" data-feather="plus-circle"></i>
+                        </a>
+                      </td>
+                      <td><input class="form-control" type="text" placeholder="Titular"
+                                 formControlName="titular"/></td>
+                      <td><input class="form-control" type="text" placeholder="Banco" formControlName="banco"
+                                 [ngClass]="{ 'is-invalid': submittedCuenta && ReactiveIUFormCuenta.banco.errors }"/>
+                      </td>
+                      <td>
+                        <ng-select appendTo="body" [clearable]="false" [items]="monedas" bindLabel="descripcion" placeholder="Moneda"
+                                   bindValue="idColumna" formControlName="idMoneda">
+                        </ng-select>
+                      </td>
+                      <td><input class="form-control" type="text" placeholder="N° Cuenta"
+                                 [ngClass]="{ 'is-invalid': submittedCuenta && ReactiveIUFormCuenta.nroCuenta.errors }"
+                                 formControlName="nroCuenta"/>
+                      </td>
+                      <td><input class="form-control" type="text" placeholder="CCI"
+                                 formControlName="cci"/></td>
+                      <td>
+                        <div class="custom-control custom-switch custom-control-inline">
+                          <input type="checkbox" class="custom-control-input"
+                                 id="predeterminadoCuenta" formControlName="predeterminado"
+                          />
+                          <label class="custom-control-label"
+                                 for="predeterminadoCuenta"></label>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngFor="let item of cuentas">
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Editar"
+                             (click)="onEditarCuenta(item)">
+                            <i class="text-primary cursor-pointer" data-feather="edit"></i>
+                          </a>
+                          <a *ngIf="item.edicion" href="javascript:void(0)" title="Cancelar"
+                             (click)="onCancelarCuenta(item)">
+                            <i class="text-primary cursor-pointer" data-feather="corner-up-left"></i>
+                          </a>
+                          &nbsp;
+                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar">
+                            <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                          </a>
+                          <a *ngIf="item.edicion" href="javascript:void(0)" title="Confirmar cambios"
+                             (click)="onConfirmarCambioCuenta(item)">
+                            <i class="text-success cursor-pointer" data-feather="save"></i>
+                          </a>
+                        </div>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <label *ngIf="!item.edicion">{{item.titular}}</label>
+                        <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Titular"
+                               [(ngModel)]="item.titular"
+                               [ngModelOptions]="{standalone: true}"/>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <label *ngIf="!item.edicion">{{item.banco}}</label>
+                        <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Banco"
+                               [(ngModel)]="item.banco"
+                               [ngModelOptions]="{standalone: true}"/>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <label *ngIf="!item.edicion">{{item.moneda}}</label>
+                        <ng-select appendTo="body" *ngIf="item.edicion" [clearable]="false" [items]="monedas"
+                                   bindLabel="descripcion" placeholder="Moneda"
+                                   bindValue="idColumna" [(ngModel)]="item.idMoneda"
+                                   [ngModelOptions]="{standalone: true}">
+                        </ng-select>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <label *ngIf="!item.edicion">{{item.nroCuenta}}</label>
+                        <input *ngIf="item.edicion" class="form-control" type="text" placeholder="N° Cuenta"
+                               [(ngModel)]="item.nroCuenta"
+                               [ngModelOptions]="{standalone: true}"/>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <label *ngIf="!item.edicion">{{item.cci}}</label>
+                        <input *ngIf="item.edicion" class="form-control" type="text" placeholder="CCI"
+                               [(ngModel)]="item.cci"
+                               [ngModelOptions]="{standalone: true}"/>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <label *ngIf="!item.edicion">{{(item.predeterminado ? 'Sí' : 'No')}}</label>
+                        <div *ngIf="item.edicion" class="custom-control custom-switch custom-control-inline">
+                          <input type="checkbox" class="custom-control-input" [disabled]="true"
+                                 id="{{'predeterminadoCuenta' + item.idFila}}" [(ngModel)]="item.predeterminado"
+                                 [ngModelOptions]="{standalone: true}"
+                          />
+                          <label class="custom-control-label" for="{{'predeterminadoCuenta' + item.idFila}}"></label>
+                        </div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="modal-footer" style="display: block !important;">
         <div class="row">

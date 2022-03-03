@@ -16,4 +16,5 @@ export class ClientePagador {
   comisionCartaNotarial: number;
   servicioCobranza: number;
   servicioCustodia: number;
+  totalRows: number;
 }

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
-import {ClientesService} from "./clientes.service";
+import {ClientePagadorService} from "./../cliente-pagador.service";
 import {ClientePagador} from "../../../shared/models/comercial/cliente-pagador";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -8,6 +8,7 @@ import {ClientePagadorContacto} from "../../../shared/models/comercial/cliente-p
 import {ClientePagadorCuenta} from "../../../shared/models/comercial/cliente-pagador-cuenta";
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-clientes',
@@ -28,6 +29,11 @@ export class ClientesComponent implements OnInit {
   public monedas: TablaMaestra[];
   public oldCuenta: ClientePagadorCuenta;
   public oldContacto: ClientePagadorContacto;
+  public search: string = '';
+  //Paginación
+  public collectionSize: number = 0;
+  public pageSize: number = 10;
+  public page: number = 1;
 
   get ReactiveIUForm(): any {
     return this.clienteForm.controls;
@@ -44,7 +50,7 @@ export class ClientesComponent implements OnInit {
   constructor(private modalService: NgbModal,
               private formBuilder: FormBuilder,
               private utilsService: UtilsService,
-              private clientesService: ClientesService,
+              private clientePagadorService: ClientePagadorService,
               private tablaMaestraService: TablaMaestraService) {
     this.contentHeader = {
       headerTitle: 'Clientes',
@@ -93,7 +99,7 @@ export class ClientesComponent implements OnInit {
       idMoneda: [1],
       nroCuenta: ['', Validators.required],
       cci: [''],
-      predeterminado: [{ value: false, disabled: true }],
+      predeterminado: [{value: false, disabled: true}],
     });
     this.contactoForm = this.formBuilder.group({
       nombre: ['', Validators.required],
@@ -101,7 +107,7 @@ export class ClientesComponent implements OnInit {
       apellidoMaterno: ['', Validators.required],
       telefono: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
-      predeterminado: [{ value: false, disabled: true }]
+      predeterminado: [{value: false, disabled: true}]
     });
   }
 
@@ -123,15 +129,23 @@ export class ClientesComponent implements OnInit {
 
   onListarClientes(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
-    this.clientesService.listar({
-      idTipo: 1
+    this.clientePagadorService.listar({
+      idTipo: 1,
+      search: this.search,
+      pageIndex: this.page,
+      pageSize: this.pageSize
     }).subscribe((response: ClientePagador[]) => {
       this.clientes = response;
+      this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
+  }
+
+  onRefrescar(): void {
+    this.onListarClientes();
   }
 
   onNuevo(modal: any): void {
@@ -170,7 +184,7 @@ export class ClientesComponent implements OnInit {
     this.clienteForm.controls.servicioCobranza.setValue(item.servicioCobranza);
     this.clienteForm.controls.servicioCustodia.setValue(item.servicioCustodia);
 
-    this.clientesService.obtener({
+    this.clientePagadorService.obtener({
       idClientePagador: item.idClientePagador
     }).subscribe((response: any) => {
       this.contactos = response.clientePagadorContacto;
@@ -197,15 +211,87 @@ export class ClientesComponent implements OnInit {
   }
 
   onEliminar(item: ClientePagador): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea eliminar el registro "${item.razonSocial}"?, esta acción no podrá revertirse`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-danger',
+        cancelButton: 'btn btn-primary'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart('Eliminando...');
+        this.clientePagadorService.eliminar({
+          idClientePagador: item.idClientePagador,
+          usuarioAud: 'superadmin'
+        }).subscribe(response => {
+          if (response.tipo === 1) {
+            this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
+            this.utilsService.blockUIStop();
+            this.onListarClientes();
+          } else if (response.tipo === 2) {
+            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          } else {
+            this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          }
 
+          this.utilsService.blockUIStop();
+        }, error => {
+          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+          this.utilsService.blockUIStop();
+        });
+      }
+    });
   }
 
   onGuardar(): void {
     this.submitted = true;
     if (this.clienteForm.invalid)
       return;
-
-    this.utilsService.showNotification("Ok", "", 1);
+    this.utilsService.blockUIStart('Guardando...');
+    this.clientePagadorService.guardar({
+      idClientePagador: this.clienteForm.controls.idClientePagador.value,
+      idTipo: 1,
+      ruc: this.clienteForm.controls.ruc.value,
+      razonSocial: this.clienteForm.controls.razonSocial.value,
+      direccionPrincipal: this.clienteForm.controls.direccionPrincipal.value,
+      direccionFacturacion: this.clienteForm.controls.direccionFacturacion.value,
+      tasaNominalMensual: this.clienteForm.controls.tasaNominalMensual.value,
+      tasaNominalAnual: this.clienteForm.controls.tasaNominalAnual.value,
+      financiamiento: this.clienteForm.controls.financiamiento.value,
+      comisionEstructuracion: this.clienteForm.controls.comisionEstructuracion.value,
+      factoring: this.clienteForm.controls.factoring.value,
+      confirming: this.clienteForm.controls.confirming.value,
+      capitalTrabajo: this.clienteForm.controls.capitalTrabajo.value,
+      idMoneda: this.clienteForm.controls.idMoneda.value,
+      gastosContrato: this.clienteForm.controls.gastosContrato.value,
+      comisionCartaNotarial: this.clienteForm.controls.comisionCartaNotarial.value,
+      servicioCobranza: this.clienteForm.controls.servicioCobranza.value,
+      servicioCustodia: this.clienteForm.controls.servicioCustodia.value,
+      usuarioAud: 'superadmin',
+      contacto: this.contactos.filter(f => f.editado),
+      cuenta: this.cuentas.filter(f => f.editado)
+    }).subscribe(response => {
+      if (response.tipo == 1) {
+        this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+        this.onListarClientes();
+        this.onCancelar();
+      } else if (response.tipo == 2) {
+        this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+        this.utilsService.blockUIStop();
+      } else {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
+      }
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
   }
 
   onCancelar(): void {

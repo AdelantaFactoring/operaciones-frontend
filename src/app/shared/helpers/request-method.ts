@@ -10,7 +10,7 @@ export class RequestMethod {
   }
 
   get(url: string, params: string, headers: any): Observable<any> {
-    return this.http.get<any>(url + ((params) ? params : ''), {headers: new HttpHeaders(headers)});
+    return this.http.get(url + ((params) ? params : ''), {headers: new HttpHeaders(headers)});
   }
 
   async getAsync(url: string, params: string, headers: any): Promise<any> {
@@ -21,6 +21,9 @@ export class RequestMethod {
     return this.http.post(url, body, {headers: new HttpHeaders(headers)});
   }
 
+  delete(url: string, params: string, headers: any): Observable<any> {
+    return this.http.delete(url + ((params) ? params : ''), {headers: new HttpHeaders(headers)});
+  }
   // postFile(url: string, body: FormData, headers: any): Observable<any> {
   //   return this.http.post(url, body, {headers: new HttpHeaders(headers)});
   // }
