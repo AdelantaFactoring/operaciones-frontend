@@ -14,7 +14,7 @@
             <div class="d-flex justify-content-between align-items-center m-1">
               <label class="d-flex align-items-center"
               >Mostrar
-                <select class="form-control mx-25">
+                <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }" (change)="onRefrescar()">
                   <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
@@ -31,6 +31,9 @@
                 type="Buscar"
                 placeholder="Buscar"
                 class="form-control ml-25"
+                [(ngModel)]="search"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="onRefrescar()"
               /></label>
             </div>
           </div>
@@ -67,6 +70,12 @@
               </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-12 d-flex justify-content-end">
+            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
+                            (pageChange)="onRefrescar()" [pageSize]="pageSize"></ngb-pagination>
           </div>
         </div>
       </div>
