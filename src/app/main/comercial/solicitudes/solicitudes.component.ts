@@ -5,6 +5,8 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SolicitudesService} from "./solicitudes.service";
 import {Solicitud} from "../../../shared/models/comercial/Solicitud";
 import { FileItem, FileUploader, ParsedResponseHeaders } from 'ng2-file-upload';
+import { environment } from '../../../../environments/environment';
+import {SOLICITUD} from "../../../shared/helpers/url/comercial";
 
 @Component({
   selector: 'app-solicitudes',
@@ -13,7 +15,7 @@ import { FileItem, FileUploader, ParsedResponseHeaders } from 'ng2-file-upload';
 })
 export class SolicitudesComponent implements OnInit {
   public uploader: FileUploader = new FileUploader({
-    //url: `${environment.serviceUrl}${STOCKMINIMO.import}?nombreLinea=` + this.itemLinea,
+    url: `${environment.apiUrl}${SOLICITUD.upload}`,
     isHTML5: true
   });
   public contentHeader: object;
@@ -50,14 +52,12 @@ export class SolicitudesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //this. onListarClientes();
+    this. onListarClientes();
   }
 
   onListarClientes(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
-    this.solicitudesService.listar({
-      idTipo: 1
-    }).subscribe((response: Solicitud[]) => {
+    this.solicitudesService.listar().subscribe((response: Solicitud[]) => {
       this.solicitudes = response;
       this.utilsService.blockUIStop();
     }, error => {
@@ -67,6 +67,16 @@ export class SolicitudesComponent implements OnInit {
   }
 
   onNuevo(modal): void {
+    this.uploader.clearQueue();
+
+    // this.uploader.setOptions({
+    //   url: `${environment.serviceUrl}${STOCKMINIMO.import}?nombreLinea=` + this.itemLinea
+    // });
+
+    this.uploader.setOptions({
+      url: `${environment.apiUrl}${SOLICITUD.upload}`
+    });
+
     setTimeout(() => {
       this.modalService.open(modal, {
         scrollable: true,
@@ -118,10 +128,10 @@ export class SolicitudesComponent implements OnInit {
   }
 
   onBrowseChange() {
-    if (this.uploader.queue.length > 1) {
-      //this.uploader.clearQueue();
-      this.uploader.queue.splice(0, 1);
-    }
+    // if (this.uploader.queue.length > 1) {
+    //   //this.uploader.clearQueue();
+    //   this.uploader.queue.splice(0, 1);
+    // }
   }
 
   onRadioChange(value): void{

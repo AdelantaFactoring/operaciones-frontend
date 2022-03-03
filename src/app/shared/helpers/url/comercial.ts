@@ -6,5 +6,6 @@ export const CLIENTEPAGADOR = {
 };
 
 export const SOLICITUD = {
-  listar: '/solicitud/listarsolicitud'
+  listar: '/solicitudCab/listar',
+  upload: '/solicitudCab/upload'
 };
