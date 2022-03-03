@@ -10,7 +10,11 @@ export class RequestMethod {
   }
 
   get(url: string, params: string, headers: any): Observable<any> {
-    return this.http.get(url + ((params) ? params : ''), {headers: new HttpHeaders(headers)});
+    return this.http.get<any>(url + ((params) ? params : ''), {headers: new HttpHeaders(headers)});
+  }
+
+  async getAsync(url: string, params: string, headers: any): Promise<any> {
+    return await this.http.get<any>(url + ((params) ? params : ''), {headers: new HttpHeaders(headers)}).toPromise();
   }
 
   post(url: string, body: string, headers: any): Observable<any> {

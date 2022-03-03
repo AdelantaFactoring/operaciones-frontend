@@ -21,4 +21,14 @@ export class ClientesService {
       }
     );
   }
+
+  obtener(payload): Observable<any> {
+    return this.requestMethod.get(
+      `${environment.apiUrl}${CLIENTEPAGADOR.obtener}`,
+      `?idClientePagador=${payload.idClientePagador}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }

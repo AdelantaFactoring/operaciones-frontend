@@ -61,7 +61,7 @@ export class PagadorComponent implements OnInit {
   onListarPagador(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.clientesService.listar({
-
+      idTipo: 2
     }).subscribe((response: ClientePagador[]) => {
       this.pagadores = response;
       this.utilsService.blockUIStop();
