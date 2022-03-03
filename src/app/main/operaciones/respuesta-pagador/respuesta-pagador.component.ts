@@ -3,7 +3,7 @@ import {UtilsService} from "../../../shared/services/utils.service";
 import {NgbModal, NgbCalendar} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 //import {SolicitudesService} from "./solicitudes.service";
-import {Solicitud} from "../../../shared/models/comercial/Solicitud";
+import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
 
 @Component({
   selector: 'app-respuesta-pagador',
@@ -13,7 +13,7 @@ import {Solicitud} from "../../../shared/models/comercial/Solicitud";
 export class RespuestaPagadorComponent implements OnInit {
 
   public contentHeader: object;
-  public solicitudes: Solicitud[];
+  public solicitudes: SolicitudCab[];
   public submitted: boolean;
   public solicitudForm: FormGroup;
   filter = {

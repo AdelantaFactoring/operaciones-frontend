@@ -48,12 +48,14 @@
                 <th>RUC Aceptante</th>
                 <th>N° Documento</th>
                 <th>Moneda</th>
-                <th>%TMN Op</th>
+                <th>Tipo Operación</th>
+                <th>Estado</th>
+                <!-- <th>%TMN Op</th>
                 <th>%TNA Op</th>
                 <th>%Financiamiento</th>
                 <th>Monto Sin IGV</th>
                 <th>Monto Con IGV</th>
-                <th>Fondo Resguardado</th>
+                <th>Fondo Resguardado</th> -->
               </tr>
               </thead>
               <tbody>
@@ -70,16 +72,20 @@
                   </div>
                 </td>
                 <td>{{item.codigo}}</td>
-                <td>{{item.razonSocial}}</td>
-                <td>{{item.rucCliente}}</td>
-                <td>{{item.direccionPrincipal}}</td>
-                <td>{{item.razonSocial}}</td>
+                <td>{{item.razonSocialCedente}}</td>
+                <td>{{item.rucCedente}}</td>
+                <td>{{item.razonSocialAceptante}}</td>
+                <td>{{item.rucAceptante}}</td>
+                <td>{{item.Moneda}}</td>
+                <td>{{item.tipoOperacion}}</td>
+                <td>{{item.estado}}</td>
+                <!-- <td>{{item.razonSocial}}</td>
                 <td>{{item.rucCliente}}</td>
                 <td>{{item.direccionPrincipal}}</td>
                 <td>{{item.moneda}}</td>
                 <td>2.20%</td>
                 <td>26.50%</td>
-                <td>90%</td>
+                <td>90%</td> -->
               </tr>
               </tbody>
             </table>
@@ -95,8 +101,67 @@
         </button>
       </div>
       <div class="modal-body" ngbAutofocus tabindex="0">
-        <form [formGroup]="clienteForm">
+        <form [formGroup]="solicitudForm">
           <div class="row spaced">
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Cedente</label>
+                <ng-select [clearable]="false" [items]="optClienteP" bindLabel="razonSocial"
+                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.idCedente.errors }"
+                           formControlName="idCedente" bindValue="idClientePagador" [(ngModel)]="idCedente">
+                </ng-select>
+                <div *ngIf="ReactiveIUForm.idCedente.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.idCedente.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Aceptante</label>
+                <ng-select [clearable]="false" [items]="optClienteP" bindLabel="razonSocial"
+                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.idAceptante.errors }"
+                           formControlName="idAceptante" bindValue="idClientePagador" [(ngModel)]="idAceptante">
+                </ng-select>
+                <div *ngIf="ReactiveIUForm.idAceptante.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.idAceptante.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Comisión de Estructuracion</label>
+                <input class="form-control" type="text" formControlName="comisionEstructuracion" placeholder="0.00"
+                       mask="separator" thousandSeparator="," [(ngModel)]="comisionEst"/>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Gastos de Contrato</label>
+                <input class="form-control" type="text" formControlName="gastosContrato" placeholder="0.00"
+                       mask="separator" thousandSeparator="," [(ngModel)]="gastoContrato"/>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Comisión Carta Notarial</label>
+                <input class="form-control" type="text" formControlName="comisionCartaNotarial" placeholder="0.00"
+                       mask="separator" thousandSeparator="," [(ngModel)]="comisionCart"/>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Servicio Cobranza</label>
+                <input class="form-control" type="text" formControlName="servicioCobranza" placeholder="0.00"
+                       mask="separator" thousandSeparator="," [(ngModel)]="servicioCobranza"/>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Servicio Custodia</label>
+                <input class="form-control" type="text" formControlName="servicioCustodia" placeholder="0.00"
+                       mask="separator" thousandSeparator="," [(ngModel)]="servicioCustodia"/>
+              </div>
+            </div>
             <div class="col-12">
               <div class="form-group">
                 <label>Tipo de Servicio</label>
@@ -105,7 +170,7 @@
             <div class="col-12 col-md-4">
               <div class="form-group">
                 <div class="custom-control custom-radio">
-                  <input type="radio" id="Factoring" name="customRadio" class="custom-control-input" (change)="onRadioChange(1)"/>
+                  <input type="radio" id="Factoring" name="customRadio" class="custom-control-input" (change)="onRadioChange('Factoring', 1)"/>
                   <label class="custom-control-label" for="Factoring">Factoring</label>
                 </div>
               </div>
@@ -113,7 +178,7 @@
             <div class="col-12 col-md-4">
               <div class="form-group">
                 <div class="custom-control custom-radio">
-                  <input type="radio" id="capital" name="customRadio" class="custom-control-input" (change)="onRadioChange(2)"/>
+                  <input type="radio" id="capital" name="customRadio" class="custom-control-input" (change)="onRadioChange('Capital de Trabajo', 2)"/>
                   <label class="custom-control-label" for="capital">Capital de Trabajo</label>
                 </div>
               </div>
@@ -121,100 +186,103 @@
             <div class="col-12 col-md-4">
               <div class="form-group">
                 <div class="custom-control custom-radio">
-                  <input type="radio" id="Confirming" name="customRadio" class="custom-control-input" (change)="onRadioChange(3)"/>
+                  <input type="radio" id="Confirming" name="customRadio" class="custom-control-input" (change)="onRadioChange('Confirming', 3)"/>
                   <label class="custom-control-label" for="Confirming">Confirming</label>
                 </div>
               </div>
             </div>
             <div class="col-12">
               <div class="divider divider-warning">
-                <div class="divider-text">o</div>
-              </div>
-              <div class="form-group">
-                <label>Selección de archivo </label>
+                <div class="divider-text">{{tipoServicio}}</div>
               </div>
             </div>
             <div class="col-12">
-              <fieldset class="form-group">
-                  <div class="custom-file">
-                      <input type="file" class="custom-file-input" type="file" ng2FileSelect
-                          [uploader]="uploader" id="file-upload-single" />
-                      <label class="custom-file-label">Elija el archivo</label>
-                  </div>
-              </fieldset>
-          </div>
-          <div class="col-lg-12 overflow-auto">
-              <div class="d-flex justify-content-between mb-1">
-                  <label>Subir cola</label>
-                  <p>Longitud de la cola: {{ uploader?.queue?.length }}</p>
+              <div class="form-group">
+                <label>Selección de archivo </label>
               </div>
-
-              <table class="table">
-                  <thead>
-                      <tr>
-                          <th width="40%">Nombre</th>
-                          <th>Tamaño</th>
-                          <th>Progreso</th>
-                          <th>Estado</th>
-                          <th>Acción</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr *ngFor="let item of uploader.queue">
-                          <td>
-                              <strong>{{ item?.file?.name }}</strong>
-                          </td>
-                          <td *ngIf="uploader.options.isHTML5" nowrap>
-                              {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
-                          </td>
-                          <td *ngIf="uploader.options.isHTML5">
-                              <ngb-progressbar type="primary" [value]="item.progress">
-                              </ngb-progressbar>
-                          </td>
-                          <td class="text-center">
-                              <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
-                              <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
-                              <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
-                          </td>
-                          <td nowrap>
-                            <!-- <button
-                              type="button"
-                              class="btn btn-raised btn-outline-success btn-sm mr-50"
-                              (click)="item.upload()"
-                              [disabled]="item.isReady || item.isUploading || item.isSuccess"
-                              rippleEffect
-                            >
-                              <span data-feather="upload"></span>
-                            </button>
-                            <button
-                              type="button"
-                              class="btn btn-raised btn-outline-warning btn-sm mr-50"
-                              (click)="item.cancel()"
-                              [disabled]="!item.isUploading"
-                              rippleEffect
-                            >
-                              <i data-feather="slash"></i>
-                            </button> -->
-                            <button
-                              type="button"
-                              class="btn btn-raised btn-outline-danger btn-sm"
-                              (click)="item.remove()"
-                              rippleEffect
-                            >
-                              <i data-feather="trash"></i>
-                            </button>
-                          </td>
-                      </tr>
-                  </tbody>
-              </table>
-          </div>
-          <div class="col-12">
-              <div id="">
-                  <p class="mt-1">Progreso de la cola:</p>
-                  <ngb-progressbar class="mb-1" type="primary" [value]="uploader.progress">
-                  </ngb-progressbar>
+              <div class="col-12">
+                <fieldset class="form-group">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" ng2FileSelect
+                            [uploader]="uploader" id="file-upload-single" />
+                        <label class="custom-file-label">Elija el archivo</label>
+                    </div>
+                </fieldset>
               </div>
-          </div>
+              <div class="col-lg-12 overflow-auto">
+                <div class="d-flex justify-content-between mb-1">
+                    <label>Subir cola</label>
+                    <p>Longitud de la cola: {{ uploader?.queue?.length }}</p>
+                </div>
+  
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th width="40%">Nombre</th>
+                            <th>Tamaño</th>
+                            <th>Progreso</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of uploader.queue">
+                            <td>
+                                <strong>{{ item?.file?.name }}</strong>
+                            </td>
+                            <td *ngIf="uploader.options.isHTML5" nowrap>
+                                {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
+                            </td>
+                            <td *ngIf="uploader.options.isHTML5">
+                                <ngb-progressbar type="primary" [value]="item.progress">
+                                </ngb-progressbar>
+                            </td>
+                            <td class="text-center">
+                                <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
+                                <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
+                                <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
+                            </td>
+                            <td nowrap>
+                              <!-- <button
+                                type="button"
+                                class="btn btn-raised btn-outline-success btn-sm mr-50"
+                                (click)="item.upload()"
+                                [disabled]="item.isReady || item.isUploading || item.isSuccess"
+                                rippleEffect
+                              >
+                                <span data-feather="upload"></span>
+                              </button>
+                              <button
+                                type="button"
+                                class="btn btn-raised btn-outline-warning btn-sm mr-50"
+                                (click)="item.cancel()"
+                                [disabled]="!item.isUploading"
+                                rippleEffect
+                              >
+                                <i data-feather="slash"></i>
+                              </button> -->
+                              <button
+                                type="button"
+                                class="btn btn-raised btn-outline-danger btn-sm"
+                                (click)="item.remove()"
+                                rippleEffect
+                              >
+                                <i data-feather="trash"></i>
+                              </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+              </div>
+            <div class="col-12">
+                <div id="">
+                    <p class="mt-1">Progreso de la cola:</p>
+                    <ngb-progressbar class="mb-1" type="primary" [value]="uploader.progress">
+                    </ngb-progressbar>
+                </div>
+            </div>
+            </div>
+          
           </div>
         </form>
       </div>
@@ -231,11 +299,14 @@
                     (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length" rippleEffect>
                     <span data-feather="trash" class="mr-25"></span> Remover todo
                 </button>
-              </div> -->
-              <!-- <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()" -->
+              </div> --> 
               <button class="btn btn-primary" rippleEffect type="button" (click)="uploader.uploadAll()"
               [disabled]="!uploader.getNotUploadedItems().length">
-                <span [data-feather]="'save'"></span> Procesar
+                <span [data-feather]="'save'"></span> Procesar Archivos
+              </button>
+              &nbsp;
+              <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()">
+              <span [data-feather]="'save'"></span> Guardar
               </button>
               &nbsp;
               <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()">

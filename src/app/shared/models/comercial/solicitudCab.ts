@@ -1,4 +1,4 @@
-export class Solicitud {
+export class SolicitudCab {
     idSolicitud: number;
     nroSolicitud: string;
     idCliente: number;
