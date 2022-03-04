@@ -16,6 +16,7 @@ export class RespuestaPagadorComponent implements OnInit {
   public solicitudes: SolicitudCab[];
   public submitted: boolean;
   public solicitudForm: FormGroup;
+
   filter = {
     dateFrom: {
       year: this.calendar.getToday().month == 1 ? this.calendar.getToday().year - 1 : this.calendar.getToday().year,

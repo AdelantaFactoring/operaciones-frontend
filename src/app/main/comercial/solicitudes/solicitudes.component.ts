@@ -25,8 +25,9 @@ export class SolicitudesComponent implements OnInit {
   public solicitudes: SolicitudCab[];
   public submitted: boolean;
   public solicitudForm: FormGroup;
+  public solicitudDetForm: FormGroup;
   optClienteP = [];
-  tipoServicio = "";
+  tipoServicio = "Factoring";
   solicitudDet: SolicitudDet[] = [];
   params = [];
   idSolicitudCab: number;
@@ -47,6 +48,9 @@ export class SolicitudesComponent implements OnInit {
   public page: number = 1;
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;
+  }
+  get ReactiveDetForm(): any {
+    return this.solicitudDetForm.controls;
   }
   constructor(private modalService: NgbModal,
     private formBuilder: FormBuilder,
@@ -87,6 +91,13 @@ export class SolicitudesComponent implements OnInit {
       confirming: [false],
       capitalTrabajo: [false],
     });
+    this.solicitudDetForm = this.formBuilder.group({
+      nroSolicitud: [''],
+      cedente: [''],
+      rucCedente: [''],
+      aceptante: [''],
+      rucAceptante: [''],
+    });
   }
 
   ngOnInit(): void {
@@ -97,6 +108,12 @@ export class SolicitudesComponent implements OnInit {
 
   public fileOverBase(e:any):void {
     this.hasBaseDropZoneOver = e;
+    if (e == false) {
+      this.onBrowseChange();
+    }
+    // console.log('aqui era');
+    // console.log('thisHas', this.hasBaseDropZoneOver);
+    // console.log('e', e);
   }
   onListarSolicitudes(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
@@ -108,6 +125,7 @@ export class SolicitudesComponent implements OnInit {
     }).subscribe((response: SolicitudCab[]) => {
       this.solicitudes = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
+
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -118,14 +136,14 @@ export class SolicitudesComponent implements OnInit {
   onNuevo(modal): void {
     this.uploader.clearQueue();
     this.idSolicitudCab = 0;
-
-    // this.uploader.setOptions({
-    //   url: `${environment.serviceUrl}${STOCKMINIMO.import}?nombreLinea=` + this.itemLinea
-    // });
-
     this.uploader.setOptions({
-      url: `${environment.apiUrl}${SOLICITUD.upload}`
+       url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion
     });
+
+    
+    // this.uploader.setOptions({
+    //   url: `${environment.apiUrl}${SOLICITUD.upload}`
+    // });
 
     setTimeout(() => {
       this.modalService.open(modal, {
@@ -223,17 +241,36 @@ export class SolicitudesComponent implements OnInit {
       });
     }, 0);
   }
-
+  
   onBrowseChange() {
     // if (this.uploader.queue.length > 1) {
     //   //this.uploader.clearQueue();
     //   this.uploader.queue.splice(0, 1);
     // }
+    var flagEliminado = false;
+    for (const item of this.uploader.queue) {
+      var name = item._file.name;
+      if (name.includes('.XML') || name.includes('.PDF') || name.includes('.xml') || name.includes('.pdf')) {
+        
+      }
+      else
+      {
+        flagEliminado = true;
+        item.remove();
+      }
+    }
+    if (flagEliminado == true) {
+      this.utilsService.showNotification('Se han eliminado los archivo que no continen una extensión .xml o .pdf', 'Validación', 2);
+    }
   }
 
   onRadioChange(value, idTipoOperacion): void{
     this.tipoServicio = value;
     this.idTipoOperacion = idTipoOperacion;
+    //console.log('tip', this.idTipoOperacion);
+    this.uploader.setOptions({
+      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion
+   });
   }
 
   onClientePagadorCombo(): void{
@@ -247,5 +284,56 @@ export class SolicitudesComponent implements OnInit {
       this.utilsService.blockUIStop();
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
+  }
+
+  onDetalle(item, modal): void {
+
+    console.log('item', item);
+    this.solicitudDet = item.solicitudDet;
+    console.log('solicitudDet', this.solicitudDet);
+    this.utilsService.blockUIStart('Obteniendo información...');
+    this.solicitudDetForm.controls.nroSolicitud.setValue(item.codigo);
+    this.solicitudDetForm.controls.cedente.setValue(item.razonSocialCedente);
+    this.solicitudDetForm.controls.rucCedente.setValue(item.rucCedente);
+    this.solicitudDetForm.controls.aceptante.setValue(item.razonSocialAceptante);
+    this.solicitudDetForm.controls.rucAceptante.setValue(item.rucAceptante);
+    setTimeout(() => {
+      this.modalService.open(modal, {
+        scrollable: true,
+        size: 'lg',
+        windowClass: 'my-class',
+        animation: true,
+        centered: false,
+        backdrop: "static",
+        beforeDismiss: () => {
+          return true;
+        }
+      });
+    }, 0);
+    this.utilsService.blockUIStop();
+    // this.clientePagadorService.obtener({
+    //   idClientePagador: item.idClientePagador
+    // }).subscribe((response: any) => {
+    //   this.contactos = response.clientePagadorContacto;
+    //   this.cuentas = response.clientePagadorCuenta;
+    //   this.utilsService.blockUIStop();
+
+    //   setTimeout(() => {
+    //     this.modalService.open(modal, {
+    //       scrollable: true,
+    //       //size: 'lg',
+    //       windowClass: 'my-class',
+    //       animation: true,
+    //       centered: false,
+    //       backdrop: "static",
+    //       beforeDismiss: () => {
+    //         return true;
+    //       }
+    //     });
+    //   }, 0);
+    // }, error => {
+    //   this.utilsService.blockUIStop();
+    //   this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    // });
   }
 }

@@ -6,7 +6,7 @@
         <div class="row">
           <button class="btn btn-primary ml-1" rippleEffect (click)="onNuevo(modalINFO)">
             <i class="mr-0 mr-sm-1" data-feather="plus"></i><span
-            class="d-none d-sm-inline-block">Nuevo</span>
+            class="d-none d-sm-inline-block">Nueva(s) Solicitud(es)</span>
           </button>
         </div>
         <div class="row">
@@ -15,7 +15,6 @@
               <label class="d-flex align-items-center"
               >Mostrar
                 <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }" (change)="onRefrescar()">
-                  <option value="1">1</option>
                   <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
@@ -47,7 +46,7 @@
                 <th>RUC Cedente</th>
                 <th>Aceptante</th>
                 <th>RUC Aceptante</th>
-                <th>N° Documento</th>
+                <!-- <th>N° Documento</th> -->
                 <th>Moneda</th>
                 <th>Tipo Operación</th>
                 <th>Estado</th>
@@ -57,7 +56,7 @@
               <tr *ngFor="let item of solicitudes">
                 <td>
                   <div class="d-flex align-items-center">
-                    <a href="javascript:void(0)" title="Editar">
+                    <a href="javascript:void(0)" title="Editar" (click)="onDetalle(item, modalDetalle)">
                       <i class="text-primary cursor-pointer" data-feather="edit"></i>
                     </a>
                     &nbsp;
@@ -71,8 +70,8 @@
                 <td>{{item.rucCedente}}</td>
                 <td>{{item.razonSocialAceptante}}</td>
                 <td>{{item.rucAceptante}}</td>
-                <td></td>
-                <td>{{item.Moneda}}</td>
+                <!-- <td></td> -->
+                <td>{{item.moneda}}</td>
                 <td>{{item.tipoOperacion}}</td>
                 <td>{{item.estado}}</td>
                 <!-- <td>{{item.razonSocial}}</td>
@@ -172,7 +171,8 @@
             <div class="col-12 col-md-4">
               <div class="form-group">
                 <div class="custom-control custom-radio">
-                  <input type="radio" id="Factoring" name="customRadio" class="custom-control-input" (change)="onRadioChange('Factoring', 1)"/>
+                  <input type="radio" id="Factoring" name="customRadio" class="custom-control-input" checked
+                  (change)="onRadioChange('Factoring', 1)"/>
                   <label class="custom-control-label" for="Factoring">Factoring</label>
                 </div>
               </div>
@@ -217,8 +217,8 @@
             <div class="col-12">
               <fieldset class="form-group">
                   <div class="custom-file">
-                      <input type="file" class="custom-file-input" ng2FileSelect
-                          [uploader]="uploader" multiple id="file-upload-single" />
+                      <input type="file" class="custom-file-input" ng2FileSelect accept=".pdf,.xml"
+                          [uploader]="uploader" multiple id="file-upload-single" (change)="onBrowseChange()"/>
                       <label class="custom-file-label">Elija el archivo</label>
                   </div>
               </fieldset>
@@ -241,6 +241,7 @@
                   </thead>
                   <tbody>
                       <tr *ngFor="let item of uploader.queue">
+                          <!-- <td [ngClass]="{color: item?.file?.name.includes(.XML)}"> -->
                           <td>
                               <strong>{{ item?.file?.name }}</strong>
                           </td>
@@ -323,6 +324,107 @@
               &nbsp; -->
               <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()">
                 <span [data-feather]="'x-circle'"></span> Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #modalDetalle let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel1">Detalle de Solicitud</h4>
+        <button aria-label="Close" class="close" type="button" (click)="onCancelar()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ngbAutofocus tabindex="0">
+        <form [formGroup]="solicitudDetForm">
+          <div class="row spaced">
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>N° Solicitud</label>
+                <input class="form-control" formControlName="nroSolicitud" type="text" disabled/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Cedente</label>
+                <input class="form-control" formControlName="cedente" type="text" disabled/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>RUC Cedente</label>
+                <input class="form-control" formControlName="rucCedente" type="text" disabled/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Aceptante</label>
+                <input class="form-control" formControlName="aceptante" type="text" disabled/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>RUC Aceptante</label>
+                <input class="form-control" formControlName="rucAceptante" type="text" disabled/>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row spaced">
+          <div class="col-md-12 col-12">
+            <div class="form-group">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                  <tr>
+                    <th>Acción</th>
+                    <th>N° Documento</th>
+                    <th>% TNM</th>
+                    <th>% TNA</th>
+                    <th>Monto Sin IGV</th>
+                    <th>Monto Con IGV</th>
+                    <th>Financiamiento</th>
+                    <th>Fondo Resguardo</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of solicitudDet">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Eliminar">
+                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>{{item.nroDocumento}}</td>
+                    <td>{{item.tasaNominalMensual}}</td>
+                    <td>{{item.tasaNominalAnual}}</td>
+                    <td>{{item.montoSinIGV}}</td>
+                    <td>{{item.montoConIGV}}</td>
+                    <td>{{item.financiamiento}}</td>
+                    <td>{{item.fondoResguardo}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        </div>
+      <div class="modal-footer" style="display: block !important;">
+        <div class="row">
+          <div class="col-md-12 col-12">
+            <div style="float: right">
+              <!-- <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()">
+                <span [data-feather]="'save'"></span> Guardar
+              </button>
+              &nbsp; -->
+              <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()">
+                <span [data-feather]="'x-circle'"></span> Cerrar
               </button>
             </div>
           </div>
