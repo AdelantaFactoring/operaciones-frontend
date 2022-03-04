@@ -1,20 +1,25 @@
+import {SolicitudDet} from "./solicitudDet";
+
 export class SolicitudCab {
     idSolicitud: number;
-    nroSolicitud: string;
-    idCliente: number;
-    cliente: string;
-    rucCliente: string;
-    aceptante: string;
+    codigo: string;
+    idCedente: number;
+    razonSocialCedente: string;
+    rucCedente: string;
+    idAceptante: string;
+    razonSocialAceptante: string;
     rucAceptante: string;
-    nroDocumento: string;
-    idMoneda: number;
     moneda: string;
-    tnmOp: number;
-    tnaOp: number;
-    financiamiento: number;
-    montoSinIgv: number;
-    montoConIgv: number;
-    fondoRecaudado: number;
+    comisionEstructuracion: number;
+    gastosContrato: number;
+    comisionCartaNotarial: number;
+    servicioCobranza: number;
+    servicioCustodia: number;
+    idEstado: number;
+    estado: string;
+    idTipoOperacion: number;
+    tipoOperacion: string;
+    fechaCreacion: string;
     totalRows: number;
+    solicitudDet: SolicitudDet[]
   }
-  
