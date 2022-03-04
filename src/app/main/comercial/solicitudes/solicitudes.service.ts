@@ -12,10 +12,10 @@ export class SolicitudesService {
   private requestMethod = new RequestMethod();
   constructor() { }
 
-  listar(): Observable<any> {
+  listar(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${SOLICITUD.listar}`,
-      ``,
+      `?idEstado=${payload.idEstado}&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

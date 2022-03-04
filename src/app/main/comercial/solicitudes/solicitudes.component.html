@@ -14,7 +14,8 @@
             <div class="d-flex justify-content-between align-items-center m-1">
               <label class="d-flex align-items-center"
               >Mostrar
-                <select class="form-control mx-25">
+                <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }" (change)="onRefrescar()">
+                  <option value="1">1</option>
                   <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
@@ -27,9 +28,9 @@
           <div class="col-md-6 col-12 d-flex justify-content-md-end">
             <div class="d-flex align-items-center justify-content-end pr-1 pb-1 pl-1 pl-md-0 pb-md-0">
               <label class="d-flex align-items-center"
-              >Search<input
+              >Buscar<input
                 type="search"
-                placeholder="Search"
+                placeholder="Buscar"
                 class="form-control ml-25"
               /></label>
             </div>
@@ -50,12 +51,6 @@
                 <th>Moneda</th>
                 <th>Tipo Operación</th>
                 <th>Estado</th>
-                <!-- <th>%TMN Op</th>
-                <th>%TNA Op</th>
-                <th>%Financiamiento</th>
-                <th>Monto Sin IGV</th>
-                <th>Monto Con IGV</th>
-                <th>Fondo Resguardado</th> -->
               </tr>
               </thead>
               <tbody>
@@ -76,6 +71,7 @@
                 <td>{{item.rucCedente}}</td>
                 <td>{{item.razonSocialAceptante}}</td>
                 <td>{{item.rucAceptante}}</td>
+                <td></td>
                 <td>{{item.Moneda}}</td>
                 <td>{{item.tipoOperacion}}</td>
                 <td>{{item.estado}}</td>
@@ -89,6 +85,12 @@
               </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-12 d-flex justify-content-end">
+            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
+                            (pageChange)="onRefrescar()" [pageSize]="pageSize"></ngb-pagination>
           </div>
         </div>
       </div>
@@ -196,84 +198,96 @@
                 <div class="divider-text">{{tipoServicio}}</div>
               </div>
             </div>
+            <div class="col-md-12">
+              <div
+                ng2FileDrop
+                [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
+                (fileOver)="fileOverBase($event)"
+                [uploader]="uploader"
+                class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
+              >
+                Arrasta aqui los archivos
+              </div>
+            </div>
             <div class="col-12">
               <div class="form-group">
-                <label>Selección de archivo </label>
+                <label>Selección de archivo(s) </label>
               </div>
-              <div class="col-12">
-                <fieldset class="form-group">
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" ng2FileSelect
-                            [uploader]="uploader" id="file-upload-single" />
-                        <label class="custom-file-label">Elija el archivo</label>
-                    </div>
-                </fieldset>
+            </div>
+            <div class="col-12">
+              <fieldset class="form-group">
+                  <div class="custom-file">
+                      <input type="file" class="custom-file-input" ng2FileSelect
+                          [uploader]="uploader" multiple id="file-upload-single" />
+                      <label class="custom-file-label">Elija el archivo</label>
+                  </div>
+              </fieldset>
+            </div>
+            <div class="col-lg-12 overflow-auto">
+              <div class="d-flex justify-content-between mb-1">
+                  <label>Subir cola</label>
+                  <p>Longitud de la cola: {{ uploader?.queue?.length }}</p>
               </div>
-              <div class="col-lg-12 overflow-auto">
-                <div class="d-flex justify-content-between mb-1">
-                    <label>Subir cola</label>
-                    <p>Longitud de la cola: {{ uploader?.queue?.length }}</p>
-                </div>
-  
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th width="40%">Nombre</th>
-                            <th>Tamaño</th>
-                            <th>Progreso</th>
-                            <th>Estado</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of uploader.queue">
-                            <td>
-                                <strong>{{ item?.file?.name }}</strong>
-                            </td>
-                            <td *ngIf="uploader.options.isHTML5" nowrap>
-                                {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
-                            </td>
-                            <td *ngIf="uploader.options.isHTML5">
-                                <ngb-progressbar type="primary" [value]="item.progress">
-                                </ngb-progressbar>
-                            </td>
-                            <td class="text-center">
-                                <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
-                                <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
-                                <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
-                            </td>
-                            <td nowrap>
-                              <!-- <button
-                                type="button"
-                                class="btn btn-raised btn-outline-success btn-sm mr-50"
-                                (click)="item.upload()"
-                                [disabled]="item.isReady || item.isUploading || item.isSuccess"
-                                rippleEffect
-                              >
-                                <span data-feather="upload"></span>
-                              </button>
-                              <button
-                                type="button"
-                                class="btn btn-raised btn-outline-warning btn-sm mr-50"
-                                (click)="item.cancel()"
-                                [disabled]="!item.isUploading"
-                                rippleEffect
-                              >
-                                <i data-feather="slash"></i>
-                              </button> -->
-                              <button
-                                type="button"
-                                class="btn btn-raised btn-outline-danger btn-sm"
-                                (click)="item.remove()"
-                                rippleEffect
-                              >
-                                <i data-feather="trash"></i>
-                              </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-              </div>
+
+              <table class="table">
+                  <thead>
+                      <tr>
+                          <th width="40%">Nombre</th>
+                          <th>Tamaño</th>
+                          <th>Progreso</th>
+                          <th>Estado</th>
+                          <th>Acción</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let item of uploader.queue">
+                          <td>
+                              <strong>{{ item?.file?.name }}</strong>
+                          </td>
+                          <td *ngIf="uploader.options.isHTML5" nowrap>
+                              {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
+                          </td>
+                          <td *ngIf="uploader.options.isHTML5">
+                              <ngb-progressbar type="primary" [value]="item.progress">
+                              </ngb-progressbar>
+                          </td>
+                          <td class="text-center">
+                              <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
+                              <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
+                              <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
+                          </td>
+                          <td nowrap>
+                            <!-- <button
+                              type="button"
+                              class="btn btn-raised btn-outline-success btn-sm mr-50"
+                              (click)="item.upload()"
+                              [disabled]="item.isReady || item.isUploading || item.isSuccess"
+                              rippleEffect
+                            >
+                              <span data-feather="upload"></span>
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-raised btn-outline-warning btn-sm mr-50"
+                              (click)="item.cancel()"
+                              [disabled]="!item.isUploading"
+                              rippleEffect
+                            >
+                              <i data-feather="slash"></i>
+                            </button> -->
+                            <button
+                              type="button"
+                              class="btn btn-raised btn-outline-danger btn-sm"
+                              (click)="item.remove()"
+                              rippleEffect
+                            >
+                              <i data-feather="trash"></i>
+                            </button>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+            </div>
             <div class="col-12">
                 <div id="">
                     <p class="mt-1">Progreso de la cola:</p>
@@ -281,8 +295,6 @@
                     </ngb-progressbar>
                 </div>
             </div>
-            </div>
-          
           </div>
         </form>
       </div>
@@ -305,10 +317,10 @@
                 <span [data-feather]="'save'"></span> Procesar Archivos
               </button>
               &nbsp;
-              <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()">
+              <!-- <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()">
               <span [data-feather]="'save'"></span> Guardar
               </button>
-              &nbsp;
+              &nbsp; -->
               <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()">
                 <span [data-feather]="'x-circle'"></span> Cancelar
               </button>

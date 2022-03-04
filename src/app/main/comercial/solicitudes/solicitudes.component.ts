@@ -19,6 +19,8 @@ export class SolicitudesComponent implements OnInit {
     url: `${environment.apiUrl}${SOLICITUD.upload}`,
     isHTML5: true
   });
+  
+  hasBaseDropZoneOver:boolean;
   public contentHeader: object;
   public solicitudes: SolicitudCab[];
   public submitted: boolean;
@@ -37,8 +39,12 @@ export class SolicitudesComponent implements OnInit {
   servicioCobranza: number;
   servicioCustodia: number;
   idTipoOperacion: number;
+  public idEstado: number = 1;
+  public search: string = '';
 
-
+  public collectionSize: number = 0;
+  public pageSize: number = 10;
+  public page: number = 1;
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;
   }
@@ -84,14 +90,24 @@ export class SolicitudesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this. onListarClientes();
-    this.onClientePagadorCombo();
+    this.onRefrescar();
+    //this.onClientePagadorCombo();
+    this.hasBaseDropZoneOver = false;
   }
 
-  onListarClientes(): void {
+  public fileOverBase(e:any):void {
+    this.hasBaseDropZoneOver = e;
+  }
+  onListarSolicitudes(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
-    this.solicitudesService.listar().subscribe((response: SolicitudCab[]) => {
+    this.solicitudesService.listar({
+      idEstado: this.idEstado,
+      search: this.search,
+      pageIndex: this.page,
+      pageSize: this.pageSize
+    }).subscribe((response: SolicitudCab[]) => {
       this.solicitudes = response;
+      this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -180,7 +196,9 @@ export class SolicitudesComponent implements OnInit {
     this.submitted = false;
     this.modalService.dismissAll();
   }
-
+  onRefrescar(): void {
+    this.onListarSolicitudes();
+  }
   onImportar(modal): void {
     this.uploader.clearQueue();
     //this.itemLinea = this.lineasPrograma.filter(x => x.idfila === this.idLineaPrograma)[0].descripcion.toString();

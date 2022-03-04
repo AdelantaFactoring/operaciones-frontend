@@ -15,5 +15,6 @@ export class SolicitudCab {
     montoSinIgv: number;
     montoConIgv: number;
     fondoRecaudado: number;
+    totalRows: number;
   }
   
