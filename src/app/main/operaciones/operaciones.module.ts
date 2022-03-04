@@ -11,6 +11,7 @@ import {ContentHeaderModule} from "../../layout/components/content-header/conten
 import {CoreTouchspinModule} from "@core/components/core-touchspin/core-touchspin.module";
 import {NgSelectModule} from "@ng-select/ng-select";
 import {NgxMaskModule} from "ngx-mask";
+import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 
 const routes: Routes = [
   {
@@ -29,16 +30,17 @@ const routes: Routes = [
     RespuestaPagadorComponent,
     RegistroFactrackComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    NgbModule,
-    CoreCommonModule,
-    BlockUIModule.forRoot(),
-    ContentHeaderModule,
-    CoreTouchspinModule,
-    NgSelectModule,
-    NgxMaskModule.forRoot(),
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        NgbModule,
+        CoreCommonModule,
+        BlockUIModule.forRoot(),
+        ContentHeaderModule,
+        CoreTouchspinModule,
+        NgSelectModule,
+        NgxMaskModule.forRoot(),
+        NgxDatatableModule,
+    ]
 })
 export class OperacionesModule { }
