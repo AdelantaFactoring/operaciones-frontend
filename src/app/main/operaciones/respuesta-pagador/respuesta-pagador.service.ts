@@ -21,4 +21,14 @@ export class RespuestaPagadorService {
       }
     );
   }
+
+  confirmarPago(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${SOLICITUD.confirmarPago}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }

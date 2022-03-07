@@ -1,12 +1,11 @@
-import {NgbDate} from "@ng-bootstrap/ng-bootstrap";
-
 export class SolicitudDet {
   idSolicitudDet: number;
+  idSolicitudCab: number;
   nroDocumento: string;
   tasaNominalMensual: number;
   tasaNominalAnual: number;
   financiamiento: number;
-  fechaConfirmado: NgbDate;
+  fechaConfirmado: any;
   fechaConfirmadoFormat: string;
   netoConfirmado: number;
   idEstado: number;
@@ -14,6 +13,9 @@ export class SolicitudDet {
   montoSinIGV: number;
   montoConIGV: number;
   fondoResguardo: number;
+  formaPago: string;
   archivoXML: string;
   archivoPDF: string;
+
+  editado: boolean = false;
 }

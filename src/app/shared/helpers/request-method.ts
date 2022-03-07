@@ -24,6 +24,10 @@ export class RequestMethod {
   delete(url: string, params: string, headers: any): Observable<any> {
     return this.http.delete(url + ((params) ? params : ''), {headers: new HttpHeaders(headers)});
   }
+
+  put(url: string, body: string, headers: any): Observable<any> {
+    return this.http.put(url, body, {headers: new HttpHeaders(headers)});
+  }
   // postFile(url: string, body: FormData, headers: any): Observable<any> {
   //   return this.http.post(url, body, {headers: new HttpHeaders(headers)});
   // }

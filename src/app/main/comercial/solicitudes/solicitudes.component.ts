@@ -19,13 +19,15 @@ export class SolicitudesComponent implements OnInit {
     url: `${environment.apiUrl}${SOLICITUD.upload}`,
     isHTML5: true
   });
-  
+
   hasBaseDropZoneOver:boolean;
   public contentHeader: object;
   public solicitudes: SolicitudCab[];
   public submitted: boolean;
   public solicitudForm: FormGroup;
   public solicitudDetForm: FormGroup;
+  public cambiarIcono: boolean = false;
+
   optClienteP = [];
   tipoServicio = "Factoring";
   solicitudDet: SolicitudDet[] = [];
@@ -140,7 +142,7 @@ export class SolicitudesComponent implements OnInit {
        url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion
     });
 
-    
+
     // this.uploader.setOptions({
     //   url: `${environment.apiUrl}${SOLICITUD.upload}`
     // });
@@ -164,7 +166,7 @@ export class SolicitudesComponent implements OnInit {
     if (this.solicitudForm.invalid)
     {
       return;
-    }  
+    }
     this.params = [];
     this.utilsService.blockUIStart('Guardando información...');
     this.solicitudesService.guardar({
@@ -201,13 +203,13 @@ export class SolicitudesComponent implements OnInit {
         this.utilsService.showNotification(response.mensaje, 'Validación', 2);
       }
       console.log('res', response);
-      
+
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
-    
+
   }
 
   onCancelar(): void {
@@ -241,7 +243,7 @@ export class SolicitudesComponent implements OnInit {
       });
     }, 0);
   }
-  
+
   onBrowseChange() {
     // if (this.uploader.queue.length > 1) {
     //   //this.uploader.clearQueue();
@@ -251,7 +253,7 @@ export class SolicitudesComponent implements OnInit {
     for (const item of this.uploader.queue) {
       var name = item._file.name;
       if (name.includes('.XML') || name.includes('.PDF') || name.includes('.xml') || name.includes('.pdf')) {
-        
+
       }
       else
       {
@@ -309,29 +311,20 @@ export class SolicitudesComponent implements OnInit {
       });
     }, 0);
     this.utilsService.blockUIStop();
-    // this.clientePagadorService.obtener({
-    //   idClientePagador: item.idClientePagador
-    // }).subscribe((response: any) => {
-    //   this.contactos = response.clientePagadorContacto;
-    //   this.cuentas = response.clientePagadorCuenta;
-    //   this.utilsService.blockUIStop();
+  }
 
-    //   setTimeout(() => {
-    //     this.modalService.open(modal, {
-    //       scrollable: true,
-    //       //size: 'lg',
-    //       windowClass: 'my-class',
-    //       animation: true,
-    //       centered: false,
-    //       backdrop: "static",
-    //       beforeDismiss: () => {
-    //         return true;
-    //       }
-    //     });
-    //   }, 0);
-    // }, error => {
-    //   this.utilsService.blockUIStop();
-    //   this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
-    // });
+  onCambiarVisibilidadDetalleTodo() {
+    this.cambiarIcono = !this.cambiarIcono;
+    this.solicitudes.forEach(el => {
+      el.cambiarIcono = this.cambiarIcono;
+      document.getElementById('tr' + el.idSolicitudCab).style.visibility = (el.cambiarIcono) ? "visible" : "collapse";
+      document.getElementById('detail' + el.idSolicitudCab).style.display = (el.cambiarIcono) ? "block" : "none";
+    })
+  }
+
+  onCambiarVisibilidadDetalle(item: any) {
+    item.cambiarIcono = !item.cambiarIcono;
+    document.getElementById('tr' + item.idSolicitudCab).style.visibility = (item.cambiarIcono) ? "visible" : "collapse";
+    document.getElementById('detail' + item.idSolicitudCab).style.display = (item.cambiarIcono) ? "block" : "none";
   }
 }

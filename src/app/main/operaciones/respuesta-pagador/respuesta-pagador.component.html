@@ -4,30 +4,35 @@
     <div class="card">
       <div class="card-body">
         <div class="row">
-          <div class="col-4">
-            <button type="submit" rippleEffect class="btn btn-primary mr-1" (click)="onRegistrarFacturas()">
-              <i class="mr-0 mr-sm-1" data-feather="send"></i>
-              <span class="d-none d-sm-inline-block">Registro de Facturas</span>
-            </button>
-            <button type="submit" rippleEffect class="btn btn-success">
-              <i class="mr-0 mr-sm-1" data-feather="download"></i>
-              <span class="d-none d-sm-inline-block">Excel</span>
-            </button>
+          <div class="d-flex flex-wrap mb-0">
+            <div class="p-1">
+              <button type="submit" rippleEffect class="btn btn-primary" (click)="onRegistrarFacturas()">
+                <i class="mr-0 mr-sm-1" data-feather="send"></i>
+                <span class="d-none d-sm-inline-block">Registrar Factura(s)</span>
+              </button>
+            </div>
+            <div class="p-1">
+              <button type="submit" rippleEffect class="btn btn-info" (click)="onRegistrarFacturas()">
+                <i class="mr-0 mr-sm-1" data-feather="send"></i>
+                <span class="d-none d-sm-inline-block">Registrar y Anotar Factura(s)</span>
+              </button>
+            </div>
           </div>
         </div>
         <div class="row">
           <div class="col-md-6 col-12">
             <div class="d-flex justify-content-between align-items-center m-1">
-              <label class="d-flex align-items-center"
-              >Mostrar
-                <select class="form-control mx-25">
+              <label class="d-flex align-items-center">
+                Mostrar
+                <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
+                        (change)="onRefrescar()">
                   <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
                   <option value="100">100</option>
                 </select>
-                filas</label
-              >
+                filas
+              </label>
             </div>
           </div>
           <div class="col-md-6 col-12 d-flex justify-content-md-end">
@@ -37,206 +42,179 @@
                 type="search"
                 placeholder="Buscar"
                 class="form-control ml-25"
+                [(ngModel)]="search"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="onRefrescar()"
               /></label>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-12">
-            <ngx-datatable
-              #tableRowDetails
-              class="bootstrap core-bootstrap"
-              [columnMode]="ColumnMode.force"
-              [headerHeight]="40"
-              [footerHeight]="50"
-              [rowHeight]="58"
-              [limit]="10"
-              [rows]="solicitudes"
-              [scrollbarH]="true"
-            >
-              <!-- Row Detail Template -->
-              <ngx-datatable-row-detail [rowHeight]="'100%'">
-                <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
-                  <div class="table-responsive" style="padding-left: 50px">
-                    <table class="table table-hover">
-                      <thead>
-                      <tr>
-                        <th>N° Documento</th>
-                        <th>Tasa N. M. (%)</th>
-                        <th>Tasa N. A. (%)</th>
-                        <th>Financiamiento (%)</th>
-                        <th>Monto sin IGV</th>
-                        <th>Monto con IGV</th>
-                        <th>Fondo Resguardo</th>
-                        <th>Fecha Pago</th>
-                        <th>Monto Pago Confirmado</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr *ngFor="let item of row.solicitudDet">
-                        <td>{{item.nroDocumento}}</td>
-                        <td>{{item.tasaNominalAnual | number: '1.2-2'}}</td>
-                        <td>{{item.tasaNominalMensual | number: '1.2-2'}}</td>
-                        <td>{{item.financiamiento | number: '1.2-2'}}</td>
-                        <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
-                        <td>{{item.montoConIGV | number: '1.2-2'}}</td>
-                        <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
-                        <td>
-                          <div class="input-group">
-                            <input class="form-control" placeholder="yyyy-mm-dd"
-                                   [(ngModel)]="item.fechaConfirmado" container="body"
-                                   ngbDatepicker #basicDP="ngbDatepicker">
-                            <div class="input-group-append">
-                              <button class="btn btn-outline-secondary feather icon-calendar"
-                                      (click)="basicDP.toggle()"
-                                      type="button" rippleEffect></button>
-                            </div>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>
+                    <div class="d-flex align-items-center">
+                      <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                         (click)="onCambiarVisibilidadDetalleTodo()">
+                        <div *ngIf="!cambiarIcono">
+                          <i class="text-primary cursor-pointer" data-feather="chevron-right"></i>
+                        </div>
+                        <div *ngIf="cambiarIcono"><i class="text-primary cursor-pointer"
+                                                     data-feather="chevron-down"></i>
+                        </div>
+                      </a>
+                    </div>
+                  </th>
+                  <th>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="customCheck" unchecked
+                             [(ngModel)]="seleccionarTodo" (ngModelChange)="onSeleccionarTodo()"/>
+                      <label class="custom-control-label" for="customCheck"></label>
+                    </div>
+                  </th>
+                  <th>Acción</th>
+                  <th>N° Solicitud</th>
+                  <th>Cedente</th>
+                  <th>Cedente RUC</th>
+                  <th>Aceptante</th>
+                  <th>Aceptante RUC</th>
+                  <th>Moneda</th>
+                  <th>Tipo Operación</th>
+                  <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-template let-cab ngFor [ngForOf]="solicitudes">
+                  <!--                  *ngFor="let item of solicitudes"-->
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                           (click)="onCambiarVisibilidadDetalle(cab)">
+                          <div *ngIf="!cab.cambiarIcono">
+                            <i class="text-primary cursor-pointer" data-feather="chevron-right"></i>
                           </div>
-                        </td>
-                        <td>
-
-                            <input class="form-control" type="text" [(ngModel)]="item.netoConfirmado" placeholder="0.00"
-                                   mask="separator" thousandSeparator=","/>
-                        </td>
-                      </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                          <div *ngIf="cab.cambiarIcono"><i class="text-primary cursor-pointer"
+                                                           data-feather="chevron-down"></i>
+                          </div>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="{{'customCheck' + cab.idSolicitudCab}}"
+                               [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"/>
+                        <label class="custom-control-label" for="{{'customCheck' + cab.idSolicitudCab}}"></label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Editar">
+                          <i class="text-primary cursor-pointer" data-feather="edit"></i>
+                        </a>
+                        &nbsp;
+                        <a href="javascript:void(0)" title="Eliminar">
+                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>{{cab.codigo}}</td>
+                    <td>{{cab.razonSocialCedente}}</td>
+                    <td>{{cab.rucCedente}}</td>
+                    <td>{{cab.razonSocialAceptante}}</td>
+                    <td>{{cab.rucAceptante}}</td>
+                    <td>{{cab.moneda}}</td>
+                    <td>{{cab.tipoOperacion}}</td>
+                    <td>{{cab.estado}}</td>
+                  </tr>
+                  <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse">
+                    <td [colSpan]="11">
+                      <div class="row">
+                        <div class="d-flex flex-wrap mb-0">
+                          <div class="p-1">
+                            <button type="submit" rippleEffect class="btn btn-success" (click)="onGuardarCambios(cab)">
+                              <i class="mr-0 mr-sm-1" data-feather="save"></i>
+                              <span class="d-none d-sm-inline-block">Guardar Cambios</span>
+                            </button>
+                          </div>
+                          <div class="p-1">
+                            <button type="submit" rippleEffect class="btn btn-secondary" (click)="onDeshacerCambios()">
+                              <i class="mr-0 mr-sm-1" data-feather="corner-up-left"></i>
+                              <span class="d-none d-sm-inline-block">Deshacer Cambios</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="table-responsive" style="padding-left: 20px; display: none;"
+                             id="{{ 'detail' + cab.idSolicitudCab }}">
+                          <table class="table table-hover">
+                            <thead>
+                            <tr>
+                              <th class="detail-th-color">N° Documento</th>
+                              <th class="detail-th-color">Forma Pago</th>
+                              <th class="detail-th-color">Monto sin IGV</th>
+                              <th class="detail-th-color">Monto con IGV</th>
+                              <th class="detail-th-color">Fondo Resguardo</th>
+                              <th class="detail-th-color">Fecha Pago</th>
+                              <th class="detail-th-color">Monto Pago Confirmado</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let item of cab.solicitudDet">
+                              <td [ngClass]="{'row-edicion': item.editado}">
+                                <label>{{item.nroDocumento}}</label></td>
+                              <td [ngClass]="{'row-edicion': item.editado}">
+                                <label>{{item.formaPago}}</label></td>
+                              <td [ngClass]="{'row-edicion': item.editado}">
+                                <label>{{item.montoSinIGV | number: '1.2-2'}}</label></td>
+                              <td [ngClass]="{'row-edicion': item.editado}">
+                                <label>{{item.montoConIGV | number: '1.2-2'}}</label></td>
+                              <td [ngClass]="{'row-edicion': item.editado}">
+                                <label>{{item.fondoResguardo | number: '1.2-2'}}
+                                </label></td>
+                              <td>
+                                <div class="input-group">
+                                  <input class="form-control" placeholder="yyyy-mm-dd"
+                                         [(ngModel)]="item.fechaConfirmado" container="body"
+                                         (ngModelChange)="onCambiarFechaConfirmado($event, item)"
+                                         ngbDatepicker #basicDP="ngbDatepicker">
+                                  <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary feather icon-calendar"
+                                            (click)="basicDP.toggle()"
+                                            type="button" rippleEffect></button>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <input class="form-control" type="text" [(ngModel)]="item.netoConfirmado"
+                                       placeholder="0.00" (ngModelChange)="onCambiarMontoConfirmado(item)"
+                                       mask="separator" thousandSeparator=","/>
+                              </td>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
                 </ng-template>
-              </ngx-datatable-row-detail>
-              <ngx-datatable-column
-                [width]="50"
-                [resizeable]="false"
-                [sortable]="false"
-                [draggable]="false"
-                [canAutoResize]="false"
-              >
-                <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
-                  <a
-                    href="javascript:void(0)"
-                    class="text-body"
-                    [class.datatable-icon-right]="!expanded"
-                    [class.datatable-icon-down]="expanded"
-                    title="Expand/Collapse Row"
-                    (click)="rowDetailsToggleExpand(row)"
-                  >
-                  </a>
-                </ng-template>
-              </ngx-datatable-column>
-              <ngx-datatable-column name="N° Solicitud" prop="codigo">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <label>{{row.codigo}}</label>
-                </ng-template>
-              </ngx-datatable-column>
-              <ngx-datatable-column name="Cedente" prop="razonSocialCedente">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <label>{{row.razonSocialCedente}}</label>
-                </ng-template>
-              </ngx-datatable-column>
-              <ngx-datatable-column name="Cedente RUC" prop="cedenteRuc">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <label>{{row.rucCedente}}</label>
-                </ng-template>
-              </ngx-datatable-column>
-              <ngx-datatable-column name="Aceptante" prop="razonSocialAceptante" [width]="'auto'">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <label>{{row.razonSocialAceptante}}</label>
-                </ng-template>
-              </ngx-datatable-column>
-              <ngx-datatable-column name="Aceptante RUC" prop="aceptanteRUC">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <label>{{row.rucAceptante}}</label>
-                </ng-template>
-              </ngx-datatable-column>
-              <ngx-datatable-column name="Moneda" prop="moneda">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <label>{{row.moneda}}</label>
-                </ng-template>
-              </ngx-datatable-column>
-              <!--              <ngx-datatable-column name="Comisión Estructuración" prop="comisionEstructuracion">-->
-              <!--                <ng-template let-row="row" ngx-datatable-cell-template>-->
-              <!--                  <label>{{row.comisionEstructuracion}}</label>-->
-              <!--                </ng-template>-->
-              <!--              </ngx-datatable-column>-->
-              <!--              <ngx-datatable-column name="Gastos Contrato" prop="gastosContrato">-->
-              <!--                <ng-template let-row="row" ngx-datatable-cell-template>-->
-              <!--                  <label>{{row.gastosContrato}}</label>-->
-              <!--                </ng-template>-->
-              <!--              </ngx-datatable-column>-->
-              <!--              <ngx-datatable-column name="Comisión Carta Notarial" prop="comisionCartaNotarial">-->
-              <!--                <ng-template let-row="row" ngx-datatable-cell-template>-->
-              <!--                  <label>{{row.comisionCartaNotarial}}</label>-->
-              <!--                </ng-template>-->
-              <!--              </ngx-datatable-column>-->
-              <!--              <ngx-datatable-column name="Servicio Cobranza" prop="servicioCobranza">-->
-              <!--                <ng-template let-row="row" ngx-datatable-cell-template>-->
-              <!--                  <label>{{row.servicioCobranza}}</label>-->
-              <!--                </ng-template>-->
-              <!--              </ngx-datatable-column>-->
-              <!--              <ngx-datatable-column name="Servicio Custodia" prop="servicioCustodia">-->
-              <!--                <ng-template let-row="row" ngx-datatable-cell-template>-->
-              <!--                  <label>{{row.servicioCustodia}}</label>-->
-              <!--                </ng-template>-->
-              <!--              </ngx-datatable-column>-->
-              <ngx-datatable-column name="Estado" prop="estado">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <label>{{row.estado}}</label>
-                </ng-template>
-              </ngx-datatable-column>
-              <ngx-datatable-column name="Tipo Operación" prop="tipoOperacion">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <label>{{row.tipoOperacion}}</label>
-                </ng-template>
-              </ngx-datatable-column>
-            </ngx-datatable>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-12 d-flex justify-content-end">
+            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
+                            (pageChange)="onRefrescar()" [pageSize]="pageSize"></ngb-pagination>
           </div>
         </div>
       </div>
     </div>
-    <!--          <div class="table-responsive">-->
-    <!--            <table class="table table-hover">-->
-    <!--              <thead>-->
-    <!--              <tr>-->
-    <!--                <th>Acción</th>-->
-    <!--                <th>N° Solicitud</th>-->
-    <!--                <th>Cedente</th>-->
-    <!--                <th>Cedente RUC</th>-->
-    <!--                <th>Aceptante</th>-->
-    <!--                <th>Aceptante RUC</th>-->
-    <!--                <th>Moneda</th>-->
-    <!--                <th>Comisión Estructuración</th>-->
-    <!--                <th>Gastos Contrato</th>-->
-    <!--                <th>Comisión Carta Notarial</th>-->
-    <!--                <th>Servicio Cobranza</th>-->
-    <!--                <th>Servicio Custodia</th>-->
-    <!--                <th>Estado</th>-->
-    <!--                <th>Tipo Operación</th>-->
-    <!--              </tr>-->
-    <!--              </thead>-->
-    <!--              <tbody>-->
-    <!--              <tr *ngFor="let item of solicitudes">-->
-    <!--                <td>-->
-    <!--                  <div class="d-flex align-items-center">-->
-    <!--                    <a href="javascript:void(0)" title="Editar">-->
-    <!--                      <i class="text-primary cursor-pointer" data-feather="edit"></i>-->
-    <!--                    </a>-->
-    <!--                    &nbsp;-->
-    <!--                    <a href="javascript:void(0)" title="Eliminar">-->
-    <!--                      <i class="text-danger cursor-pointer" data-feather="trash-2"></i>-->
-    <!--                    </a>-->
-    <!--                  </div>-->
-    <!--                </td>-->
-    <!--                <td>{{item.ruc}}</td>-->
-    <!--                <td>{{item.razonSocial}}</td>-->
-    <!--                <td>{{item.direccionPrincipal}}</td>-->
-    <!--                &lt;!&ndash;                <td>{{item.nombreContacto}}</td>&ndash;&gt;-->
-    <!--                &lt;!&ndash;                <td>{{item.telefonoContacto}}</td>&ndash;&gt;-->
-    <!--                &lt;!&ndash;                <td>{{item.emailContacto}}</td>&ndash;&gt;-->
-    <!--              </tr>-->
-    <!--              </tbody>-->
-    <!--            </table>-->
-    <!--          </div>-->
-
     <block-ui></block-ui>
   </div>
 </div>

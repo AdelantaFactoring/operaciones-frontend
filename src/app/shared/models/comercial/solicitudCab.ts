@@ -1,7 +1,8 @@
 import {SolicitudDet} from "./solicitudDet";
 
 export class SolicitudCab {
-    idSolicitud: number;
+    seleccionado: boolean = false;
+    idSolicitudCab: number;
     codigo: string;
     idCedente: number;
     razonSocialCedente: string;
@@ -20,6 +21,9 @@ export class SolicitudCab {
     idTipoOperacion: number;
     tipoOperacion: string;
     fechaCreacion: string;
+    usuarioAud: string;
     totalRows: number;
-    solicitudDet: SolicitudDet[]
+    solicitudDet: SolicitudDet[];
+
+    cambiarIcono: boolean = false;
   }

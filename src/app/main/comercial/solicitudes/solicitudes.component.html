@@ -31,59 +31,112 @@
                 type="search"
                 placeholder="Buscar"
                 class="form-control ml-25"
+                [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" (change)="onRefrescar()"
               /></label>
             </div>
           </div>
         </div>
         <div class="row">
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-              <tr>
-                <th>Acción</th>
-                <th>N° solicitud</th>
-                <th>Cedente</th>
-                <th>RUC Cedente</th>
-                <th>Aceptante</th>
-                <th>RUC Aceptante</th>
-                <!-- <th>N° Documento</th> -->
-                <th>Moneda</th>
-                <th>Tipo Operación</th>
-                <th>Estado</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let item of solicitudes">
-                <td>
-                  <div class="d-flex align-items-center">
-                    <a href="javascript:void(0)" title="Editar" (click)="onDetalle(item, modalDetalle)">
-                      <i class="text-primary cursor-pointer" data-feather="edit"></i>
-                    </a>
-                    &nbsp;
-                    <a href="javascript:void(0)" title="Eliminar">
-                      <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
-                    </a>
-                  </div>
-                </td>
-                <td>{{item.codigo}}</td>
-                <td>{{item.razonSocialCedente}}</td>
-                <td>{{item.rucCedente}}</td>
-                <td>{{item.razonSocialAceptante}}</td>
-                <td>{{item.rucAceptante}}</td>
-                <!-- <td></td> -->
-                <td>{{item.moneda}}</td>
-                <td>{{item.tipoOperacion}}</td>
-                <td>{{item.estado}}</td>
-                <!-- <td>{{item.razonSocial}}</td>
-                <td>{{item.rucCliente}}</td>
-                <td>{{item.direccionPrincipal}}</td>
-                <td>{{item.moneda}}</td>
-                <td>2.20%</td>
-                <td>26.50%</td>
-                <td>90%</td> -->
-              </tr>
-              </tbody>
-            </table>
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>
+                    <div class="d-flex align-items-center">
+                      <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                         (click)="onCambiarVisibilidadDetalleTodo()">
+                        <div *ngIf="!cambiarIcono">
+                          <i class="text-primary cursor-pointer" data-feather="chevron-right"></i>
+                        </div>
+                        <div *ngIf="cambiarIcono"><i class="text-primary cursor-pointer"
+                                                     data-feather="chevron-down"></i>
+                        </div>
+                      </a>
+                    </div>
+                  </th>
+                  <th>Acción</th>
+                  <th>N° Solicitud</th>
+                  <th>Cedente</th>
+                  <th>Cedente RUC</th>
+                  <th>Aceptante</th>
+                  <th>Aceptante RUC</th>
+                  <th>Moneda</th>
+                  <th>Tipo Operación</th>
+                  <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-template let-cab ngFor [ngForOf]="solicitudes">
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                           (click)="onCambiarVisibilidadDetalle(cab)">
+                          <div *ngIf="!cab.cambiarIcono">
+                            <i class="text-primary cursor-pointer" data-feather="chevron-right"></i>
+                          </div>
+                          <div *ngIf="cab.cambiarIcono"><i class="text-primary cursor-pointer"
+                                                           data-feather="chevron-down"></i>
+                          </div>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Ver" (click)="onDetalle(cab, modalDetalle)">
+                          <i class="text-primary cursor-pointer" data-feather="eye"></i>
+                        </a>
+                        &nbsp;
+                        <a href="javascript:void(0)" title="Eliminar">
+                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>{{cab.codigo}}</td>
+                    <td>{{cab.razonSocialCedente}}</td>
+                    <td>{{cab.rucCedente}}</td>
+                    <td>{{cab.razonSocialAceptante}}</td>
+                    <td>{{cab.rucAceptante}}</td>
+                    <td>{{cab.moneda}}</td>
+                    <td>{{cab.tipoOperacion}}</td>
+                    <td>{{cab.estado}}</td>
+                  </tr>
+                  <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse">
+                    <td [colSpan]="10">
+                      <div class="table-responsive" style="padding-left: 20px; display: none;"
+                           id="{{ 'detail' + cab.idSolicitudCab }}">
+                        <table class="table table-hover">
+                          <thead>
+                          <tr>
+                            <th class="detail-th-color">N° Documento</th>
+                            <th class="detail-th-color">Forma Pago</th>
+                            <th class="detail-th-color">Monto sin IGV</th>
+                            <th class="detail-th-color">Monto con IGV</th>
+                            <th class="detail-th-color">Fondo Resguardo</th>
+                            <th class="detail-th-color">Fecha Pago</th>
+                            <th class="detail-th-color">Monto Pago Confirmado</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of cab.solicitudDet">
+                            <td>{{item.nroDocumento}}</td>
+                            <td>{{item.formaPago}}</td>
+                            <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
+                            <td>{{item.montoConIGV | number: '1.2-2'}}</td>
+                            <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                            <td>{{item.fechaConfirmadoFormat}}</td>
+                            <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <div class="row">
@@ -312,7 +365,7 @@
                     (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length" rippleEffect>
                     <span data-feather="trash" class="mr-25"></span> Remover todo
                 </button>
-              </div> --> 
+              </div> -->
               <button class="btn btn-primary" rippleEffect type="button" (click)="uploader.uploadAll()"
               [disabled]="!uploader.getNotUploadedItems().length">
                 <span [data-feather]="'save'"></span> Procesar Archivos
@@ -412,7 +465,7 @@
               </div>
             </div>
           </div>
-          
+
         </div>
         </div>
       <div class="modal-footer" style="display: block !important;">

@@ -9,5 +9,6 @@ export const CLIENTEPAGADOR = {
 export const SOLICITUD = {
   listar: '/solicitudCab/listar',
   upload: '/solicitudCab/upload',
-  guardar: '/solicitudCab/guardar'
+  guardar: '/solicitudCab/guardar',
+  confirmarPago: '/solicitudCab/confirmarpago'
 };
