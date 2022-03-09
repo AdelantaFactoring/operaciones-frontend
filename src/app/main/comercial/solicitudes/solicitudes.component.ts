@@ -147,7 +147,7 @@ export class SolicitudesComponent implements OnInit {
     this.uploader.clearQueue();
     this.idSolicitudCab = 0;
     this.uploader.setOptions({
-      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc
+      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&usuarioAud= Admin`
     });
 
     // this.uploader.setOptions({
@@ -279,7 +279,7 @@ export class SolicitudesComponent implements OnInit {
     this.tipoServicio = value;
     this.idTipoOperacion = idTipoOperacion;
     this.uploader.setOptions({
-      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc
+      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&usuarioAud= Admin`
     });
 
   }
