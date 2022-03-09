@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RegistroFactrackComponent } from './registro-factrack.component';
+import { ConsultaFactrackComponent } from './consulta-factrack.component';
 
-describe('RegistroFactrackComponent', () => {
-  let component: RegistroFactrackComponent;
-  let fixture: ComponentFixture<RegistroFactrackComponent>;
+describe('ConsultaFactrackComponent', () => {
+  let component: ConsultaFactrackComponent;
+  let fixture: ComponentFixture<ConsultaFactrackComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RegistroFactrackComponent ]
+      declarations: [ ConsultaFactrackComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RegistroFactrackComponent);
+    fixture = TestBed.createComponent(ConsultaFactrackComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

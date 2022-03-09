@@ -116,12 +116,12 @@ export const menu: CoreMenu[] = [
       icon: 'circle',
       url: 'operaciones/respuestaPagador'
     },{
-      id: 'registroFactrack',
-      title: 'Registro Factrack',
+      id: 'consultaFactrack',
+      title: 'Consulta Factrack',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'circle',
-      url: 'test/test'
+      url: 'operaciones/consultaFactrack'
     },{
       id: 'liquidaciones',
       title: 'Liquidaciones',

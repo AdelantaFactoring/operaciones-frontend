@@ -8,7 +8,7 @@ import {CONTENT_TYPE} from "../../../shared/helpers/headers";
 @Injectable({
   providedIn: 'root'
 })
-export class RespuestaPagadorService {
+export class ConsultaFactrackService {
   private requestMethod = new RequestMethod();
   constructor() { }
 
@@ -22,20 +22,10 @@ export class RespuestaPagadorService {
     );
   }
 
-  confirmarPago(payload): Observable<any> {
-    return this.requestMethod.put(
-      `${environment.apiUrl}${SOLICITUD.confirmarPago}`,
-      payload,
-      {
-        'Content-Type': CONTENT_TYPE.json
-      }
-    );
-  }
-
-  registrar(payload): Observable<any> {
-    return this.requestMethod.put(
-      `${environment.apiUrl}${SOLICITUD.registrar}`,
-      payload,
+  eliminarFactura(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${SOLICITUD.eliminarFactura}`,
+      `?idSolicitudCab=${payload.idSolicitudCab}&idSolicitudDet=${payload.idSolicitudDet}&usuarioAud=${payload.usuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

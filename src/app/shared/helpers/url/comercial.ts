@@ -10,5 +10,8 @@ export const SOLICITUD = {
   listar: '/solicitudCab/listar',
   upload: '/solicitudCab/upload',
   guardar: '/solicitudCab/guardar',
-  confirmarPago: '/solicitudCab/confirmarpago'
+  confirmarPago: '/solicitudCab/confirmarpago',
+  registrar: '/solicitudCab/registrar',
+  eliminar: '/solicitudCab/eliminar',
+  eliminarFactura: '/solicitudCab/eliminarfactura',
 };

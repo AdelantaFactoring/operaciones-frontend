@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {RouterModule, Routes} from "@angular/router";
 import { RespuestaPagadorComponent } from './respuesta-pagador/respuesta-pagador.component';
-import { RegistroFactrackComponent } from './registro-factrack/registro-factrack.component';
 import { LiquidacionesComponent } from './liquidaciones/liquidaciones.component';
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import {CoreCommonModule} from "@core/common.module";
@@ -12,6 +11,7 @@ import {CoreTouchspinModule} from "@core/components/core-touchspin/core-touchspi
 import {NgSelectModule} from "@ng-select/ng-select";
 import {NgxMaskModule} from "ngx-mask";
 import {NgxDatatableModule} from "@swimlane/ngx-datatable";
+import { ConsultaFactrackComponent } from './consulta-factrack/consulta-factrack.component';
 
 const routes: Routes = [
   {
@@ -23,12 +23,21 @@ const routes: Routes = [
       }
     ]
   },
+  {
+    path: '',
+    children: [
+      {
+        path: 'consultaFactrack',
+        component: ConsultaFactrackComponent
+      }
+    ]
+  }
 ]
 
 @NgModule({
   declarations: [
     RespuestaPagadorComponent,
-    RegistroFactrackComponent
+    ConsultaFactrackComponent
   ],
     imports: [
         CommonModule,

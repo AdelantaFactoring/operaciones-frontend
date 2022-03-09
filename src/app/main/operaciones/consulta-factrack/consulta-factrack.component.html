@@ -6,15 +6,15 @@
         <div class="row">
           <div class="d-flex flex-wrap mb-0">
             <div class="p-1">
-              <button type="submit" rippleEffect class="btn btn-primary" (click)="onRegistrarFacturas(2)">
-                <i class="mr-0 mr-sm-1" data-feather="send"></i>
-                <span class="d-none d-sm-inline-block">Registrar Factura(s)</span>
+              <button type="submit" rippleEffect class="btn btn-success">
+                <i class="mr-0 mr-sm-1" data-feather="check"></i>
+                <span class="d-none d-sm-inline-block">Confirmar Solicitud</span>
               </button>
             </div>
             <div class="p-1">
-              <button type="submit" rippleEffect class="btn btn-info" (click)="onRegistrarFacturas(3)">
-                <i class="mr-0 mr-sm-1" data-feather="send"></i>
-                <span class="d-none d-sm-inline-block">Registrar y Anotar Factura(s)</span>
+              <button type="submit" rippleEffect class="btn btn-primary">
+                <i class="mr-0 mr-sm-1" data-feather="refresh-ccw"></i>
+                <span class="d-none d-sm-inline-block">Actualizar Estado Factura(s)</span>
               </button>
             </div>
           </div>
@@ -22,8 +22,8 @@
         <div class="row">
           <div class="col-md-6 col-12">
             <div class="d-flex justify-content-between align-items-center m-1">
-              <label class="d-flex align-items-center">
-                Mostrar
+              <label class="d-flex align-items-center"
+              >Mostrar
                 <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
                         (change)="onRefrescar()">
                   <option value="10">10</option>
@@ -31,8 +31,8 @@
                   <option value="50">50</option>
                   <option value="100">100</option>
                 </select>
-                filas
-              </label>
+                filas</label
+              >
             </div>
           </div>
           <div class="col-md-6 col-12 d-flex justify-content-md-end">
@@ -42,9 +42,7 @@
                 type="search"
                 placeholder="Buscar"
                 class="form-control ml-25"
-                [(ngModel)]="search"
-                [ngModelOptions]="{ standalone: true }"
-                (change)="onRefrescar()"
+                [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" (change)="onRefrescar()"
               /></label>
             </div>
           </div>
@@ -87,7 +85,6 @@
                 </thead>
                 <tbody>
                 <ng-template let-cab ngFor [ngForOf]="solicitudes">
-                  <!--                  *ngFor="let item of solicitudes"-->
                   <tr>
                     <td>
                       <div class="d-flex align-items-center">
@@ -96,8 +93,8 @@
                           <div *ngIf="!cab.cambiarIcono">
                             <i class="text-primary cursor-pointer" data-feather="chevron-right"></i>
                           </div>
-                          <div *ngIf="cab.cambiarIcono"><i class="text-primary cursor-pointer"
-                                                           data-feather="chevron-down"></i>
+                          <div *ngIf="cab.cambiarIcono">
+                            <i class="text-primary cursor-pointer" data-feather="chevron-down"></i>
                           </div>
                         </a>
                       </div>
@@ -119,73 +116,35 @@
                     <td>{{cab.estado}}</td>
                   </tr>
                   <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse">
-                    <td [colSpan]="11">
-                      <div class="row">
-                        <div class="d-flex flex-wrap mb-0">
-                          <div class="p-1">
-                            <button type="submit" rippleEffect class="btn btn-success" (click)="onGuardarCambios(cab)">
-                              <i class="mr-0 mr-sm-1" data-feather="save"></i>
-                              <span class="d-none d-sm-inline-block">Guardar Cambios</span>
-                            </button>
-                          </div>
-                          <div class="p-1">
-                            <button type="submit" rippleEffect class="btn btn-secondary" (click)="onDeshacerCambios()">
-                              <i class="mr-0 mr-sm-1" data-feather="corner-up-left"></i>
-                              <span class="d-none d-sm-inline-block">Deshacer Cambios</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="table-responsive" style="padding-left: 20px; display: none;"
-                             id="{{ 'detail' + cab.idSolicitudCab }}">
-                          <table class="table table-hover">
-                            <thead>
-                            <tr>
-                              <th class="detail-th-color">N° Documento</th>
-                              <th class="detail-th-color">Forma Pago</th>
-                              <th class="detail-th-color">Monto sin IGV</th>
-                              <th class="detail-th-color">Monto con IGV</th>
-                              <th class="detail-th-color">Fondo Resguardo</th>
-                              <th class="detail-th-color">Fecha Pago</th>
-                              <th class="detail-th-color">Monto Pago Confirmado</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr *ngFor="let item of cab.solicitudDet">
-                              <td [ngClass]="{'row-edicion': item.editado}">
-                                <label>{{item.nroDocumento}}</label></td>
-                              <td [ngClass]="{'row-edicion': item.editado}">
-                                <label>{{item.formaPago}}</label></td>
-                              <td [ngClass]="{'row-edicion': item.editado}">
-                                <label>{{item.montoSinIGV | number: '1.2-2'}}</label></td>
-                              <td [ngClass]="{'row-edicion': item.editado}">
-                                <label>{{item.montoConIGV | number: '1.2-2'}}</label></td>
-                              <td [ngClass]="{'row-edicion': item.editado}">
-                                <label>{{item.fondoResguardo | number: '1.2-2'}}
-                                </label></td>
-                              <td>
-                                <div class="input-group">
-                                  <input class="form-control" placeholder="yyyy-mm-dd"
-                                         [(ngModel)]="item.fechaConfirmado" container="body"
-                                         (ngModelChange)="onCambiarFechaConfirmado($event, item)"
-                                         ngbDatepicker #basicDP="ngbDatepicker">
-                                  <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary feather icon-calendar"
-                                            (click)="basicDP.toggle()"
-                                            type="button" rippleEffect></button>
-                                  </div>
-                                </div>
-                              </td>
-                              <td>
-                                <input class="form-control" type="text" [(ngModel)]="item.netoConfirmado"
-                                       placeholder="0.00" (ngModelChange)="onCambiarMontoConfirmado(item)"
-                                       mask="separator" thousandSeparator=","/>
-                              </td>
-                            </tr>
-                            </tbody>
-                          </table>
-                        </div>
+                    <td [colSpan]="10">
+                      <div class="table-responsive" style="padding-left: 20px; display: none;"
+                           id="{{ 'detail' + cab.idSolicitudCab }}">
+                        <table class="table table-hover">
+                          <thead>
+                          <tr>
+                            <th class="detail-th-color">N° Documento</th>
+                            <th class="detail-th-color">Forma Pago</th>
+                            <th class="detail-th-color">Monto sin IGV</th>
+                            <th class="detail-th-color">Monto con IGV</th>
+                            <th class="detail-th-color">Fondo Resguardo</th>
+                            <th class="detail-th-color">Fecha Pago</th>
+                            <th class="detail-th-color">Monto Pago Confirmado</th>
+                            <th class="detail-th-color">Estado</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of cab.solicitudDet">
+                            <td>{{item.nroDocumento}}</td>
+                            <td>{{item.formaPago}}</td>
+                            <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
+                            <td>{{item.montoConIGV | number: '1.2-2'}}</td>
+                            <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                            <td>{{item.fechaConfirmadoFormat}}</td>
+                            <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                            <td>{{item.estado}}</td>
+                          </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </td>
                   </tr>
@@ -203,7 +162,6 @@
         </div>
       </div>
     </div>
-
     <block-ui></block-ui>
   </div>
 </div>

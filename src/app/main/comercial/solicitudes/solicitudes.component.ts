@@ -42,7 +42,6 @@ export class SolicitudesComponent implements OnInit {
   servicioCobranza: number;
   servicioCustodia: number;
   idTipoOperacion: number;
-  public idEstado: number = 1;
   public search: string = '';
 
   public collectionSize: number = 0;
@@ -120,7 +119,7 @@ export class SolicitudesComponent implements OnInit {
   onListarSolicitudes(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesService.listar({
-      idEstado: this.idEstado,
+      idConsulta: 1,
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize

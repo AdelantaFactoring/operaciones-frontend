@@ -6,6 +6,7 @@ import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
 import {ColumnMode} from '@swimlane/ngx-datatable';
 import {RespuestaPagadorService} from "./respuesta-pagador.service";
 import {SolicitudDet} from "../../../shared/models/comercial/solicitudDet";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-respuesta-pagador',
@@ -14,8 +15,6 @@ import {SolicitudDet} from "../../../shared/models/comercial/solicitudDet";
 })
 export class RespuestaPagadorComponent implements OnInit {
   public contentHeader: object;
-  public ColumnMode = ColumnMode;
-  public submitted: boolean;
   public solicitudes: SolicitudCab[] = [];
   public seleccionarTodo: boolean = false;
   public cambiarIcono: boolean = false;
@@ -68,7 +67,7 @@ export class RespuestaPagadorComponent implements OnInit {
   onListarSolicitudes(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.respuestaPagadorService.listar({
-      idEstado: 1,
+      idConsulta: 2,
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
@@ -82,8 +81,52 @@ export class RespuestaPagadorComponent implements OnInit {
     });
   }
 
-  onRegistrarFacturas(): void {
-    console.log(this.solicitudes);
+  onRegistrarFacturas(idEstado: number): void {
+    let solicitudes = this.solicitudes.filter(f => f.seleccionado);
+    if (solicitudes.length == 0) {
+      this.utilsService.showNotification("Seleccione una o varias solicitudes", "", 2);
+      return;
+    }
+
+    solicitudes.forEach(el => {
+      el.idEstado = idEstado;
+      el.usuarioAud = "superadmin";
+    });
+
+    this.utilsService.blockUIStart('Registrando...');
+    this.respuestaPagadorService.registrar(solicitudes).subscribe(response => {
+      if (response.tipo == 1) {
+        this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+        this.onListarSolicitudes();
+      } else if (response.tipo == 2) {
+        this.utilsService.blockUIStop();
+
+        let codigo = response.mensaje.split(',');
+        Swal.fire({
+          title: 'Adertencia',
+          html: `<p style="text-align: justify">La(s) siguiente(s) solicitude(s) contiene(n) factura(s) sin confirmación de pago:</p>
+                 <p style="text-align: justify">Codigo(s):<br>
+                    ${response.mensaje.replace(/,/g, "<br>")}</p>`,
+          icon: 'warning',
+          showCancelButton: false,
+          confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
+          customClass: {
+            confirmButton: 'btn btn-warning',
+          }
+        }).then(result => {
+          if (result.value) {
+
+          }
+        });
+      } else {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
+      }
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
   }
 
   onTransformarFecha(fecha: string): any {
@@ -109,7 +152,7 @@ export class RespuestaPagadorComponent implements OnInit {
       el.cambiarIcono = this.cambiarIcono;
       document.getElementById('tr' + el.idSolicitudCab).style.visibility = (el.cambiarIcono) ? "visible" : "collapse";
       document.getElementById('detail' + el.idSolicitudCab).style.display = (el.cambiarIcono) ? "block" : "none";
-    })
+    });
   }
 
   onCambiarVisibilidadDetalle(item: any) {
