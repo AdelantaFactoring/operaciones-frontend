@@ -15,7 +15,7 @@ export class SolicitudesService {
   listar(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${SOLICITUD.listar}`,
-      `?idConsulta=${payload.idConsulta}&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
+      `?idEstado=${payload.idEstado}&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }
@@ -44,6 +44,16 @@ export class SolicitudesService {
     return this.requestMethod.delete(
       `${environment.apiUrl}${SOLICITUD.eliminar}`,
       `?idSolicitudCab=${payload.idClientePagador}&usuarioAud=${payload.usuarioAud}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  upload(payload): Observable<any> {
+    return this.requestMethod.post(
+      `${environment.apiUrl}${SOLICITUD.upload}`,
+      payload,
       {
         'Content-Type': CONTENT_TYPE.json
       }
