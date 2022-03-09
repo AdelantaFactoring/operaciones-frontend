@@ -44,10 +44,17 @@ export class SolicitudesComponent implements OnInit {
   idTipoOperacion: number;
   public idEstado: number = 1;
   public search: string = '';
+  public searchCli: string = '';
 
   public collectionSize: number = 0;
   public pageSize: number = 10;
   public page: number = 1;
+  public collectionSizeCli: number = 0;
+  public pageSizeCli: number = 8;
+  public pageCli: number = 1;
+  public razonSocial: string = '';
+  public ruc: string = '';
+  public selectedRowIds: number[] = [];
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;
   }
@@ -92,6 +99,8 @@ export class SolicitudesComponent implements OnInit {
       factoring: [false],
       confirming: [false],
       capitalTrabajo: [false],
+      ruc: [''],
+      razonSocial: ['']
     });
     this.solicitudDetForm = this.formBuilder.group({
       nroSolicitud: [''],
@@ -104,7 +113,6 @@ export class SolicitudesComponent implements OnInit {
 
   ngOnInit(): void {
     this.onRefrescar();
-    //this.onClientePagadorCombo();
     this.hasBaseDropZoneOver = false;
   }
 
@@ -127,7 +135,8 @@ export class SolicitudesComponent implements OnInit {
     }).subscribe((response: SolicitudCab[]) => {
       this.solicitudes = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
-
+      console.log('list', response);
+      
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -139,9 +148,11 @@ export class SolicitudesComponent implements OnInit {
     this.uploader.clearQueue();
     this.idSolicitudCab = 0;
     this.uploader.setOptions({
-       url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion
+       url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc
     });
 
+    console.log('url', this.uploader.response);
+    
 
     // this.uploader.setOptions({
     //   url: `${environment.apiUrl}${SOLICITUD.upload}`
@@ -159,6 +170,25 @@ export class SolicitudesComponent implements OnInit {
         }
       });
     }, 0);
+  }
+  uploadFile(event) {
+    console.log('file', event.target.files[0])
+    var formData = new FormData();
+    formData.append("file", <File>event.target.files[0]);
+    event.target.files[0].name.toString()
+
+    this.solicitudesService.upload({
+      file: formData,
+      idSolicitudCab: this.idSolicitudCab,
+      idTipoOperacion: this.idTipoOperacion,
+      ruc: this.ruc
+    })
+      .subscribe((response) => {
+        console.log('response', response)
+      },
+        (error) => {
+          console.log('error in fileupload', error)
+        })
   }
 
   onGuardar(): void {
@@ -215,6 +245,7 @@ export class SolicitudesComponent implements OnInit {
   onCancelar(): void {
     this.submitted = false;
     this.modalService.dismissAll();
+    
   }
   onRefrescar(): void {
     this.onListarSolicitudes();
@@ -269,23 +300,42 @@ export class SolicitudesComponent implements OnInit {
   onRadioChange(value, idTipoOperacion): void{
     this.tipoServicio = value;
     this.idTipoOperacion = idTipoOperacion;
-    //console.log('tip', this.idTipoOperacion);
     this.uploader.setOptions({
-      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion
+      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc
    });
+   
   }
 
-  onClientePagadorCombo(): void{
+  onClientePagadorList(modal, value): void{
     this.utilsService.blockUIStart('Obteniendo información...');
-    this.solicitudesService.comboCliente({
-      idTipo: 1
+    this.solicitudesService.listarCliente({
+      idTipo: this.idTipoOperacion,
+      search: this.searchCli,
+      pageIndex: this.pageCli,
+      pageSize: this.pageSizeCli
     }).subscribe(response => {
       this.optClienteP = response;
+      console.log('opt', this.optClienteP);
+      
+      this.collectionSizeCli = response.length > 0 ? response[0].totalRows : 0;
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
+
+    if (value == 1) {
+      setTimeout(() => {
+        this.modalService.open(modal, {
+          scrollable: true,
+          backdrop: 'static',
+          size: 'lg',
+          beforeDismiss: () => {
+            return true;
+          }
+        });
+      }, 0);
+    }
   }
 
   onDetalle(item, modal): void {
@@ -326,5 +376,15 @@ export class SolicitudesComponent implements OnInit {
     item.cambiarIcono = !item.cambiarIcono;
     document.getElementById('tr' + item.idSolicitudCab).style.visibility = (item.cambiarIcono) ? "visible" : "collapse";
     document.getElementById('detail' + item.idSolicitudCab).style.display = (item.cambiarIcono) ? "block" : "none";
+  }
+  rowIsSelected(idfila) {
+    return this.selectedRowIds.includes(idfila);
+  }
+  onRowClick(razon, ruc, idfila) {
+
+    this.selectedRowIds = [];
+    this.selectedRowIds.push(idfila);
+    this.razonSocial = razon;
+    this.ruc = ruc;
   }
 }

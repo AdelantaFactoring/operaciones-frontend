@@ -21,10 +21,10 @@ export class SolicitudesService {
       }
     );
   }
-  comboCliente(payload): Observable<any> {
+  listarCliente(payload): Observable<any> {
     return this.requestMethod.get(
-      `${environment.apiUrl}${CLIENTEPAGADOR.combo}`,
-      `?idTipo=${payload.idTipo}`,
+      `${environment.apiUrl}${CLIENTEPAGADOR.listar}`,
+      `?idTipo=${payload.idTipo}&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }
@@ -33,6 +33,16 @@ export class SolicitudesService {
   guardar(payload): Observable<any> {
     return this.requestMethod.post(
       `${environment.apiUrl}${SOLICITUD.guardar}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+  
+  upload(payload): Observable<any> {
+    return this.requestMethod.post(
+      `${environment.apiUrl}${SOLICITUD.upload}`,
       payload,
       {
         'Content-Type': CONTENT_TYPE.json

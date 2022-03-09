@@ -157,75 +157,16 @@
       <div class="modal-body" ngbAutofocus tabindex="0">
         <form [formGroup]="solicitudForm">
           <div class="row spaced">
-            <!-- <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label>Cedente</label>
-                <ng-select [clearable]="false" [items]="optClienteP" bindLabel="razonSocial"
-                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.idCedente.errors }"
-                           formControlName="idCedente" bindValue="idClientePagador" [(ngModel)]="idCedente">
-                </ng-select>
-                <div *ngIf="ReactiveIUForm.idCedente.errors" class="invalid-feedback">
-                  <div *ngIf="ReactiveIUForm.idCedente.errors.required">* Campo obligatorio</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label>Aceptante</label>
-                <ng-select [clearable]="false" [items]="optClienteP" bindLabel="razonSocial"
-                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.idAceptante.errors }"
-                           formControlName="idAceptante" bindValue="idClientePagador" [(ngModel)]="idAceptante">
-                </ng-select>
-                <div *ngIf="ReactiveIUForm.idAceptante.errors" class="invalid-feedback">
-                  <div *ngIf="ReactiveIUForm.idAceptante.errors.required">* Campo obligatorio</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Comisión de Estructuracion</label>
-                <input class="form-control" type="text" formControlName="comisionEstructuracion" placeholder="0.00"
-                       mask="separator" thousandSeparator="," [(ngModel)]="comisionEst"/>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Gastos de Contrato</label>
-                <input class="form-control" type="text" formControlName="gastosContrato" placeholder="0.00"
-                       mask="separator" thousandSeparator="," [(ngModel)]="gastoContrato"/>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Comisión Carta Notarial</label>
-                <input class="form-control" type="text" formControlName="comisionCartaNotarial" placeholder="0.00"
-                       mask="separator" thousandSeparator="," [(ngModel)]="comisionCart"/>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Servicio Cobranza</label>
-                <input class="form-control" type="text" formControlName="servicioCobranza" placeholder="0.00"
-                       mask="separator" thousandSeparator="," [(ngModel)]="servicioCobranza"/>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Servicio Custodia</label>
-                <input class="form-control" type="text" formControlName="servicioCustodia" placeholder="0.00"
-                       mask="separator" thousandSeparator="," [(ngModel)]="servicioCustodia"/>
-              </div>
-            </div> -->
             <div class="col-12">
               <div class="form-group">
-                <label>Tipo de Servicio</label>
+                <label>Tipo de Operación</label>
               </div>
             </div>
             <div class="col-12 col-md-4">
               <div class="form-group">
                 <div class="custom-control custom-radio">
                   <input type="radio" id="Factoring" name="customRadio" class="custom-control-input" checked
-                  (change)="onRadioChange('Factoring', 1)"/>
+                  (change)="onRadioChange('Factoring', 1)" />
                   <label class="custom-control-label" for="Factoring">Factoring</label>
                 </div>
               </div>
@@ -244,6 +185,30 @@
                   <input type="radio" id="Confirming" name="customRadio" class="custom-control-input" (change)="onRadioChange('Confirming', 3)"/>
                   <label class="custom-control-label" for="Confirming">Confirming</label>
                 </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Razon Social</label>
+                <input class="form-control" type="text" formControlName="razonSocial" [(ngModel)]="razonSocial" disabled>
+              </div>
+            </div>
+            
+            <div class="col-md-5 col-10">
+              <div class="form-group">
+                <label>Ruc</label>
+                <input class="form-control" type="text" formControlName="ruc" [(ngModel)]="ruc" disabled>
+              </div>
+            </div>
+            <div class="col-md-1 col-2">
+              <div class="form-group">
+                <label style="visibility: hidden;">Buscar</label>
+                <button type="button" class="btn btn-icon btn-outline-info" style="float: right;"
+                  (click)="onClientePagadorList(modalCliente, 1)"
+                  placement="top" rippleEffect>
+                                <span ngbTooltip="Mostrar Información" placement="left" container="body"
+                                      [data-feather]="'search'"></span>
+                </button>
               </div>
             </div>
             <div class="col-12">
@@ -484,6 +449,78 @@
         </div>
       </div>
     </ng-template>
+
+    <ng-template #modalCliente let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel1">Selección de Cliente</h4>
+        <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ngbAutofocus tabindex="0">
+        <form [formGroup]="solicitudForm">
+          <div class="row spaced">
+            <div class="col-md-12 col-12">
+              <div class="form-group">
+                <div class="d-flex justify-content-between align-items-center m-1">
+                  <label class="d-flex align-items-center"
+                  >Buscar<input
+                    type="search"
+                    placeholder="Buscar"
+                    class="form-control ml-25"
+                    [(ngModel)]="searchCli" [ngModelOptions]="{ standalone: true }" (change)="onClientePagadorList('', 0)"
+                  /></label>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-12 col-12">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                  <tr>
+                    <th>Razón Social</th>
+                    <th>Ruc</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of optClienteP" class="cursor-pointer"
+                     [class.selectedRow]="rowIsSelected(item.idClientePagador)"
+                     (click)="onRowClick(item.razonSocial,item.ruc, item.idClientePagador)">
+                      <td>{{item.razonSocial}}</td>
+                      <td>{{item.ruc}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 col-md-12 d-flex justify-content-end">
+                <ngb-pagination [collectionSize]="collectionSizeCli" [(page)]="pageCli"
+                                (pageChange)="onClientePagadorList(modalCliente, 0)" [pageSize]="pageSizeCli"></ngb-pagination>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer" style="display: block !important;">
+        <div class="row">
+          <div class="col-md-12 col-12">
+            <div style="float: right">
+              <button class="btn btn-primary" rippleEffect type="button" (click)="modal.dismiss('Cross click')">
+              <span [data-feather]="'save'"></span> Guardar
+              </button>
+              &nbsp;
+              <button class="btn btn-secondary" rippleEffect type="button" (click)="modal.dismiss('Cross click')">
+                <span [data-feather]="'x-circle'"></span> Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+   
     <block-ui></block-ui>
   </div>
 </div>
