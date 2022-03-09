@@ -15,7 +15,7 @@ export class ClientePagadorService {
   listar(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${CLIENTEPAGADOR.listar}`,
-      `?idTipo=${payload.idTipo}&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
+      `?search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

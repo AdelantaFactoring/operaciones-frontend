@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClientesComponent } from './clientes/clientes.component';
-import { PagadorComponent } from './pagador/pagador.component';
 import { CheckListComponent } from './check-list/check-list.component';
 import { SolicitudesComponent } from './solicitudes/solicitudes.component';
 import {RouterModule, Routes} from "@angular/router";
@@ -14,6 +13,7 @@ import {CoreTouchspinModule} from "@core/components/core-touchspin/core-touchspi
 import {NgSelectModule} from "@ng-select/ng-select";
 import {NgxMaskModule} from "ngx-mask";
 import { FileUploadModule } from 'ng2-file-upload';
+import { GastosComponent } from './clientes/gastos/gastos.component';
 
 const routes: Routes = [
   {
@@ -22,15 +22,6 @@ const routes: Routes = [
       {
         path: 'clientes',
         component: ClientesComponent
-      }
-    ]
-  },
-  {
-    path: '',
-    children: [
-      {
-        path: 'pagador',
-        component: PagadorComponent
       }
     ]
   },
@@ -57,9 +48,9 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     ClientesComponent,
-    PagadorComponent,
     CheckListComponent,
-    SolicitudesComponent
+    SolicitudesComponent,
+    GastosComponent
   ],
   imports: [
     CommonModule,
