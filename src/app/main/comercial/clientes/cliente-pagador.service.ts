@@ -51,4 +51,34 @@ export class ClientePagadorService {
       }
     );
   }
+
+  eliminarCuenta(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${CLIENTEPAGADOR.eliminarCuenta}`,
+      `?idClientePagadorCuenta=${payload.idClientePagadorCuenta}&usuarioAud=${payload.usuarioAud}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  eliminarContacto(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${CLIENTEPAGADOR.eliminarContacto}`,
+      `?idClientePagadorContacto=${payload.idClientePagadorContacto}&usuarioAud=${payload.usuarioAud}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  eliminarGastos(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${CLIENTEPAGADOR.eliminarGastos}`,
+      `?idClientePagadorGastos=${payload.idClientePagadorGastos}&usuarioAud=${payload.usuarioAud}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }

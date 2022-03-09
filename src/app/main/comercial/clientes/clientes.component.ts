@@ -95,7 +95,7 @@ export class ClientesComponent implements OnInit {
       idMoneda: [1],
       nroCuenta: ['', Validators.required],
       cci: [''],
-      predeterminado: [{value: false, disabled: true}],
+      predeterminado: [false],
     });
     this.contactoForm = this.formBuilder.group({
       nombre: ['', Validators.required],
@@ -103,7 +103,7 @@ export class ClientesComponent implements OnInit {
       apellidoMaterno: ['', Validators.required],
       telefono: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
-      predeterminado: [{value: false, disabled: true}]
+      predeterminado: [false]
     });
 
   }
@@ -286,12 +286,25 @@ export class ClientesComponent implements OnInit {
     if (this.cuentaForm.invalid)
       return;
 
+    let predeterminado = this.cuentaForm.controls.predeterminado.value;
+    let idMoneda = this.cuentaForm.controls.idMoneda.value;
+    if (this.cuentas.filter(f => f.predeterminado && f.idMoneda == idMoneda).length > 0 && predeterminado) {
+      this.cuentas.forEach(el => {
+        if (el.idMoneda == idMoneda) {
+          if (!el.editado) {
+            el.editado = el.predeterminado ? true : false;
+          }
+          el.predeterminado = false;
+        }
+      });
+    }
+
     this.cuentas.push({
       idClientePagadorCuenta: 0,
       idClientePagador: 0,
       titular: this.cuentaForm.controls.titular.value,
       banco: this.cuentaForm.controls.banco.value,
-      idMoneda: this.cuentaForm.controls.idMoneda.value,
+      idMoneda: idMoneda,
       moneda: this.monedas.find(f => f.idColumna === this.cuentaForm.controls.idMoneda.value).descripcion,
       nroCuenta: this.cuentaForm.controls.nroCuenta.value,
       cci: this.cuentaForm.controls.cci.value,
@@ -339,15 +352,80 @@ export class ClientesComponent implements OnInit {
   }
 
   onConfirmarCambioCuenta(item: ClientePagadorCuenta): void {
+    if (this.cuentas.filter(f => f.predeterminado && f.idMoneda == item.idMoneda && f.idFila != item.idFila).length > 0 && item.predeterminado) {
+      this.cuentas.forEach(el => {
+        if (el.idMoneda == item.idMoneda && el.idFila != item.idFila) {
+          if (!el.editado) {
+            el.editado = el.predeterminado ? true : false;
+          }
+          el.predeterminado = false;
+        }
+      });
+    }
+
     item.moneda = this.monedas.find(f => f.idColumna === item.idMoneda).descripcion;
     item.edicion = false;
     item.editado = true;
+  }
+
+  onEliminarCuenta(item): void {
+    if (item.idClientePagadorCuenta == 0) {
+      this.cuentas = this.cuentas.filter(f => f.idFila != item.idFila);
+    } else {
+      Swal.fire({
+        title: 'Confirmación',
+        text: `¿Desea eliminar el registro?, esta acción no podrá revertirse`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'No',
+        customClass: {
+          confirmButton: 'btn btn-danger',
+          cancelButton: 'btn btn-primary'
+        }
+      }).then(result => {
+        if (result.value) {
+          this.utilsService.blockUIStart('Eliminando...');
+          this.clientePagadorService.eliminarCuenta({
+            idClientePagadorCuenta: item.idClientePagadorCuenta,
+            usuarioAud: 'superadmin'
+          }).subscribe(response => {
+            if (response.tipo === 1) {
+              this.cuentas = this.cuentas.filter(f => f.idFila != item.idFila);
+              this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
+              this.utilsService.blockUIStop();
+            } else if (response.tipo === 2) {
+              this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+            } else {
+              this.utilsService.showNotification(response.mensaje, 'Error', 3);
+            }
+
+            this.utilsService.blockUIStop();
+          }, error => {
+            this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+            this.utilsService.blockUIStop();
+          });
+        }
+      });
+    }
   }
 
   onAgregarContacto(): void {
     this.submittedContacto = true;
     if (this.contactoForm.invalid)
       return;
+
+    let predeterminado = this.contactoForm.controls.predeterminado.value;
+
+    if (this.contactos.filter(f => f.predeterminado).length > 0 && predeterminado) {
+      this.contactos.forEach(el => {
+        if (!el.editado) {
+          el.editado = el.predeterminado ? true : false;
+        }
+        el.predeterminado = false;
+      });
+    }
+
     this.contactos.push({
       idClientePagadorContacto: 0,
       idClientePagador: 0,
@@ -356,7 +434,7 @@ export class ClientesComponent implements OnInit {
       apellidoMaterno: this.contactoForm.controls.apellidoMaterno.value,
       telefono: this.contactoForm.controls.telefono.value,
       correo: this.contactoForm.controls.correo.value,
-      predeterminado: this.cuentaForm.controls.predeterminado.value,
+      predeterminado: predeterminado,
       idFila: this.utilsService.autoIncrement(this.contactos),
       edicion: false,
       editado: true
@@ -397,8 +475,60 @@ export class ClientesComponent implements OnInit {
   }
 
   onConfirmarCambioContacto(item: ClientePagadorContacto): void {
+    if (this.contactos.filter(f => f.predeterminado && f.idFila != item.idFila).length > 0 && item.predeterminado) {
+      this.contactos.forEach(el => {
+        if (el.idFila != item.idFila) {
+          if (!el.editado) {
+            el.editado = el.predeterminado ? true : false;
+          }
+          el.predeterminado = false;
+        }
+      });
+    }
+
     item.edicion = false;
     item.editado = true;
   }
 
+  onEliminarContacto(item): void {
+    if (item.idClientePagadorContacto == 0) {
+      this.contactos = this.contactos.filter(f => f.idFila != item.idFila);
+    } else {
+      Swal.fire({
+        title: 'Confirmación',
+        text: `¿Desea eliminar el registro?, esta acción no podrá revertirse`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'No',
+        customClass: {
+          confirmButton: 'btn btn-danger',
+          cancelButton: 'btn btn-primary'
+        }
+      }).then(result => {
+        if (result.value) {
+          this.utilsService.blockUIStart('Eliminando...');
+          this.clientePagadorService.eliminarContacto({
+            idClientePagadorContacto: item.idClientePagadorContacto,
+            usuarioAud: 'superadmin'
+          }).subscribe(response => {
+            if (response.tipo === 1) {
+              this.contactos = this.contactos.filter(f => f.idFila != item.idFila);
+              this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
+              this.utilsService.blockUIStop();
+            } else if (response.tipo === 2) {
+              this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+            } else {
+              this.utilsService.showNotification(response.mensaje, 'Error', 3);
+            }
+
+            this.utilsService.blockUIStop();
+          }, error => {
+            this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+            this.utilsService.blockUIStop();
+          });
+        }
+      });
+    }
+  }
 }

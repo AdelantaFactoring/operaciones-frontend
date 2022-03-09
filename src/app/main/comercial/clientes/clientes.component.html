@@ -268,7 +268,7 @@
                             <i class="text-primary cursor-pointer" data-feather="corner-up-left"></i>
                           </a>
                           &nbsp;
-                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar">
+                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar" (click)="onEliminarContacto(item)">
                             <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
                           </a>
                           <a *ngIf="item.edicion" href="javascript:void(0)" title="Confirmar cambios"
@@ -310,7 +310,7 @@
                       <td [ngClass]="{'row-edicion': item.editado}">
                         <label *ngIf="!item.edicion">{{(item.predeterminado ? 'Sí' : 'No')}}</label>
                         <div *ngIf="item.edicion" class="custom-control custom-switch custom-control-inline">
-                          <input type="checkbox" class="custom-control-input" [disabled]="true"
+                          <input type="checkbox" class="custom-control-input"
                                  id="{{'predeterminadoContacto' + item.idFila}}" [(ngModel)]="item.predeterminado"
                                  [ngModelOptions]="{standalone: true}"
                           />
@@ -392,7 +392,7 @@
                             <i class="text-primary cursor-pointer" data-feather="corner-up-left"></i>
                           </a>
                           &nbsp;
-                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar">
+                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar" (click)="onEliminarCuenta(item)">
                             <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
                           </a>
                           <a *ngIf="item.edicion" href="javascript:void(0)" title="Confirmar cambios"
@@ -436,7 +436,7 @@
                       <td [ngClass]="{'row-edicion': item.editado}">
                         <label *ngIf="!item.edicion">{{(item.predeterminado ? 'Sí' : 'No')}}</label>
                         <div *ngIf="item.edicion" class="custom-control custom-switch custom-control-inline">
-                          <input type="checkbox" class="custom-control-input" [disabled]="true"
+                          <input type="checkbox" class="custom-control-input"
                                  id="{{'predeterminadoCuenta' + item.idFila}}" [(ngModel)]="item.predeterminado"
                                  [ngModelOptions]="{standalone: true}"
                           />

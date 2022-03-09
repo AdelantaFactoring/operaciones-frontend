@@ -3,7 +3,10 @@ export const CLIENTEPAGADOR = {
   obtener: '/clientepagador/obtener',
   combo: '/clientepagador/combo',
   guardar: '/clientepagador/guardar',
-  eliminar: '/clientepagador/eliminar'
+  eliminar: '/clientepagador/eliminar',
+  eliminarCuenta: '/clientepagador/eliminarcuenta',
+  eliminarContacto: '/clientepagador/eliminarcontacto',
+  eliminarGastos: '/clientepagador/eliminargastos'
 };
 
 export const SOLICITUD = {
