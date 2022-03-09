@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
-import {ClientePagadorService} from "./../cliente-pagador.service";
+import {ClientePagadorService} from "./cliente-pagador.service";
 import {ClientePagador} from "../../../shared/models/comercial/cliente-pagador";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -9,6 +9,7 @@ import {ClientePagadorCuenta} from "../../../shared/models/comercial/cliente-pag
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
 import Swal from "sweetalert2";
+import {ClientePagadorGastos} from "../../../shared/models/comercial/cliente-pagador-gastos";
 
 @Component({
   selector: 'app-clientes',
@@ -21,14 +22,18 @@ export class ClientesComponent implements OnInit {
   public submitted: boolean;
   public submittedCuenta: boolean;
   public submittedContacto: boolean;
+  public submittedGastos: boolean;
   public clienteForm: FormGroup;
   public cuentaForm: FormGroup;
   public contactoForm: FormGroup;
+  public gastosForm: FormGroup;
   public contactos: ClientePagadorContacto[] = [];
   public cuentas: ClientePagadorCuenta[] = [];
+  public gastos: ClientePagadorGastos[] = [];
   public monedas: TablaMaestra[];
   public oldCuenta: ClientePagadorCuenta;
   public oldContacto: ClientePagadorContacto;
+
   public search: string = '';
   //Paginación
   public collectionSize: number = 0;
@@ -80,18 +85,9 @@ export class ClientesComponent implements OnInit {
       razonSocial: ['', Validators.required],
       direccionPrincipal: ['', Validators.required],
       direccionFacturacion: [''],
-      tasaNominalMensual: [0.00],
-      tasaNominalAnual: [0.00],
-      financiamiento: [0.00],
-      comisionEstructuracion: [0.00],
-      factoring: [false],
-      confirming: [false],
-      capitalTrabajo: [false],
-      idMoneda: [1],
-      gastosContrato: [0],
-      comisionCartaNotarial: [0],
-      servicioCobranza: [0],
-      servicioCustodia: [0]
+      cedente: [false],
+      aceptante: [false],
+      capitalTrabajo: [false]
     });
     this.cuentaForm = this.formBuilder.group({
       titular: [''],
@@ -109,6 +105,7 @@ export class ClientesComponent implements OnInit {
       correo: ['', [Validators.required, Validators.email]],
       predeterminado: [{value: false, disabled: true}]
     });
+
   }
 
   async ngOnInit(): Promise<void> {
@@ -130,7 +127,6 @@ export class ClientesComponent implements OnInit {
   onListarClientes(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.clientePagadorService.listar({
-      idTipo: 1,
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
@@ -171,24 +167,16 @@ export class ClientesComponent implements OnInit {
     this.clienteForm.controls.razonSocial.setValue(item.razonSocial);
     this.clienteForm.controls.direccionPrincipal.setValue(item.direccionPrincipal);
     this.clienteForm.controls.direccionFacturacion.setValue(item.direccionFacturacion);
-    this.clienteForm.controls.tasaNominalMensual.setValue(item.tasaNominalMensual);
-    this.clienteForm.controls.tasaNominalAnual.setValue(item.tasaNominalAnual);
-    this.clienteForm.controls.financiamiento.setValue(item.financiamiento);
-    this.clienteForm.controls.comisionEstructuracion.setValue(item.comisionEstructuracion);
-    this.clienteForm.controls.factoring.setValue(item.factoring);
-    this.clienteForm.controls.confirming.setValue(item.confirming);
+    this.clienteForm.controls.cedente.setValue(item.cedente);
+    this.clienteForm.controls.aceptante.setValue(item.aceptante);
     this.clienteForm.controls.capitalTrabajo.setValue(item.capitalTrabajo);
-    this.clienteForm.controls.idMoneda.setValue(item.idMoneda);
-    this.clienteForm.controls.gastosContrato.setValue(item.gastosContrato);
-    this.clienteForm.controls.comisionCartaNotarial.setValue(item.comisionCartaNotarial);
-    this.clienteForm.controls.servicioCobranza.setValue(item.servicioCobranza);
-    this.clienteForm.controls.servicioCustodia.setValue(item.servicioCustodia);
 
     this.clientePagadorService.obtener({
       idClientePagador: item.idClientePagador
     }).subscribe((response: any) => {
       this.contactos = response.clientePagadorContacto;
       this.cuentas = response.clientePagadorCuenta;
+      this.gastos = response.clientePagadorGastos;
       this.utilsService.blockUIStop();
 
       setTimeout(() => {
@@ -255,26 +243,17 @@ export class ClientesComponent implements OnInit {
     this.utilsService.blockUIStart('Guardando...');
     this.clientePagadorService.guardar({
       idClientePagador: this.clienteForm.controls.idClientePagador.value,
-      idTipo: 1,
       ruc: this.clienteForm.controls.ruc.value,
       razonSocial: this.clienteForm.controls.razonSocial.value,
       direccionPrincipal: this.clienteForm.controls.direccionPrincipal.value,
       direccionFacturacion: this.clienteForm.controls.direccionFacturacion.value,
-      tasaNominalMensual: this.clienteForm.controls.tasaNominalMensual.value,
-      tasaNominalAnual: this.clienteForm.controls.tasaNominalAnual.value,
-      financiamiento: this.clienteForm.controls.financiamiento.value,
-      comisionEstructuracion: this.clienteForm.controls.comisionEstructuracion.value,
-      factoring: this.clienteForm.controls.factoring.value,
-      confirming: this.clienteForm.controls.confirming.value,
+      cedente: this.clienteForm.controls.cedente.value,
+      aceptante: this.clienteForm.controls.aceptante.value,
       capitalTrabajo: this.clienteForm.controls.capitalTrabajo.value,
-      idMoneda: this.clienteForm.controls.idMoneda.value,
-      gastosContrato: this.clienteForm.controls.gastosContrato.value,
-      comisionCartaNotarial: this.clienteForm.controls.comisionCartaNotarial.value,
-      servicioCobranza: this.clienteForm.controls.servicioCobranza.value,
-      servicioCustodia: this.clienteForm.controls.servicioCustodia.value,
       usuarioAud: 'superadmin',
       contacto: this.contactos.filter(f => f.editado),
-      cuenta: this.cuentas.filter(f => f.editado)
+      cuenta: this.cuentas.filter(f => f.editado),
+      gastos: this.gastos.filter(f => f.editado)
     }).subscribe(response => {
       if (response.tipo == 1) {
         this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
@@ -306,6 +285,7 @@ export class ClientesComponent implements OnInit {
     this.submittedCuenta = true;
     if (this.cuentaForm.invalid)
       return;
+
     this.cuentas.push({
       idClientePagadorCuenta: 0,
       idClientePagador: 0,
@@ -321,6 +301,7 @@ export class ClientesComponent implements OnInit {
       editado: true
     });
     this.cuentaForm.reset();
+    this.cuentaForm.controls.idMoneda.setValue(1);
     this.submittedCuenta = false;
   }
 
@@ -419,4 +400,5 @@ export class ClientesComponent implements OnInit {
     item.edicion = false;
     item.editado = true;
   }
+
 }

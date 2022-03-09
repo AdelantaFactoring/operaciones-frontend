@@ -14,7 +14,8 @@
             <div class="d-flex justify-content-between align-items-center m-1">
               <label class="d-flex align-items-center"
               >Mostrar
-                <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }" (change)="onRefrescar()">
+                <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
+                        (change)="onRefrescar()">
                   <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
@@ -91,13 +92,18 @@
       <div class="modal-body" ngbAutofocus tabindex="0">
         <form [formGroup]="clienteForm">
           <div class="row spaced">
+            <div class="col-12">
+              <div class="divider divider-info">
+                <div class="divider-text">Información General</div>
+              </div>
+            </div>
             <div class="col-md-12 col-12" hidden>
               <div class="form-group">
                 <label>Id</label>
                 <input class="form-control" formControlName="idClientePagador" type="text"/>
               </div>
             </div>
-            <div class="col-md-12 col-12">
+            <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>RUC</label>
                 <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.ruc.errors }"
@@ -107,7 +113,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-12 col-12">
+            <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Razón Social</label>
                 <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.razonSocial.errors }"
@@ -133,42 +139,14 @@
                 <input class="form-control" formControlName="direccionFacturacion" type="text"/>
               </div>
             </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Tasa Nominal Mensual (%)</label>
-                <input class="form-control" type="text" formControlName="tasaNominalMensual" placeholder="0.00"
-                       mask="separator" thousandSeparator=","/>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Tasa Nominal Anual (%)</label>
-                <input class="form-control" type="text" formControlName="tasaNominalAnual" placeholder="0.00"
-                       mask="separator" thousandSeparator=","/>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Financiamiento (%)</label>
-                <input class="form-control" type="text" formControlName="financiamiento" placeholder="0.00"
-                       mask="separator" thousandSeparator=","/>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Comision de Estructuración (%)</label>
-                <input class="form-control" type="text" formControlName="comisionEstructuracion" placeholder="0.00"
-                       mask="separator" thousandSeparator=","/>
-              </div>
-            </div>
             <div class="col-12 col-md-4">
               <div class="form-group">
                 <div class="custom-control custom-switch custom-control-inline">
                   <input type="checkbox" class="custom-control-input"
-                         id="fact" formControlName="factoring"
+                         id="fact" formControlName="cedente"
                   />
                   <label class="custom-control-label"
-                         for="fact">Factoring</label>
+                         for="fact">Cedente</label>
                 </div>
                 <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
               </div>
@@ -177,10 +155,10 @@
               <div class="form-group">
                 <div class="custom-control custom-switch custom-control-inline">
                   <input type="checkbox" class="custom-control-input"
-                         id="confir" formControlName="confirming"
+                         id="confir" formControlName="aceptante"
                   />
                   <label class="custom-control-label"
-                         for="confir">Confirming</label>
+                         for="confir">Aceptante</label>
                 </div>
               </div>
             </div>
@@ -196,49 +174,37 @@
                 <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
               </div>
             </div>
-            <div class="col-md-12 col-12">
-              <div class="form-group">
-                <label>Moneda</label>
-                <ng-select [clearable]="false" [items]="monedas" bindLabel="descripcion"
-                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.idMoneda.errors }"
-                           formControlName="idMoneda" bindValue="idColumna">
-                </ng-select>
-                <div *ngIf="ReactiveIUForm.idMoneda.errors" class="invalid-feedback">
-                  <div *ngIf="ReactiveIUForm.idMoneda.errors.required">* Campo obligatorio</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Gastos de Contrato</label>
-                <input class="form-control" type="text" formControlName="gastosContrato" placeholder="0.00"
-                       mask="separator" thousandSeparator=","/>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Comisión de Carta Notarial</label>
-                <input class="form-control" type="text" formControlName="comisionCartaNotarial" placeholder="0.00"
-                       mask="separator" thousandSeparator=","/>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Servicio de Cobranza</label>
-                <input class="form-control" type="text" formControlName="servicioCobranza" placeholder="0.00"
-                       mask="separator" thousandSeparator=","/>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Servicio de Custodia</label>
-                <input class="form-control" type="text" formControlName="servicioCustodia" placeholder="0.00"
-                       mask="separator" thousandSeparator=","/>
-              </div>
-            </div>
           </div>
         </form>
         <div class="row spaced">
+          <div class="col-12">
+            <div class="divider divider-success">
+              <div class="divider-text">Gastos</div>
+            </div>
+          </div>
+          <div class="col-md-12 col-12">
+            <div class="form-group">
+              <label>Gastos Cedente</label>
+              <app-gastos [gastos]="gastos" [monedas]="monedas" [idTipoOperacion]="1"></app-gastos>
+            </div>
+          </div>
+          <div class="col-md-12 col-12">
+            <div class="form-group">
+              <label>Gastos Aceptante</label>
+              <app-gastos [gastos]="gastos" [monedas]="monedas" [idTipoOperacion]="2"></app-gastos>
+            </div>
+          </div>
+          <div class="col-md-12 col-12">
+            <div class="form-group">
+              <label>Gastos Capital de Trabajo</label>
+              <app-gastos [gastos]="gastos" [monedas]="monedas" [idTipoOperacion]="3"></app-gastos>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="divider divider-danger">
+              <div class="divider-text">Contactos</div>
+            </div>
+          </div>
           <div class="col-md-12 col-12">
             <div class="form-group">
               <label>Contactos</label>
@@ -266,11 +232,13 @@
                       <td><input class="form-control" type="text" placeholder="Nombre"
                                  [ngClass]="{ 'is-invalid': submittedContacto && ReactiveIUFormContacto.nombre.errors }"
                                  formControlName="nombre"/></td>
-                      <td><input class="form-control" type="text" placeholder="Ape. Paterno" formControlName="apellidoPaterno"
+                      <td><input class="form-control" type="text" placeholder="Ape. Paterno"
+                                 formControlName="apellidoPaterno"
                                  [ngClass]="{ 'is-invalid': submittedContacto && ReactiveIUFormContacto.apellidoPaterno.errors }"/>
                       </td>
-                      <td><input class="form-control" type="text" placeholder="Ape. Materno" formControlName="apellidoMaterno"
-                               [ngClass]="{ 'is-invalid': submittedContacto && ReactiveIUFormContacto.apellidoMaterno.errors }"/>
+                      <td><input class="form-control" type="text" placeholder="Ape. Materno"
+                                 formControlName="apellidoMaterno"
+                                 [ngClass]="{ 'is-invalid': submittedContacto && ReactiveIUFormContacto.apellidoMaterno.errors }"/>
                       </td>
                       <td><input class="form-control" type="text" placeholder="Teléfono" formControlName="telefono"
                                  [ngClass]="{ 'is-invalid': submittedContacto && ReactiveIUFormContacto.telefono.errors }"/>
@@ -356,6 +324,11 @@
               </form>
             </div>
           </div>
+          <div class="col-12">
+            <div class="divider divider-warning">
+              <div class="divider-text">Información Bancaria</div>
+            </div>
+          </div>
           <div class="col-md-12 col-12">
             <div class="form-group">
               <label>Datos de Cuenta de Banco</label>
@@ -386,7 +359,8 @@
                                  [ngClass]="{ 'is-invalid': submittedCuenta && ReactiveIUFormCuenta.banco.errors }"/>
                       </td>
                       <td>
-                        <ng-select appendTo="body" [clearable]="false" [items]="monedas" bindLabel="descripcion" placeholder="Moneda"
+                        <ng-select appendTo="body" [clearable]="false" [items]="monedas" bindLabel="descripcion"
+                                   placeholder="Moneda"
                                    bindValue="idColumna" formControlName="idMoneda">
                         </ng-select>
                       </td>
