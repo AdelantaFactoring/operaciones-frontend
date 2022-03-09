@@ -123,9 +123,6 @@ export class SolicitudesComponent implements OnInit {
     if (e == false) {
       this.onBrowseChange();
     }
-    // console.log('aqui era');
-    // console.log('thisHas', this.hasBaseDropZoneOver);
-    // console.log('e', e);
   }
 
   onListarSolicitudes(): void {
@@ -138,7 +135,6 @@ export class SolicitudesComponent implements OnInit {
     }).subscribe((response: SolicitudCab[]) => {
       this.solicitudes = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
-      console.log('list', response);
 
       this.utilsService.blockUIStop();
     }, error => {
@@ -153,9 +149,6 @@ export class SolicitudesComponent implements OnInit {
     this.uploader.setOptions({
       url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc
     });
-
-    console.log('url', this.uploader.response);
-
 
     // this.uploader.setOptions({
     //   url: `${environment.apiUrl}${SOLICITUD.upload}`
@@ -176,7 +169,6 @@ export class SolicitudesComponent implements OnInit {
   }
 
   uploadFile(event) {
-    console.log('file', event.target.files[0])
     var formData = new FormData();
     formData.append("file", <File>event.target.files[0]);
     event.target.files[0].name.toString()
@@ -188,10 +180,8 @@ export class SolicitudesComponent implements OnInit {
       ruc: this.ruc
     })
       .subscribe((response) => {
-          console.log('response', response)
         },
         (error) => {
-          console.log('error in fileupload', error)
         })
   }
 
@@ -235,7 +225,6 @@ export class SolicitudesComponent implements OnInit {
       if (response.tipo == 0) {
         this.utilsService.showNotification(response.mensaje, 'Validación', 2);
       }
-      console.log('res', response);
 
       this.utilsService.blockUIStop();
     }, error => {
@@ -257,16 +246,6 @@ export class SolicitudesComponent implements OnInit {
 
   onImportar(modal): void {
     this.uploader.clearQueue();
-    //this.itemLinea = this.lineasPrograma.filter(x => x.idfila === this.idLineaPrograma)[0].descripcion.toString();
-
-    // this.uploader.setOptions({
-    //   url: `${environment.serviceUrl}${STOCKMINIMO.import}?nombreLinea=` + this.itemLinea
-    // });
-
-    // this.uploader.setOptions({
-    //   url: `${environment.serviceUrl}${STOCKMINIMO.import}`
-    // });
-
 
     setTimeout(() => {
       this.modalService.open(modal, {
@@ -281,10 +260,6 @@ export class SolicitudesComponent implements OnInit {
   }
 
   onBrowseChange() {
-    // if (this.uploader.queue.length > 1) {
-    //   //this.uploader.clearQueue();
-    //   this.uploader.queue.splice(0, 1);
-    // }
     var flagEliminado = false;
     for (const item of this.uploader.queue) {
       var name = item._file.name;
@@ -318,7 +293,6 @@ export class SolicitudesComponent implements OnInit {
       pageSize: this.pageSizeCli
     }).subscribe(response => {
       this.optClienteP = response;
-      console.log('opt', this.optClienteP);
 
       this.collectionSizeCli = response.length > 0 ? response[0].totalRows : 0;
       this.utilsService.blockUIStop();
