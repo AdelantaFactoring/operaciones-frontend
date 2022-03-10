@@ -3,6 +3,8 @@ import {ClientePagadorGastos} from "../../../../shared/models/comercial/cliente-
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TablaMaestra} from "../../../../shared/models/shared/tabla-maestra";
 import {UtilsService} from "../../../../shared/services/utils.service";
+import {ClientePagadorService} from "../cliente-pagador.service";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-gastos',
@@ -23,7 +25,8 @@ export class GastosComponent implements OnInit {
   }
 
   constructor(private formBuilder: FormBuilder,
-              private utilsService: UtilsService,) {
+              private utilsService: UtilsService,
+              private clientePagadorService: ClientePagadorService,) {
     this.gastosForm = this.formBuilder.group({
       idMoneda: [1],
       tasaNominalMensual: [0, [Validators.required, Validators.min(0.01)]],
@@ -50,7 +53,7 @@ export class GastosComponent implements OnInit {
       return;
 
     let moneda = this.monedas.find(f => f.idColumna === this.gastosForm.controls.idMoneda.value).descripcion;
-    if (this.gastos.filter(f => f.idMoneda === this.gastosForm.controls.idMoneda.value).length > 0) {
+    if (this.gastos.filter(f => f.idMoneda === this.gastosForm.controls.idMoneda.value && f.idTipoOperacion === this.idTipoOperacion).length > 0) {
       this.utilsService.showNotification(`Ya existen gastos con el tipo de moneda '${moneda}'`, "", 2);
       return;
     }
@@ -123,5 +126,47 @@ export class GastosComponent implements OnInit {
     item.moneda = this.monedas.find(f => f.idColumna === item.idMoneda).descripcion;
     item.edicion = false;
     item.editado = true;
+  }
+
+  onEliminar(item): void {
+    if (item.idClientePagadorGastos == 0) {
+      this.gastos = this.gastos.filter(f => f.idFila != item.idFila);
+    } else {
+      Swal.fire({
+        title: 'Confirmación',
+        text: `¿Desea eliminar el registro?, esta acción no podrá revertirse`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'No',
+        customClass: {
+          confirmButton: 'btn btn-danger',
+          cancelButton: 'btn btn-primary'
+        }
+      }).then(result => {
+        if (result.value) {
+          this.utilsService.blockUIStart('Eliminando...');
+          this.clientePagadorService.eliminarGastos({
+            idClientePagadorGastos: item.idClientePagadorGastos,
+            usuarioAud: 'superadmin'
+          }).subscribe(response => {
+            if (response.tipo === 1) {
+              this.gastos = this.gastos.filter(f => f.idFila != item.idFila);
+              this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
+              this.utilsService.blockUIStop();
+            } else if (response.tipo === 2) {
+              this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+            } else {
+              this.utilsService.showNotification(response.mensaje, 'Error', 3);
+            }
+
+            this.utilsService.blockUIStop();
+          }, error => {
+            this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+            this.utilsService.blockUIStop();
+          });
+        }
+      });
+    }
   }
 }
