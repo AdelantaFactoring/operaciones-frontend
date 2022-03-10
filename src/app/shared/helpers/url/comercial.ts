@@ -15,3 +15,8 @@ export const SOLICITUD = {
   eliminar: '/solicitudCab/eliminar',
   eliminarFactura: '/solicitudCab/eliminarfactura',
 };
+
+export const PAGADOR = {
+  listar: '/pagador/listar',
+  guardar: '/pagador/guardar'
+}

@@ -14,6 +14,7 @@ import {NgSelectModule} from "@ng-select/ng-select";
 import {NgxMaskModule} from "ngx-mask";
 import { FileUploadModule } from 'ng2-file-upload';
 import { GastosComponent } from './clientes/gastos/gastos.component';
+import { PagadorComponent } from './pagador/pagador.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,15 @@ const routes: Routes = [
       {
         path: 'clientes',
         component: ClientesComponent
+      }
+    ]
+  },
+  {
+    path: '',
+    children: [
+      {
+        path: 'pagador',
+        component: PagadorComponent
       }
     ]
   },
@@ -50,7 +60,8 @@ const routes: Routes = [
     ClientesComponent,
     CheckListComponent,
     SolicitudesComponent,
-    GastosComponent
+    GastosComponent,
+    PagadorComponent
   ],
   imports: [
     CommonModule,

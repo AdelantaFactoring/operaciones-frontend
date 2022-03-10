@@ -51,6 +51,13 @@ export const menu: CoreMenu[] = [
       icon: 'circle',
       url: 'comercial/clientes'
     },{
+      id: 'pagador',
+      title: 'Pagadores',
+      // translate: 'MENU.DASHBOARD.ANALYTICS',
+      type: 'item',
+      icon: 'circle',
+      url: 'comercial/pagador'
+    },{
       id: 'checklist',
       title: 'Check list',
       // translate: 'MENU.DASHBOARD.ANALYTICS',

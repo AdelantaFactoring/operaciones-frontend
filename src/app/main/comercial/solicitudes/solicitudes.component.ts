@@ -144,6 +144,8 @@ export class SolicitudesComponent implements OnInit {
   }
 
   onNuevo(modal): void {
+    this.razonSocial = '';
+    this.ruc = '';
     this.uploader.clearQueue();
     this.idSolicitudCab = 0;
     this.uploader.setOptions({
