@@ -98,6 +98,8 @@ export class PagadorComponent implements OnInit {
       correo: this.pagadorForm.controls.correo.value,
       usuarioAud: 'superadmin',
     }).subscribe(response => {
+      console.log('res', response);
+      
       if (response.tipo == 1) {
         this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();

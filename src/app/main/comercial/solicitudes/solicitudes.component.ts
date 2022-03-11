@@ -17,6 +17,8 @@ import {SOLICITUD} from "../../../shared/helpers/url/comercial";
 export class SolicitudesComponent implements OnInit {
   public uploader: FileUploader = new FileUploader({
     url: `${environment.apiUrl}${SOLICITUD.upload}`,
+    // disableMultipart: true,
+    // formatDataFunctionIsAsync: true,
     isHTML5: true
   });
 
@@ -54,7 +56,7 @@ export class SolicitudesComponent implements OnInit {
   public razonSocial: string = '';
   public ruc: string = '';
   public selectedRowIds: number[] = [];
-
+  public dataXml = [];
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;
   }
@@ -148,12 +150,20 @@ export class SolicitudesComponent implements OnInit {
     this.ruc = '';
     this.uploader.clearQueue();
     this.idSolicitudCab = 0;
-    this.uploader.setOptions({
-      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&usuarioAud= Admin`
-    });
-
     // this.uploader.setOptions({
-    //   url: `${environment.apiUrl}${SOLICITUD.upload}`
+    //   url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&usuarioAud=Admin`,
+    //   // disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
+    //   // formatDataFunctionIsAsync: true,
+    //   // formatDataFunction: async (item) => {
+    //   //   return new Promise( (resolve, reject) => {
+    //   //     resolve({
+    //   //       name: item._file.name,
+    //   //       length: item._file.size,
+    //   //       contentType: item._file.type,
+    //   //       date: new Date()
+    //   //     });
+    //   //   });
+    //   // }
     // });
 
     setTimeout(() => {
@@ -193,39 +203,44 @@ export class SolicitudesComponent implements OnInit {
       return;
     }
     this.params = [];
+    for (const item of this.dataXml) {
+      this.params.push({
+        "idSolicitudDet": 0,
+        "nroDocumento": item.codFactura,
+        "fechaConfirmado": item.fechaVencimiento,
+        "NetoConfirmado": item.total,
+        "MontoSinIGV": item.subTotal,
+        "MontoConIGV": item.total,
+        "FormaPago": item.formaPago,
+        "ArchivoXML": "XML",
+        "ArchivoPDF": "PDF"
+      });
+    }
+
+    
     this.utilsService.blockUIStart('Guardando información...');
     this.solicitudesService.guardar({
       "idSolicitudCab": this.idSolicitudCab,
-      "idCedente": this.idCedente,
-      "idAceptante": this.idAceptante,
-      "moneda": "Soles",
-      "comisionEstructuracion": this.comisionEst,
-      "gastosContrato": this.gastoContrato,
-      "comisionCartaNotarial": this.comisionCart,
-      "servicioCobranza": this.servicioCobranza,
-      "servicioCustodia": this.servicioCustodia,
+      "rucCedente": this.ruc,
+      "rucAceptante": this.dataXml[0].rucDet,
       "idTipoOperacion": this.idTipoOperacion,
-      "idEstado": 1,
+      "moneda": this.dataXml[0].tipoMoneda,
       "usuarioAud": "Admin",
-      "solicitudDet": [
-        {
-          "idSolicitudDet": 0,
-          "nroDocumento": "Pru_001",
-          "tasaNominalMensual": 0,
-          "tasaNominalAnual": 0,
-          "financiamiento": 0,
-          "fechaConfirmado": "03-03-2022",
-          "netoConfirmado": 0,
-          "montoSinIGV": 0,
-          "montoConIGV": 0,
-          "fondoResguardo": 0,
-          "archivoXML": "ArchivoXML",
-          "archivoPDF": "ArchivoPDF"
-        }
-      ]
+      "solicitudDet": this.params
     }).subscribe(response => {
-      if (response.tipo == 0) {
-        this.utilsService.showNotification(response.mensaje, 'Validación', 2);
+      console.log('res', response);
+      
+      if (response.tipo == 1) {
+        this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+        this.onListarSolicitudes();
+        this.onCancelar();
+      } else if (response.tipo == 2) {
+        this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+        this.utilsService.blockUIStop();
+      } else {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
       }
 
       this.utilsService.blockUIStop();
@@ -281,9 +296,23 @@ export class SolicitudesComponent implements OnInit {
     this.tipoServicio = value;
     this.idTipoOperacion = idTipoOperacion;
     this.uploader.setOptions({
-      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&usuarioAud= Admin`
+      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&usuarioAud=Admin1`,
+      // disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
+      // formatDataFunctionIsAsync: true,
+      // formatDataFunction: async (item) => {
+      //   return new Promise( (resolve, reject) => {
+      //     resolve({
+      //       name: item._file.name,
+      //       length: item._file.size,
+      //       contentType: item._file.type,
+      //       date: new Date()
+      //     });
+      //   });
+      // }
     });
 
+    
+    this.hasBaseDropZoneOver = false;   
   }
 
   onClientePagadorList(modal, value): void {
@@ -367,5 +396,20 @@ export class SolicitudesComponent implements OnInit {
     this.selectedRowIds.push(idfila);
     this.razonSocial = razon;
     this.ruc = ruc;
+  }
+  
+  onsave(): void{
+    this.dataXml  = [];
+    this.uploader.uploadAll();
+    
+    this.uploader.response.subscribe( res => {
+      var rs = JSON.parse(res);
+      console.log('resp',res);
+      
+      this.dataXml.push(rs)
+    });
+
+    console.log('array', this.dataXml);
+    
   }
 }

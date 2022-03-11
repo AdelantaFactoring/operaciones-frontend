@@ -224,7 +224,7 @@
                 [uploader]="uploader"
                 class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
               >
-                Arrasta aqui los archivos
+                Arraste aqui los archivos
               </div>
             </div>
             <div class="col-12">
@@ -331,15 +331,15 @@
                     <span data-feather="trash" class="mr-25"></span> Remover todo
                 </button>
               </div> -->
-              <button class="btn btn-primary" rippleEffect type="button" (click)="uploader.uploadAll()"
+              <button class="btn btn-primary" rippleEffect type="button" (click)="onsave()"
               [disabled]="!uploader.getNotUploadedItems().length">
                 <span [data-feather]="'save'"></span> Procesar Archivos
               </button>
               &nbsp;
-              <!-- <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()">
+              <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()">
               <span [data-feather]="'save'"></span> Guardar
               </button>
-              &nbsp; -->
+              &nbsp;
               <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()">
                 <span [data-feather]="'x-circle'"></span> Cancelar
               </button>
