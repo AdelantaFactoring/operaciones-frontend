@@ -190,14 +190,22 @@
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Razon Social</label>
-                <input class="form-control" type="text" formControlName="razonSocial" [(ngModel)]="razonSocial">
+                <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.razonSocial.errors }" 
+                class="form-control" type="text" formControlName="razonSocial" [(ngModel)]="razonSocial" disabled>
+                <div *ngIf="ReactiveIUForm.razonSocial.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.razonSocial.errors.required">* Campo obligatorio</div>
+                </div>
               </div>
             </div>
             
             <div class="col-md-5 col-10">
               <div class="form-group">
                 <label>Ruc</label>
-                <input class="form-control" type="text" formControlName="ruc" [(ngModel)]="ruc">
+                <input  [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.ruc.errors }" 
+                class="form-control" type="text" formControlName="ruc" [(ngModel)]="ruc" disabled>
+                <div *ngIf="ReactiveIUForm.ruc.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.ruc.errors.required">* Campo obligatorio</div>
+                </div>
               </div>
             </div>
             <div class="col-md-1 col-2">
@@ -486,7 +494,7 @@
                   <tbody>
                     <tr *ngFor="let item of optClienteP" class="cursor-pointer"
                      [class.selectedRow]="rowIsSelected(item.idClientePagador)"
-                     (click)="onRowClick(item.razonSocial,item.ruc, item.idClientePagador)">
+                     (click)="onRowClick(item.razonSocial,item.ruc, item.idClientePagador, modal)">
                       <td>{{item.razonSocial}}</td>
                       <td>{{item.ruc}}</td>
                     </tr>
@@ -507,10 +515,6 @@
         <div class="row">
           <div class="col-md-12 col-12">
             <div style="float: right">
-              <button class="btn btn-primary" rippleEffect type="button" (click)="modal.dismiss('Cross click')">
-              <span [data-feather]="'save'"></span> Guardar
-              </button>
-              &nbsp;
               <button class="btn btn-secondary" rippleEffect type="button" (click)="modal.dismiss('Cross click')">
                 <span [data-feather]="'x-circle'"></span> Cancelar
               </button>

@@ -30,6 +30,8 @@ export class SolicitudesComponent implements OnInit {
   public solicitudDetForm: FormGroup;
   public cambiarIcono: boolean = false;
 
+  cantXml = 0;
+  CantPdf = 0;
   optClienteP = [];
   tipoServicio = "Factoring";
   solicitudDet: SolicitudDet[] = [];
@@ -103,8 +105,8 @@ export class SolicitudesComponent implements OnInit {
       factoring: [false],
       confirming: [false],
       capitalTrabajo: [false],
-      ruc: [''],
-      razonSocial: ['']
+      ruc: ['', Validators.required],
+      razonSocial: ['', Validators.required] 
     });
     this.solicitudDetForm = this.formBuilder.group({
       nroSolicitud: [''],
@@ -148,23 +150,9 @@ export class SolicitudesComponent implements OnInit {
   onNuevo(modal): void {
     this.razonSocial = '';
     this.ruc = '';
+    
     this.uploader.clearQueue();
     this.idSolicitudCab = 0;
-    // this.uploader.setOptions({
-    //   url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&usuarioAud=Admin`,
-    //   // disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
-    //   // formatDataFunctionIsAsync: true,
-    //   // formatDataFunction: async (item) => {
-    //   //   return new Promise( (resolve, reject) => {
-    //   //     resolve({
-    //   //       name: item._file.name,
-    //   //       length: item._file.size,
-    //   //       contentType: item._file.type,
-    //   //       date: new Date()
-    //   //     });
-    //   //   });
-    //   // }
-    // });
 
     setTimeout(() => {
       this.modalService.open(modal, {
@@ -295,22 +283,6 @@ export class SolicitudesComponent implements OnInit {
   onRadioChange(value, idTipoOperacion): void {
     this.tipoServicio = value;
     this.idTipoOperacion = idTipoOperacion;
-    this.uploader.setOptions({
-      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&usuarioAud=Admin1`,
-      // disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
-      // formatDataFunctionIsAsync: true,
-      // formatDataFunction: async (item) => {
-      //   return new Promise( (resolve, reject) => {
-      //     resolve({
-      //       name: item._file.name,
-      //       length: item._file.size,
-      //       contentType: item._file.type,
-      //       date: new Date()
-      //     });
-      //   });
-      // }
-    });
-
     
     this.hasBaseDropZoneOver = false;   
   }
@@ -333,6 +305,7 @@ export class SolicitudesComponent implements OnInit {
     });
 
     if (value == 1) {
+      this.searchCli = '';
       setTimeout(() => {
         this.modalService.open(modal, {
           scrollable: true,
@@ -390,26 +363,65 @@ export class SolicitudesComponent implements OnInit {
     return this.selectedRowIds.includes(idfila);
   }
 
-  onRowClick(razon, ruc, idfila) {
+  onRowClick(razon, ruc, idfila, modal) {
 
     this.selectedRowIds = [];
     this.selectedRowIds.push(idfila);
     this.razonSocial = razon;
     this.ruc = ruc;
+    modal.dismiss('Cross click');
   }
   
   onsave(): void{
+    this.submitted = true;
+    if (this.solicitudForm.invalid) {
+      return;
+    }
+    var list = [];
+    for (const item of this.uploader.queue) {
+      list.push({'name': item?.file?.name});
+
+      if (item?.file?.name.includes('.xml')) {
+        this.cantXml =+ 1;
+      }
+
+      console.log('cantxml', this.cantXml);
+      
+    }
+    
+    console.log('cantxml2', this.cantXml);
+    if(this.uploader.queue.length / 2 > 0)
+    {
+      this.utilsService.showNotification('La cantidad de archivos adjuntados debe ser siempre par', 'Alerta', 2);
+      return;
+    }
+    this.uploader.setOptions({
+      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&usuarioAud=Admin1`,
+    });
+
     this.dataXml  = [];
     this.uploader.uploadAll();
     
     this.uploader.response.subscribe( res => {
+     
       var rs = JSON.parse(res);
-      console.log('resp',res);
-      
-      this.dataXml.push(rs)
-    });
+      if (rs.tipo != 1) {
+        this.dataXml.push(rs)
+      }
+      else
+      {
+        if (rs.tipo == 1) {
+          this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
 
-    console.log('array', this.dataXml);
-    
+          this.utilsService.blockUIStop();
+        } else if (rs.tipo == 2) {
+          this.utilsService.showNotification(res.mensaje, 'Alerta', 2);
+          this.utilsService.blockUIStop();
+        } else {
+          this.utilsService.showNotification(res.mensaje, 'Error', 3);
+          this.utilsService.blockUIStop();
+        }
+      }
+    });
   }
 }
