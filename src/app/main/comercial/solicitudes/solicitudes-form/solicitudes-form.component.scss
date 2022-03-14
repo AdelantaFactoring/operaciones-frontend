@@ -1,0 +1,9 @@
+@import '@core/scss/angular/libs/form-wizard.component.scss';
+@import '@core/scss/angular/libs/select.component.scss';
+@import '@core/scss/angular/libs/file-uploader.component.scss';
+.detail-th-color {
+  background-color: rgba(252, 120, 120, 0.12) !important;
+}
+.selectedRow {
+  background-color: rgba(247,246,248,255);
+}

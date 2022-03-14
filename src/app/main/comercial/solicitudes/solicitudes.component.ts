@@ -30,6 +30,7 @@ export class SolicitudesComponent implements OnInit {
   public solicitudDetForm: FormGroup;
   public cambiarIcono: boolean = false;
 
+  name = "Elija el archivo";
   cantXml = 0;
   CantPdf = 0;
   optClienteP = [];
@@ -274,6 +275,8 @@ export class SolicitudesComponent implements OnInit {
         flagEliminado = true;
         item.remove();
       }
+      
+    //this.name = item._file.name;
     }
     if (flagEliminado == true) {
       this.utilsService.showNotification('Se han eliminado los archivo que no continen una extensión .xml o .pdf', 'Validación', 2);
@@ -377,20 +380,20 @@ export class SolicitudesComponent implements OnInit {
     if (this.solicitudForm.invalid) {
       return;
     }
-    var list = [];
-    for (const item of this.uploader.queue) {
-      list.push({'name': item?.file?.name});
+    // var list = [];
+    // for (const item of this.uploader.queue) {
+    //   list.push({'name': item?.file?.name});
 
-      if (item?.file?.name.includes('.xml')) {
-        this.cantXml =+ 1;
-      }
+    //   if (item?.file?.name.includes('.xml')) {
+    //     this.cantXml =+ 1;
+    //   }
 
-      console.log('cantxml', this.cantXml);
+    //   console.log('cantxml', this.cantXml);
       
-    }
+    // }
     
-    console.log('cantxml2', this.cantXml);
-    if(this.uploader.queue.length / 2 > 0)
+    //console.log('cantxml2', this.cantXml);
+    if(this.uploader.queue.length % 2 > 0)
     {
       this.utilsService.showNotification('La cantidad de archivos adjuntados debe ser siempre par', 'Alerta', 2);
       return;

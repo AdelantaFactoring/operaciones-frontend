@@ -17,6 +17,7 @@ export const SOLICITUD = {
   registrar: '/solicitudCab/registrar',
   eliminar: '/solicitudCab/eliminar',
   eliminarFactura: '/solicitudCab/eliminarfactura',
+  uploadXlsx: '/solicitudCab/uploadXlsx',
 };
 
 export const PAGADOR = {

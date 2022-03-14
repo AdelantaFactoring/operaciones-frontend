@@ -15,6 +15,9 @@ import {NgxMaskModule} from "ngx-mask";
 import { FileUploadModule } from 'ng2-file-upload';
 import { GastosComponent } from './clientes/gastos/gastos.component';
 import { PagadorComponent } from './pagador/pagador.component';
+import { SolicitudesFormComponent } from './solicitudes/solicitudes-form/solicitudes-form.component';
+import { CardSnippetModule } from '@core/components/card-snippet/card-snippet.module';
+import { CoreDirectivesModule } from '@core/directives/directives';
 
 const routes: Routes = [
   {
@@ -52,6 +55,15 @@ const routes: Routes = [
         component: SolicitudesComponent
       }
     ]
+  },
+  {
+    path: '',
+    children: [
+      {
+        path: 'solicitudes-form',
+        component: SolicitudesFormComponent 
+      }
+    ]
   }
 ]
 
@@ -61,7 +73,8 @@ const routes: Routes = [
     CheckListComponent,
     SolicitudesComponent,
     GastosComponent,
-    PagadorComponent
+    PagadorComponent,
+    SolicitudesFormComponent
   ],
   imports: [
     CommonModule,
@@ -75,7 +88,9 @@ const routes: Routes = [
     CoreTouchspinModule,
     NgSelectModule,
     NgxMaskModule.forRoot(),
-    FileUploadModule
+    FileUploadModule,
+    CardSnippetModule,
+    CoreDirectivesModule
   ]
 })
 export class ComercialModule { }
