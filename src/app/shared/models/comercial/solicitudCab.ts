@@ -20,7 +20,7 @@ export class SolicitudCab {
     idTipoOperacion: number;
     tipoOperacion: string;
     fechaCreacion: string;
-    usuarioAud: string;
+    idUsuarioAud: number;
     totalRows: number;
     solicitudDet: SolicitudDet[];
 

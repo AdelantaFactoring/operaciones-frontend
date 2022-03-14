@@ -90,7 +90,7 @@ export class RespuestaPagadorComponent implements OnInit {
 
     solicitudes.forEach(el => {
       el.idEstado = idEstado;
-      el.usuarioAud = "superadmin";
+      el.idUsuarioAud = 1;
     });
 
     this.utilsService.blockUIStart('Registrando...');
@@ -189,7 +189,7 @@ export class RespuestaPagadorComponent implements OnInit {
     }
 
     if (!valido) return;
-    item.usuarioAud = "superadmin";
+    item.idUsuarioAud = 1;
     item.solicitudDet = item.solicitudDet.filter(f => f.editado);
 
     this.utilsService.blockUIStart('Guardando...');
@@ -233,7 +233,7 @@ export class RespuestaPagadorComponent implements OnInit {
         this.respuestaPagadorService.eliminarFactura({
           idSolicitudCab: item.idSolicitudCab,
           idSolicitudDet: item.idSolicitudDet,
-          usuarioAud: 'superadmin'
+          idUsuarioAud: 1
         }).subscribe(response => {
           if (response.tipo === 1) {
             cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);

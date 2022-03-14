@@ -213,7 +213,7 @@ export class SolicitudesComponent implements OnInit {
       "rucAceptante": this.dataXml[0].rucDet,
       "idTipoOperacion": this.idTipoOperacion,
       "moneda": this.dataXml[0].tipoMoneda,
-      "usuarioAud": "Admin",
+      "idUsuarioAud": 1,
       "solicitudDet": this.params
     }).subscribe(response => {
       console.log('res', response);
@@ -242,7 +242,6 @@ export class SolicitudesComponent implements OnInit {
   onCancelar(): void {
     this.submitted = false;
     this.modalService.dismissAll();
-
   }
 
   onRefrescar(): void {
@@ -396,7 +395,7 @@ export class SolicitudesComponent implements OnInit {
       return;
     }
     this.uploader.setOptions({
-      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&usuarioAud=Admin1`,
+      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&idUsuarioAud=1`,
     });
 
     this.dataXml  = [];

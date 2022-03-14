@@ -25,7 +25,7 @@ export class ConsultaFactrackService {
   eliminarFactura(payload): Observable<any> {
     return this.requestMethod.delete(
       `${environment.apiUrl}${SOLICITUD.eliminarFactura}`,
-      `?idSolicitudCab=${payload.idSolicitudCab}&idSolicitudDet=${payload.idSolicitudDet}&usuarioAud=${payload.usuarioAud}`,
+      `?idSolicitudCab=${payload.idSolicitudCab}&idSolicitudDet=${payload.idSolicitudDet}&idUsuarioAud=${payload.idUsuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

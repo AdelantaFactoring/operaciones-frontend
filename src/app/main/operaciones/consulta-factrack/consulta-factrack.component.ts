@@ -112,7 +112,7 @@ export class ConsultaFactrackComponent implements OnInit {
         this.consultaFactrackService.eliminarFactura({
           idSolicitudCab: item.idSolicitudCab,
           idSolicitudDet: item.idSolicitudDet,
-          usuarioAud: 'superadmin'
+          idUsuarioAud: 1
         }).subscribe(response => {
           if (response.tipo === 1) {
             cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);
@@ -143,7 +143,7 @@ export class ConsultaFactrackComponent implements OnInit {
 
     solicitudes.forEach(el => {
       el.idEstado = idEstado;
-      el.usuarioAud = "superadmin";
+      el.idUsuarioAud = 1
     });
 
     this.utilsService.blockUIStart('Confirmando...');

@@ -156,7 +156,7 @@ export class GastosComponent implements OnInit {
           this.utilsService.blockUIStart('Eliminando...');
           this.clienteService.eliminarGastos({
             idClienteGastos: item.idClienteGastos,
-            usuarioAud: 'superadmin'
+            idUsuarioAud: 1
           }).subscribe(response => {
             if (response.tipo === 1) {
               this.gastos = this.gastos.filter(f => f.idFila != item.idFila);
