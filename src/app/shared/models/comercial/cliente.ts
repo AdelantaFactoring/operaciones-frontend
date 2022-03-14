@@ -1,11 +1,11 @@
-export class ClientePagador {
-  idClientePagador: number;
+export class Cliente {
+  idCliente: number;
   ruc: string;
   razonSocial: string;
   direccionPrincipal: string;
   direccionFacturacion: string;
-  cedente: boolean;
-  aceptante: boolean;
+  factoring: boolean;
+  confirming: boolean;
   capitalTrabajo: boolean;
   totalRows: number;
 }

@@ -1,12 +1,12 @@
-export const CLIENTEPAGADOR = {
-  listar: '/clientepagador/listar',
-  obtener: '/clientepagador/obtener',
-  combo: '/clientepagador/combo',
-  guardar: '/clientepagador/guardar',
-  eliminar: '/clientepagador/eliminar',
-  eliminarCuenta: '/clientepagador/eliminarcuenta',
-  eliminarContacto: '/clientepagador/eliminarcontacto',
-  eliminarGastos: '/clientepagador/eliminargastos'
+export const CLIENTE = {
+  listar: '/cliente/listar',
+  obtener: '/cliente/obtener',
+  combo: '/cliente/combo',
+  guardar: '/cliente/guardar',
+  eliminar: '/cliente/eliminar',
+  eliminarCuenta: '/cliente/eliminarcuenta',
+  eliminarContacto: '/cliente/eliminarcontacto',
+  eliminarGastos: '/cliente/eliminargastos'
 };
 
 export const SOLICITUD = {

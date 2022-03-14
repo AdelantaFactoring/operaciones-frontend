@@ -106,7 +106,7 @@ export class SolicitudesComponent implements OnInit {
       confirming: [false],
       capitalTrabajo: [false],
       ruc: ['', Validators.required],
-      razonSocial: ['', Validators.required] 
+      razonSocial: ['', Validators.required]
     });
     this.solicitudDetForm = this.formBuilder.group({
       nroSolicitud: [''],
@@ -150,7 +150,7 @@ export class SolicitudesComponent implements OnInit {
   onNuevo(modal): void {
     this.razonSocial = '';
     this.ruc = '';
-    
+
     this.uploader.clearQueue();
     this.idSolicitudCab = 0;
 
@@ -205,7 +205,7 @@ export class SolicitudesComponent implements OnInit {
       });
     }
 
-    
+
     this.utilsService.blockUIStart('Guardando información...');
     this.solicitudesService.guardar({
       "idSolicitudCab": this.idSolicitudCab,
@@ -217,7 +217,7 @@ export class SolicitudesComponent implements OnInit {
       "solicitudDet": this.params
     }).subscribe(response => {
       console.log('res', response);
-      
+
       if (response.tipo == 1) {
         this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();
@@ -283,11 +283,11 @@ export class SolicitudesComponent implements OnInit {
   onRadioChange(value, idTipoOperacion): void {
     this.tipoServicio = value;
     this.idTipoOperacion = idTipoOperacion;
-    
-    this.hasBaseDropZoneOver = false;   
+
+    this.hasBaseDropZoneOver = false;
   }
 
-  onClientePagadorList(modal, value): void {
+  onClienteList(modal, value): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesService.listarCliente({
       idTipo: this.idTipoOperacion,
@@ -371,7 +371,7 @@ export class SolicitudesComponent implements OnInit {
     this.ruc = ruc;
     modal.dismiss('Cross click');
   }
-  
+
   onsave(): void{
     this.submitted = true;
     if (this.solicitudForm.invalid) {
@@ -386,9 +386,9 @@ export class SolicitudesComponent implements OnInit {
       }
 
       console.log('cantxml', this.cantXml);
-      
+
     }
-    
+
     console.log('cantxml2', this.cantXml);
     if(this.uploader.queue.length / 2 > 0)
     {
@@ -401,9 +401,9 @@ export class SolicitudesComponent implements OnInit {
 
     this.dataXml  = [];
     this.uploader.uploadAll();
-    
+
     this.uploader.response.subscribe( res => {
-     
+
       var rs = JSON.parse(res);
       if (rs.tipo != 1) {
         this.dataXml.push(rs)

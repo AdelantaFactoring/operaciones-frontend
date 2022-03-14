@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import {RequestMethod} from "app/shared/helpers/request-method";
 import {environment} from "environments/environment";
-import {CLIENTEPAGADOR} from "app/shared/helpers/url/comercial";
+import {CLIENTE} from "app/shared/helpers/url/comercial";
 import {Observable} from "rxjs";
 import {CONTENT_TYPE} from "app/shared/helpers/headers";
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClientePagadorService {
+export class ClientesService {
   private requestMethod = new RequestMethod();
   constructor() { }
 
   listar(payload): Observable<any> {
     return this.requestMethod.get(
-      `${environment.apiUrl}${CLIENTEPAGADOR.listar}`,
+      `${environment.apiUrl}${CLIENTE.listar}`,
       `?search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
       {
         'Content-Type': CONTENT_TYPE.json
@@ -24,8 +24,8 @@ export class ClientePagadorService {
 
   obtener(payload): Observable<any> {
     return this.requestMethod.get(
-      `${environment.apiUrl}${CLIENTEPAGADOR.obtener}`,
-      `?idClientePagador=${payload.idClientePagador}`,
+      `${environment.apiUrl}${CLIENTE.obtener}`,
+      `?idCliente=${payload.idCliente}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }
@@ -34,7 +34,7 @@ export class ClientePagadorService {
 
   guardar(payload): Observable<any> {
     return this.requestMethod.post(
-      `${environment.apiUrl}${CLIENTEPAGADOR.guardar}`,
+      `${environment.apiUrl}${CLIENTE.guardar}`,
       payload,
       {
         'Content-Type': CONTENT_TYPE.json
@@ -44,8 +44,8 @@ export class ClientePagadorService {
 
   eliminar(payload): Observable<any> {
     return this.requestMethod.delete(
-      `${environment.apiUrl}${CLIENTEPAGADOR.eliminar}`,
-      `?idClientePagador=${payload.idClientePagador}&usuarioAud=${payload.usuarioAud}`,
+      `${environment.apiUrl}${CLIENTE.eliminar}`,
+      `?idCliente=${payload.idCliente}&usuarioAud=${payload.usuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }
@@ -54,8 +54,8 @@ export class ClientePagadorService {
 
   eliminarCuenta(payload): Observable<any> {
     return this.requestMethod.delete(
-      `${environment.apiUrl}${CLIENTEPAGADOR.eliminarCuenta}`,
-      `?idClientePagadorCuenta=${payload.idClientePagadorCuenta}&usuarioAud=${payload.usuarioAud}`,
+      `${environment.apiUrl}${CLIENTE.eliminarCuenta}`,
+      `?idClienteCuenta=${payload.idClienteCuenta}&usuarioAud=${payload.usuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }
@@ -64,8 +64,8 @@ export class ClientePagadorService {
 
   eliminarContacto(payload): Observable<any> {
     return this.requestMethod.delete(
-      `${environment.apiUrl}${CLIENTEPAGADOR.eliminarContacto}`,
-      `?idClientePagadorContacto=${payload.idClientePagadorContacto}&usuarioAud=${payload.usuarioAud}`,
+      `${environment.apiUrl}${CLIENTE.eliminarContacto}`,
+      `?idClienteContacto=${payload.idClienteContacto}&usuarioAud=${payload.usuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }
@@ -74,8 +74,8 @@ export class ClientePagadorService {
 
   eliminarGastos(payload): Observable<any> {
     return this.requestMethod.delete(
-      `${environment.apiUrl}${CLIENTEPAGADOR.eliminarGastos}`,
-      `?idClientePagadorGastos=${payload.idClientePagadorGastos}&usuarioAud=${payload.usuarioAud}`,
+      `${environment.apiUrl}${CLIENTE.eliminarGastos}`,
+      `?idClienteGastos=${payload.idClienteGastos}&usuarioAud=${payload.usuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

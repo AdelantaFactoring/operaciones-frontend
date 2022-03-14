@@ -1,6 +1,6 @@
-export class ClientePagadorContacto {
-  idClientePagadorContacto: number;
-  idClientePagador: number;
+export class ClienteContacto {
+  idClienteContacto: number;
+  idCliente: number;
   nombre: string;
   apellidoPaterno: string;
   apellidoMaterno: string;

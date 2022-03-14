@@ -214,7 +214,7 @@
               <div class="form-group">
                 <label style="visibility: hidden;">Buscar</label>
                 <button type="button" class="btn btn-icon btn-outline-info" style="float: right;"
-                  (click)="onClientePagadorList(modalCliente, 1)"
+                  (click)="onClienteList(modalCliente, 1)"
                   placement="top" rippleEffect>
                                 <span ngbTooltip="Mostrar Información" placement="left" container="body"
                                       [data-feather]="'search'"></span>
@@ -478,7 +478,7 @@
                     type="search"
                     placeholder="Buscar"
                     class="form-control ml-25"
-                    [(ngModel)]="searchCli" [ngModelOptions]="{ standalone: true }" (change)="onClientePagadorList('', 0)"
+                    [(ngModel)]="searchCli" [ngModelOptions]="{ standalone: true }" (change)="onClienteList('', 0)"
                   /></label>
                 </div>
               </div>
@@ -495,8 +495,8 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let item of optClienteP" class="cursor-pointer"
-                     [class.selectedRow]="rowIsSelected(item.idClientePagador)"
-                     (click)="onRowClick(item.razonSocial,item.ruc, item.idClientePagador, modal)">
+                     [class.selectedRow]="rowIsSelected(item.idCliente)"
+                     (click)="onRowClick(item.razonSocial,item.ruc, item.idCliente, modal)">
                       <td>{{item.razonSocial}}</td>
                       <td>{{item.ruc}}</td>
                     </tr>
@@ -507,7 +507,7 @@
             <div class="row">
               <div class="col-12 col-md-12 d-flex justify-content-end">
                 <ngb-pagination [collectionSize]="collectionSizeCli" [(page)]="pageCli"
-                                (pageChange)="onClientePagadorList(modalCliente, 0)" [pageSize]="pageSizeCli"></ngb-pagination>
+                                (pageChange)="onClienteList(modalCliente, 0)" [pageSize]="pageSizeCli"></ngb-pagination>
               </div>
             </div>
           </div>

@@ -1,6 +1,6 @@
-export class ClientePagadorGastos {
-  idClientePagadorGastos: number;
-  idClientePagador: number;
+export class ClienteGastos {
+  idClienteGastos: number;
+  idCliente: number;
   idTipoOperacion: number;
   idMoneda: number = 1;
   moneda: string;
