@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
-import {ClientesService} from "./cliente.service";
+import {ClientesService} from "./clientes.service";
 import {Cliente} from "../../../shared/models/comercial/cliente";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";

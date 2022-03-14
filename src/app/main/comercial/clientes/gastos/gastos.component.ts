@@ -3,7 +3,7 @@ import {ClienteGastos} from "../../../../shared/models/comercial/cliente-gastos"
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TablaMaestra} from "../../../../shared/models/shared/tabla-maestra";
 import {UtilsService} from "../../../../shared/services/utils.service";
-import {ClientesService} from "../cliente.service";
+import {ClientesService} from "../clientes.service";
 import Swal from "sweetalert2";
 
 @Component({
