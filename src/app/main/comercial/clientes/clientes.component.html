@@ -146,7 +146,7 @@
                          id="fact" formControlName="cedente"
                   />
                   <label class="custom-control-label"
-                         for="fact">Cedente</label>
+                         for="fact">Factoring</label>
                 </div>
                 <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
               </div>
@@ -158,7 +158,7 @@
                          id="confir" formControlName="aceptante"
                   />
                   <label class="custom-control-label"
-                         for="confir">Aceptante</label>
+                         for="confir">Confirming</label>
                 </div>
               </div>
             </div>
@@ -184,13 +184,13 @@
           </div>
           <div class="col-md-12 col-12">
             <div class="form-group">
-              <label>Gastos Cedente</label>
+              <label>Gastos Factoring</label>
               <app-gastos [gastos]="gastos" [monedas]="monedas" [idTipoOperacion]="1"></app-gastos>
             </div>
           </div>
           <div class="col-md-12 col-12">
             <div class="form-group">
-              <label>Gastos Aceptante</label>
+              <label>Gastos Confirming</label>
               <app-gastos [gastos]="gastos" [monedas]="monedas" [idTipoOperacion]="2"></app-gastos>
             </div>
           </div>
@@ -278,37 +278,37 @@
                         </div>
                       </td>
                       <td [ngClass]="{'row-edicion': item.editado}">
-                        <label *ngIf="!item.edicion">{{item.nombre}}</label>
+                        <p *ngIf="!item.edicion">{{item.nombre}}</p>
                         <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Nombre"
                                [(ngModel)]="item.nombre"
                                [ngModelOptions]="{standalone: true}"/>
                       </td>
                       <td [ngClass]="{'row-edicion': item.editado}">
-                        <label *ngIf="!item.edicion">{{item.apellidoPaterno}}</label>
+                        <p *ngIf="!item.edicion">{{item.apellidoPaterno}}</p>
                         <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Ape. Paterno"
                                [(ngModel)]="item.apellidoPaterno"
                                [ngModelOptions]="{standalone: true}"/>
                       </td>
                       <td [ngClass]="{'row-edicion': item.editado}">
-                        <label *ngIf="!item.edicion">{{item.apellidoMaterno}}</label>
+                        <p *ngIf="!item.edicion">{{item.apellidoMaterno}}</p>
                         <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Ape. Materno"
                                [(ngModel)]="item.apellidoMaterno"
                                [ngModelOptions]="{standalone: true}"/>
                       </td>
                       <td [ngClass]="{'row-edicion': item.editado}">
-                        <label *ngIf="!item.edicion">{{item.telefono}}</label>
+                        <p *ngIf="!item.edicion">{{item.telefono}}</p>
                         <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Teléfono"
                                [(ngModel)]="item.telefono"
                                [ngModelOptions]="{standalone: true}"/>
                       </td>
                       <td [ngClass]="{'row-edicion': item.editado}">
-                        <label *ngIf="!item.edicion">{{item.correo}}</label>
+                        <p *ngIf="!item.edicion">{{item.correo}}</p>
                         <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Correo"
                                [(ngModel)]="item.correo"
                                [ngModelOptions]="{standalone: true}"/>
                       </td>
                       <td [ngClass]="{'row-edicion': item.editado}">
-                        <label *ngIf="!item.edicion">{{(item.predeterminado ? 'Sí' : 'No')}}</label>
+                        <p *ngIf="!item.edicion">{{(item.predeterminado ? 'Sí' : 'No')}}</p>
                         <div *ngIf="item.edicion" class="custom-control custom-switch custom-control-inline">
                           <input type="checkbox" class="custom-control-input"
                                  id="{{'predeterminadoContacto' + item.idFila}}" [(ngModel)]="item.predeterminado"
@@ -402,19 +402,19 @@
                         </div>
                       </td>
                       <td [ngClass]="{'row-edicion': item.editado}">
-                        <label *ngIf="!item.edicion">{{item.titular}}</label>
+                        <p *ngIf="!item.edicion">{{item.titular}}</p>
                         <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Titular"
                                [(ngModel)]="item.titular"
                                [ngModelOptions]="{standalone: true}"/>
                       </td>
                       <td [ngClass]="{'row-edicion': item.editado}">
-                        <label *ngIf="!item.edicion">{{item.banco}}</label>
+                        <p *ngIf="!item.edicion">{{item.banco}}</p>
                         <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Banco"
                                [(ngModel)]="item.banco"
                                [ngModelOptions]="{standalone: true}"/>
                       </td>
                       <td [ngClass]="{'row-edicion': item.editado}">
-                        <label *ngIf="!item.edicion">{{item.moneda}}</label>
+                        <p *ngIf="!item.edicion">{{item.moneda}}</p>
                         <ng-select appendTo="body" *ngIf="item.edicion" [clearable]="false" [items]="monedas"
                                    bindLabel="descripcion" placeholder="Moneda"
                                    bindValue="idColumna" [(ngModel)]="item.idMoneda"
@@ -422,19 +422,19 @@
                         </ng-select>
                       </td>
                       <td [ngClass]="{'row-edicion': item.editado}">
-                        <label *ngIf="!item.edicion">{{item.nroCuenta}}</label>
+                        <p *ngIf="!item.edicion">{{item.nroCuenta}}</p>
                         <input *ngIf="item.edicion" class="form-control" type="text" placeholder="N° Cuenta"
                                [(ngModel)]="item.nroCuenta"
                                [ngModelOptions]="{standalone: true}"/>
                       </td>
                       <td [ngClass]="{'row-edicion': item.editado}">
-                        <label *ngIf="!item.edicion">{{item.cci}}</label>
+                        <p *ngIf="!item.edicion">{{item.cci}}</p>
                         <input *ngIf="item.edicion" class="form-control" type="text" placeholder="CCI"
                                [(ngModel)]="item.cci"
                                [ngModelOptions]="{standalone: true}"/>
                       </td>
                       <td [ngClass]="{'row-edicion': item.editado}">
-                        <label *ngIf="!item.edicion">{{(item.predeterminado ? 'Sí' : 'No')}}</label>
+                        <p *ngIf="!item.edicion">{{(item.predeterminado ? 'Sí' : 'No')}}</p>
                         <div *ngIf="item.edicion" class="custom-control custom-switch custom-control-inline">
                           <input type="checkbox" class="custom-control-input"
                                  id="{{'predeterminadoCuenta' + item.idFila}}" [(ngModel)]="item.predeterminado"

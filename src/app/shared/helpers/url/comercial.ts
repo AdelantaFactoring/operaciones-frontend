@@ -14,7 +14,7 @@ export const SOLICITUD = {
   upload: '/solicitudCab/upload',
   guardar: '/solicitudCab/guardar',
   confirmarPago: '/solicitudCab/confirmarpago',
-  registrar: '/solicitudCab/registrar',
+  cambiarEstado: '/solicitudCab/cambiarestado',
   eliminar: '/solicitudCab/eliminar',
   eliminarFactura: '/solicitudCab/eliminarfactura',
 };

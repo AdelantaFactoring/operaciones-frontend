@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit {
     // Login
     //this.loading = true;
     sessionStorage.setItem('currentUser', JSON.stringify(new User()))
-    this._router.navigate(['/clientes/solicitudes/']);
+    this._router.navigate(['/comercial/solicitudes/']);
     // this._authenticationService
     //   .login(this.f.email.value, this.f.password.value)
     //   .pipe(first())

@@ -57,10 +57,10 @@
                   </th>
                   <th>Acción</th>
                   <th>N° Solicitud</th>
-                  <th>Cedente</th>
-                  <th>Cedente RUC</th>
-                  <th>Aceptante</th>
-                  <th>Aceptante RUC</th>
+                  <th>Cliente</th>
+                  <th>Cliente RUC</th>
+                  <th>Pagador / Proveedor</th>
+                  <th>Pagador / Proveedor RUC</th>
                   <th>Moneda</th>
                   <th>Tipo Operación</th>
                   <th>Estado</th>
@@ -94,10 +94,10 @@
                       </div>
                     </td>
                     <td>{{cab.codigo}}</td>
-                    <td>{{cab.razonSocialCedente}}</td>
-                    <td>{{cab.rucCedente}}</td>
-                    <td>{{cab.razonSocialAceptante}}</td>
-                    <td>{{cab.rucAceptante}}</td>
+                    <td>{{cab.razonSocialCliente}}</td>
+                    <td>{{cab.rucCliente}}</td>
+                    <td>{{cab.razonSocialPagProv}}</td>
+                    <td>{{cab.rucPagProv}}</td>
                     <td>{{cab.moneda}}</td>
                     <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.estado}}</td>
@@ -116,6 +116,7 @@
                             <th class="detail-th-color">Fondo Resguardo</th>
                             <th class="detail-th-color">Fecha Pago</th>
                             <th class="detail-th-color">Monto Pago Confirmado</th>
+                            <th class="detail-th-color">Estado</th>
                           </tr>
                           </thead>
                           <tbody>
@@ -127,6 +128,7 @@
                             <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                             <td>{{item.fechaConfirmadoFormat}}</td>
                             <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                            <td>{{item.estado}}</td>
                           </tr>
                           </tbody>
                         </table>
@@ -190,18 +192,18 @@
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Razon Social</label>
-                <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.razonSocial.errors }" 
+                <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.razonSocial.errors }"
                 class="form-control" type="text" formControlName="razonSocial" [(ngModel)]="razonSocial" disabled>
                 <div *ngIf="ReactiveIUForm.razonSocial.errors" class="invalid-feedback">
                   <div *ngIf="ReactiveIUForm.razonSocial.errors.required">* Campo obligatorio</div>
                 </div>
               </div>
             </div>
-            
+
             <div class="col-md-5 col-10">
               <div class="form-group">
                 <label>Ruc</label>
-                <input  [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.ruc.errors }" 
+                <input  [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.ruc.errors }"
                 class="form-control" type="text" formControlName="ruc" [(ngModel)]="ruc" disabled>
                 <div *ngIf="ReactiveIUForm.ruc.errors" class="invalid-feedback">
                   <div *ngIf="ReactiveIUForm.ruc.errors.required">* Campo obligatorio</div>
@@ -481,7 +483,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="col-md-12 col-12">
               <div class="table-responsive">
                 <table class="table table-hover">
@@ -524,7 +526,7 @@
       </div>
     </ng-template>
 
-   
+
     <block-ui></block-ui>
   </div>
 </div>

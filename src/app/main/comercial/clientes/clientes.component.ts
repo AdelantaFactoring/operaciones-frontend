@@ -368,7 +368,7 @@ export class ClientesComponent implements OnInit {
     item.editado = true;
   }
 
-  onEliminarCuenta(item): void {
+  onEliminarCuenta(item: ClientePagadorCuenta): void {
     if (item.idClientePagadorCuenta == 0) {
       this.cuentas = this.cuentas.filter(f => f.idFila != item.idFila);
     } else {
@@ -490,7 +490,7 @@ export class ClientesComponent implements OnInit {
     item.editado = true;
   }
 
-  onEliminarContacto(item): void {
+  onEliminarContacto(item: ClientePagadorContacto): void {
     if (item.idClientePagadorContacto == 0) {
       this.contactos = this.contactos.filter(f => f.idFila != item.idFila);
     } else {

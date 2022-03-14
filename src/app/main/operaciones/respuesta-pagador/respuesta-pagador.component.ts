@@ -94,7 +94,7 @@ export class RespuestaPagadorComponent implements OnInit {
     });
 
     this.utilsService.blockUIStart('Registrando...');
-    this.respuestaPagadorService.registrar(solicitudes).subscribe(response => {
+    this.respuestaPagadorService.cambiarEstado(solicitudes).subscribe(response => {
       if (response.tipo == 1) {
         this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();
@@ -213,5 +213,45 @@ export class RespuestaPagadorComponent implements OnInit {
 
   onDeshacerCambios(): void {
     this.onRefrescar();
+  }
+
+  onEliminar(cab: SolicitudCab, item: SolicitudDet): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea eliminar el registro '${item.nroDocumento}'?, esta acción no podrá revertirse`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-danger',
+        cancelButton: 'btn btn-primary'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart('Eliminando...');
+        this.respuestaPagadorService.eliminarFactura({
+          idSolicitudCab: item.idSolicitudCab,
+          idSolicitudDet: item.idSolicitudDet,
+          usuarioAud: 'superadmin'
+        }).subscribe(response => {
+          if (response.tipo === 1) {
+            cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);
+            if (cab.solicitudDet.length === 0)
+              this.onListarSolicitudes();
+            this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
+            this.utilsService.blockUIStop();
+          } else if (response.tipo === 2) {
+            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          } else {
+            this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          }
+          this.utilsService.blockUIStop();
+        }, error => {
+          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+          this.utilsService.blockUIStop();
+        });
+      }
+    });
   }
 }

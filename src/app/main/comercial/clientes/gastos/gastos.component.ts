@@ -128,7 +128,7 @@ export class GastosComponent implements OnInit {
     item.editado = true;
   }
 
-  onEliminar(item): void {
+  onEliminar(item: ClientePagadorGastos): void {
     if (item.idClientePagadorGastos == 0) {
       this.gastos = this.gastos.filter(f => f.idFila != item.idFila);
     } else {
