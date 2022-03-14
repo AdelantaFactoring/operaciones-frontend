@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
 import {UtilsService} from "../../../shared/services/utils.service";
 import {CheckListService} from "./check-list.service";
@@ -28,9 +28,15 @@ export class CheckListComponent implements OnInit {
   public pageSize: number = 10;
   public page: number = 1;
 
-  public uploader: FileUploader = new FileUploader({
+  public hasBaseDropZoneOver: boolean = false;
+  public archivoDeudaCoactiva: FileUploader = new FileUploader({
     url: `${environment.apiUrl}${SOLICITUD.upload}`,
-    queueLimit: 1,
+    queueLimit: 2,
+    isHTML5: true
+  });
+
+  public archivosSustento: FileUploader = new FileUploader({
+    url: `${environment.apiUrl}${SOLICITUD.upload}`,
     isHTML5: true
   });
 
@@ -79,16 +85,16 @@ export class CheckListComponent implements OnInit {
       servicioCobranza: [{value: 0, disabled: true}],
       servicioCustodia: [{value: 0, disabled: true}],
       gastoVigenciaPoder: [0],
-      nombreContacto: [''],
-      telefonoContacto: [''],
-      correoContacto: [''],
+      nombreContacto: [{value: '', disabled: true}],
+      telefonoContacto: [{value: '', disabled: true}],
+      correoContacto: [{value: '', disabled: true}],
       conCopiaContacto: [''],
-      titularCuentaBancariaDestino: [''],
-      monedaCuentaBancariaDestino: [''],
-      bancoDestino: [''],
-      nroCuentaBancariaDestino: [''],
-      cciDestino: [''],
-      tipoCuentaBancariaDestino: [''],
+      titularCuentaBancariaDestino: [{value: '', disabled: true}],
+      monedaCuentaBancariaDestino: [{value: '', disabled: true}],
+      bancoDestino: [{value: '', disabled: true}],
+      nroCuentaBancariaDestino: [{value: '', disabled: true}],
+      cciDestino: [{value: '', disabled: true}],
+      tipoCuentaBancariaDestino: [{value: '', disabled: true}],
       deudaCoactiva: [false],
       archivoDeudaCoactiva: [''],
       deudaCoactivaRegularizada: [false],
@@ -125,6 +131,10 @@ export class CheckListComponent implements OnInit {
     this.solicitudes.forEach(el => {
       el.seleccionado = this.seleccionarTodo;
     })
+  }
+
+  onCambiarFondoResguardo(item: SolicitudDet) {
+    item.editado = true;
   }
 
   onRefrescar(): void {
@@ -177,5 +187,49 @@ export class CheckListComponent implements OnInit {
 
   onGuardar(): void {
     console.log(this.solicitudForm.controls.archivoDeudaCoactiva.value);
+  }
+
+  onCambioArchivoDeudaCoactiva(): void {
+    console.log(this.archivosSustento.queue);
+  }
+
+  fileOverBase(e: any): void {
+    this.hasBaseDropZoneOver = e;
+  }
+
+  onSeleccioneContacto(modal): void {
+    setTimeout(() => {
+      this.modalService.open(modal, {
+        scrollable: true,
+        //size: 'lg',
+        windowClass: 'my-class',
+        animation: true,
+        centered: false,
+        backdrop: "static",
+        beforeDismiss: () => {
+          return true;
+        }
+      });
+    }, 0);
+  }
+
+  onSeleccioneCuenta(modal): void {
+    setTimeout(() => {
+      this.modalService.open(modal, {
+        scrollable: true,
+        //size: 'lg',
+        windowClass: 'my-class',
+        animation: true,
+        centered: false,
+        backdrop: "static",
+        beforeDismiss: () => {
+          return true;
+        }
+      });
+    }, 0);
+  }
+
+  onCancelarContacto(modal): void {
+    modal.dismiss('Cross click');
   }
 }

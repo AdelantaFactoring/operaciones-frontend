@@ -17,5 +17,5 @@ export class SolicitudDet {
   archivoXML: string;
   archivoPDF: string;
 
-  editado: boolean = false;
+  editado: boolean = true;
 }

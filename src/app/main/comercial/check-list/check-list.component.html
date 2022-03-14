@@ -178,7 +178,7 @@
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
-                <label>RUC (Cedente)</label>
+                <label>RUC (Cliente)</label>
                 <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.rucCedente.errors }"
                        class="form-control" formControlName="rucCedente" type="text"/>
                 <div *ngIf="ReactiveIUForm.rucCedente.errors" class="invalid-feedback">
@@ -188,19 +188,19 @@
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
-                <label>Razón Social (Cedente)</label>
+                <label>Razón Social (Cliente)</label>
                 <input class="form-control" formControlName="razonSocialCedente" type="text"/>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
-                <label>RUC (Aceptante)</label>
+                <label>RUC (Pagador / Proveedor)</label>
                 <input class="form-control" formControlName="rucAceptante" type="text"/>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
-                <label>Razón Social (Aceptante)</label>
+                <label>Razón Social (Pagador / Proveedor)</label>
                 <input class="form-control" formControlName="razonSocialAceptante" type="text"/>
               </div>
             </div>
@@ -219,6 +219,16 @@
             <div class="col-12">
               <div class="divider divider-success">
                 <div class="divider-text">Información de Gastos</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="d-flex flex-wrap mb-0">
+                <div class="pb-1">
+                  <button type="submit" rippleEffect class="btn btn-success">
+                    <i class="mr-0 mr-sm-1" data-feather="refresh-ccw"></i>
+                    <span class="d-none d-sm-inline-block">Actualizar</span>
+                  </button>
+                </div>
               </div>
             </div>
             <div class="col-md-4 col-12" style="display: none">
@@ -288,7 +298,12 @@
                     <td>{{item.financiamiento | number: '1.2-2'}}</td>
                     <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
                     <td>{{item.montoConIGV | number: '1.2-2'}}</td>
-                    <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                    <td [ngClass]="{'row-edicion': item.editado}">
+                      <input class="form-control" type="text" [(ngModel)]="item.fondoResguardo"
+                             [ngModelOptions]="{standalone: true}"
+                             placeholder="0.00" (ngModelChange)="onCambiarFondoResguardo(item)"
+                             mask="separator" thousandSeparator=","/>
+                    </td>
                     <td>{{item.fechaConfirmadoFormat}}</td>
                     <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
                     <td>{{item.estado}}</td>
@@ -300,6 +315,17 @@
             <div class="col-12">
               <div class="divider divider-danger">
                 <div class="divider-text">Información del Contacto</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="d-flex flex-wrap mb-0">
+                <div class="pb-1">
+                  <button type="submit" rippleEffect class="btn btn-danger"
+                          (click)="onSeleccioneContacto(modalCONTACTO)">
+                    <i class="mr-0 mr-sm-1" data-feather="arrow-right-circle"></i>
+                    <span class="d-none d-sm-inline-block">Seleccione...</span>
+                  </button>
+                </div>
               </div>
             </div>
             <div class="col-md-6 col-12">
@@ -329,6 +355,16 @@
             <div class="col-12">
               <div class="divider divider-warning">
                 <div class="divider-text">Información de Cuenta Bancaria</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="d-flex flex-wrap mb-0">
+                <div class="pb-1">
+                  <button type="submit" rippleEffect class="btn btn-warning" (click)="onSeleccioneCuenta(modalCUENTA)">
+                    <i class="mr-0 mr-sm-1" data-feather="arrow-right-circle"></i>
+                    <span class="d-none d-sm-inline-block">Seleccione...</span>
+                  </button>
+                </div>
               </div>
             </div>
             <div class="col-md-6 col-12">
@@ -372,38 +408,21 @@
                 <div class="divider-text">Documento(s) de Sustento</div>
               </div>
             </div>
-            <div class="col-12 col-md-4">
-              <div class="form-group">
-                <div class="custom-control custom-switch custom-control-inline">
-                  <input type="checkbox" class="custom-control-input"
-                         id="confir" formControlName="deudaCoactiva"
-                  />
-                  <label class="custom-control-label"
-                         for="confir">Deuda Coactiva</label>
-                </div>
-              </div>
-            </div>
             <div class="col-12">
-              <fieldset class="form-group">
-                <label for="file-upload-single">Archivo Deuda Coactiva</label>
-                <div class="custom-file">
-                  <input
-                    type="file"
-                    class="custom-file-input"
-                    type="file"
-                    ng2FileSelect
-                    formControlName="archivoDeudaCoactiva"
-                    [uploader]="uploader"
-                    id="file-upload-single"
-                  />
-                  <label class="custom-file-label">Seleccionar archivo</label>
-                </div>
-              </fieldset>
+              <div
+                ng2FileDrop
+                [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
+                (fileOver)="fileOverBase($event)"
+                [uploader]="archivosSustento"
+                class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
+              >
+                Arraste aquí los archivos
+              </div>
             </div>
             <div class="col-12 overflow-auto">
               <div class="d-flex justify-content-between mb-1">
                 <h4>Cola de Archivos</h4>
-                <p>Tamaño de Cola: {{ uploader?.queue?.length }}</p>
+                <p>Tamaño de Cola: {{ archivosSustento?.queue?.length }}</p>
               </div>
 
               <table class="table">
@@ -417,14 +436,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of uploader.queue">
+                <tr *ngFor="let item of archivosSustento.queue">
                   <td>
                     <strong>{{ item?.file?.name }}</strong>
                   </td>
-                  <td *ngIf="uploader.options.isHTML5" nowrap>
+                  <td *ngIf="archivosSustento.options.isHTML5" nowrap>
                     {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
                   </td>
-                  <td *ngIf="uploader.options.isHTML5">
+                  <td *ngIf="archivosSustento.options.isHTML5">
                     <ngb-progressbar type="primary" [value]="item.progress"></ngb-progressbar>
                   </td>
                   <td class="text-center">
@@ -433,24 +452,6 @@
                     <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
                   </td>
                   <td nowrap>
-<!--                    <button-->
-<!--                      type="button"-->
-<!--                      class="btn btn-raised btn-outline-success btn-sm mr-50"-->
-<!--                      (click)="item.upload()"-->
-<!--                      [disabled]="item.isReady || item.isUploading || item.isSuccess"-->
-<!--                      rippleEffect-->
-<!--                    >-->
-<!--                      <span data-feather="upload"></span>-->
-<!--                    </button>-->
-<!--                    <button-->
-<!--                      type="button"-->
-<!--                      class="btn btn-raised btn-outline-warning btn-sm mr-50"-->
-<!--                      (click)="item.cancel()"-->
-<!--                      [disabled]="!item.isUploading"-->
-<!--                      rippleEffect-->
-<!--                    >-->
-<!--                      <i data-feather="slash"></i>-->
-<!--                    </button>-->
                     <button
                       type="button"
                       class="btn btn-raised btn-outline-danger btn-sm"
@@ -466,12 +467,12 @@
 
               <div id="">
                 <p class="mt-1">Progreso de Cola:</p>
-                <ngb-progressbar class="mb-1" type="primary" [value]="uploader.progress"></ngb-progressbar>
+                <ngb-progressbar class="mb-1" type="primary" [value]="archivosSustento.progress"></ngb-progressbar>
                 <button
                   type="button"
                   class="btn mr-1 btn-primary mb-1 mb-sm-0"
-                  (click)="uploader.uploadAll()"
-                  [disabled]="!uploader.getNotUploadedItems().length"
+                  (click)="archivosSustento.uploadAll()"
+                  [disabled]="!archivosSustento.getNotUploadedItems().length"
                   rippleEffect
                 >
                   <span data-feather="upload" class="mr-25"></span> Subir Todo
@@ -479,8 +480,8 @@
                 <button
                   type="button"
                   class="btn mr-1 btn-outline-warning mb-1 mb-sm-0"
-                  (click)="uploader.cancelAll()"
-                  [disabled]="!uploader.isUploading"
+                  (click)="archivosSustento.cancelAll()"
+                  [disabled]="!archivosSustento.isUploading"
                   rippleEffect
                 >
                   <span data-feather="slash" class="mr-25"></span> Cancelar Todo
@@ -488,8 +489,8 @@
                 <button
                   type="button"
                   class="btn btn-outline-danger mb-1 mb-sm-0"
-                  (click)="uploader.clearQueue()"
-                  [disabled]="!uploader.queue.length"
+                  (click)="archivosSustento.clearQueue()"
+                  [disabled]="!archivosSustento.queue.length"
                   rippleEffect
                 >
                   <span data-feather="trash" class="mr-25"></span> Quitar Todo
@@ -516,6 +517,104 @@
       </div>
     </ng-template>
 
+    <ng-template #modalCONTACTO let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title">Seleccione un Contacto</h4>
+        <button aria-label="Close" class="close" type="button" (click)="onCancelarContacto(modal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ngbAutofocus tabindex="0">
+        <div class="row spaced">
+          <div class="col-12">
+            <div class="form-group">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                  <tr>
+                    <th>Acción</th>
+                    <th>Nombre</th>
+                    <th>Ape. Paterno</th>
+                    <th>Ape. Materno</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Activo</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of []">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Seleccionar">
+                          <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>{{item.nombre}}</td>
+                    <td>{{item.apellidoPaterno}}</td>
+                    <td>{{item.apellidoMaterno}}</td>
+                    <td>{{item.telefono}}</td>
+                    <td>{{item.correo}}</td>
+                    <td>{{(item.predeterminado ? 'Sí' : 'No')}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #modalCUENTA let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title">Seleccione una Cuenta</h4>
+        <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ngbAutofocus tabindex="0">
+        <div class="row spaced">
+          <div class="col-md-12 col-12">
+            <div class="form-group">
+              <label>Datos de Cuenta de Banco</label>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                  <tr>
+                    <th>Acción</th>
+                    <th>Titular</th>
+                    <th>Banco</th>
+                    <th>Moneda</th>
+                    <th>N° Cuenta</th>
+                    <th>CCI</th>
+                    <th>Activo</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of []">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Seleccionar">
+                          <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>{{item.titular}}</td>
+                    <td>{{item.banco}}</td>
+                    <td>{{item.moneda}}</td>
+                    <td>{{item.nroCuenta}}</td>
+                    <td>{{item.cci}}</td>
+                    <td>{{(item.predeterminado ? 'Sí' : 'No')}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
     <block-ui></block-ui>
   </div>
 </div>
