@@ -45,7 +45,7 @@ export class ClientesService {
   eliminar(payload): Observable<any> {
     return this.requestMethod.delete(
       `${environment.apiUrl}${CLIENTE.eliminar}`,
-      `?idCliente=${payload.idCliente}&usuarioAud=${payload.usuarioAud}`,
+      `?idCliente=${payload.idCliente}&idUsuarioAud=${payload.idUsuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }
@@ -55,7 +55,7 @@ export class ClientesService {
   eliminarCuenta(payload): Observable<any> {
     return this.requestMethod.delete(
       `${environment.apiUrl}${CLIENTE.eliminarCuenta}`,
-      `?idClienteCuenta=${payload.idClienteCuenta}&usuarioAud=${payload.usuarioAud}`,
+      `?idClienteCuenta=${payload.idClienteCuenta}&idUsuarioAud=${payload.idUsuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }
@@ -65,7 +65,7 @@ export class ClientesService {
   eliminarContacto(payload): Observable<any> {
     return this.requestMethod.delete(
       `${environment.apiUrl}${CLIENTE.eliminarContacto}`,
-      `?idClienteContacto=${payload.idClienteContacto}&usuarioAud=${payload.usuarioAud}`,
+      `?idClienteContacto=${payload.idClienteContacto}&idUsuarioAud=${payload.idUsuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }
@@ -75,7 +75,7 @@ export class ClientesService {
   eliminarGastos(payload): Observable<any> {
     return this.requestMethod.delete(
       `${environment.apiUrl}${CLIENTE.eliminarGastos}`,
-      `?idClienteGastos=${payload.idClienteGastos}&usuarioAud=${payload.usuarioAud}`,
+      `?idClienteGastos=${payload.idClienteGastos}&idUsuarioAud=${payload.idUsuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

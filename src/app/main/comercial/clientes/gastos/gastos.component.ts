@@ -31,6 +31,8 @@ export class GastosComponent implements OnInit {
       idMoneda: [1],
       tasaNominalMensual: [0, [Validators.required, Validators.min(0.01)]],
       tasaNominalAnual: [0, [Validators.required, Validators.min(0.01)]],
+      tasaNominalMensualMora: [0, [Validators.required, Validators.min(0.01)]],
+      tasaNominalAnualMora: [0, [Validators.required, Validators.min(0.01)]],
       financiamiento: [0],
       comisionEstructuracion: [0],
       gastosContrato: [0],
@@ -66,6 +68,8 @@ export class GastosComponent implements OnInit {
       moneda: moneda,
       tasaNominalMensual: this.gastosForm.controls.tasaNominalMensual.value,
       tasaNominalAnual: this.gastosForm.controls.tasaNominalAnual.value,
+      tasaNominalMensualMora: this.gastosForm.controls.tasaNominalMensualMora.value,
+      tasaNominalAnualMora: this.gastosForm.controls.tasaNominalAnualMora.value,
       financiamiento: this.gastosForm.controls.financiamiento.value,
       comisionEstructuracion: this.gastosForm.controls.comisionEstructuracion.value,
       gastosContrato: this.gastosForm.controls.gastosContrato.value,
@@ -90,6 +94,8 @@ export class GastosComponent implements OnInit {
       moneda: item.moneda,
       tasaNominalMensual: item.tasaNominalMensual,
       tasaNominalAnual: item.tasaNominalAnual,
+      tasaNominalMensualMora: item.tasaNominalMensualMora,
+      tasaNominalAnualMora: item.tasaNominalAnualMora,
       financiamiento: item.financiamiento,
       comisionEstructuracion: item.comisionEstructuracion,
       gastosContrato: item.gastosContrato,
@@ -111,6 +117,8 @@ export class GastosComponent implements OnInit {
     item.moneda = this.oldGastos.moneda;
     item.tasaNominalMensual = this.oldGastos.tasaNominalMensual;
     item.tasaNominalAnual = this.oldGastos.tasaNominalAnual;
+    item.tasaNominalMensualMora = this.oldGastos.tasaNominalMensualMora;
+    item.tasaNominalAnualMora = this.oldGastos.tasaNominalAnualMora;
     item.financiamiento = this.oldGastos.financiamiento;
     item.comisionEstructuracion = this.oldGastos.comisionEstructuracion;
     item.gastosContrato = this.oldGastos.gastosContrato;

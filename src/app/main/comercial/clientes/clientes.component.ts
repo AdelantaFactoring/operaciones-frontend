@@ -215,7 +215,7 @@ export class ClientesComponent implements OnInit {
         this.utilsService.blockUIStart('Eliminando...');
         this.clienteService.eliminar({
           idCliente: item.idCliente,
-          usuarioAud: 'superadmin'
+          idUsuarioAud: 1
         }).subscribe(response => {
           if (response.tipo === 1) {
             this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
@@ -250,7 +250,7 @@ export class ClientesComponent implements OnInit {
       factoring: this.clienteForm.controls.factoring.value,
       confirming: this.clienteForm.controls.confirming.value,
       capitalTrabajo: this.clienteForm.controls.capitalTrabajo.value,
-      usuarioAud: 'superadmin',
+      idUsuarioAud: 1,
       contacto: this.contactos.filter(f => f.editado),
       cuenta: this.cuentas.filter(f => f.editado),
       gastos: this.gastos.filter(f => f.editado)
@@ -388,7 +388,7 @@ export class ClientesComponent implements OnInit {
           this.utilsService.blockUIStart('Eliminando...');
           this.clienteService.eliminarCuenta({
             idClienteCuenta: item.idClienteCuenta,
-            usuarioAud: 'superadmin'
+            idUsuarioAud: 1
           }).subscribe(response => {
             if (response.tipo === 1) {
               this.cuentas = this.cuentas.filter(f => f.idFila != item.idFila);
@@ -510,7 +510,7 @@ export class ClientesComponent implements OnInit {
           this.utilsService.blockUIStart('Eliminando...');
           this.clienteService.eliminarContacto({
             idClienteContacto: item.idClienteContacto,
-            usuarioAud: 'superadmin'
+            idUsuarioAud: 1
           }).subscribe(response => {
             if (response.tipo === 1) {
               this.contactos = this.contactos.filter(f => f.idFila != item.idFila);

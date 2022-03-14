@@ -6,6 +6,8 @@ export class ClienteGastos {
   moneda: string;
   tasaNominalMensual: number;
   tasaNominalAnual: number;
+  tasaNominalMensualMora: number;
+  tasaNominalAnualMora: number;
   financiamiento: number;
   comisionEstructuracion: number;
   gastosContrato: number;
