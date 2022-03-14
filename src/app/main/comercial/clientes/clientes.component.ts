@@ -1,15 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
-import {ClientePagadorService} from "./cliente-pagador.service";
-import {ClientePagador} from "../../../shared/models/comercial/cliente-pagador";
+import {ClientesService} from "./clientes.service";
+import {Cliente} from "../../../shared/models/comercial/cliente";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ClientePagadorContacto} from "../../../shared/models/comercial/cliente-pagador-contacto";
-import {ClientePagadorCuenta} from "../../../shared/models/comercial/cliente-pagador-cuenta";
+import {ClienteContacto} from "../../../shared/models/comercial/cliente-contacto";
+import {ClienteCuenta} from "../../../shared/models/comercial/cliente-cuenta";
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
 import Swal from "sweetalert2";
-import {ClientePagadorGastos} from "../../../shared/models/comercial/cliente-pagador-gastos";
+import {ClienteGastos} from "../../../shared/models/comercial/cliente-gastos";
 
 @Component({
   selector: 'app-clientes',
@@ -18,7 +18,7 @@ import {ClientePagadorGastos} from "../../../shared/models/comercial/cliente-pag
 })
 export class ClientesComponent implements OnInit {
   public contentHeader: object;
-  public clientes: ClientePagador[];
+  public clientes: Cliente[];
   public submitted: boolean;
   public submittedCuenta: boolean;
   public submittedContacto: boolean;
@@ -27,12 +27,12 @@ export class ClientesComponent implements OnInit {
   public cuentaForm: FormGroup;
   public contactoForm: FormGroup;
   public gastosForm: FormGroup;
-  public contactos: ClientePagadorContacto[] = [];
-  public cuentas: ClientePagadorCuenta[] = [];
-  public gastos: ClientePagadorGastos[] = [];
+  public contactos: ClienteContacto[] = [];
+  public cuentas: ClienteCuenta[] = [];
+  public gastos: ClienteGastos[] = [];
   public monedas: TablaMaestra[];
-  public oldCuenta: ClientePagadorCuenta;
-  public oldContacto: ClientePagadorContacto;
+  public oldCuenta: ClienteCuenta;
+  public oldContacto: ClienteContacto;
 
   public search: string = '';
   //Paginación
@@ -55,7 +55,7 @@ export class ClientesComponent implements OnInit {
   constructor(private modalService: NgbModal,
               private formBuilder: FormBuilder,
               private utilsService: UtilsService,
-              private clientePagadorService: ClientePagadorService,
+              private clienteService: ClientesService,
               private tablaMaestraService: TablaMaestraService) {
     this.contentHeader = {
       headerTitle: 'Clientes',
@@ -80,13 +80,13 @@ export class ClientesComponent implements OnInit {
       }
     };
     this.clienteForm = this.formBuilder.group({
-      idClientePagador: [0],
+      idCliente: [0],
       ruc: ['', Validators.required],
       razonSocial: ['', Validators.required],
       direccionPrincipal: ['', Validators.required],
       direccionFacturacion: [''],
-      cedente: [false],
-      aceptante: [false],
+      factoring: [false],
+      confirming: [false],
       capitalTrabajo: [false]
     });
     this.cuentaForm = this.formBuilder.group({
@@ -126,11 +126,11 @@ export class ClientesComponent implements OnInit {
 
   onListarClientes(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
-    this.clientePagadorService.listar({
+    this.clienteService.listar({
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
-    }).subscribe((response: ClientePagador[]) => {
+    }).subscribe((response: Cliente[]) => {
       this.clientes = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
       this.utilsService.blockUIStop();
@@ -160,23 +160,23 @@ export class ClientesComponent implements OnInit {
     }, 0);
   }
 
-  onEditar(item: ClientePagador, modal: any): void {
+  onEditar(item: Cliente, modal: any): void {
     this.utilsService.blockUIStart('Obteniendo información...');
-    this.clienteForm.controls.idClientePagador.setValue(item.idClientePagador);
+    this.clienteForm.controls.idCliente.setValue(item.idCliente);
     this.clienteForm.controls.ruc.setValue(item.ruc);
     this.clienteForm.controls.razonSocial.setValue(item.razonSocial);
     this.clienteForm.controls.direccionPrincipal.setValue(item.direccionPrincipal);
     this.clienteForm.controls.direccionFacturacion.setValue(item.direccionFacturacion);
-    this.clienteForm.controls.cedente.setValue(item.cedente);
-    this.clienteForm.controls.aceptante.setValue(item.aceptante);
+    this.clienteForm.controls.factoring.setValue(item.factoring);
+    this.clienteForm.controls.confirming.setValue(item.confirming);
     this.clienteForm.controls.capitalTrabajo.setValue(item.capitalTrabajo);
 
-    this.clientePagadorService.obtener({
-      idClientePagador: item.idClientePagador
+    this.clienteService.obtener({
+      idCliente: item.idCliente
     }).subscribe((response: any) => {
-      this.contactos = response.clientePagadorContacto;
-      this.cuentas = response.clientePagadorCuenta;
-      this.gastos = response.clientePagadorGastos;
+      this.contactos = response.clienteContacto;
+      this.cuentas = response.clienteCuenta;
+      this.gastos = response.clienteGastos;
       this.utilsService.blockUIStop();
 
       setTimeout(() => {
@@ -198,7 +198,7 @@ export class ClientesComponent implements OnInit {
     });
   }
 
-  onEliminar(item: ClientePagador): void {
+  onEliminar(item: Cliente): void {
     Swal.fire({
       title: 'Confirmación',
       text: `¿Desea eliminar el registro "${item.razonSocial}"?, esta acción no podrá revertirse`,
@@ -213,9 +213,9 @@ export class ClientesComponent implements OnInit {
     }).then(result => {
       if (result.value) {
         this.utilsService.blockUIStart('Eliminando...');
-        this.clientePagadorService.eliminar({
-          idClientePagador: item.idClientePagador,
-          usuarioAud: 'superadmin'
+        this.clienteService.eliminar({
+          idCliente: item.idCliente,
+          idUsuarioAud: 1
         }).subscribe(response => {
           if (response.tipo === 1) {
             this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
@@ -241,16 +241,16 @@ export class ClientesComponent implements OnInit {
     if (this.clienteForm.invalid)
       return;
     this.utilsService.blockUIStart('Guardando...');
-    this.clientePagadorService.guardar({
-      idClientePagador: this.clienteForm.controls.idClientePagador.value,
+    this.clienteService.guardar({
+      idCliente: this.clienteForm.controls.idCliente.value,
       ruc: this.clienteForm.controls.ruc.value,
       razonSocial: this.clienteForm.controls.razonSocial.value,
       direccionPrincipal: this.clienteForm.controls.direccionPrincipal.value,
       direccionFacturacion: this.clienteForm.controls.direccionFacturacion.value,
-      cedente: this.clienteForm.controls.cedente.value,
-      aceptante: this.clienteForm.controls.aceptante.value,
+      factoring: this.clienteForm.controls.factoring.value,
+      confirming: this.clienteForm.controls.confirming.value,
       capitalTrabajo: this.clienteForm.controls.capitalTrabajo.value,
-      usuarioAud: 'superadmin',
+      idUsuarioAud: 1,
       contacto: this.contactos.filter(f => f.editado),
       cuenta: this.cuentas.filter(f => f.editado),
       gastos: this.gastos.filter(f => f.editado)
@@ -300,8 +300,8 @@ export class ClientesComponent implements OnInit {
     }
 
     this.cuentas.push({
-      idClientePagadorCuenta: 0,
-      idClientePagador: 0,
+      idClienteCuenta: 0,
+      idCliente: 0,
       titular: this.cuentaForm.controls.titular.value,
       banco: this.cuentaForm.controls.banco.value,
       idMoneda: idMoneda,
@@ -318,10 +318,10 @@ export class ClientesComponent implements OnInit {
     this.submittedCuenta = false;
   }
 
-  onEditarCuenta(item: ClientePagadorCuenta): void {
+  onEditarCuenta(item: ClienteCuenta): void {
     this.oldCuenta = {
-      idClientePagadorCuenta: item.idClientePagadorCuenta,
-      idClientePagador: item.idClientePagador,
+      idClienteCuenta: item.idClienteCuenta,
+      idCliente: item.idCliente,
       titular: item.titular,
       banco: item.banco,
       idMoneda: item.idMoneda,
@@ -336,9 +336,9 @@ export class ClientesComponent implements OnInit {
     item.edicion = true;
   }
 
-  onCancelarCuenta(item: ClientePagadorCuenta): void {
-    item.idClientePagadorCuenta = this.oldCuenta.idClientePagadorCuenta;
-    item.idClientePagador = this.oldCuenta.idClientePagador;
+  onCancelarCuenta(item: ClienteCuenta): void {
+    item.idClienteCuenta = this.oldCuenta.idClienteCuenta;
+    item.idCliente = this.oldCuenta.idCliente;
     item.titular = this.oldCuenta.titular;
     item.banco = this.oldCuenta.banco;
     item.idMoneda = this.oldCuenta.idMoneda;
@@ -351,7 +351,7 @@ export class ClientesComponent implements OnInit {
     item.editado = false;
   }
 
-  onConfirmarCambioCuenta(item: ClientePagadorCuenta): void {
+  onConfirmarCambioCuenta(item: ClienteCuenta): void {
     if (this.cuentas.filter(f => f.predeterminado && f.idMoneda == item.idMoneda && f.idFila != item.idFila).length > 0 && item.predeterminado) {
       this.cuentas.forEach(el => {
         if (el.idMoneda == item.idMoneda && el.idFila != item.idFila) {
@@ -368,8 +368,8 @@ export class ClientesComponent implements OnInit {
     item.editado = true;
   }
 
-  onEliminarCuenta(item): void {
-    if (item.idClientePagadorCuenta == 0) {
+  onEliminarCuenta(item: ClienteCuenta): void {
+    if (item.idClienteCuenta == 0) {
       this.cuentas = this.cuentas.filter(f => f.idFila != item.idFila);
     } else {
       Swal.fire({
@@ -386,9 +386,9 @@ export class ClientesComponent implements OnInit {
       }).then(result => {
         if (result.value) {
           this.utilsService.blockUIStart('Eliminando...');
-          this.clientePagadorService.eliminarCuenta({
-            idClientePagadorCuenta: item.idClientePagadorCuenta,
-            usuarioAud: 'superadmin'
+          this.clienteService.eliminarCuenta({
+            idClienteCuenta: item.idClienteCuenta,
+            idUsuarioAud: 1
           }).subscribe(response => {
             if (response.tipo === 1) {
               this.cuentas = this.cuentas.filter(f => f.idFila != item.idFila);
@@ -427,8 +427,8 @@ export class ClientesComponent implements OnInit {
     }
 
     this.contactos.push({
-      idClientePagadorContacto: 0,
-      idClientePagador: 0,
+      idClienteContacto: 0,
+      idCliente: 0,
       nombre: this.contactoForm.controls.nombre.value,
       apellidoPaterno: this.contactoForm.controls.apellidoPaterno.value,
       apellidoMaterno: this.contactoForm.controls.apellidoMaterno.value,
@@ -443,10 +443,10 @@ export class ClientesComponent implements OnInit {
     this.submittedContacto = false;
   }
 
-  onEditarContacto(item: ClientePagadorContacto): void {
+  onEditarContacto(item: ClienteContacto): void {
     this.oldContacto = {
-      idClientePagadorContacto: item.idClientePagadorContacto,
-      idClientePagador: item.idClientePagador,
+      idClienteContacto: item.idClienteContacto,
+      idCliente: item.idCliente,
       nombre: item.nombre,
       apellidoPaterno: item.apellidoPaterno,
       apellidoMaterno: item.apellidoMaterno,
@@ -460,9 +460,9 @@ export class ClientesComponent implements OnInit {
     item.edicion = true;
   }
 
-  onCancelarContacto(item: ClientePagadorContacto): void {
-    item.idClientePagadorContacto = this.oldContacto.idClientePagadorContacto;
-    item.idClientePagador = this.oldContacto.idClientePagador;
+  onCancelarContacto(item: ClienteContacto): void {
+    item.idClienteContacto = this.oldContacto.idClienteContacto;
+    item.idCliente = this.oldContacto.idCliente;
     item.nombre = this.oldContacto.nombre;
     item.apellidoPaterno = this.oldContacto.apellidoPaterno;
     item.apellidoMaterno = this.oldContacto.apellidoMaterno;
@@ -474,7 +474,7 @@ export class ClientesComponent implements OnInit {
     item.editado = false;
   }
 
-  onConfirmarCambioContacto(item: ClientePagadorContacto): void {
+  onConfirmarCambioContacto(item: ClienteContacto): void {
     if (this.contactos.filter(f => f.predeterminado && f.idFila != item.idFila).length > 0 && item.predeterminado) {
       this.contactos.forEach(el => {
         if (el.idFila != item.idFila) {
@@ -490,8 +490,8 @@ export class ClientesComponent implements OnInit {
     item.editado = true;
   }
 
-  onEliminarContacto(item): void {
-    if (item.idClientePagadorContacto == 0) {
+  onEliminarContacto(item: ClienteContacto): void {
+    if (item.idClienteContacto == 0) {
       this.contactos = this.contactos.filter(f => f.idFila != item.idFila);
     } else {
       Swal.fire({
@@ -508,9 +508,9 @@ export class ClientesComponent implements OnInit {
       }).then(result => {
         if (result.value) {
           this.utilsService.blockUIStart('Eliminando...');
-          this.clientePagadorService.eliminarContacto({
-            idClientePagadorContacto: item.idClientePagadorContacto,
-            usuarioAud: 'superadmin'
+          this.clienteService.eliminarContacto({
+            idClienteContacto: item.idClienteContacto,
+            idUsuarioAud: 1
           }).subscribe(response => {
             if (response.tipo === 1) {
               this.contactos = this.contactos.filter(f => f.idFila != item.idFila);

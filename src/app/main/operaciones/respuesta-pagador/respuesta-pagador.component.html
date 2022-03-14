@@ -76,10 +76,10 @@
                     </div>
                   </th>
                   <th>N° Solicitud</th>
-                  <th>Cedente</th>
-                  <th>Cedente RUC</th>
-                  <th>Aceptante</th>
-                  <th>Aceptante RUC</th>
+                  <th>Cliente</th>
+                  <th>Cliente RUC</th>
+                  <th>Pagador / Proveedor</th>
+                  <th>Pagador / Proveedor RUC</th>
                   <th>Moneda</th>
                   <th>Tipo Operación</th>
                   <th>Estado</th>
@@ -110,10 +110,10 @@
                       </div>
                     </td>
                     <td>{{cab.codigo}}</td>
-                    <td>{{cab.razonSocialCedente}}</td>
-                    <td>{{cab.rucCedente}}</td>
-                    <td>{{cab.razonSocialAceptante}}</td>
-                    <td>{{cab.rucAceptante}}</td>
+                    <td>{{cab.razonSocialCliente}}</td>
+                    <td>{{cab.rucCliente}}</td>
+                    <td>{{cab.razonSocialPagProv}}</td>
+                    <td>{{cab.rucPagProv}}</td>
                     <td>{{cab.moneda}}</td>
                     <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.estado}}</td>
@@ -142,6 +142,7 @@
                           <table class="table table-hover">
                             <thead>
                             <tr>
+                              <th class="detail-th-color">Acción</th>
                               <th class="detail-th-color">N° Documento</th>
                               <th class="detail-th-color">Forma Pago</th>
                               <th class="detail-th-color">Monto sin IGV</th>
@@ -153,17 +154,24 @@
                             </thead>
                             <tbody>
                             <tr *ngFor="let item of cab.solicitudDet">
+                              <td>
+                                <div class="d-flex align-items-center">
+                                  <a href="javascript:void(0)" title="Eliminar" (click)="onEliminar(cab, item)">
+                                    <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                                  </a>
+                                </div>
+                              </td>
                               <td [ngClass]="{'row-edicion': item.editado}">
-                                <label>{{item.nroDocumento}}</label></td>
+                                <p>{{item.nroDocumento}}</p></td>
                               <td [ngClass]="{'row-edicion': item.editado}">
-                                <label>{{item.formaPago}}</label></td>
+                                <p>{{item.formaPago}}</p></td>
                               <td [ngClass]="{'row-edicion': item.editado}">
-                                <label>{{item.montoSinIGV | number: '1.2-2'}}</label></td>
+                                <p>{{item.montoSinIGV | number: '1.2-2'}}</p></td>
                               <td [ngClass]="{'row-edicion': item.editado}">
-                                <label>{{item.montoConIGV | number: '1.2-2'}}</label></td>
+                                <p>{{item.montoConIGV | number: '1.2-2'}}</p></td>
                               <td [ngClass]="{'row-edicion': item.editado}">
-                                <label>{{item.fondoResguardo | number: '1.2-2'}}
-                                </label></td>
+                                <p>{{item.fondoResguardo | number: '1.2-2'}}
+                                </p></td>
                               <td>
                                 <div class="input-group">
                                   <input class="form-control" placeholder="yyyy-mm-dd"

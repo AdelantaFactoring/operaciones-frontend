@@ -8,7 +8,7 @@ import {CONTENT_TYPE} from "../../../shared/helpers/headers";
 @Injectable({
   providedIn: 'root'
 })
-export class ConsultaFactrackService {
+export class CheckListService {
   private requestMethod = new RequestMethod();
   constructor() { }
 
@@ -16,26 +16,6 @@ export class ConsultaFactrackService {
     return this.requestMethod.get(
       `${environment.apiUrl}${SOLICITUD.listar}`,
       `?idConsulta=${payload.idConsulta}&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
-      {
-        'Content-Type': CONTENT_TYPE.json
-      }
-    );
-  }
-
-  eliminarFactura(payload): Observable<any> {
-    return this.requestMethod.delete(
-      `${environment.apiUrl}${SOLICITUD.eliminarFactura}`,
-      `?idSolicitudCab=${payload.idSolicitudCab}&idSolicitudDet=${payload.idSolicitudDet}&idUsuarioAud=${payload.idUsuarioAud}`,
-      {
-        'Content-Type': CONTENT_TYPE.json
-      }
-    );
-  }
-
-  cambiarEstado(payload): Observable<any> {
-    return this.requestMethod.put(
-      `${environment.apiUrl}${SOLICITUD.cambiarEstado}`,
-      payload,
       {
         'Content-Type': CONTENT_TYPE.json
       }

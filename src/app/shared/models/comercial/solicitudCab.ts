@@ -4,12 +4,11 @@ export class SolicitudCab {
     seleccionado: boolean = false;
     idSolicitudCab: number;
     codigo: string;
-    idCedente: number;
-    razonSocialCedente: string;
-    rucCedente: string;
-    idAceptante: string;
-    razonSocialAceptante: string;
-    rucAceptante: string;
+    idCliente: number;
+    razonSocialCliente: string;
+    rucCliente: string;
+    razonSocialPagProv: string;
+    rucPagProv: string;
     moneda: string;
     comisionEstructuracion: number;
     gastosContrato: number;
@@ -21,7 +20,7 @@ export class SolicitudCab {
     idTipoOperacion: number;
     tipoOperacion: string;
     fechaCreacion: string;
-    usuarioAud: string;
+    idUsuarioAud: number;
     totalRows: number;
     solicitudDet: SolicitudDet[];
 

@@ -1,11 +1,13 @@
-export class ClientePagadorGastos {
-  idClientePagadorGastos: number;
-  idClientePagador: number;
+export class ClienteGastos {
+  idClienteGastos: number;
+  idCliente: number;
   idTipoOperacion: number;
   idMoneda: number = 1;
   moneda: string;
   tasaNominalMensual: number;
   tasaNominalAnual: number;
+  tasaNominalMensualMora: number;
+  tasaNominalAnualMora: number;
   financiamiento: number;
   comisionEstructuracion: number;
   gastosContrato: number;

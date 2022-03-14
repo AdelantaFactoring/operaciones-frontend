@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {RequestMethod} from "../../../shared/helpers/request-method";
 import {environment} from "environments/environment";
-import {SOLICITUD, CLIENTEPAGADOR} from "../../../shared/helpers/url/comercial";
+import {SOLICITUD, CLIENTE} from "../../../shared/helpers/url/comercial";
 import {Observable} from "rxjs";
 import {CONTENT_TYPE} from "../../../shared/helpers/headers";
 
@@ -26,7 +26,7 @@ export class SolicitudesService {
 
   listarCliente(payload): Observable<any> {
     return this.requestMethod.get(
-      `${environment.apiUrl}${CLIENTEPAGADOR.listar}`,
+      `${environment.apiUrl}${CLIENTE.listar}`,
       `?idTipo=${payload.idTipo}&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
       {
         'Content-Type': CONTENT_TYPE.json
@@ -36,7 +36,7 @@ export class SolicitudesService {
 
   comboCliente(payload): Observable<any> {
     return this.requestMethod.get(
-      `${environment.apiUrl}${CLIENTEPAGADOR.combo}`,
+      `${environment.apiUrl}${CLIENTE.combo}`,
       `?idTipo=${payload.idTipo}`,
       {
         'Content-Type': CONTENT_TYPE.json
@@ -57,7 +57,7 @@ export class SolicitudesService {
   eliminar(payload): Observable<any> {
     return this.requestMethod.delete(
       `${environment.apiUrl}${SOLICITUD.eliminar}`,
-      `?idSolicitudCab=${payload.idClientePagador}&usuarioAud=${payload.usuarioAud}`,
+      `?idSolicitudCab=${payload.idCliente}&idUsuarioAud=${payload.idUsuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

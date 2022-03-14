@@ -32,10 +32,20 @@ export class RespuestaPagadorService {
     );
   }
 
-  registrar(payload): Observable<any> {
+  cambiarEstado(payload): Observable<any> {
     return this.requestMethod.put(
-      `${environment.apiUrl}${SOLICITUD.registrar}`,
+      `${environment.apiUrl}${SOLICITUD.cambiarEstado}`,
       payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  eliminarFactura(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${SOLICITUD.eliminarFactura}`,
+      `?idSolicitudCab=${payload.idSolicitudCab}&idSolicitudDet=${payload.idSolicitudDet}&idUsuarioAud=${payload.idUsuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

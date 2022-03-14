@@ -1,9 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ClientePagadorGastos} from "../../../../shared/models/comercial/cliente-pagador-gastos";
+import {ClienteGastos} from "../../../../shared/models/comercial/cliente-gastos";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TablaMaestra} from "../../../../shared/models/shared/tabla-maestra";
 import {UtilsService} from "../../../../shared/services/utils.service";
-import {ClientePagadorService} from "../cliente-pagador.service";
+import {ClientesService} from "../clientes.service";
 import Swal from "sweetalert2";
 
 @Component({
@@ -14,9 +14,9 @@ import Swal from "sweetalert2";
 export class GastosComponent implements OnInit {
   public submittedGastos: boolean;
   public gastosForm: FormGroup;
-  public oldGastos: ClientePagadorGastos;
+  public oldGastos: ClienteGastos;
 
-  @Input() gastos: ClientePagadorGastos[];
+  @Input() gastos: ClienteGastos[];
   @Input() monedas: TablaMaestra[];
   @Input() idTipoOperacion: number;
 
@@ -26,11 +26,13 @@ export class GastosComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private utilsService: UtilsService,
-              private clientePagadorService: ClientePagadorService,) {
+              private clienteService: ClientesService,) {
     this.gastosForm = this.formBuilder.group({
       idMoneda: [1],
       tasaNominalMensual: [0, [Validators.required, Validators.min(0.01)]],
       tasaNominalAnual: [0, [Validators.required, Validators.min(0.01)]],
+      tasaNominalMensualMora: [0, [Validators.required, Validators.min(0.01)]],
+      tasaNominalAnualMora: [0, [Validators.required, Validators.min(0.01)]],
       financiamiento: [0],
       comisionEstructuracion: [0],
       gastosContrato: [0],
@@ -43,7 +45,7 @@ export class GastosComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  fGastos(id: number): ClientePagadorGastos[] {
+  fGastos(id: number): ClienteGastos[] {
     return this.gastos.filter(f => f.idTipoOperacion === id);
   }
 
@@ -59,13 +61,15 @@ export class GastosComponent implements OnInit {
     }
 
     this.gastos.push({
-      idClientePagadorGastos: 0,
-      idClientePagador: 0,
+      idClienteGastos: 0,
+      idCliente: 0,
       idTipoOperacion: this.idTipoOperacion,
       idMoneda: this.gastosForm.controls.idMoneda.value,
       moneda: moneda,
       tasaNominalMensual: this.gastosForm.controls.tasaNominalMensual.value,
       tasaNominalAnual: this.gastosForm.controls.tasaNominalAnual.value,
+      tasaNominalMensualMora: this.gastosForm.controls.tasaNominalMensualMora.value,
+      tasaNominalAnualMora: this.gastosForm.controls.tasaNominalAnualMora.value,
       financiamiento: this.gastosForm.controls.financiamiento.value,
       comisionEstructuracion: this.gastosForm.controls.comisionEstructuracion.value,
       gastosContrato: this.gastosForm.controls.gastosContrato.value,
@@ -81,15 +85,17 @@ export class GastosComponent implements OnInit {
     this.submittedGastos = false;
   }
 
-  onEditarGastos(item: ClientePagadorGastos): void {
+  onEditarGastos(item: ClienteGastos): void {
     this.oldGastos = {
-      idClientePagadorGastos: item.idClientePagadorGastos,
-      idClientePagador: item.idClientePagador,
+      idClienteGastos: item.idClienteGastos,
+      idCliente: item.idCliente,
       idTipoOperacion: item.idTipoOperacion,
       idMoneda: item.idMoneda,
       moneda: item.moneda,
       tasaNominalMensual: item.tasaNominalMensual,
       tasaNominalAnual: item.tasaNominalAnual,
+      tasaNominalMensualMora: item.tasaNominalMensualMora,
+      tasaNominalAnualMora: item.tasaNominalAnualMora,
       financiamiento: item.financiamiento,
       comisionEstructuracion: item.comisionEstructuracion,
       gastosContrato: item.gastosContrato,
@@ -103,14 +109,16 @@ export class GastosComponent implements OnInit {
     item.edicion = true;
   }
 
-  onCancelarGastos(item: ClientePagadorGastos): void {
-    item.idClientePagadorGastos = this.oldGastos.idClientePagadorGastos;
-    item.idClientePagador = this.oldGastos.idClientePagador;
+  onCancelarGastos(item: ClienteGastos): void {
+    item.idClienteGastos = this.oldGastos.idClienteGastos;
+    item.idCliente = this.oldGastos.idCliente;
     item.idTipoOperacion = this.oldGastos.idTipoOperacion;
     item.idMoneda = this.oldGastos.idMoneda;
     item.moneda = this.oldGastos.moneda;
     item.tasaNominalMensual = this.oldGastos.tasaNominalMensual;
     item.tasaNominalAnual = this.oldGastos.tasaNominalAnual;
+    item.tasaNominalMensualMora = this.oldGastos.tasaNominalMensualMora;
+    item.tasaNominalAnualMora = this.oldGastos.tasaNominalAnualMora;
     item.financiamiento = this.oldGastos.financiamiento;
     item.comisionEstructuracion = this.oldGastos.comisionEstructuracion;
     item.gastosContrato = this.oldGastos.gastosContrato;
@@ -122,14 +130,14 @@ export class GastosComponent implements OnInit {
     item.editado = false;
   }
 
-  onConfirmarCambioGastos(item: ClientePagadorGastos): void {
+  onConfirmarCambioGastos(item: ClienteGastos): void {
     item.moneda = this.monedas.find(f => f.idColumna === item.idMoneda).descripcion;
     item.edicion = false;
     item.editado = true;
   }
 
-  onEliminar(item): void {
-    if (item.idClientePagadorGastos == 0) {
+  onEliminar(item: ClienteGastos): void {
+    if (item.idClienteGastos == 0) {
       this.gastos = this.gastos.filter(f => f.idFila != item.idFila);
     } else {
       Swal.fire({
@@ -146,9 +154,9 @@ export class GastosComponent implements OnInit {
       }).then(result => {
         if (result.value) {
           this.utilsService.blockUIStart('Eliminando...');
-          this.clientePagadorService.eliminarGastos({
-            idClientePagadorGastos: item.idClientePagadorGastos,
-            usuarioAud: 'superadmin'
+          this.clienteService.eliminarGastos({
+            idClienteGastos: item.idClienteGastos,
+            idUsuarioAud: 1
           }).subscribe(response => {
             if (response.tipo === 1) {
               this.gastos = this.gastos.filter(f => f.idFila != item.idFila);

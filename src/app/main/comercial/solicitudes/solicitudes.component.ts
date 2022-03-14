@@ -107,7 +107,7 @@ export class SolicitudesComponent implements OnInit {
       confirming: [false],
       capitalTrabajo: [false],
       ruc: ['', Validators.required],
-      razonSocial: ['', Validators.required] 
+      razonSocial: ['', Validators.required]
     });
     this.solicitudDetForm = this.formBuilder.group({
       nroSolicitud: [''],
@@ -151,7 +151,7 @@ export class SolicitudesComponent implements OnInit {
   onNuevo(modal): void {
     this.razonSocial = '';
     this.ruc = '';
-    
+
     this.uploader.clearQueue();
     this.idSolicitudCab = 0;
 
@@ -206,7 +206,7 @@ export class SolicitudesComponent implements OnInit {
       });
     }
 
-    
+
     this.utilsService.blockUIStart('Guardando información...');
     this.solicitudesService.guardar({
       "idSolicitudCab": this.idSolicitudCab,
@@ -214,11 +214,11 @@ export class SolicitudesComponent implements OnInit {
       "rucAceptante": this.dataXml[0].rucDet,
       "idTipoOperacion": this.idTipoOperacion,
       "moneda": this.dataXml[0].tipoMoneda,
-      "usuarioAud": "Admin",
+      "idUsuarioAud": 1,
       "solicitudDet": this.params
     }).subscribe(response => {
       console.log('res', response);
-      
+
       if (response.tipo == 1) {
         this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();
@@ -243,7 +243,6 @@ export class SolicitudesComponent implements OnInit {
   onCancelar(): void {
     this.submitted = false;
     this.modalService.dismissAll();
-
   }
 
   onRefrescar(): void {
@@ -286,11 +285,11 @@ export class SolicitudesComponent implements OnInit {
   onRadioChange(value, idTipoOperacion): void {
     this.tipoServicio = value;
     this.idTipoOperacion = idTipoOperacion;
-    
-    this.hasBaseDropZoneOver = false;   
+
+    this.hasBaseDropZoneOver = false;
   }
 
-  onClientePagadorList(modal, value): void {
+  onClienteList(modal, value): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesService.listarCliente({
       idTipo: this.idTipoOperacion,
@@ -374,7 +373,7 @@ export class SolicitudesComponent implements OnInit {
     this.ruc = ruc;
     modal.dismiss('Cross click');
   }
-  
+
   onsave(): void{
     this.submitted = true;
     if (this.solicitudForm.invalid) {
@@ -399,14 +398,14 @@ export class SolicitudesComponent implements OnInit {
       return;
     }
     this.uploader.setOptions({
-      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&usuarioAud=Admin1`,
+      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&idUsuarioAud=1`,
     });
 
     this.dataXml  = [];
     this.uploader.uploadAll();
-    
+
     this.uploader.response.subscribe( res => {
-     
+
       var rs = JSON.parse(res);
       if (rs.tipo != 1) {
         this.dataXml.push(rs)

@@ -3,9 +3,618 @@
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
     <div class="card">
       <div class="card-body">
-
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <div class="d-flex justify-content-between align-items-center m-1">
+              <label class="d-flex align-items-center"
+              >Mostrar
+                <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
+                        (change)="onRefrescar()">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                filas</label
+              >
+            </div>
+          </div>
+          <div class="col-md-6 col-12 d-flex justify-content-md-end">
+            <div class="d-flex align-items-center justify-content-end pr-1 pb-1 pl-1 pl-md-0 pb-md-0">
+              <label class="d-flex align-items-center"
+              >Buscar<input
+                type="search"
+                placeholder="Buscar"
+                class="form-control ml-25"
+                [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" (change)="onRefrescar()"
+              /></label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>
+                    <div class="d-flex align-items-center">
+                      <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                         (click)="onCambiarVisibilidadDetalleTodo()">
+                        <div *ngIf="!cambiarIcono">
+                          <i class="text-primary cursor-pointer" data-feather="chevron-right"></i>
+                        </div>
+                        <div *ngIf="cambiarIcono"><i class="text-primary cursor-pointer"
+                                                     data-feather="chevron-down"></i>
+                        </div>
+                      </a>
+                    </div>
+                  </th>
+                  <th>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="customCheck" unchecked
+                             [(ngModel)]="seleccionarTodo" (ngModelChange)="onSeleccionarTodo()"/>
+                      <label class="custom-control-label" for="customCheck"></label>
+                    </div>
+                  </th>
+                  <th>Acción</th>
+                  <th>N° Solicitud</th>
+                  <th>Cliente</th>
+                  <th>Cliente RUC</th>
+                  <th>Pagador / Proveedor</th>
+                  <th>Pagador / Proveedor RUC</th>
+                  <th>Moneda</th>
+                  <th>Tipo Operación</th>
+                  <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-template let-cab ngFor [ngForOf]="solicitudes">
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                           (click)="onCambiarVisibilidadDetalle(cab)">
+                          <div *ngIf="!cab.cambiarIcono">
+                            <i class="text-primary cursor-pointer" data-feather="chevron-right"></i>
+                          </div>
+                          <div *ngIf="cab.cambiarIcono">
+                            <i class="text-primary cursor-pointer" data-feather="chevron-down"></i>
+                          </div>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="{{'customCheck' + cab.idSolicitudCab}}"
+                               [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"/>
+                        <label class="custom-control-label" for="{{'customCheck' + cab.idSolicitudCab}}"></label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Validar" (click)="onValidar(cab, modalINFO)">
+                          <i class="text-danger cursor-pointer" data-feather="check-circle"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>{{cab.codigo}}</td>
+                    <td>{{cab.razonSocialCliente}}</td>
+                    <td>{{cab.rucCliente}}</td>
+                    <td>{{cab.razonSocialPagProv}}</td>
+                    <td>{{cab.rucPagProv}}</td>
+                    <td>{{cab.moneda}}</td>
+                    <td>{{cab.tipoOperacion}}</td>
+                    <td>{{cab.estado}}</td>
+                  </tr>
+                  <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse">
+                    <td [colSpan]="10">
+                      <div class="table-responsive" style="padding-left: 20px; display: none;"
+                           id="{{ 'detail' + cab.idSolicitudCab }}">
+                        <table class="table table-hover">
+                          <thead>
+                          <tr>
+                            <th class="detail-th-color">N° Documento</th>
+                            <th class="detail-th-color">Forma Pago</th>
+                            <th class="detail-th-color">Monto sin IGV</th>
+                            <th class="detail-th-color">Monto con IGV</th>
+                            <th class="detail-th-color">Fondo Resguardo</th>
+                            <th class="detail-th-color">Fecha Pago</th>
+                            <th class="detail-th-color">Monto Pago Confirmado</th>
+                            <th class="detail-th-color">Estado</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of cab.solicitudDet">
+                            <td>{{item.nroDocumento}}</td>
+                            <td>{{item.formaPago}}</td>
+                            <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
+                            <td>{{item.montoConIGV | number: '1.2-2'}}</td>
+                            <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                            <td>{{item.fechaConfirmadoFormat}}</td>
+                            <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                            <td>{{item.estado}}</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
+            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
+                            (pageChange)="onRefrescar()" [pageSize]="pageSize"></ngb-pagination>
+          </div>
+        </div>
       </div>
     </div>
+
+    <ng-template #modalINFO let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel1">Check List</h4>
+        <button aria-label="Close" class="close" type="button" (click)="onCancelar()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ngbAutofocus tabindex="0">
+        <form [formGroup]="solicitudForm">
+          <div class="row spaced">
+            <div class="col-12">
+              <div class="divider divider-info">
+                <div class="divider-text">Información General</div>
+              </div>
+            </div>
+            <div class="col-md-12 col-12" hidden>
+              <div class="form-group">
+                <label>Id</label>
+                <input class="form-control" formControlName="idSolicitudCab" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>RUC (Cliente)</label>
+                <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.rucCedente.errors }"
+                       class="form-control" formControlName="rucCedente" type="text"/>
+                <div *ngIf="ReactiveIUForm.rucCedente.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.rucCedente.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Razón Social (Cliente)</label>
+                <input class="form-control" formControlName="razonSocialCedente" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>RUC (Pagador / Proveedor)</label>
+                <input class="form-control" formControlName="rucAceptante" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Razón Social (Pagador / Proveedor)</label>
+                <input class="form-control" formControlName="razonSocialAceptante" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Moneda</label>
+                <input class="form-control" formControlName="moneda" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Tipo Operación</label>
+                <input class="form-control" formControlName="tipoOperacion" type="text"/>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="divider divider-success">
+                <div class="divider-text">Información de Gastos</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="d-flex flex-wrap mb-0">
+                <div class="pb-1">
+                  <button type="submit" rippleEffect class="btn btn-success">
+                    <i class="mr-0 mr-sm-1" data-feather="refresh-ccw"></i>
+                    <span class="d-none d-sm-inline-block">Actualizar</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12" style="display: none">
+              <div class="form-group">
+                <label>Comisión Estructuración</label>
+                <input class="form-control" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator="," formControlName="comisionEstructuracion"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Gastos de Contrato</label>
+                <input class="form-control" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator="," formControlName="gastosContrato"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Vigencia de Poder</label>
+                <input class="form-control" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator="," formControlName="gastoVigenciaPoder"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Comisión Carta Notarial</label>
+                <input class="form-control" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator="," formControlName="comisionCartaNotarial"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Servicio Cobranza</label>
+                <input class="form-control" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator="," formControlName="servicioCobranza"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Servicio Custodia</label>
+                <input class="form-control" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator="," formControlName="servicioCustodia"/>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                  <tr>
+                    <th class="detail-th-color">N° Documento</th>
+                    <th class="detail-th-color">Forma Pago</th>
+                    <th class="detail-th-color">T.N. Mensual (%)</th>
+                    <th class="detail-th-color">Financiamiento (%)</th>
+                    <th class="detail-th-color">Monto sin IGV</th>
+                    <th class="detail-th-color">Monto con IGV</th>
+                    <th class="detail-th-color">Fondo Resguardo</th>
+                    <th class="detail-th-color">Fecha Pago</th>
+                    <th class="detail-th-color">Monto Pago Confirmado</th>
+                    <th class="detail-th-color">Estado</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of detalle">
+                    <td>{{item.nroDocumento}}</td>
+                    <td>{{item.formaPago}}</td>
+                    <td>{{item.tasaNominalMensual | number: '1.2-2'}}</td>
+                    <td>{{item.financiamiento | number: '1.2-2'}}</td>
+                    <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
+                    <td>{{item.montoConIGV | number: '1.2-2'}}</td>
+                    <td [ngClass]="{'row-edicion': item.editado}">
+                      <input class="form-control" type="text" [(ngModel)]="item.fondoResguardo"
+                             [ngModelOptions]="{standalone: true}"
+                             placeholder="0.00" (ngModelChange)="onCambiarFondoResguardo(item)"
+                             mask="separator" thousandSeparator=","/>
+                    </td>
+                    <td>{{item.fechaConfirmadoFormat}}</td>
+                    <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                    <td>{{item.estado}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="divider divider-danger">
+                <div class="divider-text">Información del Contacto</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="d-flex flex-wrap mb-0">
+                <div class="pb-1">
+                  <button type="submit" rippleEffect class="btn btn-danger"
+                          (click)="onSeleccioneContacto(modalCONTACTO)">
+                    <i class="mr-0 mr-sm-1" data-feather="arrow-right-circle"></i>
+                    <span class="d-none d-sm-inline-block">Seleccione...</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Nombre(s) y Apellidos</label>
+                <input class="form-control" formControlName="nombreContacto" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Teléfono</label>
+                <input class="form-control" formControlName="telefonoContacto" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Correo</label>
+                <input class="form-control" formControlName="correoContacto" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Correo(s) a Copiar</label>
+                <input class="form-control" formControlName="conCopiaContacto" type="text"/>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="divider divider-warning">
+                <div class="divider-text">Información de Cuenta Bancaria</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="d-flex flex-wrap mb-0">
+                <div class="pb-1">
+                  <button type="submit" rippleEffect class="btn btn-warning" (click)="onSeleccioneCuenta(modalCUENTA)">
+                    <i class="mr-0 mr-sm-1" data-feather="arrow-right-circle"></i>
+                    <span class="d-none d-sm-inline-block">Seleccione...</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Titular</label>
+                <input class="form-control" formControlName="titularCuentaBancariaDestino" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Moneda</label>
+                <input class="form-control" formControlName="monedaCuentaBancariaDestino" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Banco</label>
+                <input class="form-control" formControlName="bancoDestino" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>N° Cuenta</label>
+                <input class="form-control" formControlName="nroCuentaBancariaDestino" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>CCI</label>
+                <input class="form-control" formControlName="cciDestino" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Tipo de Cuenta</label>
+                <input class="form-control" formControlName="tipoCuentaBancariaDestino" type="text"/>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="divider divider-secondary">
+                <div class="divider-text">Documento(s) de Sustento</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div
+                ng2FileDrop
+                [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
+                (fileOver)="fileOverBase($event)"
+                [uploader]="archivosSustento"
+                class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
+              >
+                Arraste aquí los archivos
+              </div>
+            </div>
+            <div class="col-12 overflow-auto">
+              <div class="d-flex justify-content-between mb-1">
+                <h4>Cola de Archivos</h4>
+                <p>Tamaño de Cola: {{ archivosSustento?.queue?.length }}</p>
+              </div>
+
+              <table class="table">
+                <thead>
+                <tr>
+                  <th width="50%">Nombre</th>
+                  <th>Tamaño</th>
+                  <th>Progreso</th>
+                  <th>Estado</th>
+                  <th>Acción</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of archivosSustento.queue">
+                  <td>
+                    <strong>{{ item?.file?.name }}</strong>
+                  </td>
+                  <td *ngIf="archivosSustento.options.isHTML5" nowrap>
+                    {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
+                  </td>
+                  <td *ngIf="archivosSustento.options.isHTML5">
+                    <ngb-progressbar type="primary" [value]="item.progress"></ngb-progressbar>
+                  </td>
+                  <td class="text-center">
+                    <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
+                    <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
+                    <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
+                  </td>
+                  <td nowrap>
+                    <button
+                      type="button"
+                      class="btn btn-raised btn-outline-danger btn-sm"
+                      (click)="item.remove()"
+                      rippleEffect
+                    >
+                      <i data-feather="trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+
+              <div id="">
+                <p class="mt-1">Progreso de Cola:</p>
+                <ngb-progressbar class="mb-1" type="primary" [value]="archivosSustento.progress"></ngb-progressbar>
+                <button
+                  type="button"
+                  class="btn mr-1 btn-primary mb-1 mb-sm-0"
+                  (click)="archivosSustento.uploadAll()"
+                  [disabled]="!archivosSustento.getNotUploadedItems().length"
+                  rippleEffect
+                >
+                  <span data-feather="upload" class="mr-25"></span> Subir Todo
+                </button>
+                <button
+                  type="button"
+                  class="btn mr-1 btn-outline-warning mb-1 mb-sm-0"
+                  (click)="archivosSustento.cancelAll()"
+                  [disabled]="!archivosSustento.isUploading"
+                  rippleEffect
+                >
+                  <span data-feather="slash" class="mr-25"></span> Cancelar Todo
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger mb-1 mb-sm-0"
+                  (click)="archivosSustento.clearQueue()"
+                  [disabled]="!archivosSustento.queue.length"
+                  rippleEffect
+                >
+                  <span data-feather="trash" class="mr-25"></span> Quitar Todo
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer" style="display: block !important;">
+        <div class="row">
+          <div class="col-md-12 col-12">
+            <div style="float: right">
+              <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()">
+                <span [data-feather]="'save'"></span> Guardar
+              </button>
+              &nbsp;
+              <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()">
+                <span [data-feather]="'x-circle'"></span> Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #modalCONTACTO let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title">Seleccione un Contacto</h4>
+        <button aria-label="Close" class="close" type="button" (click)="onCancelarContacto(modal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ngbAutofocus tabindex="0">
+        <div class="row spaced">
+          <div class="col-12">
+            <div class="form-group">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                  <tr>
+                    <th>Acción</th>
+                    <th>Nombre</th>
+                    <th>Ape. Paterno</th>
+                    <th>Ape. Materno</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Activo</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of []">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Seleccionar">
+                          <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>{{item.nombre}}</td>
+                    <td>{{item.apellidoPaterno}}</td>
+                    <td>{{item.apellidoMaterno}}</td>
+                    <td>{{item.telefono}}</td>
+                    <td>{{item.correo}}</td>
+                    <td>{{(item.predeterminado ? 'Sí' : 'No')}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #modalCUENTA let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title">Seleccione una Cuenta</h4>
+        <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ngbAutofocus tabindex="0">
+        <div class="row spaced">
+          <div class="col-md-12 col-12">
+            <div class="form-group">
+              <label>Datos de Cuenta de Banco</label>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                  <tr>
+                    <th>Acción</th>
+                    <th>Titular</th>
+                    <th>Banco</th>
+                    <th>Moneda</th>
+                    <th>N° Cuenta</th>
+                    <th>CCI</th>
+                    <th>Activo</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of []">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Seleccionar">
+                          <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>{{item.titular}}</td>
+                    <td>{{item.banco}}</td>
+                    <td>{{item.moneda}}</td>
+                    <td>{{item.nroCuenta}}</td>
+                    <td>{{item.cci}}</td>
+                    <td>{{(item.predeterminado ? 'Sí' : 'No')}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
     <block-ui></block-ui>
   </div>
 </div>
