@@ -93,8 +93,8 @@
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Validar" (click)="onValidar(cab, modalINFO)">
-                          <i class="text-danger cursor-pointer" data-feather="check-circle"></i>
+                        <a href="javascript:void(0)" title="Editar" (click)="onEditar(cab, modalINFO)">
+                          <i class="text-danger cursor-pointer" data-feather="edit"></i>
                         </a>
                       </div>
                     </td>
@@ -179,29 +179,25 @@
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>RUC (Cliente)</label>
-                <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.rucCedente.errors }"
-                       class="form-control" formControlName="rucCedente" type="text"/>
-                <div *ngIf="ReactiveIUForm.rucCedente.errors" class="invalid-feedback">
-                  <div *ngIf="ReactiveIUForm.rucCedente.errors.required">* Campo obligatorio</div>
-                </div>
+                <input class="form-control" formControlName="rucCliente" type="text"/>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Razón Social (Cliente)</label>
-                <input class="form-control" formControlName="razonSocialCedente" type="text"/>
+                <input class="form-control" formControlName="razonSocialCliente" type="text"/>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>RUC (Pagador / Proveedor)</label>
-                <input class="form-control" formControlName="rucAceptante" type="text"/>
+                <input class="form-control" formControlName="rucPagProv" type="text"/>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Razón Social (Pagador / Proveedor)</label>
-                <input class="form-control" formControlName="razonSocialAceptante" type="text"/>
+                <input class="form-control" formControlName="razonSocialPagProv" type="text"/>
               </div>
             </div>
             <div class="col-md-6 col-12">
@@ -331,19 +327,31 @@
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Nombre(s) y Apellidos</label>
-                <input class="form-control" formControlName="nombreContacto" type="text"/>
+                <input class="form-control" formControlName="nombreContacto" type="text" readonly
+                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.nombreContacto.errors }"/>
+                <div *ngIf="ReactiveIUForm.nombreContacto.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.nombreContacto.errors.required">* Campo obligatorio</div>
+                </div>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Teléfono</label>
-                <input class="form-control" formControlName="telefonoContacto" type="text"/>
+                <input class="form-control" formControlName="telefonoContacto" type="text" readonly
+                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.telefonoContacto.errors }"/>
+                <div *ngIf="ReactiveIUForm.telefonoContacto.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.telefonoContacto.errors.required">* Campo obligatorio</div>
+                </div>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Correo</label>
-                <input class="form-control" formControlName="correoContacto" type="text"/>
+                <input class="form-control" formControlName="correoContacto" type="text" readonly
+                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.correoContacto.errors }"/>
+                <div *ngIf="ReactiveIUForm.correoContacto.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.correoContacto.errors.required">* Campo obligatorio</div>
+                </div>
               </div>
             </div>
             <div class="col-md-6 col-12">
@@ -370,37 +378,67 @@
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Titular</label>
-                <input class="form-control" formControlName="titularCuentaBancariaDestino" type="text"/>
+                <input class="form-control" formControlName="titularCuentaBancariaDestino" type="text" readonly
+                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.titularCuentaBancariaDestino.errors }"/>
+                <div *ngIf="ReactiveIUForm.titularCuentaBancariaDestino.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.titularCuentaBancariaDestino.errors.required">* Campo obligatorio</div>
+                </div>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Moneda</label>
-                <input class="form-control" formControlName="monedaCuentaBancariaDestino" type="text"/>
+                <input class="form-control" formControlName="monedaCuentaBancariaDestino" type="text" readonly
+                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.monedaCuentaBancariaDestino.errors }"/>
+                <div *ngIf="ReactiveIUForm.monedaCuentaBancariaDestino.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.monedaCuentaBancariaDestino.errors.required">* Campo obligatorio</div>
+                </div>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Banco</label>
-                <input class="form-control" formControlName="bancoDestino" type="text"/>
+                <input class="form-control" formControlName="bancoDestino" type="text" readonly
+                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.bancoDestino.errors }"/>
+                <div *ngIf="ReactiveIUForm.bancoDestino.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.bancoDestino.errors.required">* Campo obligatorio</div>
+                </div>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>N° Cuenta</label>
-                <input class="form-control" formControlName="nroCuentaBancariaDestino" type="text"/>
+                <input class="form-control" formControlName="nroCuentaBancariaDestino" type="text" readonly
+                       [ngClass]="{ 'is-invalid': submitted && nroCuentaBancariaDestino === '' }"
+                       [(ngModel)]="nroCuentaBancariaDestino"/>
+                <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''" class="invalid-feedback">
+                  <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''">* Campo obligatorio solo si no
+                    existen valores en N° Cuenta o CCI
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>CCI</label>
-                <input class="form-control" formControlName="cciDestino" type="text"/>
+                <input class="form-control" formControlName="cciDestino" type="text" readonly
+                       [ngClass]="{ 'is-invalid': submitted && nroCuentaBancariaDestino === '' }"
+                       [(ngModel)]="cciDestino"/>
+                <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''" class="invalid-feedback">
+                  <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''">* Campo obligatorio solo si no
+                    existen valores en N° Cuenta o CCI
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Tipo de Cuenta</label>
-                <input class="form-control" formControlName="tipoCuentaBancariaDestino" type="text"/>
+                <input class="form-control" formControlName="tipoCuentaBancariaDestino" type="text" readonly
+                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.tipoCuentaBancariaDestino.errors }"/>
+                <div *ngIf="ReactiveIUForm.tipoCuentaBancariaDestino.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.tipoCuentaBancariaDestino.errors.required">* Campo obligatorio</div>
+                </div>
               </div>
             </div>
             <div class="col-12">
@@ -416,7 +454,7 @@
                 [uploader]="archivosSustento"
                 class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
               >
-                Arraste aquí los archivos
+                Arrastre aquí los archivos
               </div>
             </div>
             <div class="col-12 overflow-auto">
@@ -468,33 +506,24 @@
               <div id="">
                 <p class="mt-1">Progreso de Cola:</p>
                 <ngb-progressbar class="mb-1" type="primary" [value]="archivosSustento.progress"></ngb-progressbar>
-                <button
-                  type="button"
-                  class="btn mr-1 btn-primary mb-1 mb-sm-0"
-                  (click)="archivosSustento.uploadAll()"
-                  [disabled]="!archivosSustento.getNotUploadedItems().length"
-                  rippleEffect
-                >
-                  <span data-feather="upload" class="mr-25"></span> Subir Todo
-                </button>
-                <button
-                  type="button"
-                  class="btn mr-1 btn-outline-warning mb-1 mb-sm-0"
-                  (click)="archivosSustento.cancelAll()"
-                  [disabled]="!archivosSustento.isUploading"
-                  rippleEffect
-                >
-                  <span data-feather="slash" class="mr-25"></span> Cancelar Todo
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-outline-danger mb-1 mb-sm-0"
-                  (click)="archivosSustento.clearQueue()"
-                  [disabled]="!archivosSustento.queue.length"
-                  rippleEffect
-                >
-                  <span data-feather="trash" class="mr-25"></span> Quitar Todo
-                </button>
+                <div class="d-flex flex-wrap mb-0">
+                  <div class="pr-1">
+                    <button type="submit" rippleEffect class="btn btn-outline-success"
+                            (click)="archivosSustento.uploadAll()"
+                            [disabled]="!archivosSustento.getNotUploadedItems().length">
+                      <i class="mr-0 mr-sm-1" data-feather="upload"></i>
+                      <span class="d-none d-sm-inline-block">Subir Todo</span>
+                    </button>
+                  </div>
+                  <div class="pr-1">
+                    <button type="submit" rippleEffect class="btn btn-outline-danger"
+                            (click)="archivosSustento.clearQueue()"
+                            [disabled]="!archivosSustento.queue.length">
+                      <i class="mr-0 mr-sm-1" data-feather="trash"></i>
+                      <span class="d-none d-sm-inline-block">Quitar Todo</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -520,7 +549,7 @@
     <ng-template #modalCONTACTO let-modal>
       <div class="modal-header">
         <h4 class="modal-title">Seleccione un Contacto</h4>
-        <button aria-label="Close" class="close" type="button" (click)="onCancelarContacto(modal)">
+        <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross Click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -542,10 +571,10 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let item of []">
+                  <tr *ngFor="let item of contactos">
                     <td>
                       <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Seleccionar">
+                        <a href="javascript:void(0)" title="Seleccionar" (click)="onSeleccionarContacto(item, modal)">
                           <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>
                         </a>
                       </div>
@@ -592,10 +621,10 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let item of []">
+                  <tr *ngFor="let item of cuentas">
                     <td>
                       <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Seleccionar">
+                        <a href="javascript:void(0)" title="Seleccionar" (click)="onSeleccionarCuenta(item, modal)">
                           <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>
                         </a>
                       </div>
