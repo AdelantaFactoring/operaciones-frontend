@@ -73,4 +73,14 @@ export class SolicitudesService {
       }
     );
   }
+
+  // subirSustento(payload): Observable<any> {
+  //   return this.requestMethod.post(
+  //     `${environment.apiUrl}${SOLICITUD.subirSustento}`,
+  //     payload,
+  //     {
+  //       'Content-Type': CONTENT_TYPE.json
+  //     }
+  //   );
+  // }
 }
