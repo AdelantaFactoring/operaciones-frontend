@@ -70,17 +70,17 @@
                   </div>
                 </div>
               </div>
-            <div class="step" data-target="#account-details">
+            <div class="step" data-target="#xml-pdf">
               <button class="step-trigger">
                 <span class="bs-stepper-box">1</span>
                 <span class="bs-stepper-label">
-                  <span class="bs-stepper-title">Archivos .xml y .pdf</span>
+                  <span class="bs-stepper-title">Archivos .XML y .PDF</span>
                   <span class="bs-stepper-subtitle">Subir archivos</span>
                 </span>
               </button>
             </div>
             <div class="line"><i data-feather="chevron-right" class="font-medium-2"></i></div>
-            <div class="step" data-target="#personal-info">
+            <div class="step" data-target="#list-xml">
               <button class="step-trigger">
                 <span class="bs-stepper-box">2</span>
                 <span class="bs-stepper-label">
@@ -90,11 +90,11 @@
               </button>
             </div>
             <div class="line" *ngIf="flagConfirming"><i data-feather="chevron-right" class="font-medium-2"></i></div>
-            <div class="step" data-target="#address">
+            <div class="step" data-target="#list-combinado">
               <button class="step-trigger">
                 <span class="bs-stepper-box" *ngIf="flagConfirming">3</span>
                 <span class="bs-stepper-label" *ngIf="flagConfirming">
-                  <span class="bs-stepper-title">Archivos .xlsx</span>
+                  <span class="bs-stepper-title">Archivos .XLSX</span>
                   <span class="bs-stepper-subtitle">Subir archivo</span>
                 </span>
               </button>
@@ -104,7 +104,7 @@
               <button class="step-trigger">
                 <span class="bs-stepper-box" *ngIf="flagConfirming">4</span>
                 <span class="bs-stepper-label" *ngIf="flagConfirming">
-                  <span class="bs-stepper-title">Factura</span>
+                  <span class="bs-stepper-title">Facturas</span>
                   <span class="bs-stepper-subtitle">Lista combinada</span>
                 </span>
               </button>
@@ -112,7 +112,7 @@
           </div>
           <div class="bs-stepper-content">
             <form (ngSubmit)="(HWForm.form.valid)" #HWForm="ngForm">
-              <div id="account-details" class="content">
+              <div id="xml-pdf" class="content">
                 <form #accountDetailsForm="ngForm">
                   <div class="content-header">
                     <h5 class="mb-0">Account Details</h5>
@@ -226,7 +226,7 @@
                       <span class="align-middle d-sm-inline-block d-none">Previous</span>
                     </button>
                     <button class="btn btn-primary" rippleEffect type="button" (click)="onProcesar()"
-                    [disabled]="!uploader.getNotUploadedItems().length">
+                    [disabled]="!uploader.getNotUploadedItems().length" *ngIf="procesar">
                       <span [data-feather]="'save'"></span> Procesar Archivos
                     </button>
                     <button
@@ -234,6 +234,7 @@
                       type="submit"
                       class="btn btn-primary btn-next"
                       rippleEffect
+                      *ngIf="!procesar"
                     >
                       <span class="align-middle d-sm-inline-block d-none">Next</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
@@ -241,7 +242,7 @@
                   </div>
                 </form>
               </div>
-              <div id="personal-info" class="content">
+              <div id="list-xml" class="content">
                 <form #personalInfoForm="ngForm">
                   <div class="content-header">
                     <h5 class="mb-0">Lista de Factura</h5>
@@ -255,21 +256,21 @@
                             <thead>
                             <tr>
                               <th>Codigo</th>
-                              <th>RucCab</th>
-                              <th>RazonSocialCab</th>
-                              <th>RucDet</th>
-                              <th>RazonSocialDet</th>
-                              <th>TipoMoneda</th>
-                              <th>NetoPendiente</th>
-                              <th>SubTotal</th>
+                              <th>{{rucCab}}</th>
+                              <th>{{razonSocialCab}}</th>
+                              <th>{{rucDet}}</th>
+                              <th>{{razonSocialDet}}</th>
+                              <th>Tipo Moneda</th>
+                              <th>Neto Pendiente</th>
+                              <th>Sub Total</th>
                               <th>Igv</th>
                               <th>Total</th>
-                              <th>ValorVenta</th>
-                              <th>FechaEmision</th>
-                              <th>FechaVencimiento</th>
-                              <th>NombreXML</th>
-                              <th>NombrePDF</th>
-                              <th>FormaPago</th>
+                              <th>Valor Venta</th>
+                              <th>Fecha Emision</th>
+                              <th>Fecha Vencimiento</th>
+                              <th>Nombre XML</th>
+                              <th>Nombre PDF</th>
+                              <th>Forma Pago</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -331,7 +332,7 @@
                   </div>
                 </form>
               </div>
-              <div id="address" class="content">
+              <div id="list-combinado" class="content">
                 <form #addressForm="ngForm">
                   <div class="content-header">
                     <h5 class="mb-0">Proveedores</h5>
@@ -476,21 +477,21 @@
                             <thead>
                             <tr>
                               <th>Codigo</th>
-                              <th>RucCab</th>
-                              <th>RazonSocialCab</th>
-                              <th>RucDet</th>
-                              <th>RazonSocialDet</th>
-                              <th>TipoMoneda</th>
-                              <th>NetoPendiente</th>
-                              <th>SubTotal</th>
+                              <th>{{rucCab}}</th>
+                              <th>{{razonSocialCab}}</th>
+                              <th>{{rucDet}}</th>
+                              <th>{{razonSocialDet}}</th>
+                              <th>Tipo Moneda</th>
+                              <th>Neto Pendiente</th>
+                              <th>Sub Total</th>
                               <th>Igv</th>
                               <th>Total</th>
-                              <th>ValorVenta</th>
-                              <th>FechaEmision</th>
-                              <th>FechaVencimiento</th>
-                              <th>NombreXML</th>
-                              <th>NombrePDF</th>
-                              <th>FormaPago</th>
+                              <th>Valor Venta</th>
+                              <th>Fecha Emision</th>
+                              <th>Fecha Vencimiento</th>
+                              <th>Nombre XML</th>
+                              <th>Nombre PDF</th>
+                              <th>Forma Pago</th>
                             </tr>
                             </thead>
                             <tbody>

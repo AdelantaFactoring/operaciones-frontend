@@ -9,6 +9,7 @@ import {FileItem, FileUploader, ParsedResponseHeaders} from 'ng2-file-upload';
 import {environment} from '../../../../../environments/environment';
 import {SOLICITUD} from "../../../../shared/helpers/url/comercial";
 import { SolicitudArchivos, SolicitudArchivosXlsx } from 'app/shared/models/comercial/SolicitudArchivos';
+import { Cliente } from 'app/shared/models/comercial/cliente';
 
 @Component({
   selector: 'app-solicitudes-form',
@@ -44,12 +45,19 @@ export class SolicitudesFormComponent implements OnInit {
   public optClienteP = [];
   public razonSocial = '';
   public ruc = '';
+  public cantXml: number = 0;
+  public cantPdf: number = 0;
   public dataXml: SolicitudArchivos[] = [];
   public dataXlsx: SolicitudArchivosXlsx[] = [];
   
   idTipoOperacion: number = 1;
   tipoServicio = "Factoring";
+  rucCab: string;
+  razonSocialCab: string;
+  rucDet: string;
+  razonSocialDet: string;
   hasBaseDropZoneOver: boolean;
+  procesar: boolean = true;
 
   public flagConfirming: boolean = false;
 
@@ -206,7 +214,21 @@ export class SolicitudesFormComponent implements OnInit {
     this.hasBaseDropZoneOver = false;   
     this.flagConfirming = flagConfirming;
     
+
     this.horizontalWizardStepper = new Stepper(document.querySelector('#stepper1'), {});
+
+    if (idTipoOperacion == 1) {
+      this.rucCab = "Ruc Cliente";
+      this.razonSocialCab = "Razon Social Cliente";
+      this.rucDet = "Ruc Pagador";
+      this.razonSocialDet = "Razon Social Pagador";
+    }
+    else{
+      this.rucCab = "Ruc Proveedor";
+      this.razonSocialCab = "Razon Social Proveedor";
+      this.rucDet = "Ruc Cliente";
+      this.razonSocialDet = "Razon Social Cliente";
+    }
   }
   
   onClientePagadorList(modal, value): void {
@@ -259,52 +281,57 @@ export class SolicitudesFormComponent implements OnInit {
     // if (this.solicitudForm.invalid) {
     //   return;
     // }
-    // var list = [];
+
+    // let list = [];
     // for (const item of this.uploader.queue) {
     //   list.push({'name': item?.file?.name});
 
-    //   if (item?.file?.name.includes('.xml')) {
-    //     this.cantXml =+ 1;
+    //   if (item?.file?.name.includes('.xml') || item?.file?.name.includes('.XML')) {
+    //     this.cantXml = this.cantXml + 1;
     //   }
-
-    //   console.log('cantxml', this.cantXml);
-      
+    //   else {
+    //     this.cantPdf = this.cantPdf + 1;
+    //   }
     // }
     
     //console.log('cantxml2', this.cantXml);
-    if(this.uploader.queue.length % 2 > 0)
-    {
-      this.utilsService.showNotification('La cantidad de archivos adjuntados debe ser siempre par', 'Alerta', 2);
-      return;
-    }
+    // if(this.uploader.queue.length % 2 > 0)
+    // {
+    //   this.utilsService.showNotification('La cantidad de archivos adjuntados debe ser siempre par', 'Alerta', 2);
+    //   return;
+    // }
     this.uploader.setOptions({
       url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=0&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&usuarioAud=Admin1`,
     });
 
     this.dataXml  = [];
     this.uploader.uploadAll();
-    
+    let count = 0;
     this.uploader.response.subscribe( res => {
      
       let rs = JSON.parse(res);
-      if (rs.tipo != 1) {
-        this.dataXml.push(rs)
+      //console.log('res', rs);
+      
+      if (rs.tipoMoneda != '') {
+        this.dataXml.push(rs);
+        this.procesar = false;
       }
       else
       {
         if (rs.tipo == 1) {
-          this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
-
+          count = Number(count) + 1;
+          if (count == this.cantPdf) {
+            this.utilsService.showNotification('Información Procesada correctamente', 'Confirmación', 1);
+          }
           this.utilsService.blockUIStop();
         } else if (rs.tipo == 2) {
-          this.utilsService.showNotification(res.mensaje, 'Alerta', 2);
+          this.utilsService.showNotification(rs.mensaje, 'Alerta', 2);
           this.utilsService.blockUIStop();
         } else {
-          this.utilsService.showNotification(res.mensaje, 'Error', 3);
+          this.utilsService.showNotification(rs.mensaje, 'Error', 3);
           this.utilsService.blockUIStop();
         }
       }
-      console.log('data', this.dataXml);
       
     });
   }
