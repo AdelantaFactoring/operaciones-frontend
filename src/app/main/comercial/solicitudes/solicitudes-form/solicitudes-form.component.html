@@ -14,8 +14,8 @@
                 <div class="col-12 col-md-4">
                   <div class="form-group">
                     <div class="custom-control custom-radio">
-                      <input type="radio" id="Factoring" name="customRadio" class="custom-control-input" checked
-                      (change)="onRadioChange('Factoring', 1, false)" />
+                      <input type="radio" id="Factoring" name="customRadio" class="custom-control-input" [checked]="facCheck"
+                      (change)="onRadioChange('Factoring', 1, false, '')" />
                       <label class="custom-control-label" for="Factoring">Factoring</label>
                     </div>
                   </div>
@@ -23,7 +23,7 @@
                 <div class="col-12 col-md-4">
                   <div class="form-group">
                     <div class="custom-control custom-radio">
-                      <input type="radio" id="capital" name="customRadio" class="custom-control-input" (change)="onRadioChange('Capital de Trabajo', 2, false)"/>
+                      <input type="radio" id="capital" name="customRadio" class="custom-control-input" (change)="onRadioChange('Capital de Trabajo', 2, false, modalCapitalTrabajo)"/>
                       <label class="custom-control-label" for="capital">Capital de Trabajo</label>
                     </div>
                   </div>
@@ -31,17 +31,21 @@
                 <div class="col-12 col-md-4">
                   <div class="form-group">
                     <div class="custom-control custom-radio">
-                      <input type="radio" id="Confirming" name="customRadio" class="custom-control-input" (change)="onRadioChange('Confirming', 3, true)"/>
+                      <input type="radio" id="Confirming" name="customRadio" class="custom-control-input" (change)="onRadioChange('Confirming', 3, true, '')"/>
                       <label class="custom-control-label" for="Confirming">Confirming</label>
                     </div>
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
-                    <label>Razon Social</label>
-                    <input [(ngModel)]="razonSocial" 
+                    <label>Razón Social</label>
+                    <input [(ngModel)]="razonSocial" [ngClass]="{ 'is-invalid': !rucRequired }"
                     class="form-control" type="text" disabled>
-                   
+                    <span *ngIf="!rucRequired" class="invalid-form">
+                      <small class="form-text text-danger" *ngIf="!rucRequired"
+                        >This field is required!</small
+                      >
+                    </span>
                   </div>
                 </div>
                 
@@ -49,8 +53,13 @@
                   <div class="form-group">
                     <label>Ruc</label>
                     <input [(ngModel)]="ruc"
+                    [ngClass]="{ 'is-invalid': !rucRequired }"
                     class="form-control" type="text" disabled>
-                    
+                    <span *ngIf="!rucRequired" class="invalid-form">
+                      <small class="form-text text-danger" *ngIf="!rucRequired"
+                        >This field is required!</small
+                      >
+                    </span>
                   </div>
                 </div>
                 <div class="col-md-1 col-2">
@@ -128,7 +137,7 @@
                           [uploader]="uploader"
                           class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
                         >
-                          Arraste aqui los archivos
+                          Arrastre aqui los archivos
                         </div>
                       </div>
                       <div class="col-12">
@@ -140,7 +149,7 @@
                         <fieldset class="form-group">
                             <div class="custom-file">
                                 <input type="file" class="custom-file-input" ng2FileSelect accept=".pdf,.xml"
-                                    [uploader]="uploader" multiple id="file-upload-single" (change)="onBrowseChange()"/>
+                                    [uploader]="uploader" multiple id="file-upload-single" (change)="onBrowseChangeXlsx()"/>
                                 <label class="custom-file-label">Elija el archivo</label>
                             </div>
                         </fieldset>
@@ -160,7 +169,14 @@
                                     <th>Tamaño</th>
                                     <th>Progreso</th>
                                     <th>Estado</th>
-                                    <th>Acción</th>
+                                    <th><button
+                                      type="button"
+                                      class="btn btn-raised btn-outline-danger btn-sm"
+                                      (click)="uploader.clearQueue()"
+                                      rippleEffect
+                                    >
+                                      <i data-feather="trash"></i>
+                                    </button></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -230,7 +246,7 @@
                       <span [data-feather]="'save'"></span> Procesar Archivos
                     </button>
                     <button
-                      (click)="horizontalWizardStepperNext(accountDetailsForm)"
+                      (click)="horizontalWizardStepperNext(accountDetailsForm, 1)"
                       type="submit"
                       class="btn btn-primary btn-next"
                       rippleEffect
@@ -322,7 +338,7 @@
                       <i data-feather="save" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
                     <button *ngIf="flagConfirming"
-                      (click)="horizontalWizardStepperNext(personalInfoForm)"
+                      (click)="horizontalWizardStepperNext(personalInfoForm, 0)"
                       class="btn btn-primary btn-next"
                       rippleEffect
                     >
@@ -370,7 +386,7 @@
                           [uploader]="uploaderXlsx"
                           class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
                         >
-                          Arraste aqui los archivos
+                          Arrastre aqui el archivo XLSX
                         </div>
                       </div>
                       <div class="col-12">
@@ -450,13 +466,14 @@
                       <span class="align-middle d-sm-inline-block d-none">Previous</span>
                     </button>
                     <button class="btn btn-primary" rippleEffect type="button" (click)="onProcesarXlsx()"
-                    [disabled]="!uploaderXlsx.getNotUploadedItems().length">
+                    [disabled]="!uploaderXlsx.getNotUploadedItems().length" *ngIf="procesarXlsx">
                       <span [data-feather]="'save'"></span> Procesar Archivos
                     </button>
                     <button
-                      (click)="horizontalWizardStepperNext(addressForm)"
+                      (click)="horizontalWizardStepperNext(addressForm, 0)"
                       class="btn btn-primary btn-next"
-                      rippleEffect
+                      rippleEffect 
+                      *ngIf="!procesarXlsx"
                     >
                       <span class="align-middle d-sm-inline-block d-none">Next</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
@@ -492,6 +509,13 @@
                               <th>Nombre XML</th>
                               <th>Nombre PDF</th>
                               <th>Forma Pago</th>
+
+                              <th>Banco</th>
+                              <th>Cuenta Bancaria</th>
+                              <th>CCI</th>
+                              <th>Tipo Cuenta</th>
+                              <th>Correo</th>
+                              <th>Nombre Contacto</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -512,6 +536,13 @@
                                 <td>{{item.nombreXML}}</td>
                                 <td>{{item.nombrePDF}}</td>
                                 <td>{{item.formaPago}}</td>
+
+                                <td>{{item.banco}}</td>
+                                <td>{{item.ctaBancaria}}</td>
+                                <td>{{item.cci}}</td>
+                                <td>{{item.tipoCuenta}}</td>
+                                <td>{{item.correo}}</td>
+                                <td>{{item.nombreContacto}}</td>
                               </tr>
                             </tbody>
                           </table>
@@ -538,7 +569,7 @@
       </section>
       <!--/ Horizontal Wizard -->
       
-    <ng-template #modalCliente let-modal>
+      <ng-template #modalCliente let-modal>
         <div class="modal-header">
           <h4 class="modal-title" id="myModalLabel1">Selección de Cliente</h4>
           <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
@@ -553,6 +584,7 @@
                   <div class="d-flex justify-content-between align-items-center m-1">
                     <label class="d-flex align-items-center"
                     >Buscar<input
+                      formControlName="buscarCliente"
                       type="search"
                       placeholder="Buscar"
                       class="form-control ml-25"
@@ -603,8 +635,223 @@
           </div>
         </div>
       </ng-template>
-  
-     
+
+      <ng-template #modalCapitalTrabajo let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel1">Nueva Solicitud Capital de Trabajo</h4>
+          <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" ngbAutofocus tabindex="0">
+          <form [formGroup]="capitalTrabajoForm">
+            <div class="row spaced">
+              <div class="col-md-12 col-12">
+                <div class="form-group">
+                  <label>Seleccione Tipo</label>
+                  <ng-select appendTo="body" [clearable]="false" [items]="monedas" bindLabel="descripcion"
+                    placeholder="Moneda"
+                    bindValue="idColumna" formControlName="tipo">
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-12 col-12">
+                <div class="form-group">
+                  <label>Seleccione Moneda</label>
+                  <ng-select appendTo="body" [clearable]="false" [items]="monedas" bindLabel="descripcion"
+                    placeholder="Moneda"
+                    bindValue="idColumna" formControlName="moneda">
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>RUC</label>
+                  <div class="input-group">
+                    <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.ruc.errors }"
+                    class="form-control" formControlName="ruc" type="text"
+                    [(ngModel)]="ruc"/>
+                    <div class="input-group-append">
+                     <button (click)="onClientePagadorList(modalCliente, 1)"
+                        class="btn btn-outline-secondary feather" rippleEffect
+                        type="button"><span ngbTooltip="Mostrar lista de clientes" placement="left" container="body"
+                        [data-feather]="'search'"></span></button>
+                    </div>
+                    <div *ngIf="CapitalIUForm.ruc.errors" class="invalid-feedback">
+                      <div *ngIf="CapitalIUForm.ruc.errors.required">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Razón Social</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.razonSocial.errors }"
+                         class="form-control" formControlName="razonSocial" type="text"
+                         [(ngModel)]="razonSocial"/>
+                  <div *ngIf="CapitalIUForm.razonSocial.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.razonSocial.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Tasa Anual</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaAnual.errors }"
+                         class="form-control" formControlName="tasaAnual" type="text"/>
+                  <div *ngIf="CapitalIUForm.tasaAnual.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.tasaAnual.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Tasa Mensual</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaMensual.errors }"
+                         class="form-control" formControlName="tasaMensual" type="text"/>
+                  <div *ngIf="CapitalIUForm.tasaMensual.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.tasaMensual.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Comisión Carta Notarial</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.cartaNotarial.errors }"
+                         class="form-control" formControlName="cartaNotarial" type="text"/>
+                  <div *ngIf="CapitalIUForm.cartaNotarial.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.cartaNotarial.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Servicio Cobranza</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.servicioCobranza.errors }"
+                         class="form-control" formControlName="servicioCobranza" type="text"/>
+                  <div *ngIf="CapitalIUForm.servicioCobranza.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.servicioCobranza.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Servicio Custodia</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.servicioCustodia.errors }"
+                         class="form-control" formControlName="servicioCustodia" type="text"/>
+                  <div *ngIf="CapitalIUForm.servicioCustodia.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.servicioCustodia.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Monto Capital de Trabajo</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.mcTrabajo.errors }"
+                         class="form-control" formControlName="mcTrabajo" type="text"/>
+                  <div *ngIf="CapitalIUForm.mcTrabajo.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.mcTrabajo.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Capital de Trabajo Solicitado</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.ctSolicitado.errors }"
+                         class="form-control" formControlName="ctSolicitado" type="text"/>
+                  <div *ngIf="CapitalIUForm.ctSolicitado.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.ctSolicitado.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Días de prestamo</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.diasPrestamo.errors }"
+                         class="form-control" formControlName="diasPrestamo" type="text"/>
+                  <div *ngIf="CapitalIUForm.diasPrestamo.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.diasPrestamo.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Fecha de Pago</label>
+                  <div class="input-group">
+                    <input #basicDPFrom="ngbDatepicker" #i18nDP="ngbDatepicker"
+                        [(ngModel)]="fechaPago" class="form-control" ngbDatepicker
+                        placeholder="dd/mm/yyyy"
+                        formControlName="fechaPago">
+                    <div class="input-group-append">
+                        <button (click)="basicDPFrom.toggle()"
+                            class="btn btn-outline-secondary feather icon-calendar" rippleEffect
+                            type="button"></button>
+                    </div>
+                </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Intereses incluido IGV</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.iIncluidoIGV.errors }"
+                         class="form-control" formControlName="iIncluidoIGV" type="text"/>
+                  <div *ngIf="CapitalIUForm.iIncluidoIGV.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.iIncluidoIGV.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Gastos incluido IGV</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.gIncluidoIGV.errors }"
+                         class="form-control" formControlName="gIncluidoIGV" type="text"/>
+                  <div *ngIf="CapitalIUForm.gIncluidoIGV.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.gIncluidoIGV.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Total a Facturar con IGV</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tFacturarIGV.errors }"
+                         class="form-control" formControlName="tFacturarIGV" type="text"/>
+                  <div *ngIf="CapitalIUForm.tFacturarIGV.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.tFacturarIGV.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Total a Desembolsar con IGV</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tDesembolsoIGV.errors }"
+                         class="form-control" formControlName="tDesembolsoIGV" type="text"/>
+                  <div *ngIf="CapitalIUForm.tDesembolsoIGV.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.tDesembolsoIGV.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer" style="display: block !important;">
+          <div class="row">
+            <div class="col-md-12 col-12">
+              <div style="float: right">
+                <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardarCT()">
+                  <span [data-feather]="'save'"></span> Guardar
+                </button>
+                &nbsp;
+                <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()">
+                  <span [data-feather]="'x-circle'"></span> Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
       <block-ui></block-ui>
     </div>
 </div>

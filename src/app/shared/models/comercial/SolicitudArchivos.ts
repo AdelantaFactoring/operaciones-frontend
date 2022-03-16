@@ -1,4 +1,6 @@
 export class SolicitudArchivos {
+    tipo: number;
+    mensaje: string;
     codFactura: string;
     rucCab: string;
     razonSocialCab: string;
@@ -17,7 +19,13 @@ export class SolicitudArchivos {
     formaPago: string;
     estado: boolean = false;
     observacion: string = '';
-    
+    totalExcel: number = 0;
+    banco: string = "";
+    ctaBancaria: string = "";
+    cci: string = "";
+    tipoCuenta: string = "";
+    correo: string = "";
+    nombreContacto: string = "";
 }
 
 export class SolicitudArchivosXlsx {

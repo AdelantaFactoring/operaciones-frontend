@@ -10,6 +10,7 @@ import {environment} from '../../../../../environments/environment';
 import {SOLICITUD} from "../../../../shared/helpers/url/comercial";
 import { SolicitudArchivos, SolicitudArchivosXlsx } from 'app/shared/models/comercial/SolicitudArchivos';
 import { Cliente } from 'app/shared/models/comercial/cliente';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-solicitudes-form',
@@ -34,6 +35,7 @@ export class SolicitudesFormComponent implements OnInit {
   params = [];
 
   public solicitudForm: FormGroup;
+  public capitalTrabajoForm: FormGroup;
   public search: string = '';
   public collectionSize: number = 0;
   public pageSize: number = 8;
@@ -48,7 +50,10 @@ export class SolicitudesFormComponent implements OnInit {
   public cantXml: number = 0;
   public cantPdf: number = 0;
   public dataXml: SolicitudArchivos[] = [];
+  public dataPdf: SolicitudArchivos[] = [];
   public dataXlsx: SolicitudArchivosXlsx[] = [];
+  public mensaje = [];
+  public rucRequired: boolean = true;
   
   idTipoOperacion: number = 1;
   tipoServicio = "Factoring";
@@ -58,7 +63,8 @@ export class SolicitudesFormComponent implements OnInit {
   razonSocialDet: string;
   hasBaseDropZoneOver: boolean;
   procesar: boolean = true;
-
+  procesarXlsx: boolean = true;
+  facCheck: boolean = true;
   public flagConfirming: boolean = false;
 
   public selectedRowIds: number[] = [];
@@ -75,8 +81,20 @@ export class SolicitudesFormComponent implements OnInit {
   public selectMulti = [{ name: 'English' }, { name: 'French' }, { name: 'Spanish' }];
   public selectMultiSelected;
 
-  horizontalWizardStepperNext(data) {
+  horizontalWizardStepperNext(data, id) {
+    let nombreArchivo;
     if (data.form.valid === true) {
+      if (id == 1) {
+        for (const item of this.dataPdf) {
+          nombreArchivo = '';
+          for (const row of this.dataXml) {
+            nombreArchivo = item.nombrePDF.substring(0, item.nombrePDF.length - 4);
+            if (row.nombreXML.includes(nombreArchivo)) {
+              row.nombrePDF = item.nombrePDF;
+            }
+          }
+        }
+      }
       this.horizontalWizardStepper.next();
     }
     
@@ -95,10 +113,14 @@ export class SolicitudesFormComponent implements OnInit {
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;
   }
+  get CapitalIUForm(): any {
+    return this.capitalTrabajoForm.controls;
+  }
   constructor(
     private modalService: NgbModal,
     private utilsService: UtilsService,
     private solicitudesFormService: SolicitudesFormService,
+    private formBuilder: FormBuilder,
     private location: Location,) {
     this.contentHeader = {
       headerTitle: 'Solicitudes',
@@ -122,12 +144,37 @@ export class SolicitudesFormComponent implements OnInit {
         ]
       }
     };
+    this.solicitudForm = this.formBuilder.group({
+      buscarCliente: ['']
+    });
+    this.capitalTrabajoForm = this.formBuilder.group({
+      tipo: [1],
+      moneda: [1],
+      ruc: [''],
+      razonSocial: [''],
+      tasaAnual: [''],
+      tasaMensual: [''],
+      cartaNotarial: [''],
+      servicioCobranza: [''],
+      servicioCustodia: [''],
+      mcTrabajo: [''],
+      ctSolicitado: [''],
+      diasPrestamo: [''],
+      iIncluidoIGV: [''],
+      gIncluidoIGV: [''],
+      tFacturarIGV: [''],
+      tDesembolsoIGV: [''],
+      fechaPago: ['']
+    });
    }
 
   ngOnInit(): void {
-    this.onRadioChange(this.tipoServicio, this.idTipoOperacion, this.flagConfirming)
+    this.onRadioChange(this.tipoServicio, this.idTipoOperacion, this.flagConfirming, '')
   }
 
+  onGuardarCT(): void{
+
+  }
   onRefrescar(): void {
     //this.onListarSolicitudes();
   }
@@ -135,6 +182,8 @@ export class SolicitudesFormComponent implements OnInit {
     this.hasBaseDropZoneOver = e;
     if (e == false) {
       this.onBrowseChange();
+      this.procesar = true;
+      this.procesarXlsx = true;
     }
   }
   
@@ -169,7 +218,6 @@ export class SolicitudesFormComponent implements OnInit {
       "IdUsuarioAud": 1,
       "solicitudDet": this.params
     }).subscribe(response => {
-      console.log('res', response);
       
       if (response.tipo == 1) {
         this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
@@ -191,6 +239,10 @@ export class SolicitudesFormComponent implements OnInit {
 
   }
   onBrowseChange() {
+    if (this.uploaderXlsx.queue.length > 1) {
+      this.uploaderXlsx.queue.splice(0, 1);
+    }
+    this.procesar = true;
     let flagEliminado = false;
     for (const item of this.uploader.queue) {
       let name = item._file.name;
@@ -200,15 +252,37 @@ export class SolicitudesFormComponent implements OnInit {
         flagEliminado = true;
         item.remove();
       }
-      
     //this.name = item._file.name;
     }
+    
+    this.onEliminarRepetidas();
+    if (flagEliminado == true) {
+      this.utilsService.showNotification('Se han eliminado los archivo que no continen una extensión .xml o .pdf', 'Validación', 2);
+    }
+  }
+  onBrowseChangeXlsx() {
+    if (this.uploaderXlsx.queue.length > 1) {
+      this.uploaderXlsx.queue.splice(0, 1);
+    }
+    this.procesarXlsx = true;
+    let flagEliminado = false;
+    for (const item of this.uploaderXlsx.queue) {
+      let name = item._file.name;
+      if (name.includes('.xlsx') || name.includes('.XLSX')) {
+
+      } else {
+        flagEliminado = true;
+        item.remove();
+      }
+    //this.name = item._file.name;
+    }
+    
     if (flagEliminado == true) {
       this.utilsService.showNotification('Se han eliminado los archivo que no continen una extensión .xml o .pdf', 'Validación', 2);
     }
   }
 
-  onRadioChange(value, idTipoOperacion, flagConfirming): void {
+  onRadioChange(value, idTipoOperacion, flagConfirming, modal): void {
     this.tipoServicio = value;
     this.idTipoOperacion = idTipoOperacion;
     this.hasBaseDropZoneOver = false;   
@@ -222,6 +296,19 @@ export class SolicitudesFormComponent implements OnInit {
       this.razonSocialCab = "Razon Social Cliente";
       this.rucDet = "Ruc Pagador";
       this.razonSocialDet = "Razon Social Pagador";
+    }
+    else if (idTipoOperacion == 2) {
+      this.facCheck = false;
+      setTimeout(() => {
+        this.modalService.open(modal, {
+          scrollable: true,
+          backdrop: 'static',
+          size: 'lg',
+          beforeDismiss: () => {
+            return true;
+          }
+        });
+      }, 0);
     }
     else{
       this.rucCab = "Ruc Proveedor";
@@ -273,28 +360,41 @@ export class SolicitudesFormComponent implements OnInit {
     this.selectedRowIds.push(idfila);
     this.razonSocial = razon;
     this.ruc = ruc;
+    this.rucRequired = true;
     modal.dismiss('Cross click');
   }
 
   onProcesar(): void{
-    //this.submitted = true;
+    this.mensaje = [];
+    this.submitted = true;
     // if (this.solicitudForm.invalid) {
     //   return;
     // }
+    this.cantXml = 0;
+    this.cantPdf = 0;
+    if (this.rucRequired == false || this.ruc == "") {
+      this.rucRequired = false;
+      return;
+    }
 
-    // let list = [];
-    // for (const item of this.uploader.queue) {
-    //   list.push({'name': item?.file?.name});
+    let list = [];
+    for (const item of this.uploader.queue) {
+      list.push({'name': item?.file?.name});
 
-    //   if (item?.file?.name.includes('.xml') || item?.file?.name.includes('.XML')) {
-    //     this.cantXml = this.cantXml + 1;
-    //   }
-    //   else {
-    //     this.cantPdf = this.cantPdf + 1;
-    //   }
-    // }
+      if (item?.file?.name.includes('.xml') || item?.file?.name.includes('.XML')) {
+        this.cantXml = this.cantXml + 1;
+      }
+      else {
+        this.cantPdf = this.cantPdf + 1;
+      }
+    }
     
-    //console.log('cantxml2', this.cantXml);
+    if (this.cantXml != this.cantPdf) {
+      this.utilsService.showNotification("La cantidad de archivos XML no coincide con la cantidad de PDF", 'Alerta', 2);
+      return;
+    }
+    // console.log('cantXML', this.cantXml);
+    // console.log('cantPDF', this.cantPdf);
     // if(this.uploader.queue.length % 2 > 0)
     // {
     //   this.utilsService.showNotification('La cantidad de archivos adjuntados debe ser siempre par', 'Alerta', 2);
@@ -307,27 +407,45 @@ export class SolicitudesFormComponent implements OnInit {
     this.dataXml  = [];
     this.uploader.uploadAll();
     let count = 0;
+
     this.uploader.response.subscribe( res => {
      
       let rs = JSON.parse(res);
-      //console.log('res', rs);
+      console.log('rs', rs);
       
-      if (rs.tipoMoneda != '') {
+      if (rs.tipo == 0) {
         this.dataXml.push(rs);
         this.procesar = false;
+        count = Number(count) + 1;
+        if (count == this.cantXml) {
+          this.utilsService.showNotification('Información Procesada correctamente', 'Confirmación', 1);
+        }
       }
       else
       {
         if (rs.tipo == 1) {
-          count = Number(count) + 1;
-          if (count == this.cantPdf) {
-            this.utilsService.showNotification('Información Procesada correctamente', 'Confirmación', 1);
-          }
-          this.utilsService.blockUIStop();
+          this.dataPdf.push(rs);
+          // count = Number(count) + 1;
+          // if (count == this.cantPdf) {
+          //   this.utilsService.showNotification('Información Procesada correctamente', 'Confirmación', 1);
+          // }
+          // this.utilsService.blockUIStop();
         } else if (rs.tipo == 2) {
-          this.utilsService.showNotification(rs.mensaje, 'Alerta', 2);
-          this.utilsService.blockUIStop();
-        } else {
+          //console.log('name', rs.nombreXML);
+        //   console.log('nameXml',rs.nombreXML);
+          
+        //  for (const item of this.uploader.queue) {
+        //   if (item?.file?.name == rs.nombreXML) {
+        //     item.isSuccess = false;
+        //     item.isCancel = false;
+        //     item.isError = true;
+        //   }
+        //  }
+          this.mensaje.push(rs.mensaje + '<br/>');
+          this.onMensajeValidacion(this.mensaje);
+          // this.utilsService.showNotification(rs.mensaje, 'Alerta', 2);
+          // this.utilsService.blockUIStop();
+        } else if (rs.tipo == 3){
           this.utilsService.showNotification(rs.mensaje, 'Error', 3);
           this.utilsService.blockUIStop();
         }
@@ -348,7 +466,28 @@ export class SolicitudesFormComponent implements OnInit {
      
       let rs = JSON.parse(res);
       if (rs.tipo != 1) {
-        this.dataXlsx.push(rs);
+        this.dataXlsx = rs;
+        
+        if (this.cantXml != this.dataXlsx.length) {
+          this.utilsService.showNotification("La cantida de registros en el Excel no coincide con la cantidad de facturas adjuntadas", 'Alerta', 2);
+          this.procesarXlsx = true;
+        }
+        else
+        {
+          for (const row of this.dataXlsx) {
+            for (const item of this.dataXml) {
+              if (item.rucCab == row.ruc) {
+                item.banco = row.banco;
+                item.ctaBancaria = row.ctaBancaria;
+                item.cci = row.cci;
+                item.tipoCuenta = row.tipoCuenta;
+                item.correo = row.correo;
+                item.nombreContacto = row.nombreContacto;
+              }
+            }
+          }
+          this.procesarXlsx = false;
+        }
       }
       else
       {
@@ -365,5 +504,46 @@ export class SolicitudesFormComponent implements OnInit {
         }
       }
     });
+  }
+
+  onEliminarRepetidas(): void{
+    let name = '';
+    let cant = 0;
+
+    for (const item of this.uploader.queue) {
+      name = item?.file?.name;
+      cant = 0;
+      for (const i of this.uploader.queue) {
+        if (name == i?.file?.name) {
+          cant = cant + 1;
+        }
+        if (cant > 1) {
+          i.remove();
+        }
+      }
+    }
+  }
+  onMensajeValidacion(msg): void{
+    Swal.fire({
+      title: 'No Coincide',
+      //text: msg,
+      html:msg,
+      icon: 'warning',
+      showCancelButton: false,
+      // confirmButtonColor: '#3085d6',
+      // cancelButtonColor: '#d33',
+      customClass: {
+        confirmButton: 'btn btn-danger ml-1'
+      },
+      confirmButtonText: 'OK'
+    });
+  }
+
+  onCancelar(): void{
+    this.submitted = false;
+    this.modalService.dismissAll();
+    this.idTipoOperacion = 1;
+    this.facCheck = true;
+    this.onRadioChange('Factoring',1,false,'');
   }
 }
