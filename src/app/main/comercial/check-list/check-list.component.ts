@@ -218,10 +218,8 @@ export class CheckListComponent implements OnInit {
     this.hasBaseDropZoneOver = e;
     if (e === false) {
       let archivos = this.archivosSustento.queue;
-      console.log(archivos);
       let nombres = archivos.map(item => item?.file?.name)
         .filter((value, index, self) => self.indexOf(value) === index)
-      console.log(nombres);
       let sinDuplicado = [];
       for (let el of archivos) {
         let duplicado = archivos.filter(f => f?.file?.name === el.file.name);
