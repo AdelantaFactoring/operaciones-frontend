@@ -2,9 +2,6 @@ export class SolicitudDet {
   idSolicitudDet: number;
   idSolicitudCab: number;
   nroDocumento: string;
-  tasaNominalMensual: number;
-  tasaNominalAnual: number;
-  financiamiento: number;
   fechaConfirmado: any;
   fechaConfirmadoFormat: string;
   netoConfirmado: number;

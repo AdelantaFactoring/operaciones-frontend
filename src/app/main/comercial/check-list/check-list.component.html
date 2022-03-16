@@ -227,12 +227,37 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-4 col-12" style="display: none">
+            <div class="col-md-4 col-12" hidden>
               <div class="form-group">
                 <label>Comisión Estructuración</label>
                 <input class="form-control" type="text" placeholder="0.00"
                        mask="separator" thousandSeparator="," formControlName="comisionEstructuracion"/>
               </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-switch custom-control-inline">
+                  <input type="checkbox" class="custom-control-input"
+                         id="usoGC" formControlName="usarGastosContrato"
+                  />
+                  <label class="custom-control-label"
+                         for="usoGC">Aplicar Gastos de Contrato</label>
+                </div>
+                <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-switch custom-control-inline">
+                  <input type="checkbox" class="custom-control-input"
+                         id="usoGVP" formControlName="usarGastoVigenciaPoder"
+                  />
+                  <label class="custom-control-label"
+                         for="usoGVP">Aplicar Gasto Vigencia de Poder</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
             </div>
             <div class="col-md-4 col-12">
               <div class="form-group">
@@ -243,7 +268,7 @@
             </div>
             <div class="col-md-4 col-12">
               <div class="form-group">
-                <label>Vigencia de Poder</label>
+                <label>Gasto Vigencia de Poder</label>
                 <input class="form-control" type="text" placeholder="0.00"
                        mask="separator" thousandSeparator="," formControlName="gastoVigenciaPoder"/>
               </div>
@@ -294,12 +319,7 @@
                     <td>{{item.financiamiento | number: '1.2-2'}}</td>
                     <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
                     <td>{{item.montoConIGV | number: '1.2-2'}}</td>
-                    <td [ngClass]="{'row-edicion': item.editado}">
-                      <input class="form-control" type="text" [(ngModel)]="item.fondoResguardo"
-                             [ngModelOptions]="{standalone: true}"
-                             placeholder="0.00" (ngModelChange)="onCambiarFondoResguardo(item)"
-                             mask="separator" thousandSeparator=","/>
-                    </td>
+                    <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                     <td>{{item.fechaConfirmadoFormat}}</td>
                     <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
                     <td>{{item.estado}}</td>
@@ -459,71 +479,45 @@
             </div>
             <div class="col-12 overflow-auto">
               <div class="d-flex justify-content-between mb-1">
-                <h4>Cola de Archivos</h4>
-                <p>Tamaño de Cola: {{ archivosSustento?.queue?.length }}</p>
+                <h4>Archivo(s)</h4>
               </div>
-
-              <table class="table">
-                <thead>
-                <tr>
-                  <th width="50%">Nombre</th>
-                  <th>Tamaño</th>
-                  <th>Progreso</th>
-                  <th>Estado</th>
-                  <th>Acción</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let item of archivosSustento.queue">
-                  <td>
-                    <strong>{{ item?.file?.name }}</strong>
-                  </td>
-                  <td *ngIf="archivosSustento.options.isHTML5" nowrap>
-                    {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
-                  </td>
-                  <td *ngIf="archivosSustento.options.isHTML5">
-                    <ngb-progressbar type="primary" [value]="item.progress"></ngb-progressbar>
-                  </td>
-                  <td class="text-center">
-                    <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
-                    <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
-                    <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
-                  </td>
-                  <td nowrap>
-                    <button
-                      type="button"
-                      class="btn btn-raised btn-outline-danger btn-sm"
-                      (click)="item.remove()"
-                      rippleEffect
-                    >
-                      <i data-feather="trash"></i>
-                    </button>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-
-              <div id="">
-                <p class="mt-1">Progreso de Cola:</p>
-                <ngb-progressbar class="mb-1" type="primary" [value]="archivosSustento.progress"></ngb-progressbar>
-                <div class="d-flex flex-wrap mb-0">
-                  <div class="pr-1">
-                    <button type="submit" rippleEffect class="btn btn-outline-success"
-                            (click)="archivosSustento.uploadAll()"
-                            [disabled]="!archivosSustento.getNotUploadedItems().length">
-                      <i class="mr-0 mr-sm-1" data-feather="upload"></i>
-                      <span class="d-none d-sm-inline-block">Subir Todo</span>
-                    </button>
-                  </div>
-                  <div class="pr-1">
-                    <button type="submit" rippleEffect class="btn btn-outline-danger"
-                            (click)="archivosSustento.clearQueue()"
-                            [disabled]="!archivosSustento.queue.length">
-                      <i class="mr-0 mr-sm-1" data-feather="trash"></i>
-                      <span class="d-none d-sm-inline-block">Quitar Todo</span>
-                    </button>
-                  </div>
-                </div>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                  <tr>
+                    <th [width]="250">Tipo</th>
+                    <th>Nombre</th>
+                    <th>Tamaño</th>
+                    <th>Acción</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of archivos">
+                    <td [width]="250">
+                      <ng-select appendTo="body" [clearable]="false" [items]="tiposArchivos"
+                                 style="width: 250px"
+                                 bindLabel="descripcion" placeholder="Tipo Archivo"
+                                 bindValue="idColumna" [(ngModel)]="item.idTipo"
+                                 [ngModelOptions]="{standalone: true}">
+                      </ng-select>
+                    </td>
+                    <td>
+                      <strong>{{ item.nombre }}</strong>
+                    </td>
+                    <td>
+                      {{item.tamanio}}
+                    </td>
+                    <td nowrap>
+                      <button
+                        type="button"
+                        class="btn btn-raised btn-outline-danger btn-sm"
+                        rippleEffect>
+                        <i data-feather="trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
