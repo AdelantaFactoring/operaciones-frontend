@@ -6,4 +6,7 @@ export class SolicitudCabSustento {
   archivo: string;
   base64: string;
   rutaArchivo: string;
+  estado: boolean;
+
+  editado: boolean = false;
 }

@@ -1,9 +1,15 @@
-@import '@core/scss/angular/libs/file-uploader.component.scss';
+@import '~@core/scss/angular/libs/file-uploader.component.scss';
+
 .row-edicion {
   background-color: lightgreen !important;
-  p {
+
+  p, strong {
     color: white;
   }
+}
+
+.eliminado {
+  text-decoration: line-through;
 }
 
 ::ng-deep .my-class .modal-dialog {

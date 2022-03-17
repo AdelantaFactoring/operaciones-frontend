@@ -14,6 +14,8 @@ import {ClienteCuenta} from "../../../shared/models/comercial/cliente-cuenta";
 import {Archivo} from "../../../shared/models/comercial/archivo";
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
+import {SolicitudCabSustento} from "../../../shared/models/comercial/solicitudCab-sustento";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-check-list',
@@ -24,6 +26,8 @@ export class CheckListComponent implements OnInit {
   public contentHeader: object;
   public solicitudes: SolicitudCab[];
   public detalle: SolicitudDet[];
+  public sustentos: SolicitudCabSustento[];
+  public sustentosOld: SolicitudCabSustento[] = [];
   public contactos: ClienteContacto[];
   public cuentas: ClienteCuenta[];
   public tiposArchivos: TablaMaestra[];
@@ -103,8 +107,8 @@ export class CheckListComponent implements OnInit {
       titularCuentaBancariaDestino: ['', Validators.required],
       monedaCuentaBancariaDestino: ['', Validators.required],
       bancoDestino: ['', Validators.required],
-      nroCuentaBancariaDestino: [''],
-      cciDestino: [''],
+      // nroCuentaBancariaDestino: [''],
+      // cciDestino: [''],
       tipoCuentaBancariaDestino: ['-', Validators.required],
     });
   }
@@ -170,14 +174,31 @@ export class CheckListComponent implements OnInit {
 
   onEditar(item: SolicitudCab, modal: any): void {
     this.solicitudForm.controls.idSolicitudCab.setValue(item.idSolicitudCab);
-    // this.clienteForm.controls.ruc.setValue(item.ruc);
-    // this.clienteForm.controls.razonSocial.setValue(item.razonSocial);
-    // this.clienteForm.controls.direccionPrincipal.setValue(item.direccionPrincipal);
-    // this.clienteForm.controls.direccionFacturacion.setValue(item.direccionFacturacion);
-    // this.clienteForm.controls.cedente.setValue(item.cedente);
-    // this.clienteForm.controls.aceptante.setValue(item.aceptante);
-    // this.clienteForm.controls.capitalTrabajo.setValue(item.capitalTrabajo);
+    this.solicitudForm.controls.rucCliente.setValue(item.rucCliente);
+    this.solicitudForm.controls.razonSocialCliente.setValue(item.razonSocialCliente);
+    this.solicitudForm.controls.rucPagProv.setValue(item.rucPagProv);
+    this.solicitudForm.controls.razonSocialPagProv.setValue(item.razonSocialPagProv);
+    this.solicitudForm.controls.moneda.setValue(item.moneda);
+    this.solicitudForm.controls.tipoOperacion.setValue(item.tipoOperacion);
+    this.solicitudForm.controls.comisionEstructuracion.setValue(item.comisionEstructuracion);
+    this.solicitudForm.controls.usarGastosContrato.setValue(item.usarGastosContrato);
+    this.solicitudForm.controls.gastosContrato.setValue(item.gastosContrato);
+    this.solicitudForm.controls.usarGastoVigenciaPoder.setValue(item.usarGastoVigenciaPoder);
+    this.solicitudForm.controls.gastoVigenciaPoder.setValue(item.gastoVigenciaPoder);
+    this.solicitudForm.controls.comisionCartaNotarial.setValue(item.comisionCartaNotarial);
+    this.solicitudForm.controls.servicioCobranza.setValue(item.servicioCobranza);
+    this.solicitudForm.controls.servicioCustodia.setValue(item.servicioCustodia);
+    this.solicitudForm.controls.nombreContacto.setValue(item.nombreContacto);
+    this.solicitudForm.controls.telefonoContacto.setValue(item.telefonoContacto);
+    this.solicitudForm.controls.correoContacto.setValue(item.correoContacto);
+    this.solicitudForm.controls.titularCuentaBancariaDestino.setValue(item.titularCuentaBancariaDestino);
+    this.solicitudForm.controls.monedaCuentaBancariaDestino.setValue(item.monedaCuentaBancariaDestino);
+    this.solicitudForm.controls.bancoDestino.setValue(item.bancoDestino);
+    this.nroCuentaBancariaDestino = item.nroCuentaBancariaDestino;
+    this.cciDestino = item.cciDestino;
+    this.solicitudForm.controls.tipoCuentaBancariaDestino.setValue(item.tipoCuentaBancariaDestino);
     this.detalle = item.solicitudDet;
+    this.sustentos = item.solicitudCabSustento;
 
     this.utilsService.blockUIStart("Obteniendo información...");
     this.clienteService.obtener({
@@ -207,6 +228,14 @@ export class CheckListComponent implements OnInit {
   }
 
   onCancelar(): void {
+    this.submitted = false;
+    this.sustentosOld = [];
+    this.nroCuentaBancariaDestino = "";
+    this.cciDestino = "";
+    this.solicitudForm.reset();
+    this.onListarSolicitudes();
+    this.archivos = [];
+    this.archivosSustento.clearQueue();
     this.modalService.dismissAll();
   }
 
@@ -226,6 +255,71 @@ export class CheckListComponent implements OnInit {
     if (this.nroCuentaBancariaDestino === "" && this.cciDestino === "")
       return;
 
+    if (this.sustentosOld.length === 0)
+      for (let item of this.sustentos) {
+        this.sustentosOld.push({
+          idSolicitudCabSustento: item.idSolicitudCabSustento,
+          idSolicitudCab: item.idSolicitudCab,
+          idTipo: item.idTipo,
+          tipo: item.tipo,
+          archivo: item.archivo,
+          base64: item.base64,
+          rutaArchivo: item.rutaArchivo,
+          estado: item.estado,
+          editado: item.editado
+        });
+      }
+    else {
+      this.sustentos = []
+      for (let item of this.sustentosOld) {
+        this.sustentos.push({
+          idSolicitudCabSustento: item.idSolicitudCabSustento,
+          idSolicitudCab: item.idSolicitudCab,
+          idTipo: item.idTipo,
+          tipo: item.tipo,
+          archivo: item.archivo,
+          base64: item.base64,
+          rutaArchivo: item.rutaArchivo,
+          estado: item.estado,
+          editado: item.editado
+        });
+      }
+    }
+
+    for (let item of this.archivos) {
+      this.sustentos.push({
+        idSolicitudCabSustento: 0,
+        idSolicitudCab: 0,
+        idTipo: item.idTipo,
+        tipo: "",
+        archivo: item.nombre,
+        base64: item.base64,
+        rutaArchivo: "",
+        estado: true,
+        editado: true
+      });
+    }
+    console.log(this.sustentos);
+  }
+
+  onEliminarArchivoAdjunto(item: SolicitudCabSustento): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea eliminar el archivo "${item.archivo}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-danger',
+        cancelButton: 'btn btn-primary'
+      }
+    }).then(result => {
+      if (result.value) {
+        item.editado = true;
+        item.estado = false;
+      }
+    });
   }
 
   async fileOverBase(e: any): Promise<void> {
@@ -305,8 +399,8 @@ export class CheckListComponent implements OnInit {
     this.solicitudForm.controls.titularCuentaBancariaDestino.setValue(item.titular);
     this.solicitudForm.controls.monedaCuentaBancariaDestino.setValue(item.moneda);
     this.solicitudForm.controls.bancoDestino.setValue(item.banco);
-    this.solicitudForm.controls.nroCuentaBancariaDestino.setValue(item.nroCuenta);
-    this.solicitudForm.controls.cciDestino.setValue(item.cci);
+    this.nroCuentaBancariaDestino = item.nroCuenta;
+    this.cciDestino = item.cci;
     this.solicitudForm.controls.tipoCuentaBancariaDestino.setValue("-");
     modal.dismiss("Cross Click");
   }
