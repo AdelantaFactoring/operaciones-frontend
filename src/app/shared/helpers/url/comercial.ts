@@ -18,7 +18,7 @@ export const SOLICITUD = {
   eliminar: '/solicitudCab/eliminar',
   eliminarFactura: '/solicitudCab/eliminarfactura',
   uploadXlsx: '/solicitudCab/uploadXlsx',
-  subirSustento: '/solicitudCab/subirsustento',
+  actualizar: '/solicitudCab/actualizar',
   guardarCT: '/solicitudCab/guardarCT',
 };
 
@@ -29,5 +29,6 @@ export const PAGADOR = {
 
 export const CLIENTEPAGADOR = {
   listar: '/clientepagador/listar',
-  guardar: '/clientepagador/guardar'
+  guardar: '/clientepagador/guardar',
+  obtener: '/clientepagadorgastos/obtener'
 };

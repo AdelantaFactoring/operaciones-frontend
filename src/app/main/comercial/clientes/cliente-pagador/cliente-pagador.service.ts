@@ -32,4 +32,14 @@ export class ClientePagadorService {
       }
     );
   }
+
+  obtener(payload): Observable<any> {
+    return this.requestMethod.get(
+      `${environment.apiUrl}${CLIENTEPAGADOR.obtener}`,
+      `?idCliente=${payload.idCliente}&rucPagProv=${payload.rucPagProv}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }
