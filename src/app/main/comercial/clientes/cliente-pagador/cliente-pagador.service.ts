@@ -33,10 +33,30 @@ export class ClientePagadorService {
     );
   }
 
+  listarGastos(payload): Observable<any> {
+    return this.requestMethod.get(
+      `${environment.apiUrl}${CLIENTEPAGADOR.listarGastos}`,
+      `?idClientePagador=${payload.idClientePagador}&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
   obtener(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${CLIENTEPAGADOR.obtener}`,
       `?idCliente=${payload.idCliente}&rucPagProv=${payload.rucPagProv}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  guardarGastos(payload): Observable<any> {
+    return this.requestMethod.post(
+      `${environment.apiUrl}${CLIENTEPAGADOR.guardarGastos}`,
+      payload,
       {
         'Content-Type': CONTENT_TYPE.json
       }

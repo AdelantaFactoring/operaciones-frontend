@@ -17,4 +17,8 @@ export class ClientePagadorGastos {
   estado: boolean;
   totalRows: number;
   idUsuarioAud: number;
+
+  idFila: number;
+  edicion: boolean = false;
+  editado: boolean = false;
 }

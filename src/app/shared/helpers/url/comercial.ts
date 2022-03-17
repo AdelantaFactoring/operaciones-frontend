@@ -30,5 +30,7 @@ export const PAGADOR = {
 export const CLIENTEPAGADOR = {
   listar: '/clientepagador/listar',
   guardar: '/clientepagador/guardar',
-  obtener: '/clientepagadorgastos/obtener'
+  listarGastos: '/clientepagadorgastos/listar',
+  obtener: '/clientepagadorgastos/obtener',
+  guardarGastos: '/clientepagadorgastos/guardar'
 };
