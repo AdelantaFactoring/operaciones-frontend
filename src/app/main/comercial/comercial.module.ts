@@ -18,6 +18,7 @@ import { PagadorComponent } from './pagador/pagador.component';
 import { SolicitudesFormComponent } from './solicitudes/solicitudes-form/solicitudes-form.component';
 import { CardSnippetModule } from '@core/components/card-snippet/card-snippet.module';
 import { CoreDirectivesModule } from '@core/directives/directives';
+import { ClientePagadorComponent } from './clientes/cliente-pagador/cliente-pagador.component';
 
 const routes: Routes = [
   {
@@ -60,8 +61,17 @@ const routes: Routes = [
     path: '',
     children: [
       {
+        path: 'clientepagador',
+        component: ClientePagadorComponent
+      }
+    ]
+  },
+  {
+    path: '',
+    children: [
+      {
         path: 'solicitudes-form',
-        component: SolicitudesFormComponent 
+        component: SolicitudesFormComponent
       }
     ]
   }
@@ -74,7 +84,8 @@ const routes: Routes = [
     SolicitudesComponent,
     GastosComponent,
     PagadorComponent,
-    SolicitudesFormComponent
+    SolicitudesFormComponent,
+    ClientePagadorComponent
   ],
   imports: [
     CommonModule,

@@ -71,6 +71,13 @@ export const menu: CoreMenu[] = [
       type: 'item',
       icon: 'circle',
       url: 'comercial/solicitudes'
+    },{
+      id: 'clienteapagador',
+      title: 'Cliente-Pagador',
+      // translate: 'MENU.DASHBOARD.ANALYTICS',
+      type: 'item',
+      icon: 'circle',
+      url: 'comercial/clientepagador'
     }]
   },
   // {

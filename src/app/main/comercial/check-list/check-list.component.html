@@ -227,12 +227,37 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-4 col-12" style="display: none">
+            <div class="col-md-4 col-12" hidden>
               <div class="form-group">
                 <label>Comisión Estructuración</label>
                 <input class="form-control" type="text" placeholder="0.00"
                        mask="separator" thousandSeparator="," formControlName="comisionEstructuracion"/>
               </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-switch custom-control-inline">
+                  <input type="checkbox" class="custom-control-input"
+                         id="usoGC" formControlName="usarGastosContrato"
+                  />
+                  <label class="custom-control-label"
+                         for="usoGC">Aplicar Gastos de Contrato</label>
+                </div>
+                <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-switch custom-control-inline">
+                  <input type="checkbox" class="custom-control-input"
+                         id="usoGVP" formControlName="usarGastoVigenciaPoder"
+                  />
+                  <label class="custom-control-label"
+                         for="usoGVP">Aplicar Gasto Vigencia de Poder</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
             </div>
             <div class="col-md-4 col-12">
               <div class="form-group">
@@ -243,7 +268,7 @@
             </div>
             <div class="col-md-4 col-12">
               <div class="form-group">
-                <label>Vigencia de Poder</label>
+                <label>Gasto Vigencia de Poder</label>
                 <input class="form-control" type="text" placeholder="0.00"
                        mask="separator" thousandSeparator="," formControlName="gastoVigenciaPoder"/>
               </div>
@@ -276,8 +301,6 @@
                   <tr>
                     <th class="detail-th-color">N° Documento</th>
                     <th class="detail-th-color">Forma Pago</th>
-                    <th class="detail-th-color">T.N. Mensual (%)</th>
-                    <th class="detail-th-color">Financiamiento (%)</th>
                     <th class="detail-th-color">Monto sin IGV</th>
                     <th class="detail-th-color">Monto con IGV</th>
                     <th class="detail-th-color">Fondo Resguardo</th>
@@ -290,16 +313,9 @@
                   <tr *ngFor="let item of detalle">
                     <td>{{item.nroDocumento}}</td>
                     <td>{{item.formaPago}}</td>
-                    <td>{{item.tasaNominalMensual | number: '1.2-2'}}</td>
-                    <td>{{item.financiamiento | number: '1.2-2'}}</td>
                     <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
                     <td>{{item.montoConIGV | number: '1.2-2'}}</td>
-                    <td [ngClass]="{'row-edicion': item.editado}">
-                      <input class="form-control" type="text" [(ngModel)]="item.fondoResguardo"
-                             [ngModelOptions]="{standalone: true}"
-                             placeholder="0.00" (ngModelChange)="onCambiarFondoResguardo(item)"
-                             mask="separator" thousandSeparator=","/>
-                    </td>
+                    <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                     <td>{{item.fechaConfirmadoFormat}}</td>
                     <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
                     <td>{{item.estado}}</td>
@@ -408,12 +424,12 @@
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>N° Cuenta</label>
-                <input class="form-control" formControlName="nroCuentaBancariaDestino" type="text" readonly
+                <input class="form-control" type="text" readonly
                        [ngClass]="{ 'is-invalid': submitted && nroCuentaBancariaDestino === '' }"
-                       [(ngModel)]="nroCuentaBancariaDestino"/>
+                       [(ngModel)]="nroCuentaBancariaDestino" [ngModelOptions]="{standalone: true}"/>
                 <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''" class="invalid-feedback">
                   <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''">* Campo obligatorio solo si no
-                    existen valores en N° Cuenta o CCI
+                    existe un valor en CCI
                   </div>
                 </div>
               </div>
@@ -421,12 +437,12 @@
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>CCI</label>
-                <input class="form-control" formControlName="cciDestino" type="text" readonly
+                <input class="form-control" type="text" readonly
                        [ngClass]="{ 'is-invalid': submitted && nroCuentaBancariaDestino === '' }"
-                       [(ngModel)]="cciDestino"/>
+                       [(ngModel)]="cciDestino" [ngModelOptions]="{standalone: true}"/>
                 <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''" class="invalid-feedback">
                   <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''">* Campo obligatorio solo si no
-                    existen valores en N° Cuenta o CCI
+                    existe un valor en N° Cuenta
                   </div>
                 </div>
               </div>
@@ -457,73 +473,84 @@
                 Arrastre aquí los archivos
               </div>
             </div>
-            <div class="col-12 overflow-auto">
+            <div class="col-12">
               <div class="d-flex justify-content-between mb-1">
-                <h4>Cola de Archivos</h4>
-                <p>Tamaño de Cola: {{ archivosSustento?.queue?.length }}</p>
+                <h4>Archivo(s) a subir</h4>
               </div>
-
-              <table class="table">
-                <thead>
-                <tr>
-                  <th width="50%">Nombre</th>
-                  <th>Tamaño</th>
-                  <th>Progreso</th>
-                  <th>Estado</th>
-                  <th>Acción</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let item of archivosSustento.queue">
-                  <td>
-                    <strong>{{ item?.file?.name }}</strong>
-                  </td>
-                  <td *ngIf="archivosSustento.options.isHTML5" nowrap>
-                    {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
-                  </td>
-                  <td *ngIf="archivosSustento.options.isHTML5">
-                    <ngb-progressbar type="primary" [value]="item.progress"></ngb-progressbar>
-                  </td>
-                  <td class="text-center">
-                    <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
-                    <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
-                    <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
-                  </td>
-                  <td nowrap>
-                    <button
-                      type="button"
-                      class="btn btn-raised btn-outline-danger btn-sm"
-                      (click)="item.remove()"
-                      rippleEffect
-                    >
-                      <i data-feather="trash"></i>
-                    </button>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-
-              <div id="">
-                <p class="mt-1">Progreso de Cola:</p>
-                <ngb-progressbar class="mb-1" type="primary" [value]="archivosSustento.progress"></ngb-progressbar>
-                <div class="d-flex flex-wrap mb-0">
-                  <div class="pr-1">
-                    <button type="submit" rippleEffect class="btn btn-outline-success"
-                            (click)="archivosSustento.uploadAll()"
-                            [disabled]="!archivosSustento.getNotUploadedItems().length">
-                      <i class="mr-0 mr-sm-1" data-feather="upload"></i>
-                      <span class="d-none d-sm-inline-block">Subir Todo</span>
-                    </button>
-                  </div>
-                  <div class="pr-1">
-                    <button type="submit" rippleEffect class="btn btn-outline-danger"
-                            (click)="archivosSustento.clearQueue()"
-                            [disabled]="!archivosSustento.queue.length">
-                      <i class="mr-0 mr-sm-1" data-feather="trash"></i>
-                      <span class="d-none d-sm-inline-block">Quitar Todo</span>
-                    </button>
-                  </div>
-                </div>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                  <tr>
+                    <th [width]="250">Tipo</th>
+                    <th>Nombre</th>
+                    <th>Tamaño</th>
+                    <th>Acción</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of archivos">
+                    <td [width]="250">
+                      <ng-select appendTo="body" [clearable]="false" [items]="tiposArchivos"
+                                 style="width: 250px"
+                                 bindLabel="descripcion" placeholder="Tipo Archivo"
+                                 bindValue="idColumna" [(ngModel)]="item.idTipo"
+                                 [ngModelOptions]="{standalone: true}">
+                      </ng-select>
+                    </td>
+                    <td>
+                      <strong>{{ item.nombre }}</strong>
+                    </td>
+                    <td>
+                      {{item.tamanio}}
+                    </td>
+                    <td nowrap>
+                      <button
+                        type="button"
+                        class="btn btn-raised btn-outline-danger btn-sm"
+                        rippleEffect>
+                        <i data-feather="trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="divider divider-secondary">
+                <div class="divider-text"><span [data-feather]="'chevrons-down'"></span></div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="d-flex justify-content-between mb-1">
+                <h4>Archivo(s) adjuntos</h4>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Nombre</th>
+                    <th>Acción</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of sustentos">
+                    <td [ngClass]="{'row-edicion': item.editado}"><p [ngClass]="{ 'eliminado': !item.estado }">{{item.tipo}}</p></td>
+                    <td [ngClass]="{'row-edicion': item.editado}">
+                      <a href="{{item.rutaArchivo}}"><strong [ngClass]="{ 'eliminado': !item.estado }">{{ item.archivo }}</strong></a>
+                    </td>
+                    <td nowrap>
+                      <button *ngIf="item.estado"
+                        type="button"
+                        class="btn btn-raised btn-outline-danger btn-sm"
+                        rippleEffect (click)="onEliminarArchivoAdjunto(item)">
+                        <i data-feather="trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -561,7 +588,7 @@
                 <table class="table table-hover">
                   <thead>
                   <tr>
-                    <th>Acción</th>
+<!--                    <th>Acción</th>-->
                     <th>Nombre</th>
                     <th>Ape. Paterno</th>
                     <th>Ape. Materno</th>
@@ -571,14 +598,14 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let item of contactos">
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Seleccionar" (click)="onSeleccionarContacto(item, modal)">
-                          <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>
-                        </a>
-                      </div>
-                    </td>
+                  <tr *ngFor="let item of contactos" (click)="onSeleccionarContacto(item, modal)">
+<!--                    <td>-->
+<!--                      <div class="d-flex align-items-center">-->
+<!--                        <a href="javascript:void(0)" title="Seleccionar" (click)="onSeleccionarContacto(item, modal)">-->
+<!--                          <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>-->
+<!--                        </a>-->
+<!--                      </div>-->
+<!--                    </td>-->
                     <td>{{item.nombre}}</td>
                     <td>{{item.apellidoPaterno}}</td>
                     <td>{{item.apellidoMaterno}}</td>
@@ -611,7 +638,7 @@
                 <table class="table table-hover">
                   <thead>
                   <tr>
-                    <th>Acción</th>
+<!--                    <th>Acción</th>-->
                     <th>Titular</th>
                     <th>Banco</th>
                     <th>Moneda</th>
@@ -621,14 +648,14 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let item of cuentas">
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Seleccionar" (click)="onSeleccionarCuenta(item, modal)">
-                          <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>
-                        </a>
-                      </div>
-                    </td>
+                  <tr *ngFor="let item of cuentas" (click)="onSeleccionarCuenta(item, modal)">
+<!--                    <td>-->
+<!--                      <div class="d-flex align-items-center">-->
+<!--                        <a href="javascript:void(0)" title="Seleccionar" (click)="onSeleccionarCuenta(item, modal)">-->
+<!--                          <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>-->
+<!--                        </a>-->
+<!--                      </div>-->
+<!--                    </td>-->
                     <td>{{item.titular}}</td>
                     <td>{{item.banco}}</td>
                     <td>{{item.moneda}}</td>
