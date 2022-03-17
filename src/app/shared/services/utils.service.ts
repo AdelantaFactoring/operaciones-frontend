@@ -107,6 +107,7 @@ export class UtilsService {
 
   autoIncrement(array: any[]): number {
     const ids = array.map(m => m.idFila);
+
     if (ids.length > 0) {
       const sorted = ids.sort((a, b) => a - b);
       return sorted[sorted.length - 1] + 1;

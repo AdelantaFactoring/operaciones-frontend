@@ -25,4 +25,9 @@ export const SOLICITUD = {
 export const PAGADOR = {
   listar: '/pagador/listar',
   guardar: '/pagador/guardar'
-}
+};
+
+export const CLIENTEPAGADOR = {
+  listar: '/clientepagador/listar',
+  guardar: '/clientepagador/guardar'
+};
