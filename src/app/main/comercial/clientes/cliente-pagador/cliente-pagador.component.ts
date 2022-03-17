@@ -610,6 +610,12 @@ export class ClientePagadorComponent implements OnInit {
   }
 
   onConfirmarCambioClientePagadorGastos(item: ClientePagadorGastos): void {
+    let moneda = this.monedas.find(f => f.idColumna === item.idMoneda).descripcion;
+    if (this.clientePagadorGastos.filter(f => f.idMoneda === item.idMoneda && f.idFila != item.idFila).length > 0) {
+      this.utilsService.showNotification(`Ya existen gastos con el tipo de moneda '${moneda}'`, "Alerta", 2);
+      return;
+    }
+
     this.utilsService.blockUIStart('Guardando...');
 
     let clientePagadorGastosList: ClientePagadorGastos[] = [];
@@ -625,7 +631,7 @@ export class ClientePagadorComponent implements OnInit {
 
         item.edicion = false;
 
-        this.clientePagadorGastosForm.reset();
+        this.clientePagadorGastosForm.reset(this.oldClientePagadorGastosForm);
         this.submittedClientePagadorGastos = false;
 
         this.onListarClientePagadorGastos();
