@@ -1,574 +1,572 @@
-<div class="content-wrapper container-xxl p-0">
+<div class="content-wrapper">
     <div class="content-body">
       <app-content-header [contentHeader]="contentHeader"></app-content-header>
-      <!-- Horizontal Wizard -->
-      <section class="horizontal-wizard">
-        <div id="stepper1" class="bs-stepper horizontal-wizard-example">
-          <div class="bs-stepper-header">
-            <div class="row spaced">
-                <div class="col-12">
-                  <div class="form-group">
-                    <label>Tipo de Operación</label>
-                  </div>
+      <!-- <div class="card">
+        <div class="card-body">
+          <div class="row">
+           
+          </div>
+        </div>
+      </div> -->
+      <div id="stepper1" class="bs-stepper horizontal-wizard-example">
+        <div class="bs-stepper-header">
+          <div class="row spaced">
+              <div class="col-12">
+                <div class="form-group">
+                  <label>Tipo de Operación</label>
                 </div>
-                <div class="col-12 col-md-4">
-                  <div class="form-group">
-                    <div class="custom-control custom-radio">
-                      <input type="radio" id="Factoring" name="customRadio" class="custom-control-input" [checked]="facCheck"
-                      (change)="onRadioChange('Factoring', 1, false, '')" />
-                      <label class="custom-control-label" for="Factoring">Factoring</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12 col-md-4">
-                  <div class="form-group">
-                    <div class="custom-control custom-radio">
-                      <input type="radio" id="capital" name="customRadio" class="custom-control-input" (change)="onRadioChange('Capital de Trabajo', 2, false, modalCapitalTrabajo)"/>
-                      <label class="custom-control-label" for="capital">Capital de Trabajo</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12 col-md-4">
-                  <div class="form-group">
-                    <div class="custom-control custom-radio">
-                      <input type="radio" id="Confirming" name="customRadio" class="custom-control-input" (change)="onRadioChange('Confirming', 3, true, '')"/>
-                      <label class="custom-control-label" for="Confirming">Confirming</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12">
-                  <div class="form-group">
-                    <label>Razón Social</label>
-                    <input [(ngModel)]="razonSocial" [ngClass]="{ 'is-invalid': !rucRequired }"
-                    class="form-control" type="text" disabled>
-                    <span *ngIf="!rucRequired" class="invalid-form">
-                      <small class="form-text text-danger" *ngIf="!rucRequired"
-                        >This field is required!</small
-                      >
-                    </span>
-                  </div>
-                </div>
-                
-                <div class="col-md-5 col-10">
-                  <div class="form-group">
-                    <label>Ruc</label>
-                    <input [(ngModel)]="ruc"
-                    [ngClass]="{ 'is-invalid': !rucRequired }"
-                    class="form-control" type="text" disabled>
-                    <span *ngIf="!rucRequired" class="invalid-form">
-                      <small class="form-text text-danger" *ngIf="!rucRequired"
-                        >This field is required!</small
-                      >
-                    </span>
-                  </div>
-                </div>
-                <div class="col-md-1 col-2">
-                  <div class="form-group">
-                    <label style="visibility: hidden;">Buscar</label>
-                    <button type="button" class="btn btn-icon btn-outline-info" style="float: right;"
-                      (click)="onClientePagadorList(modalCliente, 1)"
-                      placement="top" rippleEffect>
-                                    <span ngbTooltip="Mostrar Información" placement="left" container="body"
-                                          [data-feather]="'search'"></span>
-                    </button>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="divider divider-warning">
-                    <div class="divider-text">{{tipoServicio}}</div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="form-group">
+                  <div class="custom-control custom-radio">
+                    <input type="radio" id="Factoring" name="customRadio" class="custom-control-input" [checked]="facCheck"
+                    (change)="onRadioChange('Factoring', 1, false, '')" />
+                    <label class="custom-control-label" for="Factoring">Factoring</label>
                   </div>
                 </div>
               </div>
-            <div class="step" data-target="#xml-pdf">
-              <button class="step-trigger">
-                <span class="bs-stepper-box">1</span>
-                <span class="bs-stepper-label">
-                  <span class="bs-stepper-title">Archivos .XML y .PDF</span>
-                  <span class="bs-stepper-subtitle">Subir archivos</span>
-                </span>
-              </button>
+              <div class="col-12 col-md-4">
+                <div class="form-group">
+                  <div class="custom-control custom-radio">
+                    <input type="radio" id="capital" name="customRadio" class="custom-control-input" (change)="onRadioChange('Capital de Trabajo', 2, false, modalCapitalTrabajo)"/>
+                    <label class="custom-control-label" for="capital">Capital de Trabajo</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="form-group">
+                  <div class="custom-control custom-radio">
+                    <input type="radio" id="Confirming" name="customRadio" class="custom-control-input" (change)="onRadioChange('Confirming', 3, true, '')"/>
+                    <label class="custom-control-label" for="Confirming">Confirming</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>Razón Social</label>
+                  <input [(ngModel)]="razonSocial" [ngClass]="{ 'is-invalid': !rucRequired }"
+                  class="form-control" type="text" disabled>
+                  <span *ngIf="!rucRequired" class="invalid-form">
+                    <small class="form-text text-danger" *ngIf="!rucRequired"
+                      >This field is required!</small
+                    >
+                  </span>
+                </div>
+              </div>
+              
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label>RUC</label>
+                  <div class="input-group">
+                    <input [ngClass]="{ 'is-invalid': !rucRequired }" 
+                    class="form-control" type="text"
+                    [(ngModel)]="ruc" disabled/>
+
+                    <div class="input-group-append">
+                     <button (click)="onClientePagadorList(modalCliente, 1)"
+                        class="btn btn-outline-secondary feather" rippleEffect
+                        type="button"><span ngbTooltip="Mostrar lista de clientes" placement="left" container="body"
+                        [data-feather]="'search'"></span></button>
+                    </div>
+                    <div *ngIf="!rucRequired" class="invalid-feedback">
+                      <div *ngIf="!rucRequired">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="divider divider-warning">
+                  <div class="divider-text">{{tipoServicio}}</div>
+                </div>
+              </div>
             </div>
-            <div class="line"><i data-feather="chevron-right" class="font-medium-2"></i></div>
-            <div class="step" data-target="#list-xml">
-              <button class="step-trigger">
-                <span class="bs-stepper-box">2</span>
-                <span class="bs-stepper-label">
-                  <span class="bs-stepper-title">Facturas</span>
-                  <span class="bs-stepper-subtitle">Lista de facturas</span>
-                </span>
-              </button>
-            </div>
-            <div class="line" *ngIf="flagConfirming"><i data-feather="chevron-right" class="font-medium-2"></i></div>
-            <div class="step" data-target="#list-combinado">
-              <button class="step-trigger">
-                <span class="bs-stepper-box" *ngIf="flagConfirming">3</span>
-                <span class="bs-stepper-label" *ngIf="flagConfirming">
-                  <span class="bs-stepper-title">Archivos .XLSX</span>
-                  <span class="bs-stepper-subtitle">Subir archivo</span>
-                </span>
-              </button>
-            </div>
-            <div class="line" *ngIf="flagConfirming"><i data-feather="chevron-right" class="font-medium-2"></i></div>
-            <div class="step" data-target="#social-links">
-              <button class="step-trigger">
-                <span class="bs-stepper-box" *ngIf="flagConfirming">4</span>
-                <span class="bs-stepper-label" *ngIf="flagConfirming">
-                  <span class="bs-stepper-title">Facturas</span>
-                  <span class="bs-stepper-subtitle">Lista combinada</span>
-                </span>
-              </button>
-            </div>
+          <div class="step" data-target="#xml-pdf">
+            <button class="step-trigger">
+              <span class="bs-stepper-box">1</span>
+              <span class="bs-stepper-label">
+                <span class="bs-stepper-title">Archivos .XML y .PDF</span>
+                <span class="bs-stepper-subtitle">Subir archivos</span>
+              </span>
+            </button>
           </div>
-          <div class="bs-stepper-content">
-            <form (ngSubmit)="(HWForm.form.valid)" #HWForm="ngForm">
-              <div id="xml-pdf" class="content">
-                <form #accountDetailsForm="ngForm">
-                  <div class="content-header">
-                    <h5 class="mb-0">Account Details</h5>
-                    <small class="text-muted">Enter Your Account Details.</small>
-                  </div>
-  
-                  <div class="row">
-                    <div class="col-md-12">
-                        <div
-                          ng2FileDrop
-                          [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
-                          (fileOver)="fileOverBase($event)"
-                          [uploader]="uploader"
-                          class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
-                        >
-                          Arrastre aqui los archivos
-                        </div>
+          <div class="line"><i data-feather="chevron-right" class="font-medium-2"></i></div>
+          <div class="step" data-target="#list-xml">
+            <button class="step-trigger">
+              <span class="bs-stepper-box">2</span>
+              <span class="bs-stepper-label">
+                <span class="bs-stepper-title">Facturas</span>
+                <span class="bs-stepper-subtitle">Lista de facturas</span>
+              </span>
+            </button>
+          </div>
+          <div class="line" *ngIf="flagConfirming"><i data-feather="chevron-right" class="font-medium-2"></i></div>
+          <div class="step" data-target="#list-combinado">
+            <button class="step-trigger">
+              <span class="bs-stepper-box" *ngIf="flagConfirming">3</span>
+              <span class="bs-stepper-label" *ngIf="flagConfirming">
+                <span class="bs-stepper-title">Archivos .XLSX</span>
+                <span class="bs-stepper-subtitle">Subir archivo</span>
+              </span>
+            </button>
+          </div>
+          <div class="line" *ngIf="flagConfirming"><i data-feather="chevron-right" class="font-medium-2"></i></div>
+          <div class="step" data-target="#social-links">
+            <button class="step-trigger">
+              <span class="bs-stepper-box" *ngIf="flagConfirming">4</span>
+              <span class="bs-stepper-label" *ngIf="flagConfirming">
+                <span class="bs-stepper-title">Facturas</span>
+                <span class="bs-stepper-subtitle">Lista combinada</span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="bs-stepper-content">
+          <form (ngSubmit)="(HWForm.form.valid)" #HWForm="ngForm">
+            <div id="xml-pdf" class="content">
+              <form #accountDetailsForm="ngForm">
+                <div class="content-header">
+                  <h5 class="mb-0">Account Details</h5>
+                  <small class="text-muted">Enter Your Account Details.</small>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                      <div
+                        ng2FileDrop
+                        [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
+                        (fileOver)="fileOverBase($event)"
+                        [uploader]="uploader"
+                        class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
+                      >
+                        Arrastre aqui los archivos
                       </div>
-                      <div class="col-12">
-                        <div class="form-group">
-                          <label>Selección de archivo(s) </label>
-                        </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label>Selección de archivo(s) </label>
                       </div>
-                      <div class="col-12">
-                        <fieldset class="form-group">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" ng2FileSelect accept=".pdf,.xml"
-                                    [uploader]="uploader" multiple id="file-upload-single" (change)="onBrowseChangeXlsx()"/>
-                                <label class="custom-file-label">Elija el archivo</label>
-                            </div>
-                        </fieldset>
+                    </div>
+                    <div class="col-12">
+                      <fieldset class="form-group">
+                          <div class="custom-file">
+                              <input type="file" class="custom-file-input" ng2FileSelect accept=".pdf,.xml"
+                                  [uploader]="uploader" multiple id="file-upload-single" (change)="onBrowseChangeXlsx()"/>
+                              <label class="custom-file-label">Elija el archivo</label>
+                          </div>
+                      </fieldset>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12 overflow-auto">
+                      <div class="d-flex justify-content-between mb-1">
+                          <label>Subir cola</label>
+                          <p>Longitud de la cola: {{ uploader?.queue?.length }}</p>
                       </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-12 overflow-auto">
-                        <div class="d-flex justify-content-between mb-1">
-                            <label>Subir cola</label>
-                            <p>Longitud de la cola: {{ uploader?.queue?.length }}</p>
-                        </div>
-          
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th width="40%">Nombre</th>
-                                    <th>Tamaño</th>
-                                    <th>Progreso</th>
-                                    <th>Estado</th>
-                                    <th><button
+        
+                      <table class="table">
+                          <thead>
+                              <tr>
+                                  <th width="40%">Nombre</th>
+                                  <th>Tamaño</th>
+                                  <th>Progreso</th>
+                                  <th>Estado</th>
+                                  <th><button
+                                    type="button"
+                                    class="btn btn-raised btn-outline-danger btn-sm"
+                                    (click)="uploader.clearQueue()"
+                                    rippleEffect
+                                  >
+                                    <i data-feather="trash"></i>
+                                  </button></th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr *ngFor="let item of uploader.queue">
+                                  <!-- <td [ngClass]="{color: item?.file?.name.includes(.XML)}"> -->
+                                  <td>
+                                      <strong>{{ item?.file?.name }}</strong>
+                                  </td>
+                                  <td *ngIf="uploader.options.isHTML5" nowrap>
+                                      {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
+                                  </td>
+                                  <td *ngIf="uploader.options.isHTML5">
+                                      <ngb-progressbar type="primary" [value]="item.progress">
+                                      </ngb-progressbar>
+                                  </td>
+                                  <td class="text-center">
+                                      <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
+                                      <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
+                                      <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
+                                  </td>
+                                  <td nowrap>
+                                    <!-- <button
+                                      type="button"
+                                      class="btn btn-raised btn-outline-success btn-sm mr-50"
+                                      (click)="item.upload()"
+                                      [disabled]="item.isReady || item.isUploading || item.isSuccess"
+                                      rippleEffect
+                                    >
+                                      <span data-feather="upload"></span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      class="btn btn-raised btn-outline-warning btn-sm mr-50"
+                                      (click)="item.cancel()"
+                                      [disabled]="!item.isUploading"
+                                      rippleEffect
+                                    >
+                                      <i data-feather="slash"></i>
+                                    </button> -->
+                                    <button
                                       type="button"
                                       class="btn btn-raised btn-outline-danger btn-sm"
-                                      (click)="uploader.clearQueue()"
+                                      (click)="item.remove()"
                                       rippleEffect
                                     >
                                       <i data-feather="trash"></i>
-                                    </button></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let item of uploader.queue">
-                                    <!-- <td [ngClass]="{color: item?.file?.name.includes(.XML)}"> -->
-                                    <td>
-                                        <strong>{{ item?.file?.name }}</strong>
-                                    </td>
-                                    <td *ngIf="uploader.options.isHTML5" nowrap>
-                                        {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
-                                    </td>
-                                    <td *ngIf="uploader.options.isHTML5">
-                                        <ngb-progressbar type="primary" [value]="item.progress">
-                                        </ngb-progressbar>
-                                    </td>
-                                    <td class="text-center">
-                                        <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
-                                        <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
-                                        <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
-                                    </td>
-                                    <td nowrap>
-                                      <!-- <button
-                                        type="button"
-                                        class="btn btn-raised btn-outline-success btn-sm mr-50"
-                                        (click)="item.upload()"
-                                        [disabled]="item.isReady || item.isUploading || item.isSuccess"
-                                        rippleEffect
-                                      >
-                                        <span data-feather="upload"></span>
-                                      </button>
-                                      <button
-                                        type="button"
-                                        class="btn btn-raised btn-outline-warning btn-sm mr-50"
-                                        (click)="item.cancel()"
-                                        [disabled]="!item.isUploading"
-                                        rippleEffect
-                                      >
-                                        <i data-feather="slash"></i>
-                                      </button> -->
-                                      <button
-                                        type="button"
-                                        class="btn btn-raised btn-outline-danger btn-sm"
-                                        (click)="item.remove()"
-                                        rippleEffect
-                                      >
-                                        <i data-feather="trash"></i>
-                                      </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                      </div>
-                  </div>
-  
-                  <div class="d-flex justify-content-between">
-                    <button
-                      (click)="horizontalWizardStepperPrevious()"
-                      class="btn btn-outline-secondary btn-prev"
-                      disabled
-                      rippleEffect
-                    >
-                      <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
-                      <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                    </button>
-                    <button class="btn btn-primary" rippleEffect type="button" (click)="onProcesar()"
-                    [disabled]="!uploader.getNotUploadedItems().length" *ngIf="procesar">
-                      <span [data-feather]="'save'"></span> Procesar Archivos
-                    </button>
-                    <button
-                      (click)="horizontalWizardStepperNext(accountDetailsForm, 1)"
-                      type="submit"
-                      class="btn btn-primary btn-next"
-                      rippleEffect
-                      *ngIf="!procesar"
-                    >
-                      <span class="align-middle d-sm-inline-block d-none">Next</span>
-                      <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
-                    </button>
-                  </div>
-                </form>
-              </div>
-              <div id="list-xml" class="content">
-                <form #personalInfoForm="ngForm">
-                  <div class="content-header">
-                    <h5 class="mb-0">Lista de Factura</h5>
-                    <small>Data de las facturas .xml</small>
-                  </div>
-  
-                  <div class="row">
-                    <div class="col-md-12 col-12">
-                        <div class="table-responsive">
-                          <table class="table table-hover">
-                            <thead>
-                            <tr>
-                              <th>Codigo</th>
-                              <th>{{rucCab}}</th>
-                              <th>{{razonSocialCab}}</th>
-                              <th>{{rucDet}}</th>
-                              <th>{{razonSocialDet}}</th>
-                              <th>Tipo Moneda</th>
-                              <th>Neto Pendiente</th>
-                              <th>Sub Total</th>
-                              <th>Igv</th>
-                              <th>Total</th>
-                              <th>Valor Venta</th>
-                              <th>Fecha Emision</th>
-                              <th>Fecha Vencimiento</th>
-                              <th>Nombre XML</th>
-                              <th>Nombre PDF</th>
-                              <th>Forma Pago</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                              <tr *ngFor="let item of dataXml" class="cursor-pointer">
-                                <td>{{item.codFactura}}</td>
-                                <td>{{item.rucCab}}</td>
-                                <td>{{item.razonSocialCab}}</td>
-                                <td>{{item.rucDet}}</td>
-                                <td>{{item.razonSocialDet}}</td>
-                                <td>{{item.tipoMoneda}}</td>
-                                <td>{{item.netoPendiente}}</td>
-                                <td>{{item.subTotal}}</td>
-                                <td>{{item.igv}}</td>
-                                <td>{{item.total}}</td>
-                                <td>{{item.valorVenta}}</td>
-                                <td>{{item.fechaEmision}}</td>
-                                <td>{{item.fechaVencimiento}}</td>
-                                <td>{{item.nombreXML}}</td>
-                                <td>{{item.nombrePDF}}</td>
-                                <td>{{item.formaPago}}</td>
+                                    </button>
+                                  </td>
                               </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                  </div>
-                  <!-- <div class="row">
-                    <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
-                      <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
-                                      (pageChange)="onRefrescar()" [pageSize]="pageSize"></ngb-pagination>
+                          </tbody>
+                      </table>
                     </div>
-                  </div> -->
-                  <div class="d-flex justify-content-between">
-                    <button
-                      type="button"
-                      (click)="horizontalWizardStepperPrevious()"
-                      class="btn btn-primary btn-prev"
-                      rippleEffect
-                    >
-                      <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
-                      <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                    </button>
-                    <button *ngIf="!flagConfirming"
-                      
-                      class="btn btn-success btn-next"
-                      rippleEffect
-                    >
-                      <span class="align-middle d-sm-inline-block d-none">Guardar</span>
-                      <i data-feather="save" class="align-middle ml-sm-25 ml-0"></i>
-                    </button>
-                    <button *ngIf="flagConfirming"
-                      (click)="horizontalWizardStepperNext(personalInfoForm, 0)"
-                      class="btn btn-primary btn-next"
-                      rippleEffect
-                    >
-                      <span class="align-middle d-sm-inline-block d-none">Next</span>
-                      <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
-                    </button>
-                  </div>
-                </form>
-              </div>
-              <div id="list-combinado" class="content">
-                <form #addressForm="ngForm">
-                  <div class="content-header">
-                    <h5 class="mb-0">Proveedores</h5>
-                    <small>Subir archivo</small>
-                  </div>
-  
-                  <div class="row">
-                    <!-- <div class="form-group col-md-6">
-                      <label class="form-label" for="address">Address</label>
-                      <input
-                        [(ngModel)]="addressVar"
-                        #addressRef="ngModel"
-                        required
-                        type="text"
-                        id="address"
-                        name="address"
-                        class="form-control"
-                        [class.error]="addressForm.submitted && addressRef.invalid"
-                        placeholder="98  Borough bridge Road, Birmingham"
-                      />
-                      <span *ngIf="addressForm.submitted && addressRef.invalid" class="invalid-form">
-                        <small class="form-text text-danger" *ngIf="addressRef.errors.required"
-                          >This field is required!</small
-                        >
-                      </span>
-                    </div> -->
-                  </div>
-                
-                  <div class="row">
-                    <div class="col-md-12">
-                        <div
-                          ng2FileDrop
-                          [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
-                          (fileOver)="fileOverBase($event)"
-                          [uploader]="uploaderXlsx"
-                          class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
-                        >
-                          Arrastre aqui el archivo XLSX
-                        </div>
-                      </div>
-                      <div class="col-12">
-                        <div class="form-group">
-                          <label>Selección de archivo(s) </label>
-                        </div>
-                      </div>
-                      <div class="col-12">
-                        <fieldset class="form-group">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" ng2FileSelect accept=".xlsx"
-                                    [uploader]="uploaderXlsx" multiple id="file-upload-single" (change)="onBrowseChange()"/>
-                                <label class="custom-file-label">Elija el archivo</label>
-                            </div>
-                        </fieldset>
-                      </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-12 overflow-auto">
-                        <div class="d-flex justify-content-between mb-1">
-                            <label>Subir cola</label>
-                            <p>Longitud de la cola: {{ uploaderXlsx?.queue?.length }}</p>
-                        </div>
-          
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th width="40%">Nombre</th>
-                                    <th>Tamaño</th>
-                                    <th>Progreso</th>
-                                    <th>Estado</th>
-                                    <th>Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let item of uploaderXlsx.queue">
-                                    <!-- <td [ngClass]="{color: item?.file?.name.includes(.XML)}"> -->
-                                    <td>
-                                        <strong>{{ item?.file?.name }}</strong>
-                                    </td>
-                                    <td *ngIf="uploaderXlsx.options.isHTML5" nowrap>
-                                        {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
-                                    </td>
-                                    <td *ngIf="uploaderXlsx.options.isHTML5">
-                                        <ngb-progressbar type="primary" [value]="item.progress">
-                                        </ngb-progressbar>
-                                    </td>
-                                    <td class="text-center">
-                                        <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
-                                        <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
-                                        <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
-                                    </td>
-                                    <td nowrap>
-                                      <button
-                                        type="button"
-                                        class="btn btn-raised btn-outline-danger btn-sm"
-                                        (click)="item.remove()"
-                                        rippleEffect
-                                      >
-                                        <i data-feather="trash"></i>
-                                      </button>
-                                    </td>
-                                </tr>
-                            </tbody>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <button
+                    (click)="horizontalWizardStepperPrevious()"
+                    class="btn btn-outline-secondary btn-prev"
+                    disabled
+                    rippleEffect
+                  >
+                    <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
+                    <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                  </button>
+                  <button class="btn btn-primary" rippleEffect type="button" (click)="onProcesar()"
+                  [disabled]="!uploader.getNotUploadedItems().length" *ngIf="procesar">
+                    <span [data-feather]="'save'"></span> Procesar Archivos
+                  </button>
+                  <button
+                    (click)="horizontalWizardStepperNext(accountDetailsForm, 1)"
+                    type="submit"
+                    class="btn btn-primary btn-next"
+                    rippleEffect
+                    *ngIf="!procesar"
+                  >
+                    <span class="align-middle d-sm-inline-block d-none">Next</span>
+                    <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div id="list-xml" class="content">
+              <form #personalInfoForm="ngForm">
+                <div class="content-header">
+                  <h5 class="mb-0">Lista de Factura</h5>
+                  <small>Data de las facturas .xml</small>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12 col-12">
+                      <div class="table-responsive">
+                        <table class="table table-hover">
+                          <thead>
+                          <tr>
+                            <th>Codigo</th>
+                            <th>{{rucCab}}</th>
+                            <th>{{razonSocialCab}}</th>
+                            <th>{{rucDet}}</th>
+                            <th>{{razonSocialDet}}</th>
+                            <th>Tipo Moneda</th>
+                            <th>Neto Pendiente</th>
+                            <th>Sub Total</th>
+                            <th>Igv</th>
+                            <th>Total</th>
+                            <th>Valor Venta</th>
+                            <th>Fecha Emision</th>
+                            <th>Fecha Vencimiento</th>
+                            <th>Nombre XML</th>
+                            <th>Nombre PDF</th>
+                            <th>Forma Pago</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let item of dataXml" class="cursor-pointer">
+                              <td>{{item.codFactura}}</td>
+                              <td>{{item.rucCab}}</td>
+                              <td>{{item.razonSocialCab}}</td>
+                              <td>{{item.rucDet}}</td>
+                              <td>{{item.razonSocialDet}}</td>
+                              <td>{{item.tipoMoneda}}</td>
+                              <td>{{item.netoPendiente}}</td>
+                              <td>{{item.subTotal}}</td>
+                              <td>{{item.igv}}</td>
+                              <td>{{item.total}}</td>
+                              <td>{{item.valorVenta}}</td>
+                              <td>{{item.fechaEmision}}</td>
+                              <td>{{item.fechaVencimiento}}</td>
+                              <td>{{item.nombreXML}}</td>
+                              <td>{{item.nombrePDF}}</td>
+                              <td>{{item.formaPago}}</td>
+                            </tr>
+                          </tbody>
                         </table>
                       </div>
+                    </div>
+                </div>
+                <!-- <div class="row">
+                  <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
+                    <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
+                                    (pageChange)="onRefrescar()" [pageSize]="pageSize"></ngb-pagination>
                   </div>
+                </div> -->
+                <div class="d-flex justify-content-between">
+                  <button
+                    type="button"
+                    (click)="horizontalWizardStepperPrevious()"
+                    class="btn btn-primary btn-prev"
+                    rippleEffect
+                  >
+                    <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
+                    <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                  </button>
+                  <button *ngIf="!flagConfirming"
+                    
+                    class="btn btn-success btn-next"
+                    rippleEffect
+                  >
+                    <span class="align-middle d-sm-inline-block d-none">Guardar</span>
+                    <i data-feather="save" class="align-middle ml-sm-25 ml-0"></i>
+                  </button>
+                  <button *ngIf="flagConfirming"
+                    (click)="horizontalWizardStepperNext(personalInfoForm, 0)"
+                    class="btn btn-primary btn-next"
+                    rippleEffect
+                  >
+                    <span class="align-middle d-sm-inline-block d-none">Next</span>
+                    <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div id="list-combinado" class="content">
+              <form #addressForm="ngForm">
+                <div class="content-header">
+                  <h5 class="mb-0">Proveedores</h5>
+                  <small>Subir archivo</small>
+                </div>
 
-                  <div class="d-flex justify-content-between">
-                    <button
-                      type="button"
-                      (click)="horizontalWizardStepperPrevious()"
-                      class="btn btn-primary btn-prev"
-                      rippleEffect
-                    >
-                      <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
-                      <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                    </button>
-                    <button class="btn btn-primary" rippleEffect type="button" (click)="onProcesarXlsx()"
-                    [disabled]="!uploaderXlsx.getNotUploadedItems().length" *ngIf="procesarXlsx">
-                      <span [data-feather]="'save'"></span> Procesar Archivos
-                    </button>
-                    <button
-                      (click)="horizontalWizardStepperNext(addressForm, 0)"
-                      class="btn btn-primary btn-next"
-                      rippleEffect 
-                      *ngIf="!procesarXlsx"
-                    >
-                      <span class="align-middle d-sm-inline-block d-none">Next</span>
-                      <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
-                    </button>
-                  </div>
-                </form>
-              </div>
-              <div id="social-links" class="content">
-                <form #socialLinkForm="ngForm">
-                  <div class="content-header">
-                    <h5 class="mb-0">Social Links</h5>
-                    <small>Enter Your Social Links.</small>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12 col-12">
-                        <div class="table-responsive">
-                          <table class="table table-hover">
-                            <thead>
-                            <tr>
-                              <th>Codigo</th>
-                              <th>{{rucCab}}</th>
-                              <th>{{razonSocialCab}}</th>
-                              <th>{{rucDet}}</th>
-                              <th>{{razonSocialDet}}</th>
-                              <th>Tipo Moneda</th>
-                              <th>Neto Pendiente</th>
-                              <th>Sub Total</th>
-                              <th>Igv</th>
-                              <th>Total</th>
-                              <th>Valor Venta</th>
-                              <th>Fecha Emision</th>
-                              <th>Fecha Vencimiento</th>
-                              <th>Nombre XML</th>
-                              <th>Nombre PDF</th>
-                              <th>Forma Pago</th>
-
-                              <th>Banco</th>
-                              <th>Cuenta Bancaria</th>
-                              <th>CCI</th>
-                              <th>Tipo Cuenta</th>
-                              <th>Correo</th>
-                              <th>Nombre Contacto</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                              <tr *ngFor="let item of dataXml" class="cursor-pointer">
-                                <td>{{item.codFactura}}</td>
-                                <td>{{item.rucCab}}</td>
-                                <td>{{item.razonSocialCab}}</td>
-                                <td>{{item.rucDet}}</td>
-                                <td>{{item.razonSocialDet}}</td>
-                                <td>{{item.tipoMoneda}}</td>
-                                <td>{{item.netoPendiente}}</td>
-                                <td>{{item.subTotal}}</td>
-                                <td>{{item.igv}}</td>
-                                <td>{{item.total}}</td>
-                                <td>{{item.valorVenta}}</td>
-                                <td>{{item.fechaEmision}}</td>
-                                <td>{{item.fechaVencimiento}}</td>
-                                <td>{{item.nombreXML}}</td>
-                                <td>{{item.nombrePDF}}</td>
-                                <td>{{item.formaPago}}</td>
-
-                                <td>{{item.banco}}</td>
-                                <td>{{item.ctaBancaria}}</td>
-                                <td>{{item.cci}}</td>
-                                <td>{{item.tipoCuenta}}</td>
-                                <td>{{item.correo}}</td>
-                                <td>{{item.nombreContacto}}</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
+                <div class="row">
+                  <!-- <div class="form-group col-md-6">
+                    <label class="form-label" for="address">Address</label>
+                    <input
+                      [(ngModel)]="addressVar"
+                      #addressRef="ngModel"
+                      required
+                      type="text"
+                      id="address"
+                      name="address"
+                      class="form-control"
+                      [class.error]="addressForm.submitted && addressRef.invalid"
+                      placeholder="98  Borough bridge Road, Birmingham"
+                    />
+                    <span *ngIf="addressForm.submitted && addressRef.invalid" class="invalid-form">
+                      <small class="form-text text-danger" *ngIf="addressRef.errors.required"
+                        >This field is required!</small
+                      >
+                    </span>
+                  </div> -->
+                </div>
+              
+                <div class="row">
+                  <div class="col-md-12">
+                      <div
+                        ng2FileDrop
+                        [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
+                        (fileOver)="fileOverBase($event)"
+                        [uploader]="uploaderXlsx"
+                        class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
+                      >
+                        Arrastre aqui el archivo XLSX
                       </div>
-                  </div>
-                  <div class="d-flex justify-content-between">
-                    <button
-                      type="button"
-                      (click)="horizontalWizardStepperPrevious()"
-                      class="btn btn-primary btn-prev"
-                      rippleEffect
-                    >
-                      <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
-                      <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                    </button>
-                    <button class="btn btn-success btn-submit" rippleEffect (click)="onSubmit()">Guardar</button>
-                  </div>
-                </form>
-              </div>
-            </form>
-          </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label>Selección de archivo(s) </label>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <fieldset class="form-group">
+                          <div class="custom-file">
+                              <input type="file" class="custom-file-input" ng2FileSelect accept=".xlsx"
+                                  [uploader]="uploaderXlsx" multiple id="file-upload-single" (change)="onBrowseChange()"/>
+                              <label class="custom-file-label">Elija el archivo</label>
+                          </div>
+                      </fieldset>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12 overflow-auto">
+                      <div class="d-flex justify-content-between mb-1">
+                          <label>Subir cola</label>
+                          <p>Longitud de la cola: {{ uploaderXlsx?.queue?.length }}</p>
+                      </div>
+        
+                      <table class="table">
+                          <thead>
+                              <tr>
+                                  <th width="40%">Nombre</th>
+                                  <th>Tamaño</th>
+                                  <th>Progreso</th>
+                                  <th>Estado</th>
+                                  <th>Acción</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr *ngFor="let item of uploaderXlsx.queue">
+                                  <!-- <td [ngClass]="{color: item?.file?.name.includes(.XML)}"> -->
+                                  <td>
+                                      <strong>{{ item?.file?.name }}</strong>
+                                  </td>
+                                  <td *ngIf="uploaderXlsx.options.isHTML5" nowrap>
+                                      {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
+                                  </td>
+                                  <td *ngIf="uploaderXlsx.options.isHTML5">
+                                      <ngb-progressbar type="primary" [value]="item.progress">
+                                      </ngb-progressbar>
+                                  </td>
+                                  <td class="text-center">
+                                      <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
+                                      <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
+                                      <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
+                                  </td>
+                                  <td nowrap>
+                                    <button
+                                      type="button"
+                                      class="btn btn-raised btn-outline-danger btn-sm"
+                                      (click)="item.remove()"
+                                      rippleEffect
+                                    >
+                                      <i data-feather="trash"></i>
+                                    </button>
+                                  </td>
+                              </tr>
+                          </tbody>
+                      </table>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <button
+                    type="button"
+                    (click)="horizontalWizardStepperPrevious()"
+                    class="btn btn-primary btn-prev"
+                    rippleEffect
+                  >
+                    <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
+                    <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                  </button>
+                  <button class="btn btn-primary" rippleEffect type="button" (click)="onProcesarXlsx()"
+                  [disabled]="!uploaderXlsx.getNotUploadedItems().length" *ngIf="procesarXlsx">
+                    <span [data-feather]="'save'"></span> Procesar Archivos
+                  </button>
+                  <button
+                    (click)="horizontalWizardStepperNext(addressForm, 0)"
+                    class="btn btn-primary btn-next"
+                    rippleEffect 
+                    *ngIf="!procesarXlsx"
+                  >
+                    <span class="align-middle d-sm-inline-block d-none">Next</span>
+                    <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div id="social-links" class="content">
+              <form #socialLinkForm="ngForm">
+                <div class="content-header">
+                  <h5 class="mb-0">Social Links</h5>
+                  <small>Enter Your Social Links.</small>
+                </div>
+                <div class="row">
+                  <div class="col-md-12 col-12">
+                      <div class="table-responsive">
+                        <table class="table table-hover">
+                          <thead>
+                          <tr>
+                            <th>Codigo</th>
+                            <th>{{rucCab}}</th>
+                            <th>{{razonSocialCab}}</th>
+                            <th>{{rucDet}}</th>
+                            <th>{{razonSocialDet}}</th>
+                            <th>Tipo Moneda</th>
+                            <th>Neto Pendiente</th>
+                            <th>Sub Total</th>
+                            <th>Igv</th>
+                            <th>Total</th>
+                            <th>Valor Venta</th>
+                            <th>Fecha Emision</th>
+                            <th>Fecha Vencimiento</th>
+                            <th>Nombre XML</th>
+                            <th>Nombre PDF</th>
+                            <th>Forma Pago</th>
+
+                            <th>Banco</th>
+                            <th>Cuenta Bancaria</th>
+                            <th>CCI</th>
+                            <th>Tipo Cuenta</th>
+                            <th>Correo</th>
+                            <th>Nombre Contacto</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let item of dataXml" class="cursor-pointer">
+                              <td>{{item.codFactura}}</td>
+                              <td>{{item.rucCab}}</td>
+                              <td>{{item.razonSocialCab}}</td>
+                              <td>{{item.rucDet}}</td>
+                              <td>{{item.razonSocialDet}}</td>
+                              <td>{{item.tipoMoneda}}</td>
+                              <td>{{item.netoPendiente}}</td>
+                              <td>{{item.subTotal}}</td>
+                              <td>{{item.igv}}</td>
+                              <td>{{item.total}}</td>
+                              <td>{{item.valorVenta}}</td>
+                              <td>{{item.fechaEmision}}</td>
+                              <td>{{item.fechaVencimiento}}</td>
+                              <td>{{item.nombreXML}}</td>
+                              <td>{{item.nombrePDF}}</td>
+                              <td>{{item.formaPago}}</td>
+
+                              <td>{{item.banco}}</td>
+                              <td>{{item.ctaBancaria}}</td>
+                              <td>{{item.cci}}</td>
+                              <td>{{item.tipoCuenta}}</td>
+                              <td>{{item.correo}}</td>
+                              <td>{{item.nombreContacto}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <button
+                    type="button"
+                    (click)="horizontalWizardStepperPrevious()"
+                    class="btn btn-primary btn-prev"
+                    rippleEffect
+                  >
+                    <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
+                    <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                  </button>
+                  <button class="btn btn-success btn-submit" rippleEffect (click)="onSubmit()">Guardar</button>
+                </div>
+              </form>
+            </div>
+          </form>
         </div>
-      </section>
-      <!--/ Horizontal Wizard -->
-      
+      </div>
       <ng-template #modalCliente let-modal>
         <div class="modal-header">
           <h4 class="modal-title" id="myModalLabel1">Selección de Cliente</h4>
@@ -605,8 +603,8 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let item of optClienteP" class="cursor-pointer"
-                       [class.selectedRow]="rowIsSelected(item.idClientePagador)"
-                       (click)="onRowClick(item.razonSocial,item.ruc, item.idClientePagador, modal)">
+                       [class.selectedRow]="rowIsSelected(item.idCliente)"
+                       (click)="onRowClick(item.razonSocial,item.ruc, item.idCliente, modal, item)">
                         <td>{{item.razonSocial}}</td>
                         <td>{{item.ruc}}</td>
                       </tr>
@@ -639,27 +637,27 @@
       <ng-template #modalCapitalTrabajo let-modal>
         <div class="modal-header">
           <h4 class="modal-title" id="myModalLabel1">Nueva Solicitud Capital de Trabajo</h4>
-          <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+          <button aria-label="Close" class="close" type="button" (click)="onCancelar()">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body" ngbAutofocus tabindex="0">
           <form [formGroup]="capitalTrabajoForm">
             <div class="row spaced">
-              <div class="col-md-12 col-12">
+              <div class="col-md-6 col-12">
                 <div class="form-group">
                   <label>Seleccione Tipo</label>
-                  <ng-select appendTo="body" [clearable]="false" [items]="monedas" bindLabel="descripcion"
-                    placeholder="Moneda"
+                  <ng-select appendTo="body" [clearable]="false" [items]="optTipo" bindLabel="descripcion"
+                    placeholder="Tipo" [(ngModel)]="idTipo"
                     bindValue="idColumna" formControlName="tipo">
                   </ng-select>
                 </div>
               </div>
-              <div class="col-md-12 col-12">
+              <div class="col-md-6 col-12">
                 <div class="form-group">
                   <label>Seleccione Moneda</label>
-                  <ng-select appendTo="body" [clearable]="false" [items]="monedas" bindLabel="descripcion"
-                    placeholder="Moneda"
+                  <ng-select appendTo="body" [clearable]="false" [items]="optMoneda" bindLabel="descripcion"
+                    [(ngModel)]="idMoneda" (change)="onChangeMoneda()"
                     bindValue="idColumna" formControlName="moneda">
                   </ng-select>
                 </div>
@@ -670,7 +668,7 @@
                   <div class="input-group">
                     <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.ruc.errors }"
                     class="form-control" formControlName="ruc" type="text"
-                    [(ngModel)]="ruc"/>
+                    [(ngModel)]="ruc" disabled/>
                     <div class="input-group-append">
                      <button (click)="onClientePagadorList(modalCliente, 1)"
                         class="btn btn-outline-secondary feather" rippleEffect
@@ -689,7 +687,7 @@
                   <label>Razón Social</label>
                   <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.razonSocial.errors }"
                          class="form-control" formControlName="razonSocial" type="text"
-                         [(ngModel)]="razonSocial"/>
+                         [(ngModel)]="razonSocial" disabled/>
                   <div *ngIf="CapitalIUForm.razonSocial.errors" class="invalid-feedback">
                     <div *ngIf="CapitalIUForm.razonSocial.errors.required">* Campo obligatorio</div>
                   </div>
@@ -699,7 +697,7 @@
                 <div class="form-group">
                   <label>Tasa Anual</label>
                   <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaAnual.errors }"
-                         class="form-control" formControlName="tasaAnual" type="text"/>
+                         class="form-control" formControlName="tasaAnual" type="text" disabled/>
                   <div *ngIf="CapitalIUForm.tasaAnual.errors" class="invalid-feedback">
                     <div *ngIf="CapitalIUForm.tasaAnual.errors.required">* Campo obligatorio</div>
                   </div>
@@ -709,7 +707,7 @@
                 <div class="form-group">
                   <label>Tasa Mensual</label>
                   <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaMensual.errors }"
-                         class="form-control" formControlName="tasaMensual" type="text"/>
+                         class="form-control" formControlName="tasaMensual" type="text" disabled/>
                   <div *ngIf="CapitalIUForm.tasaMensual.errors" class="invalid-feedback">
                     <div *ngIf="CapitalIUForm.tasaMensual.errors.required">* Campo obligatorio</div>
                   </div>
@@ -719,7 +717,7 @@
                 <div class="form-group">
                   <label>Comisión Carta Notarial</label>
                   <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.cartaNotarial.errors }"
-                         class="form-control" formControlName="cartaNotarial" type="text"/>
+                         class="form-control" formControlName="cartaNotarial" type="text" disabled/>
                   <div *ngIf="CapitalIUForm.cartaNotarial.errors" class="invalid-feedback">
                     <div *ngIf="CapitalIUForm.cartaNotarial.errors.required">* Campo obligatorio</div>
                   </div>
@@ -729,7 +727,7 @@
                 <div class="form-group">
                   <label>Servicio Cobranza</label>
                   <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.servicioCobranza.errors }"
-                         class="form-control" formControlName="servicioCobranza" type="text"/>
+                         class="form-control" formControlName="servicioCobranza" type="text" disabled/>
                   <div *ngIf="CapitalIUForm.servicioCobranza.errors" class="invalid-feedback">
                     <div *ngIf="CapitalIUForm.servicioCobranza.errors.required">* Campo obligatorio</div>
                   </div>
@@ -739,7 +737,7 @@
                 <div class="form-group">
                   <label>Servicio Custodia</label>
                   <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.servicioCustodia.errors }"
-                         class="form-control" formControlName="servicioCustodia" type="text"/>
+                         class="form-control" formControlName="servicioCustodia" type="text" disabled/>
                   <div *ngIf="CapitalIUForm.servicioCustodia.errors" class="invalid-feedback">
                     <div *ngIf="CapitalIUForm.servicioCustodia.errors.required">* Campo obligatorio</div>
                   </div>
@@ -749,7 +747,7 @@
                 <div class="form-group">
                   <label>Monto Capital de Trabajo</label>
                   <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.mcTrabajo.errors }"
-                         class="form-control" formControlName="mcTrabajo" type="text"/>
+                         class="form-control" formControlName="mcTrabajo" type="number" (change)="validacionCT()"/>
                   <div *ngIf="CapitalIUForm.mcTrabajo.errors" class="invalid-feedback">
                     <div *ngIf="CapitalIUForm.mcTrabajo.errors.required">* Campo obligatorio</div>
                   </div>
@@ -758,8 +756,8 @@
               <div class="col-md-6 col-12">
                 <div class="form-group">
                   <label>Capital de Trabajo Solicitado</label>
-                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.ctSolicitado.errors }"
-                         class="form-control" formControlName="ctSolicitado" type="text"/>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.ctSolicitado.errors || mayor}"
+                         class="form-control" formControlName="ctSolicitado" type="number" (change)="validacionCT()"/>
                   <div *ngIf="CapitalIUForm.ctSolicitado.errors" class="invalid-feedback">
                     <div *ngIf="CapitalIUForm.ctSolicitado.errors.required">* Campo obligatorio</div>
                   </div>
@@ -769,7 +767,7 @@
                 <div class="form-group">
                   <label>Días de prestamo</label>
                   <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.diasPrestamo.errors }"
-                         class="form-control" formControlName="diasPrestamo" type="text"/>
+                         class="form-control" formControlName="diasPrestamo" type="number" (change)="calcularFP()"/>
                   <div *ngIf="CapitalIUForm.diasPrestamo.errors" class="invalid-feedback">
                     <div *ngIf="CapitalIUForm.diasPrestamo.errors.required">* Campo obligatorio</div>
                   </div>
@@ -780,7 +778,7 @@
                   <label>Fecha de Pago</label>
                   <div class="input-group">
                     <input #basicDPFrom="ngbDatepicker" #i18nDP="ngbDatepicker"
-                        [(ngModel)]="fechaPago" class="form-control" ngbDatepicker
+                        [(ngModel)]="fechaPagoCT" class="form-control" ngbDatepicker
                         placeholder="dd/mm/yyyy"
                         formControlName="fechaPago">
                     <div class="input-group-append">
@@ -791,11 +789,21 @@
                 </div>
                 </div>
               </div>
+              <div class="col-md-6 col-12" *ngIf="idTipo == 1">
+                <div class="form-group">
+                  <label>Monto a descontar</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.montoDesc.errors }"
+                         class="form-control" formControlName="montoDesc" type="text" disabled/>
+                  <div *ngIf="CapitalIUForm.montoDesc.errors" class="invalid-feedback">
+                    <div *ngIf="CapitalIUForm.montoDesc.errors.required">* Campo obligatorio</div>
+                  </div>
+                </div>
+              </div>
               <div class="col-md-6 col-12">
                 <div class="form-group">
                   <label>Intereses incluido IGV</label>
                   <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.iIncluidoIGV.errors }"
-                         class="form-control" formControlName="iIncluidoIGV" type="text"/>
+                         class="form-control" formControlName="iIncluidoIGV" type="text" disabled/>
                   <div *ngIf="CapitalIUForm.iIncluidoIGV.errors" class="invalid-feedback">
                     <div *ngIf="CapitalIUForm.iIncluidoIGV.errors.required">* Campo obligatorio</div>
                   </div>
@@ -806,7 +814,7 @@
                 <div class="form-group">
                   <label>Gastos incluido IGV</label>
                   <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.gIncluidoIGV.errors }"
-                         class="form-control" formControlName="gIncluidoIGV" type="text"/>
+                         class="form-control" formControlName="gIncluidoIGV" type="number:'.0-2'"/>
                   <div *ngIf="CapitalIUForm.gIncluidoIGV.errors" class="invalid-feedback">
                     <div *ngIf="CapitalIUForm.gIncluidoIGV.errors.required">* Campo obligatorio</div>
                   </div>

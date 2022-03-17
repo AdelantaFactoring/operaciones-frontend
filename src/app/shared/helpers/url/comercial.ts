@@ -18,7 +18,8 @@ export const SOLICITUD = {
   eliminar: '/solicitudCab/eliminar',
   eliminarFactura: '/solicitudCab/eliminarfactura',
   uploadXlsx: '/solicitudCab/uploadXlsx',
-  subirSustento: '/solicitudCab/subirsustento'
+  subirSustento: '/solicitudCab/subirsustento',
+  guardarCT: '/solicitudCab/guardarCT',
 };
 
 export const PAGADOR = {

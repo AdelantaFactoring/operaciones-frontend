@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import Stepper from 'bs-stepper';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UtilsService} from "../../../../shared/services/utils.service";
 import {SolicitudesFormService} from "./solicitudes-form.service";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbModal, NgbCalendar, NgbDate} from "@ng-bootstrap/ng-bootstrap";
 import {FileItem, FileUploader, ParsedResponseHeaders} from 'ng2-file-upload';
 import {environment} from '../../../../../environments/environment';
 import {SOLICITUD} from "../../../../shared/helpers/url/comercial";
 import { SolicitudArchivos, SolicitudArchivosXlsx } from 'app/shared/models/comercial/SolicitudArchivos';
-import { Cliente } from 'app/shared/models/comercial/cliente';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -45,16 +44,25 @@ export class SolicitudesFormComponent implements OnInit {
   public pageSizeCli: number = 8;
   public pageCli: number = 1;
   public optClienteP = [];
+  public clienteGastos = [];
   public razonSocial = '';
   public ruc = '';
+  public tasaNominalMensual: number = 0;
+  public tasaNominalAnual: number = 0;
+  public tasaNominalMensualMora: number = 0;
+  public tasaNominalAnualMora: number = 0;
+  public financiamiento: number = 0;
   public cantXml: number = 0;
   public cantPdf: number = 0;
   public dataXml: SolicitudArchivos[] = [];
   public dataPdf: SolicitudArchivos[] = [];
   public dataXlsx: SolicitudArchivosXlsx[] = [];
   public mensaje = [];
+  public optMoneda = [];
+  public optTipo = [];
   public rucRequired: boolean = true;
-  
+  public idCliente: number;
+  public idTipo: number = 1;
   idTipoOperacion: number = 1;
   tipoServicio = "Factoring";
   rucCab: string;
@@ -65,6 +73,8 @@ export class SolicitudesFormComponent implements OnInit {
   procesar: boolean = true;
   procesarXlsx: boolean = true;
   facCheck: boolean = true;
+  idMoneda: number = 1;
+  mayor: boolean = false;
   public flagConfirming: boolean = false;
 
   public selectedRowIds: number[] = [];
@@ -80,6 +90,10 @@ export class SolicitudesFormComponent implements OnInit {
   
   public selectMulti = [{ name: 'English' }, { name: 'French' }, { name: 'Spanish' }];
   public selectMultiSelected;
+  public zeroPad = (num, places) => String(num).padStart(places, '0');
+  public fechaPagoActual = this.calendar.getToday();
+  public fechaPagoCT = this.calendar.getToday();
+
 
   horizontalWizardStepperNext(data, id) {
     let nombreArchivo;
@@ -121,7 +135,8 @@ export class SolicitudesFormComponent implements OnInit {
     private utilsService: UtilsService,
     private solicitudesFormService: SolicitudesFormService,
     private formBuilder: FormBuilder,
-    private location: Location,) {
+    private location: Location,
+    private calendar: NgbCalendar,) {
     this.contentHeader = {
       headerTitle: 'Solicitudes',
       actionButton: true,
@@ -150,30 +165,27 @@ export class SolicitudesFormComponent implements OnInit {
     this.capitalTrabajoForm = this.formBuilder.group({
       tipo: [1],
       moneda: [1],
-      ruc: [''],
-      razonSocial: [''],
-      tasaAnual: [''],
-      tasaMensual: [''],
-      cartaNotarial: [''],
-      servicioCobranza: [''],
-      servicioCustodia: [''],
-      mcTrabajo: [''],
-      ctSolicitado: [''],
-      diasPrestamo: [''],
+      ruc: ['', Validators.required],
+      razonSocial: ['', Validators.required],
+      tasaAnual: ['', Validators.required],
+      tasaMensual: ['', Validators.required],
+      cartaNotarial: ['', Validators.required],
+      servicioCobranza: ['', Validators.required],
+      servicioCustodia: ['', Validators.required],
+      mcTrabajo: ['', Validators.required],
+      ctSolicitado: ['', Validators.required],
+      diasPrestamo: [0, Validators.required],
       iIncluidoIGV: [''],
       gIncluidoIGV: [''],
       tFacturarIGV: [''],
       tDesembolsoIGV: [''],
-      fechaPago: ['']
+      fechaPago: [''],
+      montoDesc: ['']
     });
    }
 
   ngOnInit(): void {
     this.onRadioChange(this.tipoServicio, this.idTipoOperacion, this.flagConfirming, '')
-  }
-
-  onGuardarCT(): void{
-
   }
   onRefrescar(): void {
     //this.onListarSolicitudes();
@@ -238,6 +250,54 @@ export class SolicitudesFormComponent implements OnInit {
     });
 
   }
+  onGuardarCT(): void {
+    this.submitted = true;
+    if (this.capitalTrabajoForm.invalid) {
+      return;
+    }
+    
+    this.utilsService.blockUIStart('Guardando información...');
+    this.solicitudesFormService.guardarCT({
+      idSolicitudCab: 0,
+      idTipoOperacion: this.idTipoOperacion,
+      idTipoCT: this.capitalTrabajoForm.controls.tipo.value,
+      idMoneda: this.capitalTrabajoForm.controls.moneda.value,
+      idCliente: this.idCliente,
+      rucPagProv: this.ruc,
+      razonSocialPagProv: this.razonSocial,
+      tasaNominalMensual: this.tasaNominalMensual,
+      tasaNominalAnual: this.tasaNominalAnual,
+      tasaNominalMensualMora: this.tasaNominalMensualMora,
+      tasaNominalAnualMora: this.tasaNominalAnualMora,
+      financiamiento: this.financiamiento,
+      montoCT: this.capitalTrabajoForm.controls.mcTrabajo.value,
+      montoSolicitadoCT: this.capitalTrabajoForm.controls.ctSolicitado.value,
+      diasPrestamoCT: this.capitalTrabajoForm.controls.diasPrestamo.value,
+      fechaPagoCT: this.fechaPagoCT.year + this.zeroPad(this.fechaPagoCT.month, 2) + this.zeroPad(this.fechaPagoCT.day, 2),
+      interesIncluidoIGV: this.capitalTrabajoForm.controls.iIncluidoIGV.value,
+      gastoIncluidoIGV: this.capitalTrabajoForm.controls.gIncluidoIGV.value,
+      totalFacConIGV: this.capitalTrabajoForm.controls.tFacturarIGV.value,
+      totalDesembolsoConIGV: this.capitalTrabajoForm.controls.tDesembolsoIGV.value,
+      idUsuarioAud: 1,
+    }).subscribe(response => {
+      if (response.tipo == 1) {
+        this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+        this.location.back();
+        this.modalService.dismissAll();
+      } else if (response.tipo == 2) {
+        this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+        this.utilsService.blockUIStop();
+      } else {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
+      }
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
+
+  }
   onBrowseChange() {
     if (this.uploaderXlsx.queue.length > 1) {
       this.uploaderXlsx.queue.splice(0, 1);
@@ -298,6 +358,9 @@ export class SolicitudesFormComponent implements OnInit {
       this.razonSocialDet = "Razon Social Pagador";
     }
     else if (idTipoOperacion == 2) {
+      this.onTablaMaestra(5);
+      this.onTablaMaestra(1);
+      this.onChangeMoneda();
       this.facCheck = false;
       setTimeout(() => {
         this.modalService.open(modal, {
@@ -355,12 +418,18 @@ export class SolicitudesFormComponent implements OnInit {
   }
 
   onRowClick(razon, ruc, idfila, modal) {
-
-    this.selectedRowIds = [];
-    this.selectedRowIds.push(idfila);
-    this.razonSocial = razon;
-    this.ruc = ruc;
-    this.rucRequired = true;
+    this.idCliente = idfila;
+    if (this.idTipoOperacion == 2) {
+      
+      this.onClienteObtener(idfila, ruc, razon);
+    }
+    else{
+      this.selectedRowIds = [];
+      this.selectedRowIds.push(idfila);
+      this.razonSocial = razon;
+      this.ruc = ruc;
+      this.rucRequired = true;
+    }
     modal.dismiss('Cross click');
   }
 
@@ -545,5 +614,131 @@ export class SolicitudesFormComponent implements OnInit {
     this.idTipoOperacion = 1;
     this.facCheck = true;
     this.onRadioChange('Factoring',1,false,'');
+  }
+
+  onClienteObtener(id, ruc, razon): void{
+    this.utilsService.blockUIStart('Obteniendo información...');
+    this.solicitudesFormService.clienteObtener({
+      idCliente: id
+    }).subscribe(response => {
+      if (response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda).length > 0) {
+        this.clienteGastos = response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda);
+        for (const item of this.clienteGastos) {
+          this.ruc = item.ruc;
+          this.razonSocial = item.razonSocial;
+          this.tasaNominalMensual = item.tasaNominalMensual;
+          this.tasaNominalAnual = item.tasaNominalAnual;
+          this.tasaNominalMensualMora = item.tasaNominalMensualMora;
+          this.tasaNominalAnualMora = item.tasaNominalAnualMora;
+          this.financiamiento = item.financiamiento;
+          this.capitalTrabajoForm.controls.ruc.setValue(ruc);
+          this.capitalTrabajoForm.controls.razonSocial.setValue(razon);
+          this.capitalTrabajoForm.controls.tasaAnual.setValue(item.tasaNominalAnual);
+          this.capitalTrabajoForm.controls.tasaMensual.setValue(item.tasaNominalMensual);
+          this.capitalTrabajoForm.controls.cartaNotarial.setValue(item.comisionCartaNotarial);
+          this.capitalTrabajoForm.controls.servicioCobranza.setValue(item.servicioCobranza);
+          this.capitalTrabajoForm.controls.servicioCustodia.setValue(item.servicioCustodia);
+  
+        }
+      }
+      else
+      {
+          this.ruc = ruc;
+          this.razonSocial = razon;
+          this.tasaNominalMensual = 0;
+          this.tasaNominalAnual = 0;
+          this.tasaNominalMensualMora = 0;
+          this.tasaNominalAnualMora = 0;
+          this.financiamiento = 0;
+          this.capitalTrabajoForm.controls.ruc.setValue(ruc);
+          this.capitalTrabajoForm.controls.razonSocial.setValue(razon);
+          this.capitalTrabajoForm.controls.tasaAnual.setValue(0);
+          this.capitalTrabajoForm.controls.tasaMensual.setValue(0);
+          this.capitalTrabajoForm.controls.cartaNotarial.setValue(0);
+          this.capitalTrabajoForm.controls.servicioCobranza.setValue(0);
+          this.capitalTrabajoForm.controls.servicioCustodia.setValue(0);
+      }
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+  }
+
+  onTablaMaestra(idTabla): void{
+    this.utilsService.blockUIStart('Obteniendo información...');
+    this.solicitudesFormService.listarTablaMaestra({
+      idTabla: idTabla,
+      idColumna: 0
+    }).subscribe(response => {
+      if (idTabla == 1) {
+        this.optMoneda = response;
+      }
+      else{
+        this.optTipo = response;
+      }
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+  }
+  calcularFP(): void{
+    let date = {
+      year: this.calendar.getToday().year,
+      month:this.calendar.getToday().month,
+      day:this.calendar.getToday().day + Number(this.capitalTrabajoForm.controls.diasPrestamo.value)}
+    this.capitalTrabajoForm.controls.fechaPago.setValue(date);
+    this.onCalcularCT();
+  }
+  onChangeMoneda(): void{
+    this.ruc = '';
+    this.razonSocial = '';
+    this.capitalTrabajoForm.controls.ruc.setValue('');
+    this.capitalTrabajoForm.controls.razonSocial.setValue('');
+    this.capitalTrabajoForm.controls.tasaAnual.setValue('');
+    this.capitalTrabajoForm.controls.tasaMensual.setValue('');
+    this.capitalTrabajoForm.controls.cartaNotarial.setValue('');
+    this.capitalTrabajoForm.controls.servicioCobranza.setValue('');
+    this.capitalTrabajoForm.controls.servicioCustodia.setValue('');
+    this.tasaNominalMensual = 0;
+    this.tasaNominalAnual = 0;
+    this.tasaNominalMensualMora = 0;
+    this.tasaNominalAnualMora = 0;
+    this.financiamiento = 0;
+
+    this.capitalTrabajoForm.controls.mcTrabajo.setValue('');
+    this.capitalTrabajoForm.controls.ctSolicitado.setValue('');
+    this.capitalTrabajoForm.controls.diasPrestamo.setValue('');
+    this.capitalTrabajoForm.controls.iIncluidoIGV.setValue('');
+    this.capitalTrabajoForm.controls.gIncluidoIGV.setValue('');
+    this.capitalTrabajoForm.controls.tFacturarIGV.setValue('');
+    this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue('');
+  }
+  onCalcularCT(): void{
+    let capitalTrabajo, TNA, nroDias, intereses;
+    capitalTrabajo = this.capitalTrabajoForm.controls.mcTrabajo.value;
+    TNA = this.capitalTrabajoForm.controls.tasaAnual.value;
+    nroDias = this.capitalTrabajoForm.controls.diasPrestamo.value;
+    intereses = capitalTrabajo * (TNA / 360) * nroDias * 1.18;
+
+    this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100);
+
+  }
+  validacionCT(): void{
+    let montoCT, ctSolicitado;
+    montoCT = Number(this.capitalTrabajoForm.controls.mcTrabajo.value);
+    ctSolicitado = Number(this.capitalTrabajoForm.controls.ctSolicitado.value);
+    console.log('m',montoCT);
+    console.log('m', ctSolicitado);
+    
+    if (montoCT < ctSolicitado) {
+      this.utilsService.showNotification('Capital solicitado no puede ser mayor al monto de capital de trabajo.', 'Alerta', 2);
+      this.mayor = true;
+    }
+    else
+    {
+      this.mayor = false;
+    }
   }
 }
