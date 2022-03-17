@@ -302,6 +302,7 @@ export class ClientePagadorComponent implements OnInit {
 
   onRefrescarClientePagador(): void {
     this.idClientePagadorSeleccionado = 0;
+    this.idFilaEdicionClientePagador = 0;
     this.onListarClientePagador();
   }
 
