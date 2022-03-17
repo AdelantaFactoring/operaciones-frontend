@@ -449,6 +449,11 @@ export class ClientePagadorComponent implements OnInit {
           }).subscribe(response => {
             if (response.tipo === 1) {
               this.clientePagador = this.clientePagador.filter(f => f.idFila != item.idFila);
+
+              this.idClientePagadorSeleccionado = 0;
+              this.clientePagadorGastosForm.reset(this.oldClientePagadorGastosForm);
+              this.clientePagadorGastos = [];
+
               this.utilsService.showNotification('Registro eliminado correctamente (asignaciones)', 'Confirmación', 1);
               this.utilsService.blockUIStop();
             } else if (response.tipo === 2) {
