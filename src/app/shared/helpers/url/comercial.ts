@@ -20,6 +20,7 @@ export const SOLICITUD = {
   uploadXlsx: '/solicitudCab/uploadXlsx',
   actualizar: '/solicitudCab/actualizar',
   guardarCT: '/solicitudCab/guardarCT',
+  generarCarpeta: '/SolicitudCab/GenerarCarpeta'
 };
 
 export const PAGADOR = {

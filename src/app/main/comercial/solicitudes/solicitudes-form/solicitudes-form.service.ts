@@ -67,4 +67,14 @@ export class SolicitudesFormService {
       }
     );
   }
+
+  generarCarpeta(payload): Observable<any> {
+    return this.requestMethod.post(
+      `${environment.apiUrl}${SOLICITUD.generarCarpeta}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }
