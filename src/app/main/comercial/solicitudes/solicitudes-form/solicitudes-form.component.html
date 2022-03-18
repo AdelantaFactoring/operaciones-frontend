@@ -237,10 +237,10 @@
                   </div>
 
                   <div class="d-flex justify-content-between pt-1">
-                    <button (click)="horizontalWizardStepperPrevious()" class="btn btn-outline-secondary btn-prev"
+                    <button (click)="horizontalWizardStepperPrevious(0)" class="btn btn-outline-secondary btn-prev"
                       disabled rippleEffect>
                       <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
-                      <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                      <span class="align-middle d-sm-inline-block d-none">Anterior</span>
                     </button>
                     <button class="btn btn-primary" rippleEffect type="button" (click)="onProcesar()"
                       [disabled]="!uploader.getNotUploadedItems().length" *ngIf="procesar">
@@ -248,7 +248,7 @@
                     </button>
                     <button (click)="horizontalWizardStepperNext(accountDetailsForm, '', 1)" type="submit"
                       class="btn btn-primary btn-next" rippleEffect *ngIf="!procesar">
-                      <span class="align-middle d-sm-inline-block d-none">Next</span>
+                      <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
                   </div>
@@ -316,10 +316,10 @@
                   </div>
                 </div> -->
                   <div class="d-flex justify-content-between pt-1">
-                    <button type="button" (click)="horizontalWizardStepperPrevious()" class="btn btn-primary btn-prev"
+                    <button type="button" (click)="horizontalWizardStepperPrevious(0)" class="btn btn-primary btn-prev"
                       rippleEffect>
                       <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
-                      <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                      <span class="align-middle d-sm-inline-block d-none">Anterior</span>
                     </button>
                     <button *ngIf="!flagConfirming && !flagRespuestaFac" (click)="onGuardar()" class="btn btn-success btn-next" rippleEffect>
                       <span class="align-middle d-sm-inline-block d-none">Guardar</span>
@@ -327,12 +327,12 @@
                     </button>
                     <button *ngIf="flagConfirming || flagRespuestaFac" (click)="horizontalWizardStepperNext(personalInfoForm, RespuestaFacForm, 0)"
                       class="btn btn-primary btn-next" rippleEffect>
-                      <span class="align-middle d-sm-inline-block d-none">Next</span>
+                      <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
                     <!-- <button *ngIf="!flagConfirming && flagRespuestaFac" (click)="horizontalWizardStepperNext(personalInfoForm, 0)"
                       class="btn btn-primary btn-next" rippleEffect>
-                      <span class="align-middle d-sm-inline-block d-none">Next</span>
+                      <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
                     </button> -->
                   </div>
@@ -393,28 +393,6 @@
                   <div class="content-header">
                     <h5 class="mb-0">Proveedores</h5>
                     <small>Subir archivo</small>
-                  </div>
-
-                  <div class="row">
-                    <!-- <div class="form-group col-md-6">
-                    <label class="form-label" for="address">Address</label>
-                    <input
-                      [(ngModel)]="addressVar"
-                      #addressRef="ngModel"
-                      required
-                      type="text"
-                      id="address"
-                      name="address"
-                      class="form-control"
-                      [class.error]="addressForm.submitted && addressRef.invalid"
-                      placeholder="98  Borough bridge Road, Birmingham"
-                    />
-                    <span *ngIf="addressForm.submitted && addressRef.invalid" class="invalid-form">
-                      <small class="form-text text-danger" *ngIf="addressRef.errors.required"
-                        >This field is required!</small
-                      >
-                    </span>
-                  </div> -->
                   </div>
 
                   <div class="row">
@@ -488,10 +466,10 @@
                   </div>
 
                   <div class="d-flex justify-content-between pt-1">
-                    <button type="button" (click)="horizontalWizardStepperPrevious()" class="btn btn-primary btn-prev"
+                    <button type="button" (click)="horizontalWizardStepperPrevious(1)" class="btn btn-primary btn-prev"
                       rippleEffect>
                       <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
-                      <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                      <span class="align-middle d-sm-inline-block d-none">Anterior</span>
                     </button>
                     <button class="btn btn-primary" rippleEffect type="button" (click)="onProcesarXlsx()"
                       [disabled]="!uploaderXlsx.getNotUploadedItems().length" *ngIf="procesarXlsx">
@@ -499,7 +477,7 @@
                     </button>
                     <button (click)="horizontalWizardStepperNext(addressForm, '', 0)" class="btn btn-primary btn-next"
                       rippleEffect *ngIf="!procesarXlsx">
-                      <span class="align-middle d-sm-inline-block d-none">Next</span>
+                      <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
                   </div>
@@ -580,10 +558,10 @@
                     </div>
                   </div>
                   <div class="d-flex justify-content-between pt-1">
-                    <button type="button" (click)="horizontalWizardStepperPrevious()" class="btn btn-primary btn-prev"
+                    <button type="button" (click)="horizontalWizardStepperPrevious(0)" class="btn btn-primary btn-prev"
                       rippleEffect>
                       <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
-                      <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                      <span class="align-middle d-sm-inline-block d-none">Anterior</span>
                     </button>
                     <button *ngIf="!flagRespuestaCon" (click)="onGuardar()" class="btn btn-success btn-next" rippleEffect>
                       <span class="align-middle d-sm-inline-block d-none">Guardar</span>
@@ -591,7 +569,7 @@
                     </button>
                     <button *ngIf="flagRespuestaCon" (click)="horizontalWizardStepperNext(personalInfoForm, RespuestaFacForm, 0)"
                     class="btn btn-primary btn-next" rippleEffect>
-                    <span class="align-middle d-sm-inline-block d-none">Next</span>
+                    <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
                     <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
                   </button>
                   </div>

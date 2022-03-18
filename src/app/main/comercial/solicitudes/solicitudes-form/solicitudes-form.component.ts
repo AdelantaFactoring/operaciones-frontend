@@ -124,8 +124,11 @@ export class SolicitudesFormComponent implements OnInit {
   /**
    * Horizontal Wizard Stepper Previous
    */
-  horizontalWizardStepperPrevious() {
+  horizontalWizardStepperPrevious(flagDoble) {
     this.horizontalWizardStepper.previous();
+    if (flagDoble == 1) {
+      this.horizontalWizardStepper.previous();
+    }
   }
 
   onSubmit() {
