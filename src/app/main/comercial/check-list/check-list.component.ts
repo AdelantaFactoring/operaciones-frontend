@@ -311,24 +311,6 @@ export class CheckListComponent implements OnInit {
         this.onListarSolicitudes();
       } else if (response.tipo == 2) {
         this.utilsService.blockUIStop();
-
-        let codigo = response.mensaje.split(',');
-        Swal.fire({
-          title: 'Adertencia',
-          html: `<p style="text-align: justify">La(s) siguiente(s) solicitude(s) contiene(n) factura(s) sin confirmación de pago:</p>
-                 <p style="text-align: justify">Codigo(s):<br>
-                    ${response.mensaje.replace(/,/g, "<br>")}</p>`,
-          icon: 'warning',
-          showCancelButton: false,
-          confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
-          customClass: {
-            confirmButton: 'btn btn-warning',
-          }
-        }).then(result => {
-          if (result.value) {
-
-          }
-        });
       } else {
         this.utilsService.showNotification(response.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
