@@ -58,11 +58,13 @@
                 <tr *ngFor="let item of pagador">
                   <td>
                     <div class="d-flex align-items-center">
-                      <a href="javascript:void(0)" title="Editar" (click)="onEditar(item, modalINFO)">
-                        <i class="text-primary cursor-pointer" data-feather="edit"></i>
+                      <a href="javascript:void(0)" title="Editar" (click)="onEditar(item, modalINFO)"
+                         class="btn btn-raised btn-outline-success btn-sm">
+                        <i class="text-success cursor-pointer" data-feather="edit"></i>
                       </a>
                       &nbsp;
-                      <a href="javascript:void(0)" title="Eliminar" (click)="onEliminar(item)">
+                      <a href="javascript:void(0)" title="Eliminar" (click)="onEliminar(item)"
+                         class="btn btn-raised btn-outline-danger btn-sm">
                         <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
                       </a>
                     </div>
