@@ -5,7 +5,6 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SolicitudesService} from "./solicitudes.service";
 import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
 import {SolicitudDet} from "../../../shared/models/comercial/SolicitudDet";
-import {FileItem, FileUploader, ParsedResponseHeaders} from 'ng2-file-upload';
 import {environment} from '../../../../environments/environment';
 import {SOLICITUD} from "../../../shared/helpers/url/comercial";
 
@@ -15,12 +14,6 @@ import {SOLICITUD} from "../../../shared/helpers/url/comercial";
   styleUrls: ['./solicitudes.component.scss']
 })
 export class SolicitudesComponent implements OnInit {
-  public uploader: FileUploader = new FileUploader({
-    url: `${environment.apiUrl}${SOLICITUD.upload}`,
-    // disableMultipart: true,
-    // formatDataFunctionIsAsync: true,
-    isHTML5: true
-  });
 
   hasBaseDropZoneOver: boolean;
   public contentHeader: object;
@@ -123,13 +116,6 @@ export class SolicitudesComponent implements OnInit {
     this.hasBaseDropZoneOver = false;
   }
 
-  public fileOverBase(e: any): void {
-    this.hasBaseDropZoneOver = e;
-    if (e == false) {
-      this.onBrowseChange();
-    }
-  }
-
   onListarSolicitudes(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesService.listar({
@@ -146,27 +132,6 @@ export class SolicitudesComponent implements OnInit {
       this.utilsService.blockUIStop();
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
-  }
-
-  onNuevo(modal): void {
-    this.razonSocial = '';
-    this.ruc = '';
-
-    this.uploader.clearQueue();
-    this.idSolicitudCab = 0;
-
-    setTimeout(() => {
-      this.modalService.open(modal, {
-        scrollable: true,
-        size: 'lg',
-        animation: true,
-        centered: false,
-        backdrop: "static",
-        beforeDismiss: () => {
-          return true;
-        }
-      });
-    }, 0);
   }
 
   uploadFile(event) {
@@ -249,46 +214,6 @@ export class SolicitudesComponent implements OnInit {
     this.onListarSolicitudes();
   }
 
-  onImportar(modal): void {
-    this.uploader.clearQueue();
-
-    setTimeout(() => {
-      this.modalService.open(modal, {
-        scrollable: true,
-        backdrop: 'static',
-        size: 'lg',
-        beforeDismiss: () => {
-          return true;
-        }
-      });
-    }, 0);
-  }
-
-  onBrowseChange() {
-    var flagEliminado = false;
-    for (const item of this.uploader.queue) {
-      var name = item._file.name;
-      if (name.includes('.XML') || name.includes('.PDF') || name.includes('.xml') || name.includes('.pdf')) {
-
-      } else {
-        flagEliminado = true;
-        item.remove();
-      }
-      
-    //this.name = item._file.name;
-    }
-    if (flagEliminado == true) {
-      this.utilsService.showNotification('Se han eliminado los archivo que no continen una extensión .xml o .pdf', 'Validación', 2);
-    }
-  }
-
-  onRadioChange(value, idTipoOperacion): void {
-    this.tipoServicio = value;
-    this.idTipoOperacion = idTipoOperacion;
-
-    this.hasBaseDropZoneOver = false;
-  }
-
   onClienteList(modal, value): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesService.listarCliente({
@@ -359,71 +284,5 @@ export class SolicitudesComponent implements OnInit {
     item.cambiarIcono = !item.cambiarIcono;
     document.getElementById('tr' + item.idSolicitudCab).style.visibility = (item.cambiarIcono) ? "visible" : "collapse";
     document.getElementById('detail' + item.idSolicitudCab).style.display = (item.cambiarIcono) ? "block" : "none";
-  }
-
-  rowIsSelected(idfila) {
-    return this.selectedRowIds.includes(idfila);
-  }
-
-  onRowClick(razon, ruc, idfila, modal) {
-
-    this.selectedRowIds = [];
-    this.selectedRowIds.push(idfila);
-    this.razonSocial = razon;
-    this.ruc = ruc;
-    modal.dismiss('Cross click');
-  }
-
-  onsave(): void{
-    this.submitted = true;
-    if (this.solicitudForm.invalid) {
-      return;
-    }
-    // var list = [];
-    // for (const item of this.uploader.queue) {
-    //   list.push({'name': item?.file?.name});
-
-    //   if (item?.file?.name.includes('.xml')) {
-    //     this.cantXml =+ 1;
-    //   }
-
-    //   console.log('cantxml', this.cantXml);
-      
-    // }
-    
-    //console.log('cantxml2', this.cantXml);
-    if(this.uploader.queue.length % 2 > 0)
-    {
-      this.utilsService.showNotification('La cantidad de archivos adjuntados debe ser siempre par', 'Alerta', 2);
-      return;
-    }
-    this.uploader.setOptions({
-      url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=` + this.idSolicitudCab + `&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&idUsuarioAud=1`,
-    });
-
-    this.dataXml  = [];
-    this.uploader.uploadAll();
-
-    this.uploader.response.subscribe( res => {
-
-      var rs = JSON.parse(res);
-      if (rs.tipo != 1) {
-        this.dataXml.push(rs)
-      }
-      else
-      {
-        if (rs.tipo == 1) {
-          this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
-
-          this.utilsService.blockUIStop();
-        } else if (rs.tipo == 2) {
-          this.utilsService.showNotification(res.mensaje, 'Alerta', 2);
-          this.utilsService.blockUIStop();
-        } else {
-          this.utilsService.showNotification(res.mensaje, 'Error', 3);
-          this.utilsService.blockUIStop();
-        }
-      }
-    });
   }
 }

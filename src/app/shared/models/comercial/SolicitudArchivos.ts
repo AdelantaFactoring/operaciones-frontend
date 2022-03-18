@@ -18,14 +18,18 @@ export class SolicitudArchivos {
     nombrePDF: string;
     formaPago: string;
     estado: boolean = false;
-    observacion: string = '';
+    observacion: string = "";
     totalExcel: number = 0;
-    banco: string = "";
-    ctaBancaria: string = "";
-    cci: string = "";
-    tipoCuenta: string = "";
-    correo: string = "";
+
     nombreContacto: string = "";
+    telefonoContacto: string = "";
+    correoContacto: string = "";
+    titularCuentaBancariaDestino: string = "";
+    monedaCuentaBancariaDestino: string = "";
+    bancoDestino: string = "";
+    nroCuentaBancariaDestino: string = "";
+    cCIDestino: string = "";
+    tipoCuentaBancariaDestino: string = "";
 }
 
 export class SolicitudArchivosXlsx {

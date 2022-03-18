@@ -10,6 +10,7 @@ import {environment} from '../../../../../environments/environment';
 import {SOLICITUD} from "../../../../shared/helpers/url/comercial";
 import { SolicitudArchivos, SolicitudArchivosXlsx } from 'app/shared/models/comercial/SolicitudArchivos';
 import Swal from 'sweetalert2';
+import { SolicitudDetRespuesta } from 'app/shared/models/comercial/SolicitudDet-Respuesta';
 
 @Component({
   selector: 'app-solicitudes-form',
@@ -58,6 +59,7 @@ export class SolicitudesFormComponent implements OnInit {
   public dataXml: SolicitudArchivos[] = [];
   public dataPdf: SolicitudArchivos[] = [];
   public dataXlsx: SolicitudArchivosXlsx[] = [];
+  public solicitudDetRespuesta: SolicitudDetRespuesta[] = [];
   public mensaje = [];
   public optMoneda = [];
   public optTipo = [];
@@ -77,6 +79,8 @@ export class SolicitudesFormComponent implements OnInit {
   idMoneda: number = 1;
   mayor: boolean = false;
   public flagConfirming: boolean = false;
+  public flagRespuestaFac: boolean = false;
+  public flagRespuestaCon: boolean = false;
 
   public selectedRowIds: number[] = [];
   public selectBasic = [
@@ -96,7 +100,7 @@ export class SolicitudesFormComponent implements OnInit {
   public fechaPagoCT = this.calendar.getToday();
 
 
-  horizontalWizardStepperNext(data, id) {
+  horizontalWizardStepperNext(data, form, id) {
     let nombreArchivo;
     if (data.form.valid === true) {
       if (id == 1) {
@@ -110,6 +114,9 @@ export class SolicitudesFormComponent implements OnInit {
           }
         }
       }
+      this.horizontalWizardStepper.next();
+    }
+    if (form != '' && this.idTipoOperacion == 3) {
       this.horizontalWizardStepper.next();
     }
     
@@ -215,12 +222,23 @@ export class SolicitudesFormComponent implements OnInit {
         "moneda": item.tipoMoneda,
         "nroDocumento": item.codFactura,
         "fechaConfirmado": item.fechaVencimiento,
-        "NetoConfirmado": item.total,
-        "MontoSinIGV": item.subTotal,
-        "MontoConIGV": item.total,
-        "FormaPago": item.formaPago,
-        "ArchivoXML": "XML",
-        "ArchivoPDF": "PDF"
+        "netoConfirmado": item.netoPendiente,
+        "montoSinIGV": item.subTotal,
+        "montoConIGV": item.total,
+        "formaPago": item.formaPago,
+        "archivoXML": item.nombreXML,
+        "archivoPDF": item.nombrePDF,
+        
+        "NombreContacto": item.nombrePDF,
+        "TelefonoContacto": item.nombrePDF,
+        "CorreoContacto": item.nombrePDF,
+        "TitularCuentaBancariaDestino": item.nombrePDF,
+        "MonedaCuentaBancariaDestino": item.nombrePDF,
+        "BancoDestino": item.nombrePDF,
+        "NroCuentaBancariaDestino": item.nombrePDF,
+        "CCIDestino": item.nombrePDF,
+        "TipoCuentaBancariaDestino": item.nombrePDF,
+
       });
     }
 
@@ -232,19 +250,31 @@ export class SolicitudesFormComponent implements OnInit {
       "idTipoOperacion": this.idTipoOperacion,
       "idUsuarioAud": 1,
       "solicitudDet": this.params
-    }).subscribe(response => {
+    }).subscribe((response: SolicitudDetRespuesta[]) => {
       
-      if (response.tipo == 1) {
-        this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
-        this.utilsService.blockUIStop();
-        this.location.back();
-      } else if (response.tipo == 2) {
-        this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
-        this.utilsService.blockUIStop();
-      } else {
-        this.utilsService.showNotification(response.mensaje, 'Error', 3);
-        this.utilsService.blockUIStop();
+      this.solicitudDetRespuesta = response;
+
+      if (this.idTipoOperacion == 1) {
+        this.flagRespuestaFac = true;
       }
+      else
+      {
+        this.flagRespuestaCon = true;
+      }
+      this.onGenerarCarpeta(this.solicitudDetRespuesta);
+      //this.horizontalWizardStepperNext('RespuestaInfoForm', 0);
+      
+      // if (response.tipo == 1) {
+      //   this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+      //   this.utilsService.blockUIStop();
+      //   this.location.back();
+      // } else if (response.tipo == 2) {
+      //   this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+      //   this.utilsService.blockUIStop();
+      // } else {
+      //   this.utilsService.showNotification(response.mensaje, 'Error', 3);
+      //   this.utilsService.blockUIStop();
+      // }
 
       this.utilsService.blockUIStop();
     }, error => {
@@ -351,7 +381,6 @@ export class SolicitudesFormComponent implements OnInit {
     this.hasBaseDropZoneOver = false;   
     this.flagConfirming = flagConfirming;
     
-
     this.horizontalWizardStepper = new Stepper(document.querySelector('#stepper1'), {});
 
     if (idTipoOperacion == 1) {
@@ -483,7 +512,6 @@ export class SolicitudesFormComponent implements OnInit {
     this.uploader.response.subscribe( res => {
      
       let rs = JSON.parse(res);
-      console.log('rs', rs);
       
       if (rs.tipo == 0) {
         this.dataXml.push(rs);
@@ -526,9 +554,6 @@ export class SolicitudesFormComponent implements OnInit {
     });
   }
   onProcesarXlsx(): void{
-
-    console.log('data xml', this.dataXml);
-    
     this.uploaderXlsx.setOptions({
       url: `${environment.apiUrl}${SOLICITUD.uploadXlsx}`,
     });
@@ -551,12 +576,15 @@ export class SolicitudesFormComponent implements OnInit {
           for (const row of this.dataXlsx) {
             for (const item of this.dataXml) {
               if (item.rucCab == row.ruc && item.tipoMoneda == row.moneda) {
-                item.banco = row.banco;
-                item.ctaBancaria = row.ctaBancaria;
-                item.cci = row.cci;
-                item.tipoCuenta = row.tipoCuenta;
-                item.correo = row.correo;
                 item.nombreContacto = row.nombreContacto;
+                item.telefonoContacto = row.telefono;
+                item.correoContacto = row.correo;
+                item.titularCuentaBancariaDestino = row.razonSocialProv;
+                item.monedaCuentaBancariaDestino = row.moneda;
+                item.bancoDestino = row.banco;
+                item.nroCuentaBancariaDestino = row.ctaBancaria;
+                item.cCIDestino = row.cci;
+                item.tipoCuentaBancariaDestino = row.tipoCuenta;
               }
             }
           }
@@ -734,8 +762,6 @@ export class SolicitudesFormComponent implements OnInit {
     let montoCT, ctSolicitado;
     montoCT = Number(this.capitalTrabajoForm.controls.mcTrabajo.value);
     ctSolicitado = Number(this.capitalTrabajoForm.controls.ctSolicitado.value);
-    console.log('m',montoCT);
-    console.log('m', ctSolicitado);
     
     if (montoCT < ctSolicitado) {
       this.utilsService.showNotification('Capital solicitado no puede ser mayor al monto de capital de trabajo.', 'Alerta', 2);
@@ -745,5 +771,15 @@ export class SolicitudesFormComponent implements OnInit {
     {
       this.mayor = false;
     }
+  }
+  onGenerarCarpeta(data): void{
+    this.solicitudesFormService.generarCarpeta(data).subscribe(response => {
+      //console.log('res', response);
+      this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
   }
 }
