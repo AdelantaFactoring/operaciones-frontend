@@ -11,6 +11,7 @@ import {ClientesService} from "../clientes.service";
 import {PagadorService} from "../../pagador/pagador.service";
 import {Pagador} from "../../../../shared/models/comercial/Pagador";
 import Swal from "sweetalert2";
+import {ClientePagadorGastos} from "../../../../shared/models/comercial/cliente-pagador-gastos";
 
 @Component({
   selector: 'app-cliente-pagador',
@@ -43,8 +44,9 @@ export class ClientePagadorComponent implements OnInit {
   //#endregion
 
   //#region Cliente-Pagador
+  public idClientePagadorSeleccionado: number = 0;
   public clientePagador: ClientePagador[] = [];
-  public idFilaEdicionClientePagador: number;
+  public idFilaEdicionClientePagador: number = 0;
   public oldClientePagador: ClientePagador;
 
   public searchClientePagador: string = '';
@@ -57,6 +59,26 @@ export class ClientePagadorComponent implements OnInit {
 
   get ReactiveIUFormClientePagador(): any {
     return this.clientePagadorForm.controls;
+  }
+
+  //#endregion
+
+  //#region Cliente-Pagador-Gastos
+  public clientePagadorGastos: ClientePagadorGastos[] = [];
+  public idFilaEdicionClientePagadorGastos: number = 0;
+  public oldClientePagadorGastos: ClientePagadorGastos;
+
+  public searchClientePagadorGastos: string = '';
+  public collectionSizeClientePagadorGastos: number = 0;
+  public pageSizeClientePagadorGastos: number = 9999;
+  public pageClientePagadorGastos: number = 1;
+
+  public clientePagadorGastosForm: FormGroup;
+  public oldClientePagadorGastosForm: FormGroup;
+  public submittedClientePagadorGastos: boolean;
+
+  get ReactiveIUFormClientePagadorGastos(): any {
+    return this.clientePagadorGastosForm.controls;
   }
 
   //#endregion
@@ -97,6 +119,23 @@ export class ClientePagadorComponent implements OnInit {
       clienteCustom: ['', Validators.required],
       pagadorCustom: ['', Validators.required]
     });
+
+    this.clientePagadorGastosForm = this.formBuilder.group({
+      idMoneda: [1],
+      tasaNominalMensual: [0, [Validators.required, Validators.min(0.01)]],
+      tasaNominalAnual: [0, [Validators.required, Validators.min(0.01)]],
+      tasaNominalMensualMora: [0, [Validators.required, Validators.min(0.01)]],
+      tasaNominalAnualMora: [0, [Validators.required, Validators.min(0.01)]],
+      financiamiento: [0],
+      comisionEstructuracion: [0],
+      gastosContrato: [0],
+      comisionCartaNotarial: [0],
+      servicioCobranza: [0],
+      servicioCustodia: [0],
+      limiteGastoNegociacion: [0]
+    });
+
+    this.oldClientePagadorGastosForm = this.clientePagadorGastosForm.value;
   }
 
   async ngOnInit(): Promise<void> {
@@ -136,7 +175,12 @@ export class ClientePagadorComponent implements OnInit {
     this.onListarCliente();
   }
 
-  onBuscarCliente(idFila: number, modal: any): void {
+  onBuscarCliente(flagNuevo: boolean, modal: any): void {
+    if (this.clientePagador.filter(a => a.edicion).length > 0 && flagNuevo) {
+      this.utilsService.showNotification("Primero debe finalizar la edición del registro actual", 'Alerta', 2);
+      return;
+    }
+
     this.onListarCliente();
 
     this.searchCliente = '';
@@ -154,9 +198,8 @@ export class ClientePagadorComponent implements OnInit {
   }
 
   onClienteSeleccionado(item: Cliente, modal: any): void {
-    this.idClienteSeleccionado = item.idCliente;
-
     if (this.idFilaEdicionClientePagador == 0) {
+      this.idClienteSeleccionado = item.idCliente;
       this.ReactiveIUFormClientePagador.clienteCustom.setValue(`(${item.ruc}) ${item.razonSocial}`);
     } else {
       for (const row of this.clientePagador) {
@@ -194,7 +237,12 @@ export class ClientePagadorComponent implements OnInit {
     this.onListarPagador();
   }
 
-  onBuscarPagador(idFila: number, modal: any): void {
+  onBuscarPagador(flagNuevo: boolean, modal: any): void {
+    if (this.clientePagador.filter(a => a.edicion).length > 0 && flagNuevo) {
+      this.utilsService.showNotification("Primero debe finalizar la edición del registro actual", 'Alerta', 2);
+      return;
+    }
+
     this.onListarPagador();
 
     this.searchPagador = '';
@@ -212,9 +260,8 @@ export class ClientePagadorComponent implements OnInit {
   }
 
   onPagadorSeleccionado(item: Pagador, modal: any): void {
-    this.idPagadorSeleccionado = item.idPagador;
-
     if (this.idFilaEdicionClientePagador == 0) {
+      this.idPagadorSeleccionado = item.idPagador;
       this.ReactiveIUFormClientePagador.pagadorCustom.setValue(`(${item.ruc}) ${item.razonSocial}`);
     } else {
       for (const row of this.clientePagador) {
@@ -232,7 +279,7 @@ export class ClientePagadorComponent implements OnInit {
   //#endregion
 
   //#region Cliente-Pagador
-  onListarClientePagador(): void {
+  onListarClientePagador(flagRefreshSubtable: boolean = true): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.clientePagadorService.listar({
       search: this.searchClientePagador,
@@ -242,27 +289,37 @@ export class ClientePagadorComponent implements OnInit {
       this.clientePagador = response;
       this.collectionSizeClientePagador = response.length > 0 ? response[0].totalRows : 0;
       this.utilsService.blockUIStop();
+
+      if (flagRefreshSubtable) {
+        this.onListarClientePagadorGastos();
+      }
+
     }, error => {
       this.utilsService.blockUIStop();
-      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.showNotification('[F]: An internal error has occurred (asignaciones)', 'Error', 3);
     });
   }
 
   onRefrescarClientePagador(): void {
+    this.idClientePagadorSeleccionado = 0;
+    this.idFilaEdicionClientePagador = 0;
     this.onListarClientePagador();
   }
 
   onAgregarClientePagador(): void {
+    if (this.clientePagador.filter(a => a.edicion).length > 0) {
+      this.utilsService.showNotification("Primero debe finalizar la edición del registro actual (asignaciones)", 'Alerta', 2);
+      return;
+    }
+
     this.submittedClientePagador = true;
     if (this.clientePagadorForm.invalid)
       return;
 
     this.utilsService.blockUIStart('Guardando...');
 
-    this.idFilaEdicionClientePagador = 0;
-
     // @ts-ignore
-    let clientePagadorList: ClientePagador[] = [...this.clientePagador];
+    let clientePagadorList: ClientePagador[] = [];
     clientePagadorList.push({
       idClientePagador: 0,
       idCliente: this.idClienteSeleccionado,
@@ -282,7 +339,7 @@ export class ClientePagadorComponent implements OnInit {
       idUsuarioAud: 1
     }).subscribe(response => {
       if (response.tipo === 1) {
-        this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+        this.utilsService.showNotification('Información guardada correctamente (asignaciones)', 'Confirmación', 1);
 
         this.clientePagadorForm.reset();
         this.submittedClientePagador = false;
@@ -291,21 +348,21 @@ export class ClientePagadorComponent implements OnInit {
 
         this.utilsService.blockUIStop();
       } else if (response.tipo === 2) {
-        this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+        this.utilsService.showNotification(response.mensaje + ' (asignaciones)', 'Alerta', 2);
       } else {
-        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.showNotification(response.mensaje + ' (asignaciones)', 'Error', 3);
       }
 
       this.utilsService.blockUIStop();
     }, error => {
-      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.showNotification('[F]: An internal error has occurred (asignaciones)', 'Error', 3);
       this.utilsService.blockUIStop();
     });
   }
 
   onEditarClientePagador(item: ClientePagador): void {
     if (this.clientePagador.filter(a => a.edicion).length > 0) {
-      this.utilsService.showNotification("Primero debe finalizar la edición del registro actual", 'Alerta', 2);
+      this.utilsService.showNotification("Primero debe finalizar la edición del registro actual (asignaciones)", 'Alerta', 2);
       return;
     }
 
@@ -337,7 +394,7 @@ export class ClientePagadorComponent implements OnInit {
       idUsuarioAud: 1
     }).subscribe(response => {
       if (response.tipo === 1) {
-        this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+        this.utilsService.showNotification('Información guardada correctamente (asignaciones)', 'Confirmación', 1);
 
         item.edicion = false;
 
@@ -346,16 +403,18 @@ export class ClientePagadorComponent implements OnInit {
 
         this.onListarClientePagador();
 
+        this.idFilaEdicionClientePagador = 0;
+
         this.utilsService.blockUIStop();
       } else if (response.tipo === 2) {
-        this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+        this.utilsService.showNotification(response.mensaje + ' (asignaciones)', 'Alerta', 2);
       } else {
-        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.showNotification(response.mensaje + ' (asignaciones)', 'Error', 3);
       }
 
       this.utilsService.blockUIStop();
     }, error => {
-      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.showNotification('[F]: An internal error has occurred (asignaciones)', 'Error', 3);
       this.utilsService.blockUIStop();
     });
   }
@@ -366,7 +425,7 @@ export class ClientePagadorComponent implements OnInit {
       this.clientePagador = this.clientePagador.filter(f => f.idFila != item.idFila);
     } else {
       Swal.fire({
-        title: 'Confirmación',
+        title: 'Confirmación (asignaciones)',
         text: `¿Desea eliminar el registro?, esta acción no podrá revertirse`,
         icon: 'warning',
         showCancelButton: true,
@@ -390,17 +449,257 @@ export class ClientePagadorComponent implements OnInit {
           }).subscribe(response => {
             if (response.tipo === 1) {
               this.clientePagador = this.clientePagador.filter(f => f.idFila != item.idFila);
-              this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
+
+              this.idClientePagadorSeleccionado = 0;
+              this.clientePagadorGastosForm.reset(this.oldClientePagadorGastosForm);
+              this.clientePagadorGastos = [];
+
+              this.utilsService.showNotification('Registro eliminado correctamente (asignaciones)', 'Confirmación', 1);
               this.utilsService.blockUIStop();
             } else if (response.tipo === 2) {
-              this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+              this.utilsService.showNotification(response.mensaje + ' (asignaciones)', 'Alerta', 2);
             } else {
-              this.utilsService.showNotification(response.mensaje, 'Error', 3);
+              this.utilsService.showNotification(response.mensaje + ' (asignaciones)', 'Error', 3);
             }
 
             this.utilsService.blockUIStop();
           }, error => {
-            this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+            this.utilsService.showNotification('[F]: An internal error has occurred (asignaciones)', 'Error', 3);
+            this.utilsService.blockUIStop();
+          });
+        }
+      });
+    }
+  }
+
+  onClientePagadorSeleccionado(item: ClientePagador): void {
+    if (this.idClientePagadorSeleccionado == item.idClientePagador) return;
+
+    this.idClientePagadorSeleccionado = item.idClientePagador;
+    this.clientePagadorGastosForm.reset(this.oldClientePagadorGastosForm);
+    this.onListarClientePagadorGastos();
+  }
+
+  esFilaSeleccionaClientePagador(idClientePagador: number): boolean {
+    return (idClientePagador == this.idClientePagadorSeleccionado);
+  }
+
+  //#endregion
+
+  //#region Cliente-Pagador-Gastos
+  onListarClientePagadorGastos(): void {
+    this.utilsService.blockUIStart('Obteniendo información...');
+    this.clientePagadorService.listarGastos({
+      idClientePagador: this.idClientePagadorSeleccionado,
+      search: this.searchClientePagadorGastos,
+      pageIndex: this.pageClientePagadorGastos,
+      pageSize: this.pageSizeClientePagadorGastos
+    }).subscribe((response: ClientePagadorGastos[]) => {
+      this.clientePagadorGastos = response;
+      this.collectionSizeClientePagadorGastos = response.length > 0 ? response[0].totalRows : 0;
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('[F]: An internal error has occurred (gastos)', 'Error', 3);
+    });
+  }
+
+  onRefrescarClientePagadorGastos(): void {
+    this.onListarClientePagadorGastos();
+  }
+
+  onAgregarClientePagadorGastos(): void {
+    if (this.idClientePagadorSeleccionado == 0) {
+      this.utilsService.showNotification("Primero debe seleccionar un registro (gastos)", 'Alerta', 2);
+      return;
+    } else if (this.clientePagadorGastos.filter(a => a.edicion).length > 0) {
+      this.utilsService.showNotification("Primero debe finalizar la edición del registro actual (gastos)", 'Alerta', 2);
+      return;
+    }
+
+    this.submittedClientePagadorGastos = true;
+    if (this.clientePagadorGastosForm.invalid) return;
+
+    let moneda = this.monedas.find(f => f.idColumna === this.clientePagadorGastosForm.controls.idMoneda.value).descripcion;
+    if (this.clientePagadorGastos.filter(f => f.idMoneda === this.clientePagadorGastosForm.controls.idMoneda.value).length > 0) {
+      this.utilsService.showNotification(`Ya existen gastos con el tipo de moneda '${moneda}'`, "Alerta", 2);
+      return;
+    }
+
+    this.utilsService.blockUIStart('Guardando...');
+
+    // @ts-ignore
+    let clientePagadorGastosList: ClientePagadorGastos[] = [];
+    clientePagadorGastosList.push({
+      idClientePagadorGastos: 0,
+      idClientePagador: this.idClientePagadorSeleccionado,
+
+      idMoneda: this.clientePagadorGastosForm.controls.idMoneda.value,
+      moneda: moneda,
+      tasaNominalMensual: this.clientePagadorGastosForm.controls.tasaNominalMensual.value,
+      tasaNominalAnual: this.clientePagadorGastosForm.controls.tasaNominalAnual.value,
+      tasaNominalMensualMora: this.clientePagadorGastosForm.controls.tasaNominalMensualMora.value,
+      tasaNominalAnualMora: this.clientePagadorGastosForm.controls.tasaNominalAnualMora.value,
+      financiamiento: this.clientePagadorGastosForm.controls.financiamiento.value,
+      comisionEstructuracion: this.clientePagadorGastosForm.controls.comisionEstructuracion.value,
+      gastosContrato: this.clientePagadorGastosForm.controls.gastosContrato.value,
+      comisionCartaNotarial: this.clientePagadorGastosForm.controls.comisionCartaNotarial.value,
+      servicioCobranza: this.clientePagadorGastosForm.controls.servicioCobranza.value,
+      servicioCustodia: this.clientePagadorGastosForm.controls.servicioCustodia.value,
+      limiteGastoNegociacion: this.clientePagadorGastosForm.controls.servicioCustodia.value,
+      estado: true,
+      totalRows: 0,
+      idUsuarioAud: 1,
+
+      idFila: this.utilsService.autoIncrement(this.clientePagadorGastos),
+      edicion: false,
+      editado: true
+    });
+
+    this.clientePagadorService.guardarGastos({
+      idClientePagador: this.idClientePagadorSeleccionado,
+      clientePagadorGastosList: clientePagadorGastosList,
+      idUsuarioAud: 1
+    }).subscribe(response => {
+      if (response.tipo === 1) {
+        this.utilsService.showNotification('Información guardada correctamente (gastos)', 'Confirmación', 1);
+
+        this.clientePagadorGastosForm.reset(this.oldClientePagadorGastosForm);
+        this.submittedClientePagadorGastos = false;
+
+        this.onListarClientePagadorGastos();
+
+        this.utilsService.blockUIStop();
+      } else if (response.tipo === 2) {
+        this.utilsService.showNotification(response.mensaje + ' (gastos)', 'Alerta', 2);
+      } else {
+        this.utilsService.showNotification(response.mensaje + ' (gastos)', 'Error', 3);
+      }
+
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred (gastos)', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
+  }
+
+  onEditarClientePagadorGastos(item: ClientePagadorGastos): void {
+    if (this.clientePagadorGastos.filter(a => a.edicion).length > 0) {
+      this.utilsService.showNotification("Primero debe finalizar la edición del registro actual (gastos)", 'Alerta', 2);
+      return;
+    }
+
+    this.idFilaEdicionClientePagadorGastos = item.idFila;
+
+    this.oldClientePagadorGastos = {...item};
+
+    item.edicion = true;
+  }
+
+  onCancelarClientePagadorGastos(item: ClientePagadorGastos): void {
+    item.idMoneda = this.oldClientePagadorGastos.idMoneda;
+    item.moneda = this.oldClientePagadorGastos.moneda;
+    item.tasaNominalMensual = this.oldClientePagadorGastos.tasaNominalMensual;
+    item.tasaNominalAnual = this.oldClientePagadorGastos.tasaNominalAnual;
+    item.tasaNominalMensualMora = this.oldClientePagadorGastos.tasaNominalMensualMora;
+    item.tasaNominalAnualMora = this.oldClientePagadorGastos.tasaNominalAnualMora;
+    item.financiamiento = this.oldClientePagadorGastos.financiamiento;
+    item.comisionEstructuracion = this.oldClientePagadorGastos.comisionEstructuracion;
+    item.gastosContrato = this.oldClientePagadorGastos.gastosContrato;
+    item.comisionCartaNotarial = this.oldClientePagadorGastos.comisionCartaNotarial;
+    item.servicioCobranza = this.oldClientePagadorGastos.servicioCobranza;
+    item.servicioCustodia = this.oldClientePagadorGastos.servicioCustodia;
+    item.limiteGastoNegociacion = this.oldClientePagadorGastos.limiteGastoNegociacion;
+
+    item.edicion = false;
+    item.editado = false;
+  }
+
+  onConfirmarCambioClientePagadorGastos(item: ClientePagadorGastos): void {
+    let moneda = this.monedas.find(f => f.idColumna === item.idMoneda).descripcion;
+    if (this.clientePagadorGastos.filter(f => f.idMoneda === item.idMoneda && f.idFila != item.idFila).length > 0) {
+      this.utilsService.showNotification(`Ya existen gastos con el tipo de moneda '${moneda}'`, "Alerta", 2);
+      return;
+    }
+
+    this.utilsService.blockUIStart('Guardando...');
+
+    let clientePagadorGastosList: ClientePagadorGastos[] = [];
+    clientePagadorGastosList.push(item);
+
+    this.clientePagadorService.guardarGastos({
+      idClientePagador: this.idClientePagadorSeleccionado,
+      clientePagadorGastosList: clientePagadorGastosList,
+      idUsuarioAud: 1
+    }).subscribe(response => {
+      if (response.tipo === 1) {
+        this.utilsService.showNotification('Información guardada correctamente (gastos)', 'Confirmación', 1);
+
+        item.edicion = false;
+
+        this.clientePagadorGastosForm.reset(this.oldClientePagadorGastosForm);
+        this.submittedClientePagadorGastos = false;
+
+        this.onListarClientePagadorGastos();
+
+        this.idFilaEdicionClientePagadorGastos = 0;
+
+        this.utilsService.blockUIStop();
+      } else if (response.tipo === 2) {
+        this.utilsService.showNotification(response.mensaje + ' (gastos)', 'Alerta', 2);
+      } else {
+        this.utilsService.showNotification(response.mensaje + ' (gastos)', 'Error', 3);
+      }
+
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred (gastos)', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
+  }
+
+  onEliminarClientePagadorGastos(item: ClientePagadorGastos): void {
+    if (item.idClientePagadorGastos == 0) {
+      item.estado = false;
+      this.clientePagadorGastos = this.clientePagadorGastos.filter(f => f.idFila != item.idFila);
+    } else {
+      Swal.fire({
+        title: 'Confirmación (gastos)',
+        text: `¿Desea eliminar el registro?, esta acción no podrá revertirse`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'No',
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-primary'
+        }
+      }).then(result => {
+        if (result.value) {
+          this.utilsService.blockUIStart('Eliminando...');
+          item.estado = false;
+
+          let clientePagadorGastosList: ClientePagadorGastos[] = [];
+          clientePagadorGastosList.push(item);
+
+          this.clientePagadorService.guardarGastos({
+            idClientePagador: this.idClientePagadorSeleccionado,
+            clientePagadorGastosList: clientePagadorGastosList,
+            idUsuarioAud: 1
+          }).subscribe(response => {
+            if (response.tipo === 1) {
+              this.clientePagadorGastos = this.clientePagadorGastos.filter(f => f.idFila != item.idFila);
+              this.utilsService.showNotification('Registro eliminado correctamente (gastos)', 'Confirmación', 1);
+              this.utilsService.blockUIStop();
+            } else if (response.tipo === 2) {
+              this.utilsService.showNotification(response.mensaje + ' (gastos)', 'Alerta', 2);
+            } else {
+              this.utilsService.showNotification(response.mensaje + ' (gastos)', 'Error', 3);
+            }
+
+            this.utilsService.blockUIStop();
+          }, error => {
+            this.utilsService.showNotification('[F]: An internal error has occurred (gastos)', 'Error', 3);
             this.utilsService.blockUIStop();
           });
         }

@@ -8,7 +8,7 @@
           </div>
         </div>
       </div> -->
-      <div id="stepper1" class="bs-stepper horizontal-wizard-example">
+      <div id="stepper1" class="bs-stepper horizontal-wizard-example card">
         <div class="bs-stepper-header">
           <div class="row spaced">
               <div class="col-12">
@@ -331,7 +331,7 @@
                     <span class="align-middle d-sm-inline-block d-none">Previous</span>
                   </button>
                   <button *ngIf="!flagConfirming"
-                    
+                    (click)="onGuardar()"
                     class="btn btn-success btn-next"
                     rippleEffect
                   >
