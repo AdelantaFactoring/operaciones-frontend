@@ -203,7 +203,7 @@ export class ClientePagadorComponent implements OnInit {
       this.ReactiveIUFormClientePagador.clienteCustom.setValue(`(${item.ruc}) ${item.razonSocial}`);
     } else {
       for (const row of this.clientePagador) {
-        if (row.idFila == 1) {
+        if (row.idFila == this.idFilaEdicionClientePagador) {
           row.idCliente = item.idCliente;
           row.clienteCustom = `(${item.ruc}) ${item.razonSocial}`;
           break;
@@ -265,7 +265,7 @@ export class ClientePagadorComponent implements OnInit {
       this.ReactiveIUFormClientePagador.pagadorCustom.setValue(`(${item.ruc}) ${item.razonSocial}`);
     } else {
       for (const row of this.clientePagador) {
-        if (row.idFila == 1) {
+        if (row.idFila == this.idFilaEdicionClientePagador) {
           row.idPagador = item.idPagador;
           row.pagadorCustom = `(${item.ruc}) ${item.razonSocial}`;
           break;
