@@ -103,7 +103,7 @@ export class ConsultaFactrackComponent implements OnInit {
       confirmButtonText: 'Sí',
       cancelButtonText: 'No',
       customClass: {
-        confirmButton: 'btn btn-danger',
+        confirmButton: 'btn btn-success',
         cancelButton: 'btn btn-primary'
       }
     }).then(result => {

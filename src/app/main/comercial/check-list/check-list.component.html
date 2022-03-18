@@ -98,14 +98,16 @@
                       <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="{{'customCheck' + cab.idSolicitudCab}}"
                                [disabled]="!cab.checkList"
+                               [disabled]="!cab.checkList"
                                [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"/>
                         <label class="custom-control-label" for="{{'customCheck' + cab.idSolicitudCab}}"></label>
                       </div>
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Editar" (click)="onEditar(cab, modalINFO)">
-                          <i class="text-danger cursor-pointer" data-feather="edit"></i>
+                        <a href="javascript:void(0)" title="Editar" (click)="onEditar(cab, modalINFO)"
+                           class="btn btn-raised btn-outline-success btn-sm">
+                          <i class="text-success cursor-pointer" data-feather="edit"></i>
                         </a>
                       </div>
                     </td>
