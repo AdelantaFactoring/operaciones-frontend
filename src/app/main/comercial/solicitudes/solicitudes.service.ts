@@ -57,7 +57,7 @@ export class SolicitudesService {
   eliminar(payload): Observable<any> {
     return this.requestMethod.delete(
       `${environment.apiUrl}${SOLICITUD.eliminar}`,
-      `?idSolicitudCab=${payload.idCliente}&idUsuarioAud=${payload.idUsuarioAud}`,
+      `?idSolicitudCab=${payload.idSolicitudCab}&idUsuarioAud=${payload.idUsuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }
