@@ -820,9 +820,9 @@
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
-                <label>Monto Capital de Trabajo</label>
+                <label>Monto</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.mcTrabajo.errors }" class="form-control"
-                  formControlName="mcTrabajo" type="number" (change)="validacionCT()" />
+                  formControlName="mcTrabajo" type="number" (change)="validacionCT()"/>
                 <div *ngIf="CapitalIUForm.mcTrabajo.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.mcTrabajo.errors.required">* Campo obligatorio</div>
                 </div>
@@ -830,9 +830,9 @@
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
-                <label>Capital de Trabajo Solicitado</label>
+                <label>Monto Solicitud</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.ctSolicitado.errors || mayor}"
-                  class="form-control" formControlName="ctSolicitado" type="number" (change)="validacionCT()" />
+                  class="form-control" formControlName="ctSolicitado" type="number" (change)="validacionCT()"/>
                 <div *ngIf="CapitalIUForm.ctSolicitado.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.ctSolicitado.errors.required">* Campo obligatorio</div>
                 </div>
