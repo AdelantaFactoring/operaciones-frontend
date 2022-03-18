@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import Stepper from 'bs-stepper';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -14,7 +14,8 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-solicitudes-form',
   templateUrl: './solicitudes-form.component.html',
-  styleUrls: ['./solicitudes-form.component.scss']
+  styleUrls: ['./solicitudes-form.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class SolicitudesFormComponent implements OnInit {
 
