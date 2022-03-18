@@ -4,6 +4,7 @@ export class ClienteGastos {
   idTipoOperacion: number;
   idMoneda: number = 1;
   moneda: string;
+  codigoMoneda: string;
   tasaNominalMensual: number;
   tasaNominalAnual: number;
   tasaNominalMensualMora: number;

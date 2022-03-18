@@ -5,6 +5,7 @@ export class ClienteCuenta {
   banco: string;
   idMoneda: number = 1;
   moneda: string;
+  codigoMoneda: string;
   nroCuenta: string;
   cci: string;
   predeterminado: boolean = false;
