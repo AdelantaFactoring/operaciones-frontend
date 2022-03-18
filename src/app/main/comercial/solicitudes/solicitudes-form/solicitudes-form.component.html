@@ -886,7 +886,7 @@
               <div class="form-group">
                 <label>Gastos incluido IGV</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.gIncluidoIGV.errors }" class="form-control"
-                  formControlName="gIncluidoIGV" type="number:'.0-2'" />
+                  formControlName="gIncluidoIGV" type="number:'.0-2'" (change)="onCalcularCT()"/>
                 <div *ngIf="CapitalIUForm.gIncluidoIGV.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.gIncluidoIGV.errors.required">* Campo obligatorio</div>
                 </div>
@@ -896,7 +896,7 @@
               <div class="form-group">
                 <label>Total a Facturar con IGV</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tFacturarIGV.errors }" class="form-control"
-                  formControlName="tFacturarIGV" type="text" />
+                  formControlName="tFacturarIGV" type="text" disabled/>
                 <div *ngIf="CapitalIUForm.tFacturarIGV.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.tFacturarIGV.errors.required">* Campo obligatorio</div>
                 </div>
@@ -906,7 +906,7 @@
               <div class="form-group">
                 <label>Total a Desembolsar con IGV</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tDesembolsoIGV.errors }"
-                  class="form-control" formControlName="tDesembolsoIGV" type="text" />
+                  class="form-control" formControlName="tDesembolsoIGV" type="text" disabled/>
                 <div *ngIf="CapitalIUForm.tDesembolsoIGV.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.tDesembolsoIGV.errors.required">* Campo obligatorio</div>
                 </div>
