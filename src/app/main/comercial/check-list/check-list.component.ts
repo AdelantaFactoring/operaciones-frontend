@@ -16,6 +16,8 @@ import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
 import {SolicitudCabSustento} from "../../../shared/models/comercial/solicitudCab-sustento";
 import Swal from "sweetalert2";
+import {ClientePagadorService} from "../clientes/cliente-pagador/cliente-pagador.service";
+import {ClientePagadorGastos} from "../../../shared/models/comercial/cliente-pagador-gastos";
 
 @Component({
   selector: 'app-check-list',
@@ -36,8 +38,11 @@ export class CheckListComponent implements OnInit {
   public cambiarIcono: boolean = false;
   public search: string = '';
   public submitted: boolean = false;
-  public archivos: Archivo[]
+  public archivos: Archivo[] = [];
 
+  public idCliente: number = 0;
+  public codigo: string = '';
+  public idTipoOperacion = 0;
   public nroCuentaBancariaDestino: string = '';
   public cciDestino: string = '';
 
@@ -47,7 +52,7 @@ export class CheckListComponent implements OnInit {
 
   public hasBaseDropZoneOver: boolean = false;
   public archivosSustento: FileUploader = new FileUploader({
-    url: `${environment.apiUrl}${SOLICITUD.subirSustento}`,
+    //url: `${environment.apiUrl}${SOLICITUD.subirSustento}`,
     isHTML5: true
   });
 
@@ -58,6 +63,7 @@ export class CheckListComponent implements OnInit {
   constructor(private utilsService: UtilsService,
               private checkListService: CheckListService,
               private clienteService: ClientesService,
+              private clientePagadorService: ClientePagadorService,
               private formBuilder: FormBuilder,
               private modalService: NgbModal,
               private tablaMaestraService: TablaMaestraService) {
@@ -85,6 +91,7 @@ export class CheckListComponent implements OnInit {
     };
     this.solicitudForm = this.formBuilder.group({
       idSolicitudCab: [0],
+      idTipoOperacion: [0],
       codigo: [{value: '', disabled: true}],
       rucCliente: [{value: '', disabled: true}],
       razonSocialCliente: [{value: '', disabled: true}],
@@ -92,6 +99,11 @@ export class CheckListComponent implements OnInit {
       razonSocialPagProv: [{value: '', disabled: true}],
       moneda: [{value: '', disabled: true}],
       tipoOperacion: [{value: '', disabled: true}],
+      tasaNominalMensual: [{value: 0, disabled: true}],
+      tasaNominalAnual: [{value: 0, disabled: true}],
+      tasaNominalMensualMora: [{value: 0, disabled: true}],
+      tasaNominalAnualMora: [{value: 0, disabled: true}],
+      financiamiento: [{value: 0, disabled: true}],
       comisionEstructuracion: [{value: 0, disabled: true}],
       usarGastosContrato: [false],
       gastosContrato: [{value: 0, disabled: true}],
@@ -149,7 +161,8 @@ export class CheckListComponent implements OnInit {
 
   onSeleccionarTodo(): void {
     this.solicitudes.forEach(el => {
-      el.seleccionado = this.seleccionarTodo;
+      if (el.checkList)
+        el.seleccionado = this.seleccionarTodo;
     });
   }
 
@@ -174,12 +187,22 @@ export class CheckListComponent implements OnInit {
 
   onEditar(item: SolicitudCab, modal: any): void {
     this.solicitudForm.controls.idSolicitudCab.setValue(item.idSolicitudCab);
+    this.idCliente = item.idCliente;
+    this.solicitudForm.controls.idTipoOperacion.setValue(item.idTipoOperacion);
+    this.idTipoOperacion = item.idTipoOperacion;
+    this.solicitudForm.controls.codigo.setValue(item.codigo);
+    this.codigo = item.codigo;
     this.solicitudForm.controls.rucCliente.setValue(item.rucCliente);
     this.solicitudForm.controls.razonSocialCliente.setValue(item.razonSocialCliente);
     this.solicitudForm.controls.rucPagProv.setValue(item.rucPagProv);
     this.solicitudForm.controls.razonSocialPagProv.setValue(item.razonSocialPagProv);
     this.solicitudForm.controls.moneda.setValue(item.moneda);
     this.solicitudForm.controls.tipoOperacion.setValue(item.tipoOperacion);
+    this.solicitudForm.controls.tasaNominalMensual.setValue(item.tasaNominalMensual);
+    this.solicitudForm.controls.tasaNominalAnual.setValue(item.tasaNominalAnual);
+    this.solicitudForm.controls.tasaNominalMensualMora.setValue(item.tasaNominalMensualMora);
+    this.solicitudForm.controls.tasaNominalAnualMora.setValue(item.tasaNominalAnualMora);
+    this.solicitudForm.controls.financiamiento.setValue(item.financiamiento);
     this.solicitudForm.controls.comisionEstructuracion.setValue(item.comisionEstructuracion);
     this.solicitudForm.controls.usarGastosContrato.setValue(item.usarGastosContrato);
     this.solicitudForm.controls.gastosContrato.setValue(item.gastosContrato);
@@ -235,6 +258,7 @@ export class CheckListComponent implements OnInit {
     this.solicitudForm.reset();
     this.onListarSolicitudes();
     this.archivos = [];
+    this.codigo = "";
     this.archivosSustento.clearQueue();
     this.modalService.dismissAll();
   }
@@ -248,13 +272,29 @@ export class CheckListComponent implements OnInit {
     });
   }
 
+  onActualizar(): void {
+    this.utilsService.blockUIStart('Obteniendo información...');
+    this.clientePagadorService.obtener({
+      idCliente: this.idCliente,
+      rucPagProv: this.solicitudForm.controls.rucPagProv.value
+    }).subscribe((response: ClientePagadorGastos[]) => {
+      if (response.length > 0) {
+
+      }
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+  }
+
   onGuardar(): void {
     this.submitted = true;
     if (this.solicitudForm.invalid)
       return;
     if (this.nroCuentaBancariaDestino === "" && this.cciDestino === "")
       return;
-
+    this.utilsService.blockUIStart("Guardando...");
     if (this.sustentosOld.length === 0)
       for (let item of this.sustentos) {
         this.sustentosOld.push({
@@ -299,7 +339,63 @@ export class CheckListComponent implements OnInit {
         editado: true
       });
     }
-    console.log(this.sustentos);
+
+    this.checkListService.actualizar({
+      idSolicitudCab: this.solicitudForm.controls.idSolicitudCab.value,
+      codigo: this.solicitudForm.controls.codigo.value,
+      idTipoOperacion: this.solicitudForm.controls.idTipoOperacion.value,
+      tasaNominalMensual: this.solicitudForm.controls.tasaNominalMensual.value,
+      tasaNominalAnual: this.solicitudForm.controls.tasaNominalAnual.value,
+      tasaNominalMensualMora: this.solicitudForm.controls.tasaNominalMensualMora.value,
+      tasaNominalAnualMora: this.solicitudForm.controls.tasaNominalAnualMora.value,
+      financiamiento: this.solicitudForm.controls.financiamiento.value,
+      comisionEstructuracion: this.solicitudForm.controls.comisionEstructuracion.value,
+      usarGastosContrato: this.solicitudForm.controls.usarGastosContrato.value,
+      gastosContrato: this.solicitudForm.controls.gastosContrato.value,
+      comisionCartaNotarial: this.solicitudForm.controls.comisionCartaNotarial.value,
+      servicioCobranza: this.solicitudForm.controls.servicioCobranza.value,
+      servicioCustodia: this.solicitudForm.controls.servicioCustodia.value,
+      usarGastoVigenciaPoder: this.solicitudForm.controls.usarGastoVigenciaPoder.value,
+      gastoVigenciaPoder: this.solicitudForm.controls.gastoVigenciaPoder.value,
+      nombreContacto: this.solicitudForm.controls.nombreContacto.value,
+      telefonoContacto: this.solicitudForm.controls.telefonoContacto.value,
+      correoContacto: this.solicitudForm.controls.correoContacto.value,
+      conCopiaContacto: this.solicitudForm.controls.conCopiaContacto.value,
+      titularCuentaBancariaDestino: this.solicitudForm.controls.titularCuentaBancariaDestino.value,
+      monedaCuentaBancariaDestino: this.solicitudForm.controls.monedaCuentaBancariaDestino.value,
+      bancoDestino: this.solicitudForm.controls.bancoDestino.value,
+      nroCuentaBancariaDestino: this.nroCuentaBancariaDestino,
+      cciDestino: this.cciDestino,
+      tipoCuentaBancariaDestino: this.solicitudForm.controls.tipoCuentaBancariaDestino.value,
+      idTipoCT: 0,
+      montoCT: 0,
+      montoSolicitudCT: 0,
+      diasPrestamoCT: 0,
+      fechaPagoCT: '',
+      idUsuarioAud: 1,
+      solicitudDet: this.detalle.filter(f => f.editado),
+      solicitudCabSustento: this.sustentos.filter(f => f.editado)
+    }).subscribe((response: any) => {
+      switch (response.tipo) {
+        case 1:
+          this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+          this.utilsService.blockUIStop();
+          this.onListarSolicitudes();
+          this.onCancelar();
+          break;
+        case 2:
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          this.utilsService.blockUIStop();
+          break;
+        default:
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          this.utilsService.blockUIStop();
+          break;
+      }
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
   }
 
   onEliminarArchivoAdjunto(item: SolicitudCabSustento): void {

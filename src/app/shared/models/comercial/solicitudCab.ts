@@ -47,6 +47,7 @@ export class SolicitudCab {
   fechaCreacion: string;
   idUsuarioAud: number;
   totalRows: number;
+  checkList: boolean;
   solicitudDet: SolicitudDet[];
   solicitudCabSustento: SolicitudCabSustento[];
 

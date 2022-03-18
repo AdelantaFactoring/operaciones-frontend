@@ -21,4 +21,14 @@ export class CheckListService {
       }
     );
   }
+
+  actualizar(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${SOLICITUD.actualizar}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }

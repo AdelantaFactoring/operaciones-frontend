@@ -18,11 +18,19 @@ export const SOLICITUD = {
   eliminar: '/solicitudCab/eliminar',
   eliminarFactura: '/solicitudCab/eliminarfactura',
   uploadXlsx: '/solicitudCab/uploadXlsx',
-  subirSustento: '/solicitudCab/subirsustento',
+  actualizar: '/solicitudCab/actualizar',
   guardarCT: '/solicitudCab/guardarCT',
 };
 
 export const PAGADOR = {
   listar: '/pagador/listar',
   guardar: '/pagador/guardar'
-}
+};
+
+export const CLIENTEPAGADOR = {
+  listar: '/clientepagador/listar',
+  guardar: '/clientepagador/guardar',
+  listarGastos: '/clientepagadorgastos/listar',
+  obtener: '/clientepagadorgastos/obtener',
+  guardarGastos: '/clientepagadorgastos/guardar'
+};

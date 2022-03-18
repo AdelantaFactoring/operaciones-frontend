@@ -1,0 +1,17 @@
+@import '../../../../../assets/scss/variables/variables';
+
+.row-edicion {
+  background-color: lightgreen !important;
+
+  p, strong {
+    color: white;
+  }
+}
+
+.eliminado {
+  text-decoration: line-through;
+}
+
+.selectedRow {
+  background-color: rgba($primary, 0.1);
+}
