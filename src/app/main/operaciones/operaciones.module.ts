@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {RouterModule, Routes} from "@angular/router";
-import { RespuestaPagadorComponent } from './respuesta-pagador/respuesta-pagador.component';
-import { LiquidacionesComponent } from './liquidaciones/liquidaciones.component';
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import {CoreCommonModule} from "@core/common.module";
 import {BlockUIModule} from "ng-block-ui";
@@ -12,6 +10,8 @@ import {NgSelectModule} from "@ng-select/ng-select";
 import {NgxMaskModule} from "ngx-mask";
 import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 import { ConsultaFactrackComponent } from './consulta-factrack/consulta-factrack.component';
+import { RespuestaPagadorComponent } from './respuesta-pagador/respuesta-pagador.component';
+import { LiquidacionesComponent } from './liquidaciones/liquidaciones.component';
 
 const routes: Routes = [
   {
@@ -31,13 +31,23 @@ const routes: Routes = [
         component: ConsultaFactrackComponent
       }
     ]
+  },
+  {
+    path: '',
+    children: [
+      {
+        path: 'liquidaciones',
+        component: LiquidacionesComponent
+      }
+    ]
   }
 ]
 
 @NgModule({
   declarations: [
     RespuestaPagadorComponent,
-    ConsultaFactrackComponent
+    ConsultaFactrackComponent,
+    LiquidacionesComponent
   ],
     imports: [
         CommonModule,

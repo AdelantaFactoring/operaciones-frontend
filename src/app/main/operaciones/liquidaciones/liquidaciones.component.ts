@@ -6,8 +6,31 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./liquidaciones.component.scss']
 })
 export class LiquidacionesComponent implements OnInit {
-
-  constructor() { }
+  public contentHeader: object;
+  constructor() {
+    this.contentHeader = {
+      headerTitle: 'Liquidaciones',
+      actionButton: true,
+      breadcrumb: {
+        type: '',
+        links: [
+          {
+            name: 'Inicio',
+            isLink: true,
+            link: '/'
+          },
+          {
+            name: 'Operaciones',
+            isLink: false
+          },
+          {
+            name: 'Liquidaciones',
+            isLink: false
+          }
+        ]
+      }
+    };
+  }
 
   ngOnInit(): void {
   }
