@@ -183,10 +183,10 @@ export class SolicitudesFormComponent implements OnInit {
       mcTrabajo: ['', Validators.required],
       ctSolicitado: [0, Validators.required],
       diasPrestamo: [0, Validators.required],
-      iIncluidoIGV: [''],
-      gIncluidoIGV: [''],
-      tFacturarIGV: [''],
-      tDesembolsoIGV: [''],
+      iIncluidoIGV: [0],
+      gIncluidoIGV: [0],
+      tFacturarIGV: [0],
+      tDesembolsoIGV: [0],
       fechaPago: [''],
       montoDesc: ['']
     });
@@ -749,13 +749,17 @@ export class SolicitudesFormComponent implements OnInit {
     this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue('');
   }
   onCalcularCT(): void{
-    let capitalTrabajo, TNA, nroDias, intereses;
+    let capitalTrabajo, TNA, nroDias, intereses, gastosCt, montoSolicitado, totolFacturado;
     capitalTrabajo = this.capitalTrabajoForm.controls.mcTrabajo.value;
     TNA = this.capitalTrabajoForm.controls.tasaAnual.value;
     nroDias = this.capitalTrabajoForm.controls.diasPrestamo.value;
     intereses = capitalTrabajo * (TNA / 360) * nroDias * 1.18;
-
+    gastosCt = this.capitalTrabajoForm.controls.gIncluidoIGV.value;
+    montoSolicitado = this.capitalTrabajoForm.controls.ctSolicitado.value;
     this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100);
+    this.capitalTrabajoForm.controls.tFacturarIGV.setValue(Math.round((intereses + Number.EPSILON) + gastosCt));
+    totolFacturado = Math.round((intereses + Number.EPSILON)+ gastosCt);
+    this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(Math.round((montoSolicitado + Number.EPSILON) - totolFacturado));
 
   }
   validacionCT(): void{
