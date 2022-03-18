@@ -204,10 +204,14 @@ export class SolicitudesFormComponent implements OnInit {
     if (this.solicitudForm.invalid) {
       return;
     }
+
     this.params = [];
     for (const item of this.dataXml) {
       this.params.push({
         "idSolicitudDet": 0,
+        "rucPagProv": item.rucDet,
+        "RazonSocialPagProv": item.razonSocialDet,
+        "moneda": item.tipoMoneda,
         "nroDocumento": item.codFactura,
         "fechaConfirmado": item.fechaVencimiento,
         "NetoConfirmado": item.total,
@@ -223,11 +227,9 @@ export class SolicitudesFormComponent implements OnInit {
     this.utilsService.blockUIStart('Guardando información...');
     this.solicitudesFormService.guardar({
       "idSolicitudCab": 0,
-      "idCliente": this.ruc,
-      "rucPagProv": this.dataXml[0].rucDet,
+      "idCliente": this.idCliente,
       "idTipoOperacion": this.idTipoOperacion,
-      "moneda": this.dataXml[0].tipoMoneda,
-      "IdUsuarioAud": 1,
+      "idUsuarioAud": 1,
       "solicitudDet": this.params
     }).subscribe(response => {
       
@@ -524,6 +526,8 @@ export class SolicitudesFormComponent implements OnInit {
   }
   onProcesarXlsx(): void{
 
+    console.log('data xml', this.dataXml);
+    
     this.uploaderXlsx.setOptions({
       url: `${environment.apiUrl}${SOLICITUD.uploadXlsx}`,
     });
@@ -545,7 +549,7 @@ export class SolicitudesFormComponent implements OnInit {
         {
           for (const row of this.dataXlsx) {
             for (const item of this.dataXml) {
-              if (item.rucCab == row.ruc) {
+              if (item.rucCab == row.ruc && item.tipoMoneda == row.moneda) {
                 item.banco = row.banco;
                 item.ctaBancaria = row.ctaBancaria;
                 item.cci = row.cci;
