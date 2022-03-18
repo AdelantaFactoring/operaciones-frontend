@@ -70,7 +70,7 @@ export class ConsultaFactrackComponent implements OnInit {
   }
 
   onSeleccionarTodo(): void {
-    this.solicitudes.forEach(el => {
+    this.solicitudes.filter(f => f.idEstado === 3).forEach(el => {
       el.seleccionado = this.seleccionarTodo;
     })
   }

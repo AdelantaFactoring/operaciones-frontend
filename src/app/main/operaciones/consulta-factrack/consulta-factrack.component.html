@@ -101,7 +101,7 @@
                     </td>
                     <td>
                       <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="{{'customCheck' + cab.idSolicitudCab}}"
+                        <input type="checkbox" [disabled]="cab.idEstado != 3" class="custom-control-input" id="{{'customCheck' + cab.idSolicitudCab}}"
                                [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"/>
                         <label class="custom-control-label" for="{{'customCheck' + cab.idSolicitudCab}}"></label>
                       </div>
