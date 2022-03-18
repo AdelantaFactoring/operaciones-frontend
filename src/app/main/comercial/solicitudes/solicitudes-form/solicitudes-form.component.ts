@@ -31,7 +31,7 @@ export class SolicitudesFormComponent implements OnInit {
     isHTML5: true
   });
   public contentHeader: object;
-  
+
   public submitted: boolean;
   params = [];
 
@@ -92,13 +92,12 @@ export class SolicitudesFormComponent implements OnInit {
     { name: 'Australia' }
   ];
   private horizontalWizardStepper: Stepper;
-  
+
   public selectMulti = [{ name: 'English' }, { name: 'French' }, { name: 'Spanish' }];
   public selectMultiSelected;
   public zeroPad = (num, places) => String(num).padStart(places, '0');
   public fechaPagoActual = this.calendar.getToday();
   public fechaPagoCT = this.calendar.getToday();
-
 
   horizontalWizardStepperNext(data, form, id) {
     let nombreArchivo;
@@ -119,7 +118,7 @@ export class SolicitudesFormComponent implements OnInit {
     if (form != '' && this.idTipoOperacion == 3) {
       this.horizontalWizardStepper.next();
     }
-    
+
   }
   /**
    * Horizontal Wizard Stepper Previous
@@ -206,7 +205,7 @@ export class SolicitudesFormComponent implements OnInit {
       this.procesarXlsx = true;
     }
   }
-  
+
   onGuardar(): void {
     this.submitted = true;
     if (this.solicitudForm.invalid) {
@@ -228,7 +227,7 @@ export class SolicitudesFormComponent implements OnInit {
         "formaPago": item.formaPago,
         "archivoXML": item.nombreXML,
         "archivoPDF": item.nombrePDF,
-        
+
         "NombreContacto": item.nombrePDF,
         "TelefonoContacto": item.nombrePDF,
         "CorreoContacto": item.nombrePDF,
@@ -242,7 +241,7 @@ export class SolicitudesFormComponent implements OnInit {
       });
     }
 
-    
+
     this.utilsService.blockUIStart('Guardando información...');
     this.solicitudesFormService.guardar({
       "idSolicitudCab": 0,
@@ -251,7 +250,7 @@ export class SolicitudesFormComponent implements OnInit {
       "idUsuarioAud": 1,
       "solicitudDet": this.params
     }).subscribe((response: SolicitudDetRespuesta[]) => {
-      
+
       this.solicitudDetRespuesta = response;
 
       if (this.idTipoOperacion == 1) {
@@ -263,7 +262,7 @@ export class SolicitudesFormComponent implements OnInit {
       }
       this.onGenerarCarpeta(this.solicitudDetRespuesta);
       //this.horizontalWizardStepperNext('RespuestaInfoForm', 0);
-      
+
       // if (response.tipo == 1) {
       //   this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
       //   this.utilsService.blockUIStop();
@@ -288,7 +287,7 @@ export class SolicitudesFormComponent implements OnInit {
     if (this.capitalTrabajoForm.invalid) {
       return;
     }
-    
+
     this.utilsService.blockUIStart('Guardando información...');
     this.solicitudesFormService.guardarCT({
       idSolicitudCab: 0,
@@ -347,7 +346,7 @@ export class SolicitudesFormComponent implements OnInit {
       }
     //this.name = item._file.name;
     }
-    
+
     this.onEliminarRepetidas();
     if (flagEliminado == true) {
       this.utilsService.showNotification('Se han eliminado los archivo que no continen una extensión .xml o .pdf', 'Validación', 2);
@@ -369,7 +368,7 @@ export class SolicitudesFormComponent implements OnInit {
       }
     //this.name = item._file.name;
     }
-    
+
     if (flagEliminado == true) {
       this.utilsService.showNotification('Se han eliminado los archivo que no continen una extensión .xml o .pdf', 'Validación', 2);
     }
@@ -378,9 +377,9 @@ export class SolicitudesFormComponent implements OnInit {
   onRadioChange(value, idTipoOperacion, flagConfirming, modal): void {
     this.tipoServicio = value;
     this.idTipoOperacion = idTipoOperacion;
-    this.hasBaseDropZoneOver = false;   
+    this.hasBaseDropZoneOver = false;
     this.flagConfirming = flagConfirming;
-    
+
     this.horizontalWizardStepper = new Stepper(document.querySelector('#stepper1'), {});
 
     if (idTipoOperacion == 1) {
@@ -412,7 +411,7 @@ export class SolicitudesFormComponent implements OnInit {
       this.razonSocialDet = "Razon Social Cliente";
     }
   }
-  
+
   onClientePagadorList(modal, value): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesFormService.listarCliente({
@@ -444,7 +443,7 @@ export class SolicitudesFormComponent implements OnInit {
       }, 0);
     }
   }
-  
+
   rowIsSelected(idfila) {
     return this.selectedRowIds.includes(idfila);
   }
@@ -452,7 +451,7 @@ export class SolicitudesFormComponent implements OnInit {
   onRowClick(razon, ruc, idfila, modal) {
     this.idCliente = idfila;
     if (this.idTipoOperacion == 2) {
-      
+
       this.onClienteObtener(idfila, ruc, razon);
     }
     else{
@@ -489,7 +488,7 @@ export class SolicitudesFormComponent implements OnInit {
         this.cantPdf = this.cantPdf + 1;
       }
     }
-    
+
     if (this.cantXml != this.cantPdf) {
       this.utilsService.showNotification("La cantidad de archivos XML no coincide con la cantidad de PDF", 'Alerta', 2);
       return;
@@ -510,9 +509,9 @@ export class SolicitudesFormComponent implements OnInit {
     let count = 0;
 
     this.uploader.response.subscribe( res => {
-     
+
       let rs = JSON.parse(res);
-      
+
       if (rs.tipo == 0) {
         this.dataXml.push(rs);
         this.procesar = false;
@@ -533,7 +532,7 @@ export class SolicitudesFormComponent implements OnInit {
         } else if (rs.tipo == 2) {
           //console.log('name', rs.nombreXML);
         //   console.log('nameXml',rs.nombreXML);
-          
+
         //  for (const item of this.uploader.queue) {
         //   if (item?.file?.name == rs.nombreXML) {
         //     item.isSuccess = false;
@@ -550,7 +549,7 @@ export class SolicitudesFormComponent implements OnInit {
           this.utilsService.blockUIStop();
         }
       }
-      
+
     });
   }
   onProcesarXlsx(): void{
@@ -560,13 +559,13 @@ export class SolicitudesFormComponent implements OnInit {
 
     this.dataXlsx  = [];
     this.uploaderXlsx.uploadAll();
-    
+
     this.uploaderXlsx.response.subscribe( res => {
-     
+
       let rs = JSON.parse(res);
       if (rs.tipo != 1) {
         this.dataXlsx = rs;
-        
+
         if (this.cantXml != this.dataXlsx.length) {
           this.utilsService.showNotification("La cantida de registros en el Excel no coincide con la cantidad de facturas adjuntadas", 'Alerta', 2);
           this.procesarXlsx = true;
@@ -671,7 +670,7 @@ export class SolicitudesFormComponent implements OnInit {
           this.capitalTrabajoForm.controls.cartaNotarial.setValue(item.comisionCartaNotarial);
           this.capitalTrabajoForm.controls.servicioCobranza.setValue(item.servicioCobranza);
           this.capitalTrabajoForm.controls.servicioCustodia.setValue(item.servicioCustodia);
-  
+
         }
       }
       else
@@ -766,7 +765,7 @@ export class SolicitudesFormComponent implements OnInit {
     let montoCT, ctSolicitado;
     montoCT = Number(this.capitalTrabajoForm.controls.mcTrabajo.value);
     ctSolicitado = Number(this.capitalTrabajoForm.controls.ctSolicitado.value);
-    
+
     if (montoCT < ctSolicitado) {
       this.utilsService.showNotification('Capital solicitado no puede ser mayor al monto de capital de trabajo.', 'Alerta', 2);
       this.mayor = true;

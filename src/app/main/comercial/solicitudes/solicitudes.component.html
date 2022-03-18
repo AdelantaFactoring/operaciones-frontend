@@ -114,6 +114,7 @@
                         <table class="table table-hover">
                           <thead>
                           <tr>
+                            <th class="detail-th-color">Acción</th>
                             <th class="detail-th-color">N° Documento</th>
                             <th class="detail-th-color">Forma Pago</th>
                             <th class="detail-th-color">Monto sin IGV</th>
@@ -126,6 +127,15 @@
                           </thead>
                           <tbody>
                           <tr *ngFor="let item of cab.solicitudDet">
+                            <td>
+                              <div class="d-flex align-items-center">
+                                <a href="javascript:void(0)" title="Eliminar" (click)="onEliminarDet(cab, item)"
+                                   class="btn btn-raised btn-outline-danger btn-sm">
+                                  <i class="text-danger cursor-pointer"
+                                     data-feather="trash-2"></i>
+                                </a>
+                              </div>
+                            </td>
                             <td>{{item.nroDocumento}}</td>
                             <td>{{item.formaPago}}</td>
                             <td>{{item.montoSinIGV | number: '1.2-2'}}</td>

@@ -287,48 +287,9 @@ export class SolicitudesComponent implements OnInit {
     document.getElementById('detail' + item.idSolicitudCab).style.display = (item.cambiarIcono) ? "block" : "none";
   }
 
-  // onEliminar(cab: SolicitudCab, item: SolicitudDet): void {
-  //   Swal.fire({
-  //     title: 'Confirmación',
-  //     text: `¿Desea eliminar el registro '${item.nroDocumento}'?, esta acción no podrá revertirse`,
-  //     icon: 'warning',
-  //     showCancelButton: true,
-  //     confirmButtonText: 'Sí',
-  //     cancelButtonText: 'No',
-  //     customClass: {
-  //       confirmButton: 'btn btn-success',
-  //       cancelButton: 'btn btn-primary'
-  //     }
-  //   }).then(result => {
-  //     if (result.value) {
-  //       this.utilsService.blockUIStart('Eliminando...');
-  //       this.solicitudesService.eliminar({
-  //         idSolicitudCab: item.idSolicitudCab,
-  //         //idSolicitudDet: item.idSolicitudDet,
-  //         idUsuarioAud: 1
-  //       }).subscribe(response => {
-  //         if (response.tipo === 1) {
-  //           cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);
-  //           if (cab.solicitudDet.length === 0)
-  //             this.onListarSolicitudes();
-  //           this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
-  //           this.utilsService.blockUIStop();
-  //         } else if (response.tipo === 2) {
-  //           this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
-  //         } else {
-  //           this.utilsService.showNotification(response.mensaje, 'Error', 3);
-  //         }
-  //         this.utilsService.blockUIStop();
-  //       }, error => {
-  //         this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
-  //         this.utilsService.blockUIStop();
-  //       });
-  //     }
-  //   });
-  // }
   onEliminar(idSolicitudCab, nroSolicitud): void {
     console.log('cab', idSolicitudCab);
-    
+
     Swal.fire({
       title: 'Confirmación',
       text: `¿Desea eliminar el registro '${nroSolicitud}'?, esta acción no podrá revertirse`,
@@ -350,6 +311,46 @@ export class SolicitudesComponent implements OnInit {
         }).subscribe(response => {
           if (response.tipo === 1) {
             this.onListarSolicitudes();
+            this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
+            this.utilsService.blockUIStop();
+          } else if (response.tipo === 2) {
+            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          } else {
+            this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          }
+          this.utilsService.blockUIStop();
+        }, error => {
+          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+          this.utilsService.blockUIStop();
+        });
+      }
+    });
+  }
+
+  onEliminarDet(cab: SolicitudCab, item: SolicitudDet): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea eliminar el registro '${item.nroDocumento}'?, esta acción no podrá revertirse`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-primary'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart('Eliminando...');
+        this.solicitudesService.eliminarFactura({
+          idSolicitudCab: item.idSolicitudCab,
+          idSolicitudDet: item.idSolicitudDet,
+          idUsuarioAud: 1
+        }).subscribe(response => {
+          if (response.tipo === 1) {
+            cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);
+            if (cab.solicitudDet.length === 0)
+              this.onListarSolicitudes();
             this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
             this.utilsService.blockUIStop();
           } else if (response.tipo === 2) {
