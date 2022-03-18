@@ -18,6 +18,7 @@ import {SolicitudCabSustento} from "../../../shared/models/comercial/solicitudCa
 import Swal from "sweetalert2";
 import {ClientePagadorService} from "../clientes/cliente-pagador/cliente-pagador.service";
 import {ClientePagadorGastos} from "../../../shared/models/comercial/cliente-pagador-gastos";
+import {ClienteGastos} from "../../../shared/models/comercial/cliente-gastos";
 
 @Component({
   selector: 'app-check-list',
@@ -27,12 +28,14 @@ import {ClientePagadorGastos} from "../../../shared/models/comercial/cliente-pag
 export class CheckListComponent implements OnInit {
   public contentHeader: object;
   public solicitudes: SolicitudCab[];
-  public detalle: SolicitudDet[];
-  public sustentos: SolicitudCabSustento[];
+  public detalle: SolicitudDet[] = [];
+  public sustentos: SolicitudCabSustento[] = [];
   public sustentosOld: SolicitudCabSustento[] = [];
-  public contactos: ClienteContacto[];
-  public cuentas: ClienteCuenta[];
-  public tiposArchivos: TablaMaestra[];
+  public contactos: ClienteContacto[] = [];
+  public cuentas: ClienteCuenta[] = [];
+  public gastos: ClienteGastos[] = [];
+  public tiposArchivos: TablaMaestra[] = [];
+  public tipoCT: TablaMaestra[] = [];
   public solicitudForm: FormGroup;
   public seleccionarTodo: boolean = false;
   public cambiarIcono: boolean = false;
@@ -40,6 +43,7 @@ export class CheckListComponent implements OnInit {
   public submitted: boolean = false;
   public archivos: Archivo[] = [];
 
+  public moneda: string = '';
   public idCliente: number = 0;
   public codigo: string = '';
   public idTipoOperacion = 0;
@@ -122,12 +126,18 @@ export class CheckListComponent implements OnInit {
       // nroCuentaBancariaDestino: [''],
       // cciDestino: [''],
       tipoCuentaBancariaDestino: ['-', Validators.required],
+      idTipoCT: [{value: 0, disabled: true}],
+      montoCT: [{value: 0, disabled: true}],
+      montoSolicitudCT: [{value: 0, disabled: true}],
+      diasPrestamoCT: [{value: 0, disabled: true}],
+      fechaPagoCT: [{value: 0, disabled: true}]
     });
   }
 
   async ngOnInit(): Promise<void> {
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.tiposArchivos = await this.onListarMaestros(6, 0);
+    this.tipoCT = await this.onListarMaestros(5, 0);
     this.utilsService.blockUIStop();
 
     this.onListarSolicitudes();
@@ -197,6 +207,7 @@ export class CheckListComponent implements OnInit {
     this.solicitudForm.controls.rucPagProv.setValue(item.rucPagProv);
     this.solicitudForm.controls.razonSocialPagProv.setValue(item.razonSocialPagProv);
     this.solicitudForm.controls.moneda.setValue(item.moneda);
+    this.moneda = item.moneda;
     this.solicitudForm.controls.tipoOperacion.setValue(item.tipoOperacion);
     this.solicitudForm.controls.tasaNominalMensual.setValue(item.tasaNominalMensual);
     this.solicitudForm.controls.tasaNominalAnual.setValue(item.tasaNominalAnual);
@@ -220,6 +231,12 @@ export class CheckListComponent implements OnInit {
     this.nroCuentaBancariaDestino = item.nroCuentaBancariaDestino;
     this.cciDestino = item.cciDestino;
     this.solicitudForm.controls.tipoCuentaBancariaDestino.setValue(item.tipoCuentaBancariaDestino);
+    this.solicitudForm.controls.idTipoCT.setValue(item.idTipoCT);
+    this.solicitudForm.controls.montoCT.setValue(item.montoCT);
+    this.solicitudForm.controls.montoSolicitudCT.setValue(item.montoSolicitudCT);
+    this.solicitudForm.controls.diasPrestamoCT.setValue(item.diasPrestamoCT);
+    this.solicitudForm.controls.fechaPagoCT.setValue(item.fechaPagoCT);
+
     this.detalle = item.solicitudDet;
     this.sustentos = item.solicitudCabSustento;
 
@@ -229,6 +246,8 @@ export class CheckListComponent implements OnInit {
     }).subscribe((response: any) => {
       this.contactos = response.clienteContacto;
       this.cuentas = response.clienteCuenta;
+      this.cuentas = this.cuentas.filter(f => f.codigoMoneda === item.moneda);
+      this.gastos = response.clienteGastos;
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -272,14 +291,100 @@ export class CheckListComponent implements OnInit {
     });
   }
 
+  onAprobar(idEstado: number): void {
+    let solicitudes = this.solicitudes.filter(f => f.seleccionado);
+    if (solicitudes.length == 0) {
+      this.utilsService.showNotification("Seleccione una o varias solicitudes", "", 2);
+      return;
+    }
+
+    solicitudes.forEach(el => {
+      el.idEstado = idEstado;
+      el.idUsuarioAud = 1
+    });
+
+    this.utilsService.blockUIStart('Aprobando...');
+    this.checkListService.cambiarEstado(solicitudes).subscribe(response => {
+      if (response.tipo == 1) {
+        this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+        this.onListarSolicitudes();
+      } else if (response.tipo == 2) {
+        this.utilsService.blockUIStop();
+
+        let codigo = response.mensaje.split(',');
+        Swal.fire({
+          title: 'Adertencia',
+          html: `<p style="text-align: justify">La(s) siguiente(s) solicitude(s) contiene(n) factura(s) sin confirmación de pago:</p>
+                 <p style="text-align: justify">Codigo(s):<br>
+                    ${response.mensaje.replace(/,/g, "<br>")}</p>`,
+          icon: 'warning',
+          showCancelButton: false,
+          confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
+          customClass: {
+            confirmButton: 'btn btn-warning',
+          }
+        }).then(result => {
+          if (result.value) {
+
+          }
+        });
+      } else {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
+      }
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
+  }
+
   onActualizar(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.clientePagadorService.obtener({
       idCliente: this.idCliente,
       rucPagProv: this.solicitudForm.controls.rucPagProv.value
     }).subscribe((response: ClientePagadorGastos[]) => {
-      if (response.length > 0) {
+      let gasto = null;
+      let existeGasto = false;
 
+      if (response.length > 0) {
+        if (response.filter(f => f.moneda === this.moneda).length > 0) {
+          gasto = response.find(f => f.moneda === this.moneda);
+          existeGasto = true;
+        }
+      }
+
+      if (!existeGasto) {
+        if (this.gastos.filter(f => f.codigoMoneda === this.moneda && f.idTipoOperacion === this.idTipoOperacion).length > 0) {
+          gasto = this.gastos.find(f => f.codigoMoneda === this.moneda && f.idTipoOperacion === this.idTipoOperacion);
+          existeGasto = true;
+        }
+      }
+
+      if (gasto != null) {
+        this.solicitudForm.controls.tasaNominalMensual.setValue(gasto.tasaNominalMensual);
+        this.solicitudForm.controls.tasaNominalAnual.setValue(gasto.tasaNominalAnual);
+        this.solicitudForm.controls.tasaNominalMensualMora.setValue(gasto.tasaNominalMensualMora);
+        this.solicitudForm.controls.tasaNominalAnualMora.setValue(gasto.tasaNominalAnualMora);
+        this.solicitudForm.controls.financiamiento.setValue(gasto.financiamiento);
+        this.solicitudForm.controls.comisionEstructuracion.setValue(gasto.comisionEstructuracion);
+        this.solicitudForm.controls.gastosContrato.setValue(gasto.gastosContrato);
+        this.solicitudForm.controls.comisionCartaNotarial.setValue(gasto.comisionCartaNotarial);
+        this.solicitudForm.controls.servicioCobranza.setValue(gasto.servicioCobranza);
+        this.solicitudForm.controls.servicioCustodia.setValue(gasto.servicioCustodia);
+
+        for (let item of this.detalle) {
+          let valor = item.netoConfirmado * ((100 - gasto.financiamiento) / 100);
+          valor = Math.round((valor + Number.EPSILON) * 100) / 100;
+          if (item.fondoResguardo != valor)
+            item.editado = true;
+          item.fondoResguardo = valor;
+        }
+
+        this.utilsService.showNotification('Información de Gastos actualizado', '', 1);
+      } else {
+        this.utilsService.showNotification('No se encontró configuración de Gastos', '', 2);
       }
       this.utilsService.blockUIStop();
     }, error => {
@@ -408,7 +513,7 @@ export class CheckListComponent implements OnInit {
       cancelButtonText: 'No',
       customClass: {
         confirmButton: 'btn btn-danger',
-        cancelButton: 'btn btn-primary'
+        cancelButton: 'btn btn-success'
       }
     }).then(result => {
       if (result.value) {

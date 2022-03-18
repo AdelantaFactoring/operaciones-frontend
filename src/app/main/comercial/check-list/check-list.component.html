@@ -4,6 +4,16 @@
     <div class="card">
       <div class="card-body">
         <div class="row">
+          <div class="d-flex flex-wrap mb-0">
+            <div class="p-1">
+              <button type="submit" rippleEffect class="btn btn-success" (click)="onAprobar(5)">
+                <i class="mr-0 mr-sm-1" data-feather="check"></i>
+                <span class="d-none d-sm-inline-block">Aprobar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
           <div class="col-md-6 col-12">
             <div class="d-flex justify-content-between align-items-center m-1">
               <label class="d-flex align-items-center"
@@ -213,6 +223,41 @@
                 <input class="form-control" formControlName="tipoOperacion" type="text"/>
               </div>
             </div>
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Tipo</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="tipoCT"
+                           bindLabel="descripcion" bindValue="idColumna" formControlName="idTipoCT">
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Monto</label>
+                <input class="form-control" formControlName="montoCT" type="text"
+                       mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Monto Solicitud</label>
+                <input class="form-control" formControlName="montoSolicitudCT" type="text"
+                       mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Día(s) Préstamo</label>
+                <input class="form-control" formControlName="diasPrestamoCT" type="text"
+                       mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Fecha Pago</label>
+                <input class="form-control" formControlName="fechaPagoCT" type="text"/>
+              </div>
+            </div>
             <div class="col-12">
               <div class="divider divider-success">
                 <div class="divider-text">Información de Gastos</div>
@@ -235,7 +280,7 @@
                        mask="separator" thousandSeparator="," formControlName="comisionEstructuracion"/>
               </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
               <div class="form-group">
                 <div class="custom-control custom-switch custom-control-inline">
                   <input type="checkbox" class="custom-control-input"
@@ -247,7 +292,7 @@
                 <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
               </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
               <div class="form-group">
                 <div class="custom-control custom-switch custom-control-inline">
                   <input type="checkbox" class="custom-control-input"
@@ -258,16 +303,16 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
             </div>
-            <div class="col-md-4 col-12">
+            <div class="col-md-4 col-12" [hidden]="idTipoOperacion === 2">
               <div class="form-group">
                 <label>Gastos de Contrato</label>
                 <input class="form-control" type="text" placeholder="0.00"
                        mask="separator" thousandSeparator="," formControlName="gastosContrato"/>
               </div>
             </div>
-            <div class="col-md-4 col-12">
+            <div class="col-md-4 col-12" [hidden]="idTipoOperacion === 2">
               <div class="form-group">
                 <label>Gasto Vigencia de Poder</label>
                 <input class="form-control" type="text" placeholder="0.00"
@@ -295,7 +340,7 @@
                        mask="separator" thousandSeparator="," formControlName="servicioCustodia"/>
               </div>
             </div>
-            <div class="col-12">
+            <div class="col-12" [hidden]="idTipoOperacion === 2">
               <div class="table-responsive">
                 <table class="table table-hover">
                   <thead>
@@ -304,9 +349,9 @@
                     <th class="detail-th-color">Forma Pago</th>
                     <th class="detail-th-color">Monto sin IGV</th>
                     <th class="detail-th-color">Monto con IGV</th>
-                    <th class="detail-th-color">Fondo Resguardo</th>
                     <th class="detail-th-color">Fecha Pago</th>
                     <th class="detail-th-color">Monto Pago Confirmado</th>
+                    <th class="detail-th-color">Fondo Resguardo</th>
                     <th class="detail-th-color">Estado</th>
                   </tr>
                   </thead>
@@ -316,9 +361,9 @@
                     <td>{{item.formaPago}}</td>
                     <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
                     <td>{{item.montoConIGV | number: '1.2-2'}}</td>
-                    <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                     <td>{{item.fechaConfirmadoFormat}}</td>
                     <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                    <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                     <td>{{item.estado}}</td>
                   </tr>
                   </tbody>
