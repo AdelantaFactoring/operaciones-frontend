@@ -74,13 +74,13 @@ export class SolicitudesService {
     );
   }
 
-  // subirSustento(payload): Observable<any> {
-  //   return this.requestMethod.post(
-  //     `${environment.apiUrl}${SOLICITUD.subirSustento}`,
-  //     payload,
-  //     {
-  //       'Content-Type': CONTENT_TYPE.json
-  //     }
-  //   );
-  // }
+  eliminarFactura(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${SOLICITUD.eliminarFactura}`,
+      `?idSolicitudCab=${payload.idSolicitudCab}&idSolicitudDet=${payload.idSolicitudDet}&idUsuarioAud=${payload.idUsuarioAud}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }
