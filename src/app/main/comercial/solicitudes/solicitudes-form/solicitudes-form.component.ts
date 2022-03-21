@@ -215,6 +215,15 @@ export class SolicitudesFormComponent implements OnInit {
     if (this.solicitudForm.invalid) {
       return;
     }
+    for (const row of this.dataXml) {
+      if (row.nombreContacto == null || row.telefonoContacto || row.correoContacto || row.titularCuentaBancariaDestino 
+        || row.monedaCuentaBancariaDestino || row.bancoDestino || row.nroCuentaBancariaDestino || row.cCIDestino || row.tipoCuentaBancariaDestino) {
+        this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
+        console.log('cuenta');
+        
+        return;
+      }
+    }
 
     this.params = [];
     for (const item of this.dataXml) {
@@ -567,6 +576,8 @@ export class SolicitudesFormComponent implements OnInit {
     this.uploaderXlsx.response.subscribe( res => {
 
       let rs = JSON.parse(res);
+      console.log('res', rs);
+      
       if (rs.tipo != 1) {
         this.dataXlsx = rs;
 

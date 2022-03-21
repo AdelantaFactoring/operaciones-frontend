@@ -164,6 +164,105 @@
         </div>
       </div>
     </div>
+    <ng-template #modalDetalle let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel1">Detalle de Solicitud</h4>
+        <button aria-label="Close" class="close" type="button" (click)="onCancelar()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ngbAutofocus tabindex="0">
+        <form [formGroup]="solicitudDetForm">
+          <div class="row spaced">
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>N° Solicitud</label>
+                <input class="form-control" formControlName="nroSolicitud" type="text" disabled/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Cedente</label>
+                <input class="form-control" formControlName="cedente" type="text" disabled/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>RUC Cedente</label>
+                <input class="form-control" formControlName="rucCedente" type="text" disabled/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Aceptante</label>
+                <input class="form-control" formControlName="aceptante" type="text" disabled/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>RUC Aceptante</label>
+                <input class="form-control" formControlName="rucAceptante" type="text" disabled/>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row spaced">
+          <div class="col-md-12 col-12">
+            <div class="form-group">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                  <tr>
+                    <th>Acción</th>
+                    <th>N° Documento</th>
+                    <th>% TNM</th>
+                    <th>% TNA</th>
+                    <th>Monto Sin IGV</th>
+                    <th>Monto Con IGV</th>
+                    <th>Financiamiento</th>
+                    <th>Fondo Resguardo</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of solicitudDet">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Eliminar">
+                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>{{item.nroDocumento}}</td>
+                    <td>{{item.tasaNominalMensual}}</td>
+                    <td>{{item.tasaNominalAnual}}</td>
+                    <td>{{item.montoSinIGV}}</td>
+                    <td>{{item.montoConIGV}}</td>
+                    <td>{{item.financiamiento}}</td>
+                    <td>{{item.fondoResguardo}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+           </div>
+        </div>
+      <div class="modal-footer" style="display: block !important;">
+        <div class="row">
+          <div class="col-md-12 col-12">
+            <div style="float: right">
+              <!-- <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()">
+                <span [data-feather]="'save'"></span> Guardar
+              </button>
+              &nbsp; -->
+              <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()">
+                <span [data-feather]="'x-circle'"></span> Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
     <block-ui></block-ui>
   </div>
 </div>

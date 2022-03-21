@@ -33,7 +33,7 @@ export class RespuestaPagadorService {
   }
 
   cambiarEstado(payload): Observable<any> {
-    return this.requestMethod.put(
+    return this.requestMethod.post(
       `${environment.apiUrl}${SOLICITUD.cambiarEstado}`,
       payload,
       {

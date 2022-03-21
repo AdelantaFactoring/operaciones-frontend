@@ -542,15 +542,15 @@
                               <td>{{item.nombrePDF}}</td>
                               <td>{{item.formaPago}}</td>
 
-                              <td>{{item.nombreContacto}}</td>
-                              <td>{{item.telefonoContacto}}</td>
-                              <td>{{item.correoContacto}}</td>
-                              <td>{{item.titularCuentaBancariaDestino}}</td>
-                              <td>{{item.monedaCuentaBancariaDestino}}</td>
-                              <td>{{item.bancoDestino}}</td>
-                              <td>{{item.nroCuentaBancariaDestino}}</td>
-                              <td>{{item.cCIDestino}}</td>
-                              <td>{{item.tipoCuentaBancariaDestino}}</td>
+                              <td [ngClass]="{validacionRow: item.nombreContacto == null}">{{item.nombreContacto}}</td>
+                              <td [ngClass]="{validacionRow: item.telefonoContacto == null}" >{{item.telefonoContacto}}</td>
+                              <td [ngClass]="{validacionRow: item.correoContacto == null}">{{item.correoContacto}}</td>
+                              <td [ngClass]="{validacionRow: item.titularCuentaBancariaDestino == null}">{{item.titularCuentaBancariaDestino}}</td>
+                              <td [ngClass]="{validacionRow: item.monedaCuentaBancariaDestino == null}">{{item.monedaCuentaBancariaDestino}}</td>
+                              <td [ngClass]="{validacionRow: item.bancoDestino == null}">{{item.bancoDestino}}</td>
+                              <td [ngClass]="{validacionRow: item.nroCuentaBancariaDestino == null}">{{item.nroCuentaBancariaDestino}}</td>
+                              <td [ngClass]="{validacionRow: item.cCIDestino == null}">{{item.cCIDestino}}</td>
+                              <td [ngClass]="{validacionRow: item.tipoCuentaBancariaDestino == null}">{{item.tipoCuentaBancariaDestino}}</td>
                             </tr>
                           </tbody>
                         </table>
