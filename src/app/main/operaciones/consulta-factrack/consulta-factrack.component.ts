@@ -142,6 +142,7 @@ export class ConsultaFactrackComponent implements OnInit {
     }
 
     solicitudes.forEach(el => {
+      el.idTipoCavali = 2;
       el.idEstado = idEstado;
       el.idUsuarioAud = 1
     });

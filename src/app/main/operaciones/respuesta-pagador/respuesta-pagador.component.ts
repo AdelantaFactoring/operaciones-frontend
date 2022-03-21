@@ -89,6 +89,7 @@ export class RespuestaPagadorComponent implements OnInit {
     }
 
     solicitudes.forEach(el => {
+      el.idTipoCavali = 1;
       el.idEstado = idEstado;
       el.idUsuarioAud = 1;
     });

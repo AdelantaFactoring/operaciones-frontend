@@ -40,6 +40,7 @@ export class SolicitudCab {
   montoSolicitudCT: number;
   diasPrestamoCT: number;
   fechaPagoCT: string;
+  idTipoCavali: number;
   idEstado: number;
   estado: string;
   idTipoOperacion: number;
