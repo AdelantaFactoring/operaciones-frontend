@@ -11,6 +11,7 @@ import {SOLICITUD} from "../../../../shared/helpers/url/comercial";
 import { SolicitudArchivos, SolicitudArchivosXlsx } from 'app/shared/models/comercial/SolicitudArchivos';
 import Swal from 'sweetalert2';
 import { SolicitudDetRespuesta } from 'app/shared/models/comercial/SolicitudDet-Respuesta';
+import { ItemsList } from '@ng-select/ng-select/lib/items-list';
 
 @Component({
   selector: 'app-solicitudes-form',
@@ -574,10 +575,12 @@ export class SolicitudesFormComponent implements OnInit {
           this.procesarXlsx = true;
         }
         else
-        {
+        { 
           for (const row of this.dataXlsx) {
             for (const item of this.dataXml) {
-              if (item.rucCab == row.ruc && item.tipoMoneda == row.moneda) {
+              if (item.rucCab == row.ruc && item.tipoMoneda == row.moneda && item.codFactura == row.documento) {
+                item.netoPendiente = row.pagar;
+                item.fechaVencimiento = row.fechaVencimiento.substring(0,10);
                 item.nombreContacto = row.nombreContacto;
                 item.telefonoContacto = row.telefono;
                 item.correoContacto = row.correo;
