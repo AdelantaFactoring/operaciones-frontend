@@ -13,6 +13,10 @@ export class SolicitudDet {
   formaPago: string;
   archivoXML: string;
   archivoPDF: string;
+  idProcesoRespuestaCavali: number;
+  codigoRespuestaCavali: string;
+  idProcesoRespuestaAnotacion: number;
+  codigoRespuestaAnotacion: string;
 
   editado: boolean = true;
 }

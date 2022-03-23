@@ -49,6 +49,9 @@ export class CheckListComponent implements OnInit {
   public idTipoOperacion = 0;
   public nroCuentaBancariaDestino: string = '';
   public cciDestino: string = '';
+  public nombreContacto: string = '';
+  public telefonoContacto: string = '';
+  public correoContacto: string = '';
 
   public collectionSize: number = 0;
   public pageSize: number = 10;
@@ -116,9 +119,9 @@ export class CheckListComponent implements OnInit {
       servicioCustodia: [{value: 0, disabled: true}],
       usarGastoVigenciaPoder: [false],
       gastoVigenciaPoder: [0],
-      nombreContacto: ['', Validators.required],
-      telefonoContacto: ['', Validators.required],
-      correoContacto: ['', Validators.required],
+      // nombreContacto: [''],
+      // telefonoContacto: [''],
+      // correoContacto: [''],
       conCopiaContacto: [''],
       titularCuentaBancariaDestino: ['', Validators.required],
       monedaCuentaBancariaDestino: ['', Validators.required],
@@ -222,9 +225,9 @@ export class CheckListComponent implements OnInit {
     this.solicitudForm.controls.comisionCartaNotarial.setValue(item.comisionCartaNotarial);
     this.solicitudForm.controls.servicioCobranza.setValue(item.servicioCobranza);
     this.solicitudForm.controls.servicioCustodia.setValue(item.servicioCustodia);
-    this.solicitudForm.controls.nombreContacto.setValue(item.nombreContacto);
-    this.solicitudForm.controls.telefonoContacto.setValue(item.telefonoContacto);
-    this.solicitudForm.controls.correoContacto.setValue(item.correoContacto);
+    this.nombreContacto = item.nombreContacto;
+    this.telefonoContacto = item.telefonoContacto;
+    this.correoContacto = item.correoContacto;
     this.solicitudForm.controls.titularCuentaBancariaDestino.setValue(item.titularCuentaBancariaDestino);
     this.solicitudForm.controls.monedaCuentaBancariaDestino.setValue(item.monedaCuentaBancariaDestino);
     this.solicitudForm.controls.bancoDestino.setValue(item.bancoDestino);
@@ -381,6 +384,9 @@ export class CheckListComponent implements OnInit {
       return;
     if (this.nroCuentaBancariaDestino === "" && this.cciDestino === "")
       return;
+    if ((this.nombreContacto === "" || this.telefonoContacto === "" || this.correoContacto === "") && this.idTipoOperacion === 1)
+      return;
+    return;
     this.utilsService.blockUIStart("Guardando...");
     if (this.sustentosOld.length === 0)
       for (let item of this.sustentos) {
@@ -444,9 +450,9 @@ export class CheckListComponent implements OnInit {
       servicioCustodia: this.solicitudForm.controls.servicioCustodia.value,
       usarGastoVigenciaPoder: this.solicitudForm.controls.usarGastoVigenciaPoder.value,
       gastoVigenciaPoder: this.solicitudForm.controls.gastoVigenciaPoder.value,
-      nombreContacto: this.solicitudForm.controls.nombreContacto.value,
-      telefonoContacto: this.solicitudForm.controls.telefonoContacto.value,
-      correoContacto: this.solicitudForm.controls.correoContacto.value,
+      nombreContacto: this.nombreContacto,
+      telefonoContacto: this.telefonoContacto,
+      correoContacto: this.correoContacto,
       conCopiaContacto: this.solicitudForm.controls.conCopiaContacto.value,
       titularCuentaBancariaDestino: this.solicitudForm.controls.titularCuentaBancariaDestino.value,
       monedaCuentaBancariaDestino: this.solicitudForm.controls.monedaCuentaBancariaDestino.value,
@@ -556,9 +562,9 @@ export class CheckListComponent implements OnInit {
   }
 
   onSeleccionarContacto(item: ClienteContacto, modal): void {
-    this.solicitudForm.controls.nombreContacto.setValue(`${item.apellidoPaterno} ${item.apellidoMaterno}, ${item.nombre}`);
-    this.solicitudForm.controls.telefonoContacto.setValue(item.telefono);
-    this.solicitudForm.controls.correoContacto.setValue(item.correo);
+    this.nombreContacto = `${item.apellidoPaterno} ${item.apellidoMaterno}, ${item.nombre}`;
+    this.telefonoContacto = item.telefono;
+    this.correoContacto = item.correo;
     modal.dismiss("Cross Click");
   }
 

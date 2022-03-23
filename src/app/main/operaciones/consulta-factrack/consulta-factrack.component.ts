@@ -142,7 +142,6 @@ export class ConsultaFactrackComponent implements OnInit {
     }
 
     solicitudes.forEach(el => {
-      el.idTipoCavali = 2;
       el.idEstado = idEstado;
       el.idUsuarioAud = 1
     });
@@ -155,9 +154,9 @@ export class ConsultaFactrackComponent implements OnInit {
         this.onListarSolicitudes();
       } else if (response.tipo == 2) {
         this.utilsService.blockUIStop();
-        let codigo = response.mensaje.split(',');
+
         Swal.fire({
-          title: 'Adertencia',
+          title: 'Advertencia',
           html: `<p style="text-align: justify">La(s) siguiente(s) solicitude(s) contiene(n) factura(s) en estado de disconformidad:</p>
                  <p style="text-align: justify">Codigo(s):<br>
                     ${response.mensaje.replace(/,/g, "<br>")}</p>`,
