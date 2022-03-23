@@ -97,7 +97,7 @@ export class SolicitudesFormComponent implements OnInit {
   public selectMulti = [{ name: 'English' }, { name: 'French' }, { name: 'Spanish' }];
   public selectMultiSelected;
   public zeroPad = (num, places) => String(num).padStart(places, '0');
-  public fechaPagoActual = this.calendar.getToday();
+  // public fechaPagoActual = this.calendar.getToday();
   public fechaPagoCT = this.calendar.getToday();
 
   horizontalWizardStepperNext(data, form, id) {
@@ -180,6 +180,7 @@ export class SolicitudesFormComponent implements OnInit {
       razonSocial: ['', Validators.required],
       tasaAnual: ['', Validators.required],
       tasaMensual: ['', Validators.required],
+      contrato: [0, Validators.required],
       cartaNotarial: ['', Validators.required],
       servicioCobranza: ['', Validators.required],
       servicioCustodia: ['', Validators.required],
@@ -216,10 +217,20 @@ export class SolicitudesFormComponent implements OnInit {
       return;
     }
     for (const row of this.dataXml) {
-      if (row.nombreContacto == null || row.telefonoContacto || row.correoContacto || row.titularCuentaBancariaDestino 
-        || row.monedaCuentaBancariaDestino || row.bancoDestino || row.nroCuentaBancariaDestino || row.cCIDestino || row.tipoCuentaBancariaDestino) {
+      if (row.titularCuentaBancariaDestino == null || row.monedaCuentaBancariaDestino == null || row.bancoDestino == null || row.tipoCuentaBancariaDestino == null) {
         this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
-        console.log('cuenta');
+        console.log('cuenta1');
+        
+      }
+      else if(row.nroCuentaBancariaDestino == null && row.cCIDestino == null || row.nroCuentaBancariaDestino == '' && row.cCIDestino == '')
+      {
+        this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
+        console.log('cuenta2');
+        return;
+      }
+      else if (row.titularCuentaBancariaDestino == '' || row.monedaCuentaBancariaDestino == '' || row.bancoDestino == '' || row.tipoCuentaBancariaDestino == '') {
+        this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
+        console.log('cuenta3');
         
         return;
       }
@@ -576,6 +587,7 @@ export class SolicitudesFormComponent implements OnInit {
     this.uploaderXlsx.response.subscribe( res => {
 
       let rs = JSON.parse(res);
+      this.dataXlsx  = [];
       console.log('res', rs);
       
       if (rs.tipo != 1) {
@@ -590,11 +602,11 @@ export class SolicitudesFormComponent implements OnInit {
           for (const row of this.dataXlsx) {
             for (const item of this.dataXml) {
               if (item.rucCab == row.ruc && item.tipoMoneda == row.moneda && item.codFactura == row.documento) {
-                item.netoPendiente = row.pagar;
+                item.netoPendiente = row.netoPagar;
                 item.fechaVencimiento = row.fechaVencimiento.substring(0,10);
-                item.nombreContacto = row.nombreContacto;
-                item.telefonoContacto = row.telefono;
-                item.correoContacto = row.correo;
+                item.nombreContacto = '';
+                item.telefonoContacto = '';
+                item.correoContacto = '';
                 item.titularCuentaBancariaDestino = row.razonSocialProv;
                 item.monedaCuentaBancariaDestino = row.moneda;
                 item.bancoDestino = row.banco;
@@ -670,6 +682,8 @@ export class SolicitudesFormComponent implements OnInit {
     this.solicitudesFormService.clienteObtener({
       idCliente: id
     }).subscribe(response => {
+      console.log('res', response);
+      
       if (response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda).length > 0) {
         this.clienteGastos = response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda);
         for (const item of this.clienteGastos) {
@@ -684,6 +698,7 @@ export class SolicitudesFormComponent implements OnInit {
           this.capitalTrabajoForm.controls.razonSocial.setValue(razon);
           this.capitalTrabajoForm.controls.tasaAnual.setValue(item.tasaNominalAnual);
           this.capitalTrabajoForm.controls.tasaMensual.setValue(item.tasaNominalMensual);
+          this.capitalTrabajoForm.controls.contrato.setValue(item.gastosContrato);
           this.capitalTrabajoForm.controls.cartaNotarial.setValue(item.comisionCartaNotarial);
           this.capitalTrabajoForm.controls.servicioCobranza.setValue(item.servicioCobranza);
           this.capitalTrabajoForm.controls.servicioCustodia.setValue(item.servicioCustodia);
@@ -733,10 +748,16 @@ export class SolicitudesFormComponent implements OnInit {
     });
   }
   calcularFP(): void{
+    let fecha = new Date();
+    fecha.setDate(fecha.getDate() +  Number(this.capitalTrabajoForm.controls.diasPrestamo.value));
+
     let date = {
-      year: this.calendar.getToday().year,
-      month:this.calendar.getToday().month,
-      day:this.calendar.getToday().day + Number(this.capitalTrabajoForm.controls.diasPrestamo.value)}
+      year: fecha.getFullYear(),
+      month: fecha.getMonth() + 1,
+      day: fecha.getDate()
+    }
+    
+    //this.fechaPagoCT = date;
     this.capitalTrabajoForm.controls.fechaPago.setValue(date);
     this.onCalcularCT();
   }
@@ -765,18 +786,42 @@ export class SolicitudesFormComponent implements OnInit {
     this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue('');
   }
   onCalcularCT(): void{
-    let capitalTrabajo, TNA, nroDias, intereses, gastosCt, montoSolicitado, totolFacturado;
+    let capitalTrabajo, TNA, nroDias, mDescontar, intereses, montoSolicitado, totFacturar;
+    let contrato, servicioCustodia, servicioCobranza, cartaNotarial;
+    contrato = this.capitalTrabajoForm.controls.contrato.value;
+    servicioCustodia = this.capitalTrabajoForm.controls.servicioCustodia.value;
+    servicioCobranza = this.capitalTrabajoForm.controls.servicioCobranza.value;
+    cartaNotarial = this.capitalTrabajoForm.controls.cartaNotarial.value;
     capitalTrabajo = this.capitalTrabajoForm.controls.mcTrabajo.value;
     TNA = this.capitalTrabajoForm.controls.tasaAnual.value;
     nroDias = this.capitalTrabajoForm.controls.diasPrestamo.value;
-    intereses = capitalTrabajo * (TNA / 360) * nroDias * 1.18;
-    gastosCt = this.capitalTrabajoForm.controls.gIncluidoIGV.value;
     montoSolicitado = this.capitalTrabajoForm.controls.ctSolicitado.value;
-    this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100);
-    this.capitalTrabajoForm.controls.tFacturarIGV.setValue(Math.round((intereses + Number.EPSILON) + gastosCt));
-    totolFacturado = Math.round((intereses + Number.EPSILON)+ gastosCt);
-    this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(Math.round((montoSolicitado + Number.EPSILON) - totolFacturado));
 
+    if (this.idTipo == 1) {
+      //mDescontar = ( (360 * capitalTrabajo) + (360 * suma de gastos) )
+      
+      intereses = capitalTrabajo * (TNA / 360) * nroDias * 1.18;
+      //gastosCt = this.capitalTrabajoForm.controls.gIncluidoIGV.value;
+      this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100);
+      // this.capitalTrabajoForm.controls.tFacturarIGV.setValue(Math.round((intereses + Number.EPSILON) + gastosCt));
+      // totolFacturado = Math.round((intereses + Number.EPSILON)+ gastosCt);
+      // this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(Math.round((montoSolicitado + Number.EPSILON) - totFacturar));
+    }
+    else
+    {
+      let gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
+      gDiversonsSIgv = contrato + servicioCustodia + servicioCobranza + cartaNotarial;
+      gDiversonsCIgv = gDiversonsSIgv * 0.18;
+      intereses = capitalTrabajo * (TNA / 360) * nroDias * 1.18;
+      gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
+      totFacturar = intereses + gastoIncluidoIGV;
+
+      this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
+      this.capitalTrabajoForm.controls.gIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
+      this.capitalTrabajoForm.controls.tFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
+      this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(Math.round(((montoSolicitado + Number.EPSILON) - totFacturar) * 100) / 100);
+    }
+    
   }
   validacionCT(): void{
     let montoCT, ctSolicitado;
@@ -801,5 +846,18 @@ export class SolicitudesFormComponent implements OnInit {
       this.utilsService.blockUIStop();
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
+  }
+  onGenerarPlantilla(): void{
+    // this.solicitudesFormService.plantilla().subscribe(response => {
+    //   //console.log('res', response);
+    //   this.utilsService.showNotification('Plantilla generada correctamente', 'Confirmación', 1);
+    //   this.utilsService.blockUIStop();
+    // }, error => {
+    //   this.utilsService.blockUIStop();
+    //   this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    // });
+    let reportURL = environment.apiUrl + SOLICITUD.plantilla;
+    
+    window.location.href =  reportURL;
   }
 }

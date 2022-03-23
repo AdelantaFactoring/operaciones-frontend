@@ -31,5 +31,13 @@ export class PagadorService {
       }
     );
   }
-
+  eliminar(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${PAGADOR.eliminar}`,
+      `?idPagador=${payload.idPagador}&idUsuarioAud=${payload.idUsuarioAud}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }

@@ -4,6 +4,7 @@ import {PagadorService} from "./pagador.service";
 import {Pagador} from "../../../shared/models/comercial/pagador";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-pagador',
@@ -59,7 +60,8 @@ export class PagadorComponent implements OnInit {
         contacto: [''],
         telefono: [''],
         correo: [''],
-        sector: ['']
+        sector: [''],
+        limiteGastoNegociacion: [0, Validators.required]
       });
      }
 
@@ -94,9 +96,10 @@ export class PagadorComponent implements OnInit {
       sector: this.pagadorForm.controls.sector.value,
       grupoEconomico: this.pagadorForm.controls.grupoEconomico.value,
       contacto: this.pagadorForm.controls.contacto.value,
+      limiteGastoNegociacion: this.pagadorForm.controls.limiteGastoNegociacion.value,
       telefono: this.pagadorForm.controls.telefono.value,
       correo: this.pagadorForm.controls.correo.value,
-      usuarioAud: 'superadmin',
+      idUsuarioAud: 1,
     }).subscribe(response => {
       
       if (response.tipo == 1) {
@@ -132,42 +135,42 @@ export class PagadorComponent implements OnInit {
       });
     }, 0);
   }
-  onEliminar(): void {
-    // Swal.fire({
-    //   title: 'Confirmación',
-    //   text: `¿Desea eliminar el registro "${item.razonSocial}"?, esta acción no podrá revertirse`,
-    //   icon: 'warning',
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Sí',
-    //   cancelButtonText: 'No',
-    //   customClass: {
-    //     confirmButton: 'btn btn-danger',
-    //     cancelButton: 'btn btn-primary'
-    //   }
-    // }).then(result => {
-    //   if (result.value) {
-    //     this.utilsService.blockUIStart('Eliminando...');
-    //     this.clientePagadorService.eliminar({
-    //       idClientePagador: item.idClientePagador,
-    //       usuarioAud: 'superadmin'
-    //     }).subscribe(response => {
-    //       if (response.tipo === 1) {
-    //         this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
-    //         this.utilsService.blockUIStop();
-    //         this.onListarClientes();
-    //       } else if (response.tipo === 2) {
-    //         this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
-    //       } else {
-    //         this.utilsService.showNotification(response.mensaje, 'Error', 3);
-    //       }
+  onEliminar(item): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea eliminar el registro "${item.razonSocial}"?, esta acción no podrá revertirse`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-danger',
+        cancelButton: 'btn btn-primary'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart('Eliminando...');
+        this.pagadorService.eliminar({
+          idPagador: item.idPagador,
+          idUsuarioAud: 1
+        }).subscribe(response => {
+          if (response.tipo === 1) {
+            this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
+            this.utilsService.blockUIStop();
+            this.onListarPagador();
+          } else if (response.tipo === 2) {
+            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          } else {
+            this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          }
 
-    //       this.utilsService.blockUIStop();
-    //     }, error => {
-    //       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
-    //       this.utilsService.blockUIStop();
-    //     });
-    //   }
-    // });
+          this.utilsService.blockUIStop();
+        }, error => {
+          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+          this.utilsService.blockUIStop();
+        });
+      }
+    });
   }
   onRefrescar(): void {
     this.onListarPagador();
@@ -183,6 +186,7 @@ export class PagadorComponent implements OnInit {
     this.pagadorForm.controls.contacto.setValue(item.contacto);
     this.pagadorForm.controls.telefono.setValue(item.telefono);
     this.pagadorForm.controls.correo.setValue(item.correo);
+    this.pagadorForm.controls.limiteGastoNegociacion.setValue(item.limiteGastoNegociacion);
 
     setTimeout(() => {
       this.modalService.open(modal, {

@@ -5,6 +5,16 @@
       <div class="card-body">
         <div class="row">
           <div class="col-12">
+            <button [routerLink]="['/comercial/solicitudes']" skipLocationChange
+            [queryParams]=""
+            queryParamsHandling="merge"
+            class="btn btn-secondary pb-1" rippleEffect>
+            <span [data-feather]="'arrow-left'"></span> Regresar
+          </button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
             <div class="form-group">
               <label>Tipo de Operación</label>
             </div>
@@ -391,8 +401,18 @@
               <div id="list-combinado" class="content">
                 <form #addressForm="ngForm">
                   <div class="content-header">
-                    <h5 class="mb-0">Proveedores</h5>
-                    <small>Subir archivo</small>
+                    <div class="row">
+                      <div class="col-8">
+                        <h5 class="mb-0">Proveedores</h5>
+                        <small>Subir archivo</small>
+                      </div>
+                      <div class="col-4">
+                        <button class="btn btn-primary ml-1" rippleEffect (click)="onGenerarPlantilla()" style="float: right;">
+                          <i data-feather="download" class="mr-0 mr-sm-1"></i
+                          ><span class="d-none d-sm-inline-block">Descargar Plantilla</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="row">
@@ -403,12 +423,12 @@
                         Arrastre aqui el archivo XLSX
                       </div>
                     </div>
-                    <div class="col-12">
+                    <!-- <div class="col-12">
                       <div class="form-group">
                         <label>Selección de archivo(s) </label>
                       </div>
                     </div>
-                    <div class="col-12">
+                     <div class="col-12">
                       <fieldset class="form-group">
                         <div class="custom-file">
                           <input type="file" class="custom-file-input" ng2FileSelect accept=".xlsx"
@@ -416,7 +436,7 @@
                           <label class="custom-file-label">Elija el archivo</label>
                         </div>
                       </fieldset>
-                    </div>
+                    </div> -->
                   </div>
                   <div class="row">
                     <div class="col-lg-12 overflow-auto">
@@ -512,15 +532,15 @@
                               <th>Nombre PDF</th>
                               <th>Forma Pago</th>
 
-                              <th>Contacto</th>
+                              <!-- <th>Contacto</th>
                               <th>Telefono</th>
-                              <th>Correo</th>
+                              <th>Correo</th> -->
                               <th>Titular Cta Bancaria</th>
-                              <th>Moneda Cta Bancaria</th>
-                              <th>Banco Destino</th>
-                              <th>N° Cta Bancaria Destino</th>
-                              <th>CCI Destino</th>
-                              <th>Tipo Cta Bancaria Destino</th>
+                              <th>Moneda</th>
+                              <th>Banco</th>
+                              <th>Cta Bancaria</th>
+                              <th>CCI</th>
+                              <th>Tipo Cta Bancaria</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -542,15 +562,15 @@
                               <td>{{item.nombrePDF}}</td>
                               <td>{{item.formaPago}}</td>
 
-                              <td [ngClass]="{validacionRow: item.nombreContacto == null}">{{item.nombreContacto}}</td>
+                              <!-- <td [ngClass]="{validacionRow: item.nombreContacto == null}">{{item.nombreContacto}}</td>
                               <td [ngClass]="{validacionRow: item.telefonoContacto == null}" >{{item.telefonoContacto}}</td>
-                              <td [ngClass]="{validacionRow: item.correoContacto == null}">{{item.correoContacto}}</td>
-                              <td [ngClass]="{validacionRow: item.titularCuentaBancariaDestino == null}">{{item.titularCuentaBancariaDestino}}</td>
-                              <td [ngClass]="{validacionRow: item.monedaCuentaBancariaDestino == null}">{{item.monedaCuentaBancariaDestino}}</td>
-                              <td [ngClass]="{validacionRow: item.bancoDestino == null}">{{item.bancoDestino}}</td>
-                              <td [ngClass]="{validacionRow: item.nroCuentaBancariaDestino == null}">{{item.nroCuentaBancariaDestino}}</td>
-                              <td [ngClass]="{validacionRow: item.cCIDestino == null}">{{item.cCIDestino}}</td>
-                              <td [ngClass]="{validacionRow: item.tipoCuentaBancariaDestino == null}">{{item.tipoCuentaBancariaDestino}}</td>
+                              <td [ngClass]="{validacionRow: item.correoContacto == null}">{{item.correoContacto}}</td> -->
+                              <td [ngClass]="{validacionRow: item.titularCuentaBancariaDestino == null || item.titularCuentaBancariaDestino == ''}">{{item.titularCuentaBancariaDestino}}</td>
+                              <td [ngClass]="{validacionRow: item.monedaCuentaBancariaDestino == null} || item.monedaCuentaBancariaDestino == ''">{{item.monedaCuentaBancariaDestino}}</td>
+                              <td [ngClass]="{validacionRow: item.bancoDestino == null || item.bancoDestino == null}">{{item.bancoDestino}}</td>
+                              <td [ngClass]="{validacionRow: item.nroCuentaBancariaDestino == null && item.cCIDestino == null || item.nroCuentaBancariaDestino == '' && item.cCIDestino == ''}">{{item.nroCuentaBancariaDestino}}</td>
+                              <td [ngClass]="{validacionRow: item.cCIDestino == null && item.nroCuentaBancariaDestino == null || item.cCIDestino == '' && item.nroCuentaBancariaDestino == ''}">{{item.cCIDestino}}</td>
+                              <td [ngClass]="{validacionRow: item.tipoCuentaBancariaDestino == null || item.tipoCuentaBancariaDestino == ''}">{{item.tipoCuentaBancariaDestino}}</td>
                             </tr>
                           </tbody>
                         </table>
@@ -768,6 +788,16 @@
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
+                <label>Contrato</label>
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.contrato.errors }"
+                  class="form-control" formControlName="contrato" type="text" disabled />
+                <div *ngIf="CapitalIUForm.contrato.errors" class="invalid-feedback">
+                  <div *ngIf="CapitalIUForm.contrato.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
                 <label>Comisión Carta Notarial</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.cartaNotarial.errors }"
                   class="form-control" formControlName="cartaNotarial" type="text" disabled />
@@ -864,7 +894,7 @@
               <div class="form-group">
                 <label>Gastos incluido IGV</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.gIncluidoIGV.errors }" class="form-control"
-                  formControlName="gIncluidoIGV" type="number:'.0-2'" (change)="onCalcularCT()"/>
+                  formControlName="gIncluidoIGV" type="number:'.0-2'" disabled/>
                 <div *ngIf="CapitalIUForm.gIncluidoIGV.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.gIncluidoIGV.errors.required">* Campo obligatorio</div>
                 </div>
