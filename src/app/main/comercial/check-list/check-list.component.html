@@ -391,30 +391,30 @@
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Nombre(s) y Apellidos</label>
-                <input class="form-control" formControlName="nombreContacto" type="text" readonly
-                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.nombreContacto.errors }"/>
-                <div *ngIf="ReactiveIUForm.nombreContacto.errors" class="invalid-feedback">
-                  <div *ngIf="ReactiveIUForm.nombreContacto.errors.required">* Campo obligatorio</div>
+                <input class="form-control" [(ngModel)]="nombreContacto" [ngModelOptions]="{standalone: true}" type="text" readonly
+                       [ngClass]="{ 'is-invalid': submitted && nombreContacto === '' && idTipoOperacion === 1 }"/>
+                <div *ngIf="nombreContacto === '' && idTipoOperacion === 1" class="invalid-feedback">
+                  <div *ngIf="nombreContacto === '' && idTipoOperacion === 1">* Campo obligatorio</div>
                 </div>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Teléfono</label>
-                <input class="form-control" formControlName="telefonoContacto" type="text" readonly
-                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.telefonoContacto.errors }"/>
-                <div *ngIf="ReactiveIUForm.telefonoContacto.errors" class="invalid-feedback">
-                  <div *ngIf="ReactiveIUForm.telefonoContacto.errors.required">* Campo obligatorio</div>
+                <input class="form-control" [(ngModel)]="telefonoContacto" [ngModelOptions]="{standalone: true}" type="text" readonly
+                       [ngClass]="{ 'is-invalid': submitted && telefonoContacto === '' && idTipoOperacion === 1 }"/>
+                <div *ngIf="telefonoContacto === '' && idTipoOperacion === 1" class="invalid-feedback">
+                  <div *ngIf="telefonoContacto === '' && idTipoOperacion === 1">* Campo obligatorio</div>
                 </div>
               </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Correo</label>
-                <input class="form-control" formControlName="correoContacto" type="text" readonly
-                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.correoContacto.errors }"/>
-                <div *ngIf="ReactiveIUForm.correoContacto.errors" class="invalid-feedback">
-                  <div *ngIf="ReactiveIUForm.correoContacto.errors.required">* Campo obligatorio</div>
+                <input class="form-control" [(ngModel)]="correoContacto" [ngModelOptions]="{standalone: true}" type="text" readonly
+                       [ngClass]="{ 'is-invalid': submitted && correoContacto === '' && idTipoOperacion === 1}"/>
+                <div *ngIf="correoContacto === '' && idTipoOperacion === 1" class="invalid-feedback">
+                  <div *ngIf="correoContacto === '' && idTipoOperacion === 1">* Campo obligatorio</div>
                 </div>
               </div>
             </div>

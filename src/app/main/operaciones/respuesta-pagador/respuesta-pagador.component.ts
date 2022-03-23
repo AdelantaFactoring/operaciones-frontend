@@ -81,6 +81,51 @@ export class RespuestaPagadorComponent implements OnInit {
     });
   }
 
+  onFilas(facturas: any): string {
+    let filas = "";
+    for (const item of facturas) {
+      filas += `<tr><td>${item.codigoSolicitud}</td><td>${item.codigoFactura}</td><td>${item.codigoRespuesta}</td></tr>`
+    }
+    return filas;
+  }
+
+  onInfoRespuesta(data: any, idEstado: number): void {
+    let facturas = JSON.parse(data);
+    Swal.fire({
+      title: 'Información',
+      html: `
+            <p style="text-align: justify">Algunas facturas se han registrado correctamente y otras han tenido problemas para registrar</p>
+            <p style="text-align: justify">La(s) siguiente(s) solicitude(s) contiene(n) factura(s) con problemas de registro:</p>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>N° Solicitud</th>
+                  <th>N° Factura</th>
+                  <th>Código Respuesta${idEstado === 3 ? 'Cavali' : ''}</th>
+                  ${idEstado === 3 ? '<th>Código Respuesta Anotación</th>' : ''}
+                </tr>
+                </thead>
+                <tbody>
+                ${this.onFilas(facturas)}
+                </tbody>
+              </table>
+            </div>
+            <p style="text-align: justify">Consulte las facturas de las solicitudes para verificar su estado. Utilice el código de respuesta como referencia para su validación.</p>`,
+      icon: 'info',
+      width: '700px',
+      showCancelButton: false,
+      confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
+      customClass: {
+        confirmButton: 'btn btn-info',
+      },
+    }).then(result => {
+      if (result.value) {
+
+      }
+    });
+  }
+
   onRegistrarFacturas(idEstado: number): void {
     let solicitudes = this.solicitudes.filter(f => f.seleccionado);
     if (solicitudes.length == 0) {
@@ -89,7 +134,8 @@ export class RespuestaPagadorComponent implements OnInit {
     }
 
     solicitudes.forEach(el => {
-      el.idTipoCavali = 1;
+      el.flagCavali = true;
+      el.idTipoRegistro = idEstado === 4 ? 1 : 2;
       el.idEstado = idEstado;
       el.idUsuarioAud = 1;
     });
@@ -102,10 +148,8 @@ export class RespuestaPagadorComponent implements OnInit {
         this.onListarSolicitudes();
       } else if (response.tipo == 2) {
         this.utilsService.blockUIStop();
-
-        let codigo = response.mensaje.split(',');
         Swal.fire({
-          title: 'Adertencia',
+          title: 'Advertencia',
           html: `<p style="text-align: justify">La(s) siguiente(s) solicitude(s) contiene(n) factura(s) sin confirmación de pago:</p>
                  <p style="text-align: justify">Codigo(s):<br>
                     ${response.mensaje.replace(/,/g, "<br>")}</p>`,
@@ -120,9 +164,12 @@ export class RespuestaPagadorComponent implements OnInit {
 
           }
         });
-      } else {
+      } else if (response.tipo == 0) {
         this.utilsService.showNotification(response.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
+      } else if (response.tipo == 3) {
+        this.onInfoRespuesta(response.mensaje, idEstado);
+        this.onListarSolicitudes();
       }
     }, error => {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);

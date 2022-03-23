@@ -40,7 +40,7 @@ export class SolicitudCab {
   montoSolicitudCT: number;
   diasPrestamoCT: number;
   fechaPagoCT: string;
-  idTipoCavali: number;
+  idTipoRegistro: number = 0;
   idEstado: number;
   estado: string;
   idTipoOperacion: number;
@@ -53,4 +53,7 @@ export class SolicitudCab {
   solicitudCabSustento: SolicitudCabSustento[];
 
   cambiarIcono: boolean = false;
+  cavali: boolean = false;
+  anotacion: boolean = false;
+  flagCavali: boolean = false;
 }
