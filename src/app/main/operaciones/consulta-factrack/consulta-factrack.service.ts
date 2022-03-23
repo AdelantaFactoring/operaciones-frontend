@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {environment} from "../../../../environments/environment";
 import {SOLICITUD} from "../../../shared/helpers/url/comercial";
 import {CONTENT_TYPE} from "../../../shared/helpers/headers";
+import {helpers} from "chart.js";
 
 @Injectable({
   providedIn: 'root'
@@ -40,5 +41,15 @@ export class ConsultaFactrackService {
         'Content-Type': CONTENT_TYPE.json
       }
     );
+  }
+
+  consultarFactura(): Observable<any> {
+    return this.requestMethod.get(
+      `${environment.apiUrl}${SOLICITUD.consutarFactura}`,
+      null,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    )
   }
 }
