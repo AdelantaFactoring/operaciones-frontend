@@ -18,6 +18,10 @@ export class RespuestaPagadorComponent implements OnInit {
   public solicitudes: SolicitudCab[] = [];
   public seleccionarTodo: boolean = false;
   public cambiarIcono: boolean = false;
+
+  public idTipoRegistro: number = 0;
+  public codigoRespuestaCavali: string = '';
+  public codigoRespuestaAnotacion: string = '';
   //Paginación
   public collectionSize: number = 0;
   public pageSize: number = 10;
@@ -81,12 +85,20 @@ export class RespuestaPagadorComponent implements OnInit {
     });
   }
 
-  onFilas(facturas: any): string {
+  onFilas(idEstado, facturas: any): string {
     let filas = "";
     for (const item of facturas) {
-      filas += `<tr><td>${item.codigoSolicitud}</td><td>${item.codigoFactura}</td><td>${item.codigoRespuesta}</td></tr>`
+      filas += `<tr><td>${item.codigoSolicitud}</td><td>${item.codigoFactura}</td>
+                <td>${item.codigoRespuestaCavali}</td>${idEstado === 3 ? `<td>${item.codigoRespuestaAnotacion}</td>` : ''}</tr>`
     }
     return filas;
+  }
+
+  onVerRespuesta(cab: SolicitudCab, item: SolicitudDet, manualOpen: any): void {
+    this.idTipoRegistro = cab.idTipoRegistro;
+    this.codigoRespuestaCavali = item.codigoRespuestaCavali;
+    this.codigoRespuestaAnotacion = item.codigoRespuestaAnotacion;
+    manualOpen.open();
   }
 
   onInfoRespuesta(data: any, idEstado: number): void {
@@ -107,13 +119,13 @@ export class RespuestaPagadorComponent implements OnInit {
                 </tr>
                 </thead>
                 <tbody>
-                ${this.onFilas(facturas)}
+                ${this.onFilas(idEstado, facturas)}
                 </tbody>
               </table>
             </div>
             <p style="text-align: justify">Consulte las facturas de las solicitudes para verificar su estado. Utilice el código de respuesta como referencia para su validación.</p>`,
       icon: 'info',
-      width: '700px',
+      width: '750px',
       showCancelButton: false,
       confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
       customClass: {
@@ -130,6 +142,11 @@ export class RespuestaPagadorComponent implements OnInit {
     let solicitudes = this.solicitudes.filter(f => f.seleccionado);
     if (solicitudes.length == 0) {
       this.utilsService.showNotification("Seleccione una o varias solicitudes", "", 2);
+      return;
+    }
+    let val1 = this.solicitudes.filter(f => f.seleccionado && f.idTipoRegistro != (idEstado == 4 ? 1 : 2) && f.idTipoRegistro != 0);
+    if (val1.length > 0) {
+      this.utilsService.showNotification("Una o varias solicitudes ya se registraron con otro tipo de servicio", "", 2);
       return;
     }
 
@@ -168,6 +185,7 @@ export class RespuestaPagadorComponent implements OnInit {
         this.utilsService.showNotification(response.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
       } else if (response.tipo == 3) {
+        this.utilsService.blockUIStop();
         this.onInfoRespuesta(response.mensaje, idEstado);
         this.onListarSolicitudes();
       }

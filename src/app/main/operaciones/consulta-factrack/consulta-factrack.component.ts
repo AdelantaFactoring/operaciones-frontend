@@ -180,4 +180,11 @@ export class ConsultaFactrackComponent implements OnInit {
       this.utilsService.blockUIStop();
     });
   }
+
+  onActualizarEstadoFactura(): void {
+    this.consultaFactrackService.consultarFactura()
+      .subscribe(response => {
+
+      });
+  };
 }

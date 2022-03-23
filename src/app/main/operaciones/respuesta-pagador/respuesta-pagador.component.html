@@ -122,7 +122,7 @@
                     <td [colSpan]="11">
                       <div class="row">
                         <div class="d-flex flex-wrap mb-0">
-                          <div class="p-1">
+                          <div class="pl-1 pt-1 pb-1">
                             <button type="submit" rippleEffect class="btn btn-success" (click)="onGuardarCambios(cab)">
                               <i class="mr-0 mr-sm-1" data-feather="save"></i>
                               <span class="d-none d-sm-inline-block">Guardar Cambios</span>
@@ -160,17 +160,30 @@
                                      class="btn btn-raised btn-outline-danger btn-sm">
                                     <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
                                   </a>
+                                  &nbsp;
+                                  <a href="javascript:void(0)" title="Ver Respuesta"
+                                     popoverTitle="Respuesta Cavali"
+                                     [ngbPopover]="respuestaCavali" [autoClose]="true" triggers="manual"
+                                     #manualOpen="ngbPopover" (click)="onVerRespuesta(cab, item, manualOpen)"
+                                     class="btn btn-raised btn-outline-info btn-sm">
+                                    <i class="text-info cursor-pointer" data-feather="eye"></i>
+                                  </a>
                                 </div>
                               </td>
-                              <td [ngClass]="{'row-edicion': item.editado}">
+                              <td [ngClass]="{'row-edicion': item.editado, 'row-error-cavali': ((cab.idTipoRegistro === 1 && item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') ||
+                                    (cab.idTipoRegistro === 2 && ((item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') || (item.codigoRespuestaAnotacion != '0' && item.codigoRespuestaAnotacion != ''))))}">
                                 <p>{{item.nroDocumento}}</p></td>
-                              <td [ngClass]="{'row-edicion': item.editado}">
+                              <td [ngClass]="{'row-edicion': item.editado, 'row-error-cavali': ((cab.idTipoRegistro === 1 && item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') ||
+                                    (cab.idTipoRegistro === 2 && ((item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') || (item.codigoRespuestaAnotacion != '0' && item.codigoRespuestaAnotacion != ''))))}">
                                 <p>{{item.formaPago}}</p></td>
-                              <td [ngClass]="{'row-edicion': item.editado}">
+                              <td [ngClass]="{'row-edicion': item.editado, 'row-error-cavali': ((cab.idTipoRegistro === 1 && item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') ||
+                                    (cab.idTipoRegistro === 2 && ((item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') || (item.codigoRespuestaAnotacion != '0' && item.codigoRespuestaAnotacion != ''))))}">
                                 <p>{{item.montoSinIGV | number: '1.2-2'}}</p></td>
-                              <td [ngClass]="{'row-edicion': item.editado}">
+                              <td [ngClass]="{'row-edicion': item.editado, 'row-error-cavali': ((cab.idTipoRegistro === 1 && item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') ||
+                                    (cab.idTipoRegistro === 2 && ((item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') || (item.codigoRespuestaAnotacion != '0' && item.codigoRespuestaAnotacion != ''))))}">
                                 <p>{{item.montoConIGV | number: '1.2-2'}}</p></td>
-                              <td [ngClass]="{'row-edicion': item.editado}">
+                              <td [ngClass]="{'row-edicion': item.editado, 'row-error-cavali': ((cab.idTipoRegistro === 1 && item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') ||
+                                    (cab.idTipoRegistro === 2 && ((item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') || (item.codigoRespuestaAnotacion != '0' && item.codigoRespuestaAnotacion != ''))))}">
                                 <p>{{item.fondoResguardo | number: '1.2-2'}}
                                 </p></td>
                               <td>
@@ -212,7 +225,10 @@
         </div>
       </div>
     </div>
-
+    <ng-template #respuestaCavali>
+      <div>Cavali: {{codigoRespuestaCavali}}</div>
+      <div *ngIf="idTipoRegistro === 2">Anotación: {{codigoRespuestaAnotacion}}</div>
+    </ng-template>
     <block-ui></block-ui>
   </div>
 </div>
