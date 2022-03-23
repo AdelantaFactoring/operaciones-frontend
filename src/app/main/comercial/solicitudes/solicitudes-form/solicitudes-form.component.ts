@@ -216,23 +216,21 @@ export class SolicitudesFormComponent implements OnInit {
     if (this.solicitudForm.invalid) {
       return;
     }
-    for (const row of this.dataXml) {
-      if (row.titularCuentaBancariaDestino == null || row.monedaCuentaBancariaDestino == null || row.bancoDestino == null || row.tipoCuentaBancariaDestino == null) {
-        this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
-        console.log('cuenta1');
-        
-      }
-      else if(row.nroCuentaBancariaDestino == null && row.cCIDestino == null || row.nroCuentaBancariaDestino == '' && row.cCIDestino == '')
-      {
-        this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
-        console.log('cuenta2');
-        return;
-      }
-      else if (row.titularCuentaBancariaDestino == '' || row.monedaCuentaBancariaDestino == '' || row.bancoDestino == '' || row.tipoCuentaBancariaDestino == '') {
-        this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
-        console.log('cuenta3');
-        
-        return;
+    if (this.idTipoOperacion == 3) {
+      for (const row of this.dataXml) {
+        if (row.titularCuentaBancariaDestino == null || row.monedaCuentaBancariaDestino == null || row.bancoDestino == null || row.tipoCuentaBancariaDestino == null) {
+          this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
+          return;
+        }
+        else if(row.nroCuentaBancariaDestino == null && row.cCIDestino == null || row.nroCuentaBancariaDestino == '' && row.cCIDestino == '')
+        {
+          this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
+          return;
+        }
+        else if (row.titularCuentaBancariaDestino == '' || row.monedaCuentaBancariaDestino == '' || row.bancoDestino == '' || row.tipoCuentaBancariaDestino == '') {
+          this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
+          return;
+        }
       }
     }
 
@@ -240,8 +238,8 @@ export class SolicitudesFormComponent implements OnInit {
     for (const item of this.dataXml) {
       this.params.push({
         "idSolicitudDet": 0,
-        "rucPagProv": item.rucDet,
-        "RazonSocialPagProv": item.razonSocialDet,
+        "rucPagProv": this.idTipoOperacion == 1 ? item.rucDet : item.rucCab,
+        "RazonSocialPagProv": this.idTipoOperacion == 1 ? item.razonSocialDet : item.razonSocialCab,
         "moneda": item.tipoMoneda,
         "nroDocumento": item.codFactura,
         "fechaConfirmado": item.fechaVencimiento,
@@ -252,15 +250,15 @@ export class SolicitudesFormComponent implements OnInit {
         "archivoXML": item.nombreXML,
         "archivoPDF": item.nombrePDF,
 
-        "NombreContacto": item.nombrePDF,
-        "TelefonoContacto": item.nombrePDF,
-        "CorreoContacto": item.nombrePDF,
-        "TitularCuentaBancariaDestino": item.nombrePDF,
-        "MonedaCuentaBancariaDestino": item.nombrePDF,
-        "BancoDestino": item.nombrePDF,
-        "NroCuentaBancariaDestino": item.nombrePDF,
-        "CCIDestino": item.nombrePDF,
-        "TipoCuentaBancariaDestino": item.nombrePDF,
+        "NombreContacto": item.nombreContacto,
+        "TelefonoContacto": item.telefonoContacto,
+        "CorreoContacto": item.correoContacto,
+        "TitularCuentaBancariaDestino": item.titularCuentaBancariaDestino,
+        "MonedaCuentaBancariaDestino": item.monedaCuentaBancariaDestino,
+        "BancoDestino": item.bancoDestino,
+        "NroCuentaBancariaDestino": item.nroCuentaBancariaDestino,
+        "CCIDestino": item.cCIDestino,
+        "TipoCuentaBancariaDestino": item.tipoCuentaBancariaDestino,
 
       });
     }
