@@ -248,7 +248,8 @@ export class SolicitudesComponent implements OnInit {
   }
 
   onDetalle(item, modal): void {
-
+    console.log('itemDeta', item);
+    
     this.solicitudDet = item.solicitudDet;
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudDetForm.controls.nroSolicitud.setValue(item.codigo);

@@ -77,4 +77,13 @@ export class SolicitudesFormService {
       }
     );
   }
+
+  // plantilla(): Observable<any> {
+  //   return this.requestMethod.post(
+  //     `${environment.apiUrl}${SOLICITUD.plantilla}`,``,
+  //     {
+  //       'Content-Type': CONTENT_TYPE.json
+  //     }
+  //   );
+  // }
 }

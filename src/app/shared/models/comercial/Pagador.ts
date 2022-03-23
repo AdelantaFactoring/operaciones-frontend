@@ -7,6 +7,7 @@ export class Pagador {
     contacto: string;
     telefono: string;
     correo: string;
+    limiteGastoNegociacion: number;
     usuarioCreador: string;
     fechaCreacion: string;
     totalRows: number;

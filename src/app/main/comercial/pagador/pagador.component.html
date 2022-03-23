@@ -47,6 +47,7 @@
                   <th>Acción</th>
                   <th>RUC</th>
                   <th>Razón Social</th>
+                  <th>Limite Negociacion</th>
                   <th>Sector</th>
                   <th>Grupo Economico</th>
                   <th>Contactos</th>
@@ -71,6 +72,7 @@
                   </td>
                   <td>{{item.ruc}}</td>
                   <td>{{item.razonSocial}}</td>
+                  <td>{{item.limiteGastoNegociacion}}</td>
                   <td>{{item.sector}}</td>
                   <td>{{item.grupoEconomico}}</td>
                   <td>{{item.contacto}}</td>
@@ -163,6 +165,16 @@
                 <div class="form-group">
                   <label>Correo</label>
                   <input class="form-control" formControlName="correo" type="text"/>
+                </div>
+              </div>
+              <div class="col-12 col-md-6">
+                <div class="form-group">
+                  <label>Limite Gasto Negociacion</label>
+                  <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.limiteGastoNegociacion.errors }" 
+                    class="form-control" formControlName="limiteGastoNegociacion" type="number"/>
+                  <div *ngIf="ReactiveIUForm.limiteGastoNegociacion.errors" class="invalid-feedback">
+                    <div *ngIf="ReactiveIUForm.limiteGastoNegociacion.errors.required">* Campo obligatorio</div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -35,18 +35,13 @@ export class SolicitudArchivos {
 export class SolicitudArchivosXlsx {
     ruc: string;
     razonSocialProv: string;
+    tipoDocumento: string;
     documento: string;
-    fechaRegistro: string = "";
     fechaVencimiento: string = "";
     moneda: string;
-    total: number = 0;
-    pagar: number = 0;
+    netoPagar: number = 0;
     banco: string;
     ctaBancaria: string = "";
     cci: string = "";
     tipoCuenta: string;
-    correo: string;
-    nombreContacto: string;
-    telefono: string;
-    rubro: string;
   }

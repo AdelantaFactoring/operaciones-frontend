@@ -20,12 +20,14 @@ export const SOLICITUD = {
   uploadXlsx: '/solicitudCab/uploadXlsx',
   actualizar: '/solicitudCab/actualizar',
   guardarCT: '/solicitudCab/guardarCT',
-  generarCarpeta: '/SolicitudCab/GenerarCarpeta'
+  generarCarpeta: '/SolicitudCab/GenerarCarpeta',
+  plantilla: '/SolicitudCab/PlantillaExcel'
 };
 
 export const PAGADOR = {
   listar: '/pagador/listar',
-  guardar: '/pagador/guardar'
+  guardar: '/pagador/guardar',
+  eliminar: '/Pagador/eliminar'
 };
 
 export const CLIENTEPAGADOR = {
