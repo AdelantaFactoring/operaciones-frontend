@@ -249,7 +249,6 @@ export class SolicitudesFormComponent implements OnInit {
         "formaPago": item.formaPago,
         "archivoXML": item.nombreXML,
         "archivoPDF": item.nombrePDF,
-
         "NombreContacto": item.nombreContacto,
         "TelefonoContacto": item.telefonoContacto,
         "CorreoContacto": item.correoContacto,
@@ -258,11 +257,9 @@ export class SolicitudesFormComponent implements OnInit {
         "BancoDestino": item.bancoDestino,
         "NroCuentaBancariaDestino": item.nroCuentaBancariaDestino,
         "CCIDestino": item.cCIDestino,
-        "TipoCuentaBancariaDestino": item.tipoCuentaBancariaDestino,
-
+        "TipoCuentaBancariaDestino": item.tipoCuentaBancariaDestino
       });
     }
-
 
     this.utilsService.blockUIStart('Guardando información...');
     this.solicitudesFormService.guardar({
@@ -397,6 +394,7 @@ export class SolicitudesFormComponent implements OnInit {
   }
 
   onRadioChange(value, idTipoOperacion, flagConfirming, modal): void {
+    this.dataXml  = [];
     this.tipoServicio = value;
     this.idTipoOperacion = idTipoOperacion;
     this.hasBaseDropZoneOver = false;
@@ -515,21 +513,18 @@ export class SolicitudesFormComponent implements OnInit {
       this.utilsService.showNotification("La cantidad de archivos XML no coincide con la cantidad de PDF", 'Alerta', 2);
       return;
     }
-    // console.log('cantXML', this.cantXml);
-    // console.log('cantPDF', this.cantPdf);
-    // if(this.uploader.queue.length % 2 > 0)
-    // {
-    //   this.utilsService.showNotification('La cantidad de archivos adjuntados debe ser siempre par', 'Alerta', 2);
-    //   return;
-    // }
     this.uploader.setOptions({
       url: `${environment.apiUrl}${SOLICITUD.upload}?idSolicitudCab=0&idTipoOperacion=` + this.idTipoOperacion + `&ruc=` + this.ruc + `&usuarioAud=Admin1`,
+      removeAfterUpload: false
     });
 
-    this.dataXml  = [];
+
+    //this.dataXml  = [];
     this.uploader.uploadAll();
     let count = 0;
-
+    this.uploader.response.observers = [];
+    //console.log('upl',this.uploader);
+    
     this.uploader.response.subscribe( res => {
 
       let rs = JSON.parse(res);
@@ -546,26 +541,13 @@ export class SolicitudesFormComponent implements OnInit {
       {
         if (rs.tipo == 1) {
           this.dataPdf.push(rs);
-          // count = Number(count) + 1;
-          // if (count == this.cantPdf) {
-          //   this.utilsService.showNotification('Información Procesada correctamente', 'Confirmación', 1);
-          // }
-          // this.utilsService.blockUIStop();
         } else if (rs.tipo == 2) {
-          //console.log('name', rs.nombreXML);
-        //   console.log('nameXml',rs.nombreXML);
-
-        //  for (const item of this.uploader.queue) {
-        //   if (item?.file?.name == rs.nombreXML) {
-        //     item.isSuccess = false;
-        //     item.isCancel = false;
-        //     item.isError = true;
-        //   }
-        //  }
+          count = 0;
           this.mensaje.push(rs.mensaje + '<br/>');
-          this.onMensajeValidacion(this.mensaje);
-          // this.utilsService.showNotification(rs.mensaje, 'Alerta', 2);
-          // this.utilsService.blockUIStop();
+          count = Number(count) + 1;
+          if (count == this.cantXml) {
+            this.onMensajeValidacion(this.mensaje);
+          }
         } else if (rs.tipo == 3){
           this.utilsService.showNotification(rs.mensaje, 'Error', 3);
           this.utilsService.blockUIStop();
@@ -784,33 +766,35 @@ export class SolicitudesFormComponent implements OnInit {
     this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue('');
   }
   onCalcularCT(): void{
-    let capitalTrabajo, TNA, nroDias, mDescontar, intereses, montoSolicitado, totFacturar;
-    let contrato, servicioCustodia, servicioCobranza, cartaNotarial;
+    let capitalTrabajoS, TNM, TNA, nroDias, mDescontar, intereses, montoSolicitado, totFacturar;
+    let contrato, servicioCustodia, servicioCobranza, cartaNotarial, gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
     contrato = this.capitalTrabajoForm.controls.contrato.value;
     servicioCustodia = this.capitalTrabajoForm.controls.servicioCustodia.value;
     servicioCobranza = this.capitalTrabajoForm.controls.servicioCobranza.value;
     cartaNotarial = this.capitalTrabajoForm.controls.cartaNotarial.value;
-    capitalTrabajo = this.capitalTrabajoForm.controls.mcTrabajo.value;
+    capitalTrabajoS = this.capitalTrabajoForm.controls.ctSolicitado.value;
+    TNM = this.capitalTrabajoForm.controls.tasaMensual.value;
     TNA = this.capitalTrabajoForm.controls.tasaAnual.value;
     nroDias = this.capitalTrabajoForm.controls.diasPrestamo.value;
     montoSolicitado = this.capitalTrabajoForm.controls.ctSolicitado.value;
-
+    gDiversonsSIgv = contrato + servicioCustodia + servicioCobranza + cartaNotarial;
     if (this.idTipo == 1) {
-      //mDescontar = ( (360 * capitalTrabajo) + (360 * suma de gastos) )
-      
-      intereses = capitalTrabajo * (TNA / 360) * nroDias * 1.18;
-      //gastosCt = this.capitalTrabajoForm.controls.gIncluidoIGV.value;
-      this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100);
-      // this.capitalTrabajoForm.controls.tFacturarIGV.setValue(Math.round((intereses + Number.EPSILON) + gastosCt));
-      // totolFacturado = Math.round((intereses + Number.EPSILON)+ gastosCt);
-      // this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(Math.round((montoSolicitado + Number.EPSILON) - totFacturar));
+      mDescontar = ((360 * capitalTrabajoS) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12))* 1.18 ));
+      intereses = mDescontar * (TNA / 360) * nroDias * 1.18;
+      gDiversonsCIgv = gDiversonsSIgv * 0.18;
+      gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
+      totFacturar = intereses + gastoIncluidoIGV;
+
+      this.capitalTrabajoForm.controls.montoDesc.setValue(Math.round((mDescontar + Number.EPSILON) * 100)/100);
+      this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100); 
+      this.capitalTrabajoForm.controls.gIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
+      this.capitalTrabajoForm.controls.tFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
+      this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
     }
     else
     {
-      let gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
-      gDiversonsSIgv = contrato + servicioCustodia + servicioCobranza + cartaNotarial;
       gDiversonsCIgv = gDiversonsSIgv * 0.18;
-      intereses = capitalTrabajo * (TNA / 360) * nroDias * 1.18;
+      intereses = capitalTrabajoS * (TNA / 360) * nroDias * 1.18;
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
@@ -846,16 +830,26 @@ export class SolicitudesFormComponent implements OnInit {
     });
   }
   onGenerarPlantilla(): void{
-    // this.solicitudesFormService.plantilla().subscribe(response => {
-    //   //console.log('res', response);
-    //   this.utilsService.showNotification('Plantilla generada correctamente', 'Confirmación', 1);
-    //   this.utilsService.blockUIStop();
-    // }, error => {
-    //   this.utilsService.blockUIStop();
-    //   this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
-    // });
     let reportURL = environment.apiUrl + SOLICITUD.plantilla;
-    
     window.location.href =  reportURL;
+  }
+  onEliminarFactura(item): void{
+    item.remove();
+    let archivo = item?.file?.name.substring(0, item?.file?.name.length - 4);
+    let id = 0;
+    for (const arch of this.uploader.queue) {
+      if (arch?.file?.name.includes(archivo)) {
+        arch.remove();
+        break;
+      }
+    }
+
+    for (const row of this.dataXml) {
+      
+      if (row.nombreXML.includes(archivo)) {
+        this.dataXml.splice(id, 1)
+      }
+      id = id + 1;
+    }
   }
 }

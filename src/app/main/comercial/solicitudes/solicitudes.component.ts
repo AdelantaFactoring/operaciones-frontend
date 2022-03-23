@@ -43,6 +43,8 @@ export class SolicitudesComponent implements OnInit {
   idTipoOperacion: number = 1;
   public search: string = '';
   public searchCli: string = '';
+  public pagProv: string;
+  public rucPagProv: string;
 
   public collectionSize: number = 0;
   public pageSize: number = 10;
@@ -105,10 +107,32 @@ export class SolicitudesComponent implements OnInit {
     });
     this.solicitudDetForm = this.formBuilder.group({
       nroSolicitud: [''],
+      moneda: [''],
       cedente: [''],
       rucCedente: [''],
       aceptante: [''],
       rucAceptante: [''],
+      tipoOperacion: [''],
+      bancoD: [''],
+      ctaBancariaD: [''],
+      tipoCtaBancariaD: [''],
+      titularCtaBancariaD: [''],
+      comisionCN: [''],
+      comisionE: [''],
+      financiamiento: [''],
+      servicioCob: [''],
+      servicioCus: [''],
+      tnm: [''],
+      tna: [''],
+      tnmm: [''],
+      tnam: [''],
+      totalDesCIgv: [''],
+      totalFacCIgv: [''],
+      nombreC: [''],
+      correoC: [''],
+      correoConCopiaC: [''],
+      telefonoC: [''],
+      estado: ['']
     });
   }
 
@@ -248,15 +272,42 @@ export class SolicitudesComponent implements OnInit {
   }
 
   onDetalle(item, modal): void {
-    console.log('itemDeta', item);
-    
-    this.solicitudDet = item.solicitudDet;
     this.utilsService.blockUIStart('Obteniendo información...');
+    this.idTipoOperacion = item.idTipoOperacion;
+    this.solicitudDet = item.solicitudDet;
+    this.rucPagProv = this.idTipoOperacion == 1 ? "Ruc Pagador" : "Ruc Proveedor"
+    this.pagProv = this.idTipoOperacion == 1 ? "Razón Social Pagador" : "Razón Social Proveedor"
+
     this.solicitudDetForm.controls.nroSolicitud.setValue(item.codigo);
-    this.solicitudDetForm.controls.cedente.setValue(item.razonSocialCedente);
-    this.solicitudDetForm.controls.rucCedente.setValue(item.rucCedente);
-    this.solicitudDetForm.controls.aceptante.setValue(item.razonSocialAceptante);
-    this.solicitudDetForm.controls.rucAceptante.setValue(item.rucAceptante);
+    this.solicitudDetForm.controls.moneda.setValue(item.moneda);
+    this.solicitudDetForm.controls.cedente.setValue(item.razonSocialCliente);
+    this.solicitudDetForm.controls.rucCedente.setValue(item.rucCliente);
+    this.solicitudDetForm.controls.aceptante.setValue(item.razonSocialPagProv);
+    this.solicitudDetForm.controls.rucAceptante.setValue(item.rucPagProv);
+    
+    this.solicitudDetForm.controls.tipoOperacion.setValue(item.tipoOperacion);
+    this.solicitudDetForm.controls.bancoD.setValue(item.bancoDestino);
+    this.solicitudDetForm.controls.ctaBancariaD.setValue(item.nroCuentaBancariaDestino);
+    this.solicitudDetForm.controls.tipoCtaBancariaD.setValue(item.tipoCuentaBancariaDestino);
+    this.solicitudDetForm.controls.comisionCN.setValue(item.comisionCartaNotarial);
+    
+    this.solicitudDetForm.controls.comisionE.setValue(item.comisionEstructuracion);
+    this.solicitudDetForm.controls.financiamiento.setValue(item.financiamiento);
+    this.solicitudDetForm.controls.servicioCob.setValue(item.servicioCobranza);
+    this.solicitudDetForm.controls.servicioCus.setValue(item.servicioCustodia);
+    this.solicitudDetForm.controls.tnm.setValue(item.tasaNominalMensual);
+    
+    this.solicitudDetForm.controls.tna.setValue(item.tasaNominalAnual);
+    this.solicitudDetForm.controls.tnmm.setValue(item.tasaNominalMensualMora);
+    this.solicitudDetForm.controls.tnam.setValue(item.tasaNominalAnualMora);
+    this.solicitudDetForm.controls.totalDesCIgv.setValue(item.totalDesembolsoConIGV);
+    this.solicitudDetForm.controls.totalFacCIgv.setValue(item.totalFacConIGV);
+    
+    this.solicitudDetForm.controls.nombreC.setValue(item.nombreContacto);
+    this.solicitudDetForm.controls.correoC.setValue(item.correoContacto);
+    this.solicitudDetForm.controls.correoConCopiaC.setValue(item.conCopiaContacto);
+    this.solicitudDetForm.controls.telefonoC.setValue(item.telefonoContacto);
+    this.solicitudDetForm.controls.estado.setValue(item.estado);
     setTimeout(() => {
       this.modalService.open(modal, {
         scrollable: true,
@@ -276,6 +327,7 @@ export class SolicitudesComponent implements OnInit {
   onCambiarVisibilidadDetalleTodo() {
     this.cambiarIcono = !this.cambiarIcono;
     this.solicitudes.forEach(el => {
+      if(el.idTipoOperacion != 2)
       el.cambiarIcono = this.cambiarIcono;
       document.getElementById('tr' + el.idSolicitudCab).style.visibility = (el.cambiarIcono) ? "visible" : "collapse";
       document.getElementById('detail' + el.idSolicitudCab).style.display = (el.cambiarIcono) ? "block" : "none";
