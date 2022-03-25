@@ -20,7 +20,8 @@
       <tbody>
       <tr>
         <td>
-          <a href="javascript:void(0)" title="Nuevo" (click)="onAgregarGastos()">
+          <a href="javascript:void(0)" title="Nuevo" (click)="onAgregarGastos()"
+             class="btn btn-raised btn-outline-info btn-sm">
             <i class="text-info cursor-pointer" data-feather="plus-circle"></i>
           </a>
         </td>
@@ -67,18 +68,22 @@
         <td>
           <div class="d-flex align-items-center">
             <a *ngIf="!item.edicion" href="javascript:void(0)" title="Editar"
+               class="btn btn-raised btn-outline-success btn-sm"
                (click)="onEditarGastos(item)">
-              <i class="text-primary cursor-pointer" data-feather="edit"></i>
+              <i class="text-success cursor-pointer" data-feather="edit"></i>
             </a>
             <a *ngIf="item.edicion" href="javascript:void(0)" title="Cancelar"
+               class="btn btn-raised btn-outline-secondary btn-sm"
                (click)="onCancelarGastos(item)">
-              <i class="text-primary cursor-pointer" data-feather="corner-up-left"></i>
+              <i class="text-secondary cursor-pointer" data-feather="corner-up-left"></i>
             </a>
             &nbsp;
-            <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar" (click)="onEliminar(item)">
+            <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar" (click)="onEliminar(item)"
+               class="btn btn-raised btn-outline-danger btn-sm">
               <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
             </a>
             <a *ngIf="item.edicion" href="javascript:void(0)" title="Confirmar cambios"
+               class="btn btn-raised btn-outline-success btn-sm"
                (click)="onConfirmarCambioGastos(item)">
               <i class="text-success cursor-pointer" data-feather="save"></i>
             </a>

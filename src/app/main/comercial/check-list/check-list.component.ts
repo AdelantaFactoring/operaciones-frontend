@@ -16,7 +16,7 @@ import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
 import {SolicitudCabSustento} from "../../../shared/models/comercial/solicitudCab-sustento";
 import Swal from "sweetalert2";
-import {ClientePagadorService} from "../clientes/cliente-pagador/cliente-pagador.service";
+import {ClientePagadorService} from "../cliente-pagador/cliente-pagador.service";
 import {ClientePagadorGastos} from "../../../shared/models/comercial/cliente-pagador-gastos";
 import {ClienteGastos} from "../../../shared/models/comercial/cliente-gastos";
 
@@ -53,7 +53,6 @@ export class CheckListComponent implements OnInit {
   public nombreContacto: string = '';
   public telefonoContacto: string = '';
   public correoContacto: string = '';
-  public igvCT: number = 0;
 
   public collectionSize: number = 0;
   public pageSize: number = 10;
@@ -614,7 +613,7 @@ export class CheckListComponent implements OnInit {
     }
 
     for (const row of this.archivos) {
-      
+
       if (row.nombre === archivo) {
         this.archivos.splice(id, 1)
       }
@@ -623,32 +622,31 @@ export class CheckListComponent implements OnInit {
   }
 
   onCalcularCT(item: SolicitudCab): void{
-    this.igvCT = item.igvCT / 100;
-    let montoSolicitudCT, nroDias, mDescontar, intereses, montoSolicitado, totFacturar;
-    let gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
-    
-    montoSolicitudCT = this.solicitudForm.controls.montoSolicitudCT.value;
-    nroDias = this.solicitudForm.controls.diasPrestamoCT.value;
-    montoSolicitado = this.solicitudForm.controls.montoSolicitudCT.value;
-    gDiversonsSIgv = item.gastosContrato + item.servicioCustodia + item.servicioCobranza + item.comisionCartaNotarial;
-    gDiversonsCIgv = gDiversonsSIgv * this.igvCT;
-    this.igvCT = item.igvCT;
+    let igvCT = item.igvct / 100;
+    let mDescontar, intereses, totFacturar, gastoIncluidoIGV;
+
+    let montoSolicitudCT = this.solicitudForm.controls.montoSolicitudCT.value;
+    let nroDias = this.solicitudForm.controls.diasPrestamoCT.value;
+    let montoSolicitado = this.solicitudForm.controls.montoSolicitudCT.value;
+    let gDiversonsSIgv = item.gastosContrato + item.servicioCustodia + item.servicioCobranza + item.comisionCartaNotarial;
+    let gDiversonsCIgv = gDiversonsSIgv * igvCT;
+
     if (this.idTipoCT == 1) {
-      mDescontar = ((360 * montoSolicitudCT) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (item.tasaNominalMensual * 12))* this.igvCT ));
-      intereses = mDescontar * (item.tasaNominalAnual / 360) * nroDias * this.igvCT;
-      
+      mDescontar = ((360 * montoSolicitudCT) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (item.tasaNominalMensual * 12))* igvCT ));
+      intereses = mDescontar * (item.tasaNominalAnual / 360) * nroDias * igvCT;
+
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
       this.solicitudForm.controls.montoDescontarCT.setValue(Math.round((mDescontar + Number.EPSILON) * 100)/100);
-      this.solicitudForm.controls.interesConIGVCT.setValue(Math.round((intereses + Number.EPSILON) * 100)/100); 
+      this.solicitudForm.controls.interesConIGVCT.setValue(Math.round((intereses + Number.EPSILON) * 100)/100);
       this.solicitudForm.controls.gastosConIGVCT.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totFacurarConIGVCT.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totDesembolsarConIGVCT.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
     }
     else
     {
-      intereses = montoSolicitudCT * (item.tasaNominalAnual / 360) * (nroDias + 1) * this.igvCT;
+      intereses = montoSolicitudCT * (item.tasaNominalAnual / 360) * (nroDias + 1) * igvCT;
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
@@ -657,6 +655,5 @@ export class CheckListComponent implements OnInit {
       this.solicitudForm.controls.totFacurarConIGVCT.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totDesembolsarConIGVCT.setValue(Math.round(((montoSolicitado + Number.EPSILON) - totFacturar) * 100) / 100);
     }
-    
   }
 }

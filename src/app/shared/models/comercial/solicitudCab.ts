@@ -40,7 +40,7 @@ export class SolicitudCab {
   montoSolicitudCT: number;
   diasPrestamoCT: number;
   fechaPagoCT: string;
-  igvCT: number;
+  igvct: number;
   idTipoRegistro: number = 0;
   idEstado: number;
   estado: string;

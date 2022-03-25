@@ -6,11 +6,11 @@
         <div class="row">
           <div class="col-12">
             <button [routerLink]="['/comercial/solicitudes']" skipLocationChange
-            [queryParams]=""
-            queryParamsHandling="merge"
-            class="btn btn-secondary" rippleEffect>
-            <span [data-feather]="'arrow-left'"></span> Regresar
-          </button>
+                    [queryParams]=""
+                    queryParamsHandling="merge"
+                    class="btn btn-secondary" rippleEffect>
+              <span [data-feather]="'arrow-left'"></span> Regresar
+            </button>
           </div>
         </div>
         <div class="row pt-1">
@@ -23,7 +23,7 @@
             <div class="form-group">
               <div class="custom-control custom-radio">
                 <input type="radio" id="Factoring" name="customRadio" class="custom-control-input" [checked]="facCheck"
-                  (change)="onRadioChange('Factoring', 1, false, '')" />
+                       (change)="onRadioChange('Factoring', 1, false, '')"/>
                 <label class="custom-control-label" for="Factoring">Factoring</label>
               </div>
             </div>
@@ -32,7 +32,7 @@
             <div class="form-group">
               <div class="custom-control custom-radio">
                 <input type="radio" id="capital" name="customRadio" class="custom-control-input"
-                  (change)="onRadioChange('Capital de Trabajo', 2, false, modalCapitalTrabajo)" />
+                       (change)="onRadioChange('Capital de Trabajo', 2, false, modalCapitalTrabajo)"/>
                 <label class="custom-control-label" for="capital">Capital de Trabajo</label>
               </div>
             </div>
@@ -41,7 +41,7 @@
             <div class="form-group">
               <div class="custom-control custom-radio">
                 <input type="radio" id="Confirming" name="customRadio" class="custom-control-input"
-                  (change)="onRadioChange('Confirming', 3, true, '')" />
+                       (change)="onRadioChange('Confirming', 3, true, '')"/>
                 <label class="custom-control-label" for="Confirming">Confirming</label>
               </div>
             </div>
@@ -52,7 +52,7 @@
             <div class="form-group">
               <label>Razón Social</label>
               <input [(ngModel)]="razonSocial" [ngClass]="{ 'is-invalid': !rucRequired }" class="form-control"
-                type="text" disabled>
+                     type="text" disabled>
               <span *ngIf="!rucRequired" class="invalid-form">
                 <small class="form-text text-danger" *ngIf="!rucRequired">This field is required!</small>
               </span>
@@ -64,12 +64,12 @@
               <label>RUC</label>
               <div class="input-group">
                 <input [ngClass]="{ 'is-invalid': !rucRequired }" class="form-control" type="text" [(ngModel)]="ruc"
-                  disabled />
+                       disabled/>
 
                 <div class="input-group-append">
                   <button (click)="onClientePagadorList(modalCliente, 1)" class="btn btn-outline-secondary feather"
-                    rippleEffect type="button"><span ngbTooltip="Mostrar lista de clientes" placement="left"
-                      container="body" [data-feather]="'search'"></span></button>
+                          rippleEffect type="button"><span ngbTooltip="Mostrar lista de clientes" placement="left"
+                                                           container="body" [data-feather]="'search'"></span></button>
                 </div>
                 <div *ngIf="!rucRequired" class="invalid-feedback">
                   <div *ngIf="!rucRequired">* Campo obligatorio</div>
@@ -158,8 +158,8 @@
                   <div class="row">
                     <div class="col-md-12">
                       <div ng2FileDrop [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
-                        (fileOver)="fileOverBase($event)" [uploader]="uploader"
-                        class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone">
+                           (fileOver)="fileOverBase($event)" [uploader]="uploader"
+                           class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone">
                         Arrastre aqui los archivos
                       </div>
                     </div>
@@ -170,63 +170,66 @@
                         <label>Subir cola</label>
                         <p>Longitud de la cola: {{ uploader?.queue?.length }}</p>
                       </div>
-                      <label>*Los nombres de los archivos PDF deben coincidir con los nombres de los archivos XML</label>
+                      <label>*Los nombres de los archivos PDF deben coincidir con los nombres de los archivos
+                        XML</label>
                       <table class="table">
                         <thead>
-                          <tr>
-                            <th width="40%">Nombre</th>
-                            <th>Tamaño</th>
-                            <th>Progreso</th>
-                            <th>Estado</th>
-                            <th><button type="button" class="btn btn-raised btn-outline-danger btn-sm"
-                                (click)="uploader.clearQueue()" rippleEffect>
-                                <i data-feather="trash"></i>
-                              </button></th>
-                          </tr>
+                        <tr>
+                          <th width="40%">Nombre</th>
+                          <th>Tamaño</th>
+                          <th>Progreso</th>
+                          <th>Estado</th>
+                          <th>
+                            <button type="button" class="btn btn-raised btn-outline-danger btn-sm"
+                                    (click)="uploader.clearQueue()" rippleEffect>
+                              <i data-feather="trash"></i>
+                            </button>
+                          </th>
+                        </tr>
                         </thead>
                         <tbody>
-                          <tr *ngFor="let item of uploader.queue">
-                            <!-- <td [ngClass]="{color: item?.file?.name.includes(.XML)}"> -->
-                            <td>
-                              <strong>{{ item?.file?.name }}</strong>
-                            </td>
-                            <td *ngIf="uploader.options.isHTML5" nowrap>
-                              {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
-                            </td>
-                            <td *ngIf="uploader.options.isHTML5">
-                              <ngb-progressbar type="primary" [value]="item.progress">
-                              </ngb-progressbar>
-                            </td>
-                            <td class="text-center">
-                              <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
-                              <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
-                              <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
-                            </td>
-                            <td nowrap>
-                              <!-- <button
-                                      type="button"
-                                      class="btn btn-raised btn-outline-success btn-sm mr-50"
-                                      (click)="item.upload()"
-                                      [disabled]="item.isReady || item.isUploading || item.isSuccess"
-                                      rippleEffect
-                                    >
-                                      <span data-feather="upload"></span>
-                                    </button>
-                                    <button
-                                      type="button"
-                                      class="btn btn-raised btn-outline-warning btn-sm mr-50"
-                                      (click)="item.cancel()"
-                                      [disabled]="!item.isUploading"
-                                      rippleEffect
-                                    >
-                                      <i data-feather="slash"></i>
-                                    </button> -->
-                              <button type="button" class="btn btn-raised btn-outline-danger btn-sm"
-                                (click)="onEliminarFactura(item)" rippleEffect>
-                                <i data-feather="trash"></i>
-                              </button>
-                            </td>
-                          </tr>
+                        <tr *ngFor="let item of uploader.queue">
+                          <!-- <td [ngClass]="{color: item?.file?.name.includes(.XML)}"> -->
+                          <td>
+                            <strong>{{ item?.file?.name }}</strong>
+                          </td>
+                          <td *ngIf="uploader.options.isHTML5" nowrap>
+                            {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
+                          </td>
+                          <td *ngIf="uploader.options.isHTML5">
+                            <ngb-progressbar type="primary" [value]="item.progress">
+                            </ngb-progressbar>
+                          </td>
+                          <td class="text-center">
+                            <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
+                            <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
+                            <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
+                          </td>
+                          <td nowrap>
+                            <!-- <button
+                                    type="button"
+                                    class="btn btn-raised btn-outline-success btn-sm mr-50"
+                                    (click)="item.upload()"
+                                    [disabled]="item.isReady || item.isUploading || item.isSuccess"
+                                    rippleEffect
+                                  >
+                                    <span data-feather="upload"></span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btn btn-raised btn-outline-warning btn-sm mr-50"
+                                    (click)="item.cancel()"
+                                    [disabled]="!item.isUploading"
+                                    rippleEffect
+                                  >
+                                    <i data-feather="slash"></i>
+                                  </button> -->
+                            <button type="button" class="btn btn-raised btn-outline-danger btn-sm"
+                                    (click)="onEliminarFactura(item)" rippleEffect>
+                              <i data-feather="trash"></i>
+                            </button>
+                          </td>
+                        </tr>
                         </tbody>
                       </table>
                     </div>
@@ -234,16 +237,16 @@
 
                   <div class="d-flex justify-content-between pt-1">
                     <button (click)="horizontalWizardStepperPrevious(0)" class="btn btn-outline-secondary btn-prev"
-                      disabled rippleEffect>
+                            disabled rippleEffect>
                       <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
                       <span class="align-middle d-sm-inline-block d-none">Anterior</span>
                     </button>
                     <button class="btn btn-primary" rippleEffect type="button" (click)="onProcesar()"
-                      [disabled]="!uploader.getNotUploadedItems().length" *ngIf="procesar">
+                            [disabled]="!uploader.getNotUploadedItems().length" *ngIf="procesar">
                       <span [data-feather]="'save'"></span> Procesar Archivos
                     </button>
                     <button (click)="horizontalWizardStepperNext(accountDetailsForm, '', 1)" type="submit"
-                      class="btn btn-primary btn-next" rippleEffect *ngIf="!procesar">
+                            class="btn btn-primary btn-next" rippleEffect *ngIf="!procesar">
                       <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
@@ -262,44 +265,44 @@
                       <div class="table-responsive">
                         <table class="table table-hover">
                           <thead>
-                            <tr>
-                              <th>Codigo</th>
-                              <th>{{rucCab}}</th>
-                              <th>{{razonSocialCab}}</th>
-                              <th>{{rucDet}}</th>
-                              <th>{{razonSocialDet}}</th>
-                              <th>Tipo Moneda</th>
-                              <th>Neto Pendiente</th>
-                              <th>Sub Total</th>
-                              <th>Igv</th>
-                              <th>Total</th>
-                              <th>Valor Venta</th>
-                              <th>Fecha Emision</th>
-                              <th>Fecha Vencimiento</th>
-                              <th>Nombre XML</th>
-                              <th>Nombre PDF</th>
-                              <th>Forma Pago</th>
-                            </tr>
+                          <tr>
+                            <th>Codigo</th>
+                            <th>{{rucCab}}</th>
+                            <th>{{razonSocialCab}}</th>
+                            <th>{{rucDet}}</th>
+                            <th>{{razonSocialDet}}</th>
+                            <th>Tipo Moneda</th>
+                            <th>Neto Pendiente</th>
+                            <th>Sub Total</th>
+                            <th>Igv</th>
+                            <th>Total</th>
+                            <th>Valor Venta</th>
+                            <th>Fecha Emision</th>
+                            <th>Fecha Vencimiento</th>
+                            <th>Nombre XML</th>
+                            <th>Nombre PDF</th>
+                            <th>Forma Pago</th>
+                          </tr>
                           </thead>
                           <tbody>
-                            <tr *ngFor="let item of dataXml" class="cursor-pointer">
-                              <td>{{item.codFactura}}</td>
-                              <td>{{item.rucCab}}</td>
-                              <td>{{item.razonSocialCab}}</td>
-                              <td>{{item.rucDet}}</td>
-                              <td>{{item.razonSocialDet}}</td>
-                              <td>{{item.tipoMoneda}}</td>
-                              <td>{{item.netoPendiente}}</td>
-                              <td>{{item.subTotal}}</td>
-                              <td>{{item.igv}}</td>
-                              <td>{{item.total}}</td>
-                              <td>{{item.valorVenta}}</td>
-                              <td>{{item.fechaEmision}}</td>
-                              <td>{{item.fechaVencimiento}}</td>
-                              <td>{{item.nombreXML}}</td>
-                              <td>{{item.nombrePDF}}</td>
-                              <td>{{item.formaPago}}</td>
-                            </tr>
+                          <tr *ngFor="let item of dataXml" class="cursor-pointer">
+                            <td>{{item.codFactura}}</td>
+                            <td>{{item.rucCab}}</td>
+                            <td>{{item.razonSocialCab}}</td>
+                            <td>{{item.rucDet}}</td>
+                            <td>{{item.razonSocialDet}}</td>
+                            <td>{{item.tipoMoneda}}</td>
+                            <td>{{item.netoPendiente}}</td>
+                            <td>{{item.subTotal}}</td>
+                            <td>{{item.igv}}</td>
+                            <td>{{item.total}}</td>
+                            <td>{{item.valorVenta}}</td>
+                            <td>{{item.fechaEmision}}</td>
+                            <td>{{item.fechaVencimiento}}</td>
+                            <td>{{item.nombreXML}}</td>
+                            <td>{{item.nombrePDF}}</td>
+                            <td>{{item.formaPago}}</td>
+                          </tr>
                           </tbody>
                         </table>
                       </div>
@@ -313,16 +316,18 @@
                 </div> -->
                   <div class="d-flex justify-content-between pt-1">
                     <button type="button" (click)="horizontalWizardStepperPrevious(0)" class="btn btn-primary btn-prev"
-                      rippleEffect>
+                            rippleEffect>
                       <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
                       <span class="align-middle d-sm-inline-block d-none">Anterior</span>
                     </button>
-                    <button *ngIf="!flagConfirming && !flagRespuestaFac" (click)="onGuardar()" class="btn btn-success btn-next" rippleEffect>
+                    <button *ngIf="!flagConfirming && !flagRespuestaFac" (click)="onGuardar()"
+                            class="btn btn-success btn-next" rippleEffect>
                       <span class="align-middle d-sm-inline-block d-none">Guardar</span>
                       <i data-feather="save" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
-                    <button *ngIf="flagConfirming || flagRespuestaFac" (click)="horizontalWizardStepperNext(personalInfoForm, RespuestaFacForm, 0)"
-                      class="btn btn-primary btn-next" rippleEffect>
+                    <button *ngIf="flagConfirming || flagRespuestaFac"
+                            (click)="horizontalWizardStepperNext(personalInfoForm, RespuestaFacForm, 0)"
+                            class="btn btn-primary btn-next" rippleEffect>
                       <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
@@ -334,7 +339,7 @@
                   </div>
                 </form>
               </div>
-              <div id="Respuesta-Factoring" class="content" >
+              <div id="Respuesta-Factoring" class="content">
                 <form #RespuestaFacForm="ngForm" *ngIf="flagRespuestaFac">
                   <div class="content-header">
                     <h5 class="mb-0">Respuesta de la Solicitud</h5>
@@ -346,21 +351,21 @@
                       <div class="table-responsive">
                         <table class="table table-hover">
                           <thead>
-                            <tr>
-                              <!-- <th>IdEstado</th> -->
-                              <th>Codigo de Solicitud</th>
-                              <th>Nombre del Archivo</th>
-                              <th>Observación</th>
-                            </tr>
+                          <tr>
+                            <!-- <th>IdEstado</th> -->
+                            <th>Codigo de Solicitud</th>
+                            <th>Nombre del Archivo</th>
+                            <th>Observación</th>
+                          </tr>
                           </thead>
                           <tbody>
-                            <tr *ngFor="let item of solicitudDetRespuesta" class="cursor-pointer" 
-                            [ngClass]="{validacionRow: item.idEstado == 2}">
-                              <!-- <td>{{item.idEstado}}</td> -->
-                              <td>{{item.codigo}}</td>
-                              <td>{{item.nombreArchivoXml}}</td>
-                              <td>{{item.observacion}}</td>
-                            </tr>
+                          <tr *ngFor="let item of solicitudDetRespuesta" class="cursor-pointer"
+                              [ngClass]="{validacionRow: item.idEstado == 2}">
+                            <!-- <td>{{item.idEstado}}</td> -->
+                            <td>{{item.codigo}}</td>
+                            <td>{{item.nombreArchivoXml}}</td>
+                            <td>{{item.observacion}}</td>
+                          </tr>
                           </tbody>
                         </table>
                       </div>
@@ -374,10 +379,10 @@
                 </div> -->
                   <div class="d-flex justify-content-between pt-1">
                     <button [routerLink]="['/comercial/solicitudes']" skipLocationChange
-                      [queryParams]=""
-                      queryParamsHandling="merge"
-                      class="btn btn-secondary btn-next" rippleEffect
-                      >
+                            [queryParams]=""
+                            queryParamsHandling="merge"
+                            class="btn btn-secondary btn-next" rippleEffect
+                    >
                       <span class="align-middle d-sm-inline-block d-none">Cerrar</span>
                       <i [data-feather]="'x-circle'" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
@@ -393,7 +398,8 @@
                         <small>Subir archivo</small>
                       </div>
                       <div class="col-4">
-                        <button class="btn btn-primary ml-1" rippleEffect (click)="onGenerarPlantilla()" style="float: right;">
+                        <button class="btn btn-primary ml-1" rippleEffect (click)="onGenerarPlantilla()"
+                                style="float: right;">
                           <i data-feather="download" class="mr-0 mr-sm-1"></i
                           ><span class="d-none d-sm-inline-block">Descargar Plantilla</span>
                         </button>
@@ -404,8 +410,8 @@
                   <div class="row">
                     <div class="col-md-12">
                       <div ng2FileDrop [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
-                        (fileOver)="fileOverBase($event)" [uploader]="uploaderXlsx"
-                        class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone">
+                           (fileOver)="fileOverBase($event)" [uploader]="uploaderXlsx"
+                           class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone">
                         Arrastre aqui el archivo XLSX
                       </div>
                     </div>
@@ -433,39 +439,39 @@
 
                       <table class="table">
                         <thead>
-                          <tr>
-                            <th width="40%">Nombre</th>
-                            <th>Tamaño</th>
-                            <th>Progreso</th>
-                            <th>Estado</th>
-                            <th>Acción</th>
-                          </tr>
+                        <tr>
+                          <th width="40%">Nombre</th>
+                          <th>Tamaño</th>
+                          <th>Progreso</th>
+                          <th>Estado</th>
+                          <th>Acción</th>
+                        </tr>
                         </thead>
                         <tbody>
-                          <tr *ngFor="let item of uploaderXlsx.queue">
-                            <!-- <td [ngClass]="{color: item?.file?.name.includes(.XML)}"> -->
-                            <td>
-                              <strong>{{ item?.file?.name }}</strong>
-                            </td>
-                            <td *ngIf="uploaderXlsx.options.isHTML5" nowrap>
-                              {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
-                            </td>
-                            <td *ngIf="uploaderXlsx.options.isHTML5">
-                              <ngb-progressbar type="primary" [value]="item.progress">
-                              </ngb-progressbar>
-                            </td>
-                            <td class="text-center">
-                              <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
-                              <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
-                              <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
-                            </td>
-                            <td nowrap>
-                              <button type="button" class="btn btn-raised btn-outline-danger btn-sm"
-                                (click)="item.remove()" rippleEffect>
-                                <i data-feather="trash"></i>
-                              </button>
-                            </td>
-                          </tr>
+                        <tr *ngFor="let item of uploaderXlsx.queue">
+                          <!-- <td [ngClass]="{color: item?.file?.name.includes(.XML)}"> -->
+                          <td>
+                            <strong>{{ item?.file?.name }}</strong>
+                          </td>
+                          <td *ngIf="uploaderXlsx.options.isHTML5" nowrap>
+                            {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
+                          </td>
+                          <td *ngIf="uploaderXlsx.options.isHTML5">
+                            <ngb-progressbar type="primary" [value]="item.progress">
+                            </ngb-progressbar>
+                          </td>
+                          <td class="text-center">
+                            <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
+                            <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
+                            <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
+                          </td>
+                          <td nowrap>
+                            <button type="button" class="btn btn-raised btn-outline-danger btn-sm"
+                                    (click)="item.remove()" rippleEffect>
+                              <i data-feather="trash"></i>
+                            </button>
+                          </td>
+                        </tr>
                         </tbody>
                       </table>
                     </div>
@@ -473,16 +479,16 @@
 
                   <div class="d-flex justify-content-between pt-1">
                     <button type="button" (click)="horizontalWizardStepperPrevious(1)" class="btn btn-primary btn-prev"
-                      rippleEffect>
+                            rippleEffect>
                       <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
                       <span class="align-middle d-sm-inline-block d-none">Anterior</span>
                     </button>
                     <button class="btn btn-primary" rippleEffect type="button" (click)="onProcesarXlsx()"
-                      [disabled]="!uploaderXlsx.getNotUploadedItems().length" *ngIf="procesarXlsx">
+                            [disabled]="!uploaderXlsx.getNotUploadedItems().length" *ngIf="procesarXlsx">
                       <span [data-feather]="'save'"></span> Procesar Archivos
                     </button>
                     <button (click)="horizontalWizardStepperNext(addressForm, '', 0)" class="btn btn-primary btn-next"
-                      rippleEffect *ngIf="!procesarXlsx">
+                            rippleEffect *ngIf="!procesarXlsx">
                       <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
@@ -500,64 +506,70 @@
                       <div class="table-responsive">
                         <table class="table table-hover">
                           <thead>
-                            <tr>
-                              <th>Codigo</th>
-                              <th>{{rucCab}}</th>
-                              <th>{{razonSocialCab}}</th>
-                              <th>{{rucDet}}</th>
-                              <th>{{razonSocialDet}}</th>
-                              <th>Tipo Moneda</th>
-                              <th>Neto Pendiente</th>
-                              <th>Sub Total</th>
-                              <th>Igv</th>
-                              <th>Total</th>
-                              <th>Valor Venta</th>
-                              <th>Fecha Emision</th>
-                              <th>Fecha Vencimiento</th>
-                              <th>Nombre XML</th>
-                              <th>Nombre PDF</th>
-                              <th>Forma Pago</th>
+                          <tr>
+                            <th>Codigo</th>
+                            <th>{{rucCab}}</th>
+                            <th>{{razonSocialCab}}</th>
+                            <th>{{rucDet}}</th>
+                            <th>{{razonSocialDet}}</th>
+                            <th>Tipo Moneda</th>
+                            <th>Neto Pendiente</th>
+                            <th>Sub Total</th>
+                            <th>Igv</th>
+                            <th>Total</th>
+                            <th>Valor Venta</th>
+                            <th>Fecha Emision</th>
+                            <th>Fecha Vencimiento</th>
+                            <th>Nombre XML</th>
+                            <th>Nombre PDF</th>
+                            <th>Forma Pago</th>
 
-                              <!-- <th>Contacto</th>
-                              <th>Telefono</th>
-                              <th>Correo</th> -->
-                              <th>Titular Cta Bancaria</th>
-                              <th>Moneda</th>
-                              <th>Banco</th>
-                              <th>Cta Bancaria</th>
-                              <th>CCI</th>
-                              <th>Tipo Cta Bancaria</th>
-                            </tr>
+                            <!-- <th>Contacto</th>
+                            <th>Telefono</th>
+                            <th>Correo</th> -->
+                            <th>Titular Cta Bancaria</th>
+                            <th>Moneda</th>
+                            <th>Banco</th>
+                            <th>Cta Bancaria</th>
+                            <th>CCI</th>
+                            <th>Tipo Cta Bancaria</th>
+                          </tr>
                           </thead>
                           <tbody>
-                            <tr *ngFor="let item of dataXml" class="cursor-pointer">
-                              <td>{{item.codFactura}}</td>
-                              <td>{{item.rucCab}}</td>
-                              <td>{{item.razonSocialCab}}</td>
-                              <td>{{item.rucDet}}</td>
-                              <td>{{item.razonSocialDet}}</td>
-                              <td>{{item.tipoMoneda}}</td>
-                              <td>{{item.netoPendiente}}</td>
-                              <td>{{item.subTotal}}</td>
-                              <td>{{item.igv}}</td>
-                              <td>{{item.total}}</td>
-                              <td>{{item.valorVenta}}</td>
-                              <td>{{item.fechaEmision}}</td>
-                              <td>{{item.fechaVencimiento}}</td>
-                              <td>{{item.nombreXML}}</td>
-                              <td>{{item.nombrePDF}}</td>
-                              <td>{{item.formaPago}}</td>
+                          <tr *ngFor="let item of dataXml" class="cursor-pointer">
+                            <td>{{item.codFactura}}</td>
+                            <td>{{item.rucCab}}</td>
+                            <td>{{item.razonSocialCab}}</td>
+                            <td>{{item.rucDet}}</td>
+                            <td>{{item.razonSocialDet}}</td>
+                            <td>{{item.tipoMoneda}}</td>
+                            <td>{{item.netoPendiente}}</td>
+                            <td>{{item.subTotal}}</td>
+                            <td>{{item.igv}}</td>
+                            <td>{{item.total}}</td>
+                            <td>{{item.valorVenta}}</td>
+                            <td>{{item.fechaEmision}}</td>
+                            <td>{{item.fechaVencimiento}}</td>
+                            <td>{{item.nombreXML}}</td>
+                            <td>{{item.nombrePDF}}</td>
+                            <td>{{item.formaPago}}</td>
 
-                              <!-- <td [ngClass]="{validacionRow: item.nombreContacto == null}">{{item.nombreContacto}}</td>
-                              <td [ngClass]="{validacionRow: item.telefonoContacto == null}" >{{item.telefonoContacto}}</td>
-                              <td [ngClass]="{validacionRow: item.correoContacto == null}">{{item.correoContacto}}</td> -->
-                              <td [ngClass]="{validacionRow: item.titularCuentaBancariaDestino == null || item.titularCuentaBancariaDestino == ''}">{{item.titularCuentaBancariaDestino}}</td>
-                              <td [ngClass]="{validacionRow: item.monedaCuentaBancariaDestino == null} || item.monedaCuentaBancariaDestino == ''">{{item.monedaCuentaBancariaDestino}}</td>
-                              <td [ngClass]="{validacionRow: item.bancoDestino == null || item.bancoDestino == null}">{{item.bancoDestino}}</td>
-                              <td [ngClass]="{validacionRow: item.nroCuentaBancariaDestino == null && item.cCIDestino == null || item.nroCuentaBancariaDestino == '' && item.cCIDestino == ''}">{{item.nroCuentaBancariaDestino}}</td>
-                              <td [ngClass]="{validacionRow: item.cCIDestino == null && item.nroCuentaBancariaDestino == null || item.cCIDestino == '' && item.nroCuentaBancariaDestino == ''}">{{item.cCIDestino}}</td>
-                              <td [ngClass]="{validacionRow: item.tipoCuentaBancariaDestino == null || item.tipoCuentaBancariaDestino == ''}">{{item.tipoCuentaBancariaDestino}}</td>
-                            </tr>
+                            <!-- <td [ngClass]="{validacionRow: item.nombreContacto == null}">{{item.nombreContacto}}</td>
+                            <td [ngClass]="{validacionRow: item.telefonoContacto == null}" >{{item.telefonoContacto}}</td>
+                            <td [ngClass]="{validacionRow: item.correoContacto == null}">{{item.correoContacto}}</td> -->
+                            <td
+                              [ngClass]="{validacionRow: item.titularCuentaBancariaDestino == null || item.titularCuentaBancariaDestino == ''}">{{item.titularCuentaBancariaDestino}}</td>
+                            <td
+                              [ngClass]="{validacionRow: item.monedaCuentaBancariaDestino == null} || item.monedaCuentaBancariaDestino == ''">{{item.monedaCuentaBancariaDestino}}</td>
+                            <td
+                              [ngClass]="{validacionRow: item.bancoDestino == null || item.bancoDestino == null}">{{item.bancoDestino}}</td>
+                            <td
+                              [ngClass]="{validacionRow: item.nroCuentaBancariaDestino == null && item.cCIDestino == null || item.nroCuentaBancariaDestino == '' && item.cCIDestino == ''}">{{item.nroCuentaBancariaDestino}}</td>
+                            <td
+                              [ngClass]="{validacionRow: item.cCIDestino == null && item.nroCuentaBancariaDestino == null || item.cCIDestino == '' && item.nroCuentaBancariaDestino == ''}">{{item.cCIDestino}}</td>
+                            <td
+                              [ngClass]="{validacionRow: item.tipoCuentaBancariaDestino == null || item.tipoCuentaBancariaDestino == ''}">{{item.tipoCuentaBancariaDestino}}</td>
+                          </tr>
                           </tbody>
                         </table>
                       </div>
@@ -565,19 +577,21 @@
                   </div>
                   <div class="d-flex justify-content-between pt-1">
                     <button type="button" (click)="horizontalWizardStepperPrevious(0)" class="btn btn-primary btn-prev"
-                      rippleEffect>
+                            rippleEffect>
                       <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
                       <span class="align-middle d-sm-inline-block d-none">Anterior</span>
                     </button>
-                    <button *ngIf="!flagRespuestaCon" (click)="onGuardar()" class="btn btn-success btn-next" rippleEffect>
+                    <button *ngIf="!flagRespuestaCon" (click)="onGuardar()" class="btn btn-success btn-next"
+                            rippleEffect>
                       <span class="align-middle d-sm-inline-block d-none">Guardar</span>
                       <i data-feather="save" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
-                    <button *ngIf="flagRespuestaCon" (click)="horizontalWizardStepperNext(personalInfoForm, RespuestaFacForm, 0)"
-                    class="btn btn-primary btn-next" rippleEffect>
-                    <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
-                    <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
-                  </button>
+                    <button *ngIf="flagRespuestaCon"
+                            (click)="horizontalWizardStepperNext(personalInfoForm, RespuestaFacForm, 0)"
+                            class="btn btn-primary btn-next" rippleEffect>
+                      <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
+                      <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
+                    </button>
                   </div>
                 </form>
               </div>
@@ -593,21 +607,21 @@
                       <div class="table-responsive">
                         <table class="table table-hover">
                           <thead>
-                            <tr>
-                              <!-- <th>IdEstado</th> -->
-                              <th>Codigo de Solicitud</th>
-                              <th>Nombre del Archivo</th>
-                              <th>Observación</th>
-                            </tr>
+                          <tr>
+                            <!-- <th>IdEstado</th> -->
+                            <th>Codigo de Solicitud</th>
+                            <th>Nombre del Archivo</th>
+                            <th>Observación</th>
+                          </tr>
                           </thead>
                           <tbody>
-                            <tr *ngFor="let item of solicitudDetRespuesta" class="cursor-pointer" 
-                            [ngClass]="{validacionRow: item.idEstado == 2}">
-                              <!-- <td>{{item.idEstado}}</td> -->
-                              <td>{{item.codigo}}</td>
-                              <td>{{item.nombreArchivoXml}}</td>
-                              <td>{{item.observacion}}</td>
-                            </tr>
+                          <tr *ngFor="let item of solicitudDetRespuesta" class="cursor-pointer"
+                              [ngClass]="{validacionRow: item.idEstado == 2}">
+                            <!-- <td>{{item.idEstado}}</td> -->
+                            <td>{{item.codigo}}</td>
+                            <td>{{item.nombreArchivoXml}}</td>
+                            <td>{{item.observacion}}</td>
+                          </tr>
                           </tbody>
                         </table>
                       </div>
@@ -620,12 +634,12 @@
                   </div>
                 </div> -->
                   <div class="d-flex justify-content-between pt-1">
-                    
+
                     <button [routerLink]="['/comercial/solicitudes']" skipLocationChange
-                      [queryParams]=""
-                      queryParamsHandling="merge"
-                      class="btn btn-secondary btn-next" rippleEffect
-                      >
+                            [queryParams]=""
+                            queryParamsHandling="merge"
+                            class="btn btn-secondary btn-next" rippleEffect
+                    >
                       <span class="align-middle d-sm-inline-block d-none">Cerrar</span>
                       <i [data-feather]="'x-circle'" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
@@ -650,38 +664,44 @@
             <div class="col-md-12 col-12">
               <div class="form-group">
                 <div class="d-flex justify-content-between align-items-center m-1">
-                  <label class="d-flex align-items-center">Buscar<input formControlName="buscarCliente" type="search"
-                      placeholder="Buscar" class="form-control ml-25" [(ngModel)]="searchCli"
-                      [ngModelOptions]="{ standalone: true }" (change)="onClientePagadorList('', 0)" /></label>
+                  <label class="d-flex align-items-center">Buscar
+                    <input formControlName="buscarCliente" type="search"
+                           placeholder="Buscar" class="form-control ml-25"
+                           [(ngModel)]="searchCli"
+                           [ngModelOptions]="{ standalone: true }"
+                           (change)="onClientePagadorList('', 0)"/>
+                  </label>
                 </div>
               </div>
             </div>
-
-            <div class="col-md-12 col-12">
+          </div>
+          <div class="row">
+            <div class="col-12">
               <div class="table-responsive">
                 <table class="table table-hover">
                   <thead>
-                    <tr>
-                      <th>Razón Social</th>
-                      <th>Ruc</th>
-                    </tr>
+                  <tr>
+                    <th>Razón Social</th>
+                    <th>Ruc</th>
+                  </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let item of optClienteP" class="cursor-pointer"
+                  <tr *ngFor="let item of optClienteP" class="cursor-pointer"
                       [class.selectedRow]="rowIsSelected(item.idCliente)"
                       (click)="onRowClick(item.razonSocial,item.ruc, item.idCliente, modal, item)">
-                      <td>{{item.razonSocial}}</td>
-                      <td>{{item.ruc}}</td>
-                    </tr>
+                    <td>{{item.razonSocial}}</td>
+                    <td>{{item.ruc}}</td>
+                  </tr>
                   </tbody>
                 </table>
               </div>
             </div>
-            <div class="row">
-              <div class="col-12 col-md-12 d-flex justify-content-end">
-                <ngb-pagination [collectionSize]="collectionSizeCli" [(page)]="pageCli"
-                  (pageChange)="onClientePagadorList(modalCliente, 0)" [pageSize]="pageSizeCli"></ngb-pagination>
-              </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-12 d-flex justify-content-end">
+              <ngb-pagination [collectionSize]="collectionSizeCli" [(page)]="pageCli"
+                              (pageChange)="onClientePagadorList(modalCliente, 0)"
+                              [pageSize]="pageSizeCli"></ngb-pagination>
             </div>
           </div>
         </form>
@@ -712,8 +732,8 @@
               <div class="form-group">
                 <label>Seleccione Tipo</label>
                 <ng-select appendTo="body" [clearable]="false" [items]="optTipo" bindLabel="descripcion"
-                  placeholder="Tipo" [(ngModel)]="idTipo" bindValue="idColumna" formControlName="tipo"
-                  (change)="onCalcularCT()">
+                           placeholder="Tipo" [(ngModel)]="idTipo" bindValue="idColumna" formControlName="tipo"
+                           (change)="onCalcularCT()">
                 </ng-select>
               </div>
             </div>
@@ -721,7 +741,8 @@
               <div class="form-group">
                 <label>Seleccione Moneda</label>
                 <ng-select appendTo="body" [clearable]="false" [items]="optMoneda" bindLabel="descripcion"
-                  [(ngModel)]="idMoneda" (change)="onChangeMoneda()" bindValue="idColumna" formControlName="moneda">
+                           [(ngModel)]="idMoneda" (change)="onChangeMoneda()" bindValue="idColumna"
+                           formControlName="moneda">
                 </ng-select>
               </div>
             </div>
@@ -730,11 +751,11 @@
                 <label>RUC</label>
                 <div class="input-group">
                   <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.ruc.errors }" class="form-control"
-                    formControlName="ruc" type="text" [(ngModel)]="ruc" disabled />
+                         formControlName="ruc" type="text" [(ngModel)]="ruc" disabled/>
                   <div class="input-group-append">
                     <button (click)="onClientePagadorList(modalCliente, 1)" class="btn btn-outline-secondary feather"
-                      rippleEffect type="button"><span ngbTooltip="Mostrar lista de clientes" placement="left"
-                        container="body" [data-feather]="'search'"></span></button>
+                            rippleEffect type="button"><span ngbTooltip="Mostrar lista de clientes" placement="left"
+                                                             container="body" [data-feather]="'search'"></span></button>
                   </div>
                   <div *ngIf="CapitalIUForm.ruc.errors" class="invalid-feedback">
                     <div *ngIf="CapitalIUForm.ruc.errors.required">* Campo obligatorio</div>
@@ -747,7 +768,7 @@
               <div class="form-group">
                 <label>Razón Social</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.razonSocial.errors }" class="form-control"
-                  formControlName="razonSocial" type="text" [(ngModel)]="razonSocial" disabled />
+                       formControlName="razonSocial" type="text" [(ngModel)]="razonSocial" disabled/>
                 <div *ngIf="CapitalIUForm.razonSocial.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.razonSocial.errors.required">* Campo obligatorio</div>
                 </div>
@@ -757,7 +778,7 @@
               <div class="form-group">
                 <label>Tasa Anual</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaAnual.errors }" class="form-control"
-                  formControlName="tasaAnual" type="text" disabled />
+                       formControlName="tasaAnual" type="text" disabled/>
                 <div *ngIf="CapitalIUForm.tasaAnual.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.tasaAnual.errors.required">* Campo obligatorio</div>
                 </div>
@@ -767,7 +788,7 @@
               <div class="form-group">
                 <label>Tasa Mensual</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaMensual.errors }" class="form-control"
-                  formControlName="tasaMensual" type="text" disabled />
+                       formControlName="tasaMensual" type="text" disabled/>
                 <div *ngIf="CapitalIUForm.tasaMensual.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.tasaMensual.errors.required">* Campo obligatorio</div>
                 </div>
@@ -777,7 +798,7 @@
               <div class="form-group">
                 <label>Contrato</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.contrato.errors }"
-                  class="form-control" formControlName="contrato" type="text" disabled />
+                       class="form-control" formControlName="contrato" type="text" disabled/>
                 <div *ngIf="CapitalIUForm.contrato.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.contrato.errors.required">* Campo obligatorio</div>
                 </div>
@@ -787,7 +808,7 @@
               <div class="form-group">
                 <label>Comisión Carta Notarial</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.cartaNotarial.errors }"
-                  class="form-control" formControlName="cartaNotarial" type="text" disabled />
+                       class="form-control" formControlName="cartaNotarial" type="text" disabled/>
                 <div *ngIf="CapitalIUForm.cartaNotarial.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.cartaNotarial.errors.required">* Campo obligatorio</div>
                 </div>
@@ -797,7 +818,7 @@
               <div class="form-group">
                 <label>Servicio Cobranza</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.servicioCobranza.errors }"
-                  class="form-control" formControlName="servicioCobranza" type="text" disabled />
+                       class="form-control" formControlName="servicioCobranza" type="text" disabled/>
                 <div *ngIf="CapitalIUForm.servicioCobranza.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.servicioCobranza.errors.required">* Campo obligatorio</div>
                 </div>
@@ -807,7 +828,7 @@
               <div class="form-group">
                 <label>Servicio Custodia</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.servicioCustodia.errors }"
-                  class="form-control" formControlName="servicioCustodia" type="text" disabled />
+                       class="form-control" formControlName="servicioCustodia" type="text" disabled/>
                 <div *ngIf="CapitalIUForm.servicioCustodia.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.servicioCustodia.errors.required">* Campo obligatorio</div>
                 </div>
@@ -817,7 +838,7 @@
               <div class="form-group">
                 <label>IGV</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.igvCT.errors }"
-                  class="form-control" formControlName="igvCT" type="text" disabled />
+                       class="form-control" formControlName="igvCT" type="text" disabled/>
                 <div *ngIf="CapitalIUForm.igvCT.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.igvCT.errors.required">* Campo obligatorio</div>
                 </div>
@@ -827,7 +848,7 @@
               <div class="form-group">
                 <label>Monto</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.mcTrabajo.errors }" class="form-control"
-                  formControlName="mcTrabajo" type="number" (change)="validacionCT()"/>
+                       formControlName="mcTrabajo" type="number" (change)="validacionCT()"/>
                 <div *ngIf="CapitalIUForm.mcTrabajo.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.mcTrabajo.errors.required">* Campo obligatorio</div>
                 </div>
@@ -837,7 +858,7 @@
               <div class="form-group">
                 <label>Monto Solicitud</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.ctSolicitado.errors || mayor}"
-                  class="form-control" formControlName="ctSolicitado" type="number" (change)="validacionCT()"/>
+                       class="form-control" formControlName="ctSolicitado" type="number" (change)="validacionCT()"/>
                 <div *ngIf="CapitalIUForm.ctSolicitado.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.ctSolicitado.errors.required">* Campo obligatorio</div>
                 </div>
@@ -847,7 +868,7 @@
               <div class="form-group">
                 <label>Días de prestamo</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.diasPrestamo.errors }" class="form-control"
-                  formControlName="diasPrestamo" type="number" (change)="calcularFP()" />
+                       formControlName="diasPrestamo" type="number" (change)="calcularFP()"/>
                 <div *ngIf="CapitalIUForm.diasPrestamo.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.diasPrestamo.errors.required">* Campo obligatorio</div>
                 </div>
@@ -858,10 +879,10 @@
                 <label>Fecha de Pago</label>
                 <div class="input-group">
                   <input #basicDPFrom="ngbDatepicker" #i18nDP="ngbDatepicker" [(ngModel)]="fechaPagoCT"
-                    class="form-control" ngbDatepicker placeholder="dd/mm/yyyy" formControlName="fechaPago">
+                         class="form-control" ngbDatepicker placeholder="dd/mm/yyyy" formControlName="fechaPago">
                   <div class="input-group-append">
                     <button (click)="basicDPFrom.toggle()" class="btn btn-outline-secondary feather icon-calendar"
-                      rippleEffect type="button"></button>
+                            rippleEffect type="button"></button>
                   </div>
                 </div>
               </div>
@@ -870,7 +891,7 @@
               <div class="form-group">
                 <label>Monto a descontar</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.montoDesc.errors }" class="form-control"
-                  formControlName="montoDesc" type="text" disabled />
+                       formControlName="montoDesc" type="text" disabled/>
                 <div *ngIf="CapitalIUForm.montoDesc.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.montoDesc.errors.required">* Campo obligatorio</div>
                 </div>
@@ -880,7 +901,7 @@
               <div class="form-group">
                 <label>Intereses incluido IGV</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.iIncluidoIGV.errors }" class="form-control"
-                  formControlName="iIncluidoIGV" type="text" disabled />
+                       formControlName="iIncluidoIGV" type="text" disabled/>
                 <div *ngIf="CapitalIUForm.iIncluidoIGV.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.iIncluidoIGV.errors.required">* Campo obligatorio</div>
                 </div>
@@ -891,7 +912,7 @@
               <div class="form-group">
                 <label>Gastos incluido IGV</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.gIncluidoIGV.errors }" class="form-control"
-                  formControlName="gIncluidoIGV" type="number:'.0-2'" disabled/>
+                       formControlName="gIncluidoIGV" type="number:'.0-2'" disabled/>
                 <div *ngIf="CapitalIUForm.gIncluidoIGV.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.gIncluidoIGV.errors.required">* Campo obligatorio</div>
                 </div>
@@ -901,7 +922,7 @@
               <div class="form-group">
                 <label>Total a Facturar con IGV</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tFacturarIGV.errors }" class="form-control"
-                  formControlName="tFacturarIGV" type="text" disabled/>
+                       formControlName="tFacturarIGV" type="text" disabled/>
                 <div *ngIf="CapitalIUForm.tFacturarIGV.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.tFacturarIGV.errors.required">* Campo obligatorio</div>
                 </div>
@@ -911,7 +932,7 @@
               <div class="form-group">
                 <label>Total a Desembolsar con IGV</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tDesembolsoIGV.errors }"
-                  class="form-control" formControlName="tDesembolsoIGV" type="text" disabled/>
+                       class="form-control" formControlName="tDesembolsoIGV" type="text" disabled/>
                 <div *ngIf="CapitalIUForm.tDesembolsoIGV.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.tDesembolsoIGV.errors.required">* Campo obligatorio</div>
                 </div>

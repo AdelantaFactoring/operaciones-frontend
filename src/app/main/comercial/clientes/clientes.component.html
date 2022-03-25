@@ -227,7 +227,8 @@
                     <tbody>
                     <tr>
                       <td>
-                        <a href="javascript:void(0)" title="Nuevo" (click)="onAgregarContacto()">
+                        <a href="javascript:void(0)" title="Nuevo" (click)="onAgregarContacto()"
+                           class="btn btn-raised btn-outline-info btn-sm">
                           <i class="text-info cursor-pointer" data-feather="plus-circle"></i>
                         </a>
                       </td>
@@ -262,18 +263,22 @@
                       <td>
                         <div class="d-flex align-items-center">
                           <a *ngIf="!item.edicion" href="javascript:void(0)" title="Editar"
+                             class="btn btn-raised btn-outline-success btn-sm"
                              (click)="onEditarContacto(item)">
-                            <i class="text-primary cursor-pointer" data-feather="edit"></i>
+                            <i class="text-success cursor-pointer" data-feather="edit"></i>
                           </a>
                           <a *ngIf="item.edicion" href="javascript:void(0)" title="Cancelar"
-                             (click)="onCancelarContacto(item)">
-                            <i class="text-primary cursor-pointer" data-feather="corner-up-left"></i>
+                             (click)="onCancelarContacto(item)"
+                             class="btn btn-raised btn-outline-secondary btn-sm">
+                            <i class="text-secondary cursor-pointer" data-feather="corner-up-left"></i>
                           </a>
                           &nbsp;
-                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar" (click)="onEliminarContacto(item)">
+                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar" (click)="onEliminarContacto(item)"
+                             class="btn btn-raised btn-outline-danger btn-sm">
                             <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
                           </a>
                           <a *ngIf="item.edicion" href="javascript:void(0)" title="Confirmar cambios"
+                             class="btn btn-raised btn-outline-success btn-sm"
                              (click)="onConfirmarCambioContacto(item)">
                             <i class="text-success cursor-pointer" data-feather="save"></i>
                           </a>
@@ -351,7 +356,8 @@
                     <tbody>
                     <tr>
                       <td>
-                        <a href="javascript:void(0)" title="Nuevo" (click)="onAgregarCuenta()">
+                        <a href="javascript:void(0)" title="Nuevo" (click)="onAgregarCuenta()"
+                           class="btn btn-raised btn-outline-info btn-sm">
                           <i class="text-info cursor-pointer" data-feather="plus-circle"></i>
                         </a>
                       </td>
@@ -386,19 +392,21 @@
                       <td>
                         <div class="d-flex align-items-center">
                           <a *ngIf="!item.edicion" href="javascript:void(0)" title="Editar"
-                             (click)="onEditarCuenta(item)">
-                            <i class="text-primary cursor-pointer" data-feather="edit"></i>
+                             (click)="onEditarCuenta(item)" class="btn btn-raised btn-outline-success btn-sm">
+                            <i class="text-success cursor-pointer" data-feather="edit"></i>
                           </a>
                           <a *ngIf="item.edicion" href="javascript:void(0)" title="Cancelar"
+                             class="btn btn-raised btn-outline-secondary btn-sm"
                              (click)="onCancelarCuenta(item)">
-                            <i class="text-primary cursor-pointer" data-feather="corner-up-left"></i>
+                            <i class="text-secondary cursor-pointer" data-feather="corner-up-left"></i>
                           </a>
                           &nbsp;
-                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar" (click)="onEliminarCuenta(item)">
+                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar" (click)="onEliminarCuenta(item)"
+                             class="btn btn-raised btn-outline-danger btn-sm">
                             <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
                           </a>
                           <a *ngIf="item.edicion" href="javascript:void(0)" title="Confirmar cambios"
-                             (click)="onConfirmarCambioCuenta(item)">
+                             (click)="onConfirmarCambioCuenta(item)" class="btn btn-raised btn-outline-success btn-sm">
                             <i class="text-success cursor-pointer" data-feather="save"></i>
                           </a>
                         </div>

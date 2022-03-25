@@ -1,4 +1,9 @@
 ::ng-deep .my-class .modal-dialog {
+  min-width: 75%;
+  //width: 60%;
+}
+
+::ng-deep .my-class1 .modal-dialog {
   min-width: 60%;
   //width: 60%;
 }

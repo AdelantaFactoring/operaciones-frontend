@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import {RequestMethod} from "../../../../shared/helpers/request-method";
+import {RequestMethod} from "app/shared/helpers/request-method";
 import {Observable} from "rxjs";
-import {environment} from "../../../../../environments/environment";
-import {CLIENTEPAGADOR} from "../../../../shared/helpers/url/comercial";
-import {CONTENT_TYPE} from "../../../../shared/helpers/headers";
+import {environment} from "./../../../../environments/environment";
+import {CLIENTEPAGADOR} from "app/shared/helpers/url/comercial";
+import {CONTENT_TYPE} from "app/shared/helpers/headers";
 
 @Injectable({
   providedIn: 'root'

@@ -1,17 +1,17 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ClientePagador} from "../../../../shared/models/comercial/cliente-pagador";
-import {UtilsService} from "../../../../shared/services/utils.service";
-import {TablaMaestra} from "../../../../shared/models/shared/tabla-maestra";
-import {TablaMaestraService} from "../../../../shared/services/tabla-maestra.service";
+import {ClientePagador} from "app/shared/models/comercial/cliente-pagador";
+import {UtilsService} from "app/shared/services/utils.service";
+import {TablaMaestra} from "app/shared/models/shared/tabla-maestra";
+import {TablaMaestraService} from "app/shared/services/tabla-maestra.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {Cliente} from "../../../../shared/models/comercial/cliente";
+import {Cliente} from "app/shared/models/comercial/cliente";
 import {ClientePagadorService} from "./cliente-pagador.service";
-import {ClientesService} from "../clientes.service";
-import {PagadorService} from "../../pagador/pagador.service";
-import {Pagador} from "../../../../shared/models/comercial/Pagador";
+import {ClientesService} from "./../clientes/clientes.service";
+import {PagadorService} from "./../pagador/pagador.service";
+import {Pagador} from "app/shared/models/comercial/Pagador";
 import Swal from "sweetalert2";
-import {ClientePagadorGastos} from "../../../../shared/models/comercial/cliente-pagador-gastos";
+import {ClientePagadorGastos} from "app/shared/models/comercial/cliente-pagador-gastos";
 
 @Component({
   selector: 'app-cliente-pagador',

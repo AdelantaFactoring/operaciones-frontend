@@ -13,6 +13,213 @@
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <div class="d-flex justify-content-between align-items-center m-1">
+              <label class="d-flex align-items-center"
+              >Mostrar
+                <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
+                        (change)="onListarLiquidaciones()">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                filas</label>
+            </div>
+          </div>
+          <div class="col-md-6 col-12 d-flex justify-content-md-end">
+            <div class="d-flex align-items-center justify-content-end pr-1 pb-1 pl-1 pl-md-0 pb-md-0">
+              <label class="d-flex align-items-center"
+              >Buscar<input
+                type="search"
+                placeholder="Buscar"
+                class="form-control ml-25"
+                [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" (change)="onListarLiquidaciones()"
+              /></label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>
+                    <div class="d-flex align-items-center">
+                      <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                         (click)="onCambiarVisibilidadDetalleTodo()">
+                        <div *ngIf="!cambiarIcono">
+                          <i class="text-primary cursor-pointer" data-feather="chevron-right"></i>
+                        </div>
+                        <div *ngIf="cambiarIcono"><i class="text-primary cursor-pointer"
+                                                     data-feather="chevron-down"></i>
+                        </div>
+                      </a>
+                    </div>
+                  </th>
+                  <th>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="customCheck" unchecked
+                             [(ngModel)]="seleccionarTodo" (ngModelChange)="onSeleccionarTodo()"/>
+                      <label class="custom-control-label" for="customCheck"></label>
+                    </div>
+                  </th>
+                  <th>Acción</th>
+                  <th>N° Liquidación</th>
+                  <th>Cliente</th>
+                  <th>Cliente RUC</th>
+                  <th>Pagador / Proveedor</th>
+                  <th>Pagador / Proveedor RUC</th>
+                  <th>Moneda</th>
+                  <th>Monto Total</th>
+                  <th>Deuda Anterior</th>
+                  <th>Nuevo Monto Total</th>
+                  <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-template let-cab ngFor [ngForOf]="liquidaciones">
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                           (click)="onCambiarVisibilidadDetalle(cab)">
+                          <div *ngIf="!cab.cambiarIcono">
+                            <i class="text-primary cursor-pointer" data-feather="chevron-right"></i>
+                          </div>
+                          <div *ngIf="cab.cambiarIcono"><i class="text-primary cursor-pointer"
+                                                           data-feather="chevron-down"></i>
+                          </div>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="{{'customCheck' + cab.idSolicitudCab}}"
+                               [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"/>
+                        <label class="custom-control-label" for="{{'customCheck' + cab.idSolicitudCab}}"></label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Ver Detalle"
+                           class="btn btn-raised btn-outline-info btn-sm">
+                          <i class="text-info cursor-pointer" data-feather="eye"></i>
+                        </a>
+                        &nbsp;
+                        <a href="javascript:void(0)" title="Anular"
+                           class="btn btn-raised btn-outline-danger btn-sm">
+                          <i class="text-danger cursor-pointer" data-feather="slash"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>{{cab.codigo}}</td>
+                    <td>{{cab.razonSocialCliente}}</td>
+                    <td>{{cab.rucCliente}}</td>
+                    <td>{{cab.razonSocialPagProv}}</td>
+                    <td>{{cab.rucPagProv}}</td>
+                    <td>{{cab.moneda}}</td>
+                    <td><strong>{{cab.montoTotal | number: '1.2-2'}}</strong></td>
+                    <td>{{cab.deudaAnterior | number: '1.2-2'}}</td>
+                    <td><strong>{{cab.nuevoMontoTotal | number: '1.2-2'}}</strong></td>
+                    <td>{{cab.estado}}</td>
+                  </tr>
+                  <tr id="{{ 'tr' + cab.idLiquidacionCab }}" style="visibility: collapse">
+                    <td [colSpan]="13">
+                      <div class="table-responsive" style="padding-left: 20px; display: none;"
+                           id="{{ 'detail' + cab.idLiquidacionCab }}">
+                        <table class="table table-hover" >
+                          <thead>
+                          <tr>
+                            <th class="detail-th-color">Acción</th>
+                            <th class="detail-th-color">N° Documento</th>
+                            <th class="detail-th-color">T.N.M (%)</th>
+                            <th class="detail-th-color">T.N.A (%)</th>
+                            <th class="detail-th-color">Financiamiento (%)</th>
+                            <th class="detail-th-color">Fecha Confirmada</th>
+                            <th class="detail-th-color">Fecha Operación</th>
+                            <th class="detail-th-color">Día(s) Efectivo</th>
+                            <th class="detail-th-color">Neto Confirmado</th>
+                            <th class="detail-th-color">Comisión Estructuración (%)</th>
+                            <th class="detail-th-color">Monto Comisión E.</th>
+                            <th class="detail-th-color">Comisión E. (IGV)</th>
+                            <th class="detail-th-color">Monto Total Comisión E.</th>
+                            <th class="detail-th-color">Fondo Resguardo</th>
+                            <th class="detail-th-color">Monto a Financiar</th>
+                            <th class="detail-th-color">Interés</th>
+                            <th class="detail-th-color">Interés (IGV)</th>
+                            <th class="detail-th-color">Interés Total </th>
+                            <th class="detail-th-color">Gastos Contrato</th>
+                            <th class="detail-th-color">Gastos Vigencia Poder</th>
+                            <th class="detail-th-color">Servicio Custodia</th>
+                            <th class="detail-th-color">Servicio Cobranza</th>
+                            <th class="detail-th-color">Comisión Carta Notarial</th>
+                            <th class="detail-th-color">Gastos Diversos</th>
+                            <th class="detail-th-color">Gastos Diversos (IGV)</th>
+                            <th class="detail-th-color">Total Gastos Diversos</th>
+                            <th class="detail-th-color">Monto Total Facturado</th>
+                            <th class="detail-th-color">Nota Crédito por Dev.</th>
+                            <th class="detail-th-color">Monto Desembolso</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of cab.liquidacionDet">
+                            <td>
+                              <div class="d-flex align-items-center">
+                                <a href="javascript:void(0)" title="Editar"
+                                   class="btn btn-raised btn-outline-success btn-sm">
+                                  <i class="text-success cursor-pointer" data-feather="edit"></i>
+                                </a>
+                              </div>
+                            </td>
+                            <td>{{item.nroDocumento}}</td>
+                            <td>{{item.tasaNominalMensual | number: '1.2-2'}}</td>
+                            <td>{{item.tasaNominalAnual | number: '1.2-2'}}</td>
+                            <td>{{item.financiamiento | number: '1.2-2'}}</td>
+                            <td>{{item.fechaConfirmado}}</td>
+                            <td>{{item.fechaOperacionFormat}}</td>
+                            <td>{{item.diasEfectivo | number: '1.0-0'}}</td>
+                            <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                            <td>{{item.comisionEstructuracion | number: '1.2-2'}}</td>
+                            <td>{{item.montoComisionEstructuracion | number: '1.2-2'}}</td>
+                            <td>{{item.comisionEstructuracionIGV | number: '1.2-2'}}</td>
+                            <td>{{item.comisionEstructuracionConIGV | number: '1.2-2'}}</td>
+                            <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                            <td>{{item.montoCobrar | number: '1.2-2'}}</td>
+                            <td>{{item.interes | number: '1.2-2'}}</td>
+                            <td>{{item.interesIGV | number: '1.2-2'}}</td>
+                            <td>{{item.interesConIGV | number: '1.2-2'}}</td>
+                            <td>{{item.gastosContrato | number: '1.2-2'}}</td>
+                            <td>{{item.gastoVigenciaPoder | number: '1.2-2'}}</td>
+                            <td>{{item.servicioCustodia | number: '1.2-2'}}</td>
+                            <td>{{item.servicioCobranza | number: '1.2-2'}}</td>
+                            <td>{{item.comisionCartaNotarial | number: '1.2-2'}}</td>
+                            <td>{{item.gastosDiversos | number: '1.2-2'}}</td>
+                            <td>{{item.gastosDiversosIGV | number: '1.2-2'}}</td>
+                            <td>{{item.gastosDiversosConIGV | number: '1.2-2'}}</td>
+                            <td>{{item.montoTotalFacturado | number: '1.2-2'}}</td>
+                            <td>{{item.montoNotaCreditoDevolucion | number: '1.2-2'}}</td>
+                            <td>{{item.montoDesembolso | number: '1.2-2'}}</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
+            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
+                            (pageChange)="onListarLiquidaciones()" [pageSize]="pageSize"></ngb-pagination>
+          </div>
+        </div>
 
         <ng-template #modalSOLICITUD let-modal>
           <div class="modal-header">
@@ -82,9 +289,9 @@
                       </th>
                       <th>
                         <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="customCheck" unchecked
+                          <input type="checkbox" class="custom-control-input" id="customCheckS" unchecked
                                  [(ngModel)]="seleccionarTodoSolicitud" (ngModelChange)="onSeleccionarTodoSolicitud()"/>
-                          <label class="custom-control-label" for="customCheck"></label>
+                          <label class="custom-control-label" for="customCheckS"></label>
                         </div>
                       </th>
                       <th>Acción</th>
@@ -116,15 +323,15 @@
                         </td>
                         <td>
                           <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="{{'customCheck' + cab.idSolicitudCab}}"
+                            <input type="checkbox" class="custom-control-input" id="{{'customCheckS' + cab.idSolicitudCab}}"
                                    [disabled]="!cab.checkList"
                                    [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"/>
-                            <label class="custom-control-label" for="{{'customCheck' + cab.idSolicitudCab}}"></label>
+                            <label class="custom-control-label" for="{{'customCheckS' + cab.idSolicitudCab}}"></label>
                           </div>
                         </td>
                         <td>
                           <div class="d-flex align-items-center">
-                            <a href="javascript:void(0)" title="Ver Detalle"
+                            <a href="javascript:void(0)" title="Ver Detalle" (click)="onVerDetalleSolicitud(cab, modalINFOSOLICITUD)"
                                class="btn btn-raised btn-outline-info btn-sm">
                               <i class="text cursor-pointer" data-feather="eye"></i>
                             </a>
@@ -182,6 +389,345 @@
               <div class="col-12 col-md-12 d-flex justify-content-end pt-1">
                 <ngb-pagination [collectionSize]="collectionSizeSolicitud" [(page)]="pageSolicitud"
                                 (pageChange)="onRefrescarSolicitud()" [pageSize]="pageSizeSolicitud"></ngb-pagination>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template #modalINFOSOLICITUD let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel1">N° Solicitud - [{{codigoSolicitud}}]</h4>
+            <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" ngbAutofocus tabindex="0">
+            <form [formGroup]="solicitudForm">
+              <div class="row spaced">
+                <div class="col-12">
+                  <div class="divider divider-info">
+                    <div class="divider-text">Información General</div>
+                  </div>
+                </div>
+                <div class="col-md-12 col-12" hidden>
+                  <div class="form-group">
+                    <label>Id</label>
+                    <input class="form-control" formControlName="idSolicitudCab" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>RUC (Cliente)</label>
+                    <input class="form-control" formControlName="rucCliente" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Razón Social (Cliente)</label>
+                    <input class="form-control" formControlName="razonSocialCliente" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>RUC (Pagador / Proveedor)</label>
+                    <input class="form-control" formControlName="rucPagProv" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Razón Social (Pagador / Proveedor)</label>
+                    <input class="form-control" formControlName="razonSocialPagProv" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Moneda</label>
+                    <input class="form-control" formControlName="moneda" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Tipo Operación</label>
+                    <input class="form-control" formControlName="tipoOperacion" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Tipo</label>
+                    <ng-select appendTo="body" [clearable]="false" [items]="tipoCT"
+                               bindLabel="descripcion" bindValue="idColumna" formControlName="idTipoCT">
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Monto</label>
+                    <input class="form-control" formControlName="montoCT" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Monto Solicitud</label>
+                    <input class="form-control" formControlName="montoSolicitudCT" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Día(s) Préstamo</label>
+                    <input class="form-control" formControlName="diasPrestamoCT" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Fecha Pago</label>
+                    <input class="form-control" formControlName="fechaPagoCT" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="idTipoOperacion == 2 && idTipoCT == 1">
+                  <div class="form-group">
+                    <label>Monto a Descontar</label>
+                    <input class="form-control" formControlName="montoDescontarCT" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Interes Incluido IGV</label>
+                    <input class="form-control" formControlName="interesConIGVCT" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Gastos Incluido IGV</label>
+                    <input class="form-control" formControlName="gastosConIGVCT" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Total a Facturar con IGV</label>
+                    <input class="form-control" formControlName="totFacurarConIGVCT" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Total a Desembolsar con IGV</label>
+                    <input class="form-control" formControlName="totDesembolsarConIGVCT" type="text"/>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="divider divider-success">
+                    <div class="divider-text">Información de Gastos</div>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12" hidden>
+                  <div class="form-group">
+                    <label>Comisión Estructuración</label>
+                    <input class="form-control" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator="," formControlName="comisionEstructuracion"/>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
+                  <div class="form-group">
+                    <div class="custom-control custom-switch custom-control-inline">
+                      <input type="checkbox" class="custom-control-input"
+                             id="usoGC" formControlName="usarGastosContrato"
+                      />
+                      <label class="custom-control-label"
+                             for="usoGC">Aplicar Gastos de Contrato</label>
+                    </div>
+                    <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
+                  </div>
+                </div>
+                <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
+                  <div class="form-group">
+                    <div class="custom-control custom-switch custom-control-inline">
+                      <input type="checkbox" class="custom-control-input"
+                             id="usoGVP" formControlName="usarGastoVigenciaPoder"
+                      />
+                      <label class="custom-control-label"
+                             for="usoGVP">Aplicar Gasto Vigencia de Poder</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
+                </div>
+                <div class="col-md-4 col-12" [hidden]="idTipoOperacion === 2">
+                  <div class="form-group">
+                    <label>Gastos de Contrato</label>
+                    <input class="form-control" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator="," formControlName="gastosContrato"/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12" [hidden]="idTipoOperacion === 2">
+                  <div class="form-group">
+                    <label>Gasto Vigencia de Poder</label>
+                    <input class="form-control" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator="," formControlName="gastoVigenciaPoder"/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Comisión Carta Notarial</label>
+                    <input class="form-control" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator="," formControlName="comisionCartaNotarial"/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Servicio Cobranza</label>
+                    <input class="form-control" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator="," formControlName="servicioCobranza"/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Servicio Custodia</label>
+                    <input class="form-control" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator="," formControlName="servicioCustodia"/>
+                  </div>
+                </div>
+                <div class="col-12" [hidden]="idTipoOperacion === 2">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                      <tr>
+                        <th class="detail-th-color">N° Documento</th>
+                        <th class="detail-th-color">Forma Pago</th>
+                        <th class="detail-th-color">Monto sin IGV</th>
+                        <th class="detail-th-color">Monto con IGV</th>
+                        <th class="detail-th-color">Fecha Pago</th>
+                        <th class="detail-th-color">Monto Pago Confirmado</th>
+                        <th class="detail-th-color">Fondo Resguardo</th>
+                        <th class="detail-th-color">Estado</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let item of detalleSolicitud">
+                        <td>{{item.nroDocumento}}</td>
+                        <td>{{item.formaPago}}</td>
+                        <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
+                        <td>{{item.montoConIGV | number: '1.2-2'}}</td>
+                        <td>{{item.fechaConfirmadoFormat}}</td>
+                        <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                        <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                        <td>{{item.estado}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="divider divider-danger">
+                    <div class="divider-text">Información del Contacto</div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Nombre(s) y Apellidos</label>
+                    <input class="form-control" formControlName="nombreContacto" type="text" readonly/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Teléfono</label>
+                    <input class="form-control" formControlName="telefonoContacto" type="text" readonly/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Correo</label>
+                    <input class="form-control" formControlName="correoContacto" type="text" readonly/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Correo(s) a Copiar</label>
+                    <input class="form-control" formControlName="conCopiaContacto" type="text"/>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="divider divider-warning">
+                    <div class="divider-text">Información de Cuenta Bancaria</div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Titular</label>
+                    <input class="form-control" formControlName="titularCuentaBancariaDestino" type="text" readonly/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Moneda</label>
+                    <input class="form-control" formControlName="monedaCuentaBancariaDestino" type="text" readonly/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Banco</label>
+                    <input class="form-control" formControlName="bancoDestino" type="text" readonly/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>N° Cuenta</label>
+                    <input class="form-control" type="text" readonly formControlName="nroCuentaBancariaDestino"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>CCI</label>
+                    <input class="form-control" type="text" readonly formControlName="cciDestino"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Tipo de Cuenta</label>
+                    <input class="form-control" formControlName="tipoCuentaBancariaDestino" type="text" readonly/>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="divider divider-secondary">
+                    <div class="divider-text">Documento(s) de Sustento</div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="d-flex justify-content-between mb-1">
+                    <h4>Archivo(s) adjuntos</h4>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                      <tr>
+                        <th>Tipo</th>
+                        <th>Nombre</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let item of sustentosSolicitud">
+                        <td [ngClass]="{'row-edicion': item.editado}"><p [ngClass]="{ 'eliminado': !item.estado }">{{item.tipo}}</p></td>
+                        <td [ngClass]="{'row-edicion': item.editado}">
+                          <a href="{{item.rutaArchivo}}" target="_blank"><strong [ngClass]="{ 'eliminado': !item.estado }">{{ item.archivo }}</strong></a>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer" style="display: block !important;">
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div style="float: right">
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="modal.dismiss('Cross click')">
+                    <span [data-feather]="'x-circle'"></span> Cerrar
+                  </button>
+                </div>
               </div>
             </div>
           </div>

@@ -18,7 +18,7 @@ import { PagadorComponent } from './pagador/pagador.component';
 import { SolicitudesFormComponent } from './solicitudes/solicitudes-form/solicitudes-form.component';
 import { CardSnippetModule } from '@core/components/card-snippet/card-snippet.module';
 import { CoreDirectivesModule } from '@core/directives/directives';
-import { ClientePagadorComponent } from './clientes/cliente-pagador/cliente-pagador.component';
+import { ClientePagadorComponent } from './cliente-pagador/cliente-pagador.component';
 import { SolicitudesGrillaComponent } from './solicitudes/solicitudes-grilla/solicitudes-grilla.component';
 
 const routes: Routes = [

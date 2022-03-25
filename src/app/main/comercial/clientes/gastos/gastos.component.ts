@@ -150,8 +150,8 @@ export class GastosComponent implements OnInit {
         confirmButtonText: 'Sí',
         cancelButtonText: 'No',
         customClass: {
-          confirmButton: 'btn btn-danger',
-          cancelButton: 'btn btn-primary'
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
         }
       }).then(result => {
         if (result.value) {
