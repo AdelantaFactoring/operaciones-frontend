@@ -55,6 +55,7 @@ export class ConsultaFactrackComponent implements OnInit {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.consultaFactrackService.listar({
       idConsulta: 3,
+      idSubConsulta: 0,
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize

@@ -72,6 +72,7 @@ export class RespuestaPagadorComponent implements OnInit {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.respuestaPagadorService.listar({
       idConsulta: 2,
+      idSubConsulta: 0,
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
@@ -208,8 +209,10 @@ export class RespuestaPagadorComponent implements OnInit {
     item.editado = true;
   }
 
-  onCambiarMontoConfirmado(item: SolicitudDet) {
+  onCambiarMontoConfirmado(item: SolicitudDet, cab: SolicitudCab) {
     item.editado = true;
+    let porcentajeFR = (100 - cab.financiamiento) / 100;
+    item.fondoResguardo = item.netoConfirmado * porcentajeFR;
   }
 
   onCambiarVisibilidadDetalleTodo() {

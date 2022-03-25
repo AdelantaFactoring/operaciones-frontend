@@ -47,11 +47,13 @@ export class CheckListComponent implements OnInit {
   public idCliente: number = 0;
   public codigo: string = '';
   public idTipoOperacion = 0;
+  public idTipoCT = 0;
   public nroCuentaBancariaDestino: string = '';
   public cciDestino: string = '';
   public nombreContacto: string = '';
   public telefonoContacto: string = '';
   public correoContacto: string = '';
+  public igvCT: number = 0;
 
   public collectionSize: number = 0;
   public pageSize: number = 10;
@@ -133,7 +135,12 @@ export class CheckListComponent implements OnInit {
       montoCT: [{value: 0, disabled: true}],
       montoSolicitudCT: [{value: 0, disabled: true}],
       diasPrestamoCT: [{value: 0, disabled: true}],
-      fechaPagoCT: [{value: 0, disabled: true}]
+      fechaPagoCT: [{value: 0, disabled: true}],
+      montoDescontarCT: [{value: 0, disabled: true}],
+      interesConIGVCT: [{value: 0, disabled: true}],
+      gastosConIGVCT: [{value: 0, disabled: true}],
+      totFacurarConIGVCT: [{value: 0, disabled: true}],
+      totDesembolsarConIGVCT: [{value: 0, disabled: true}]
     });
   }
 
@@ -158,6 +165,7 @@ export class CheckListComponent implements OnInit {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.checkListService.listar({
       idConsulta: 4,
+      idSubConsulta: 0,
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
@@ -235,6 +243,7 @@ export class CheckListComponent implements OnInit {
     this.cciDestino = item.cciDestino;
     this.solicitudForm.controls.tipoCuentaBancariaDestino.setValue(item.tipoCuentaBancariaDestino);
     this.solicitudForm.controls.idTipoCT.setValue(item.idTipoCT);
+    this.idTipoCT = item.idTipoCT;
     this.solicitudForm.controls.montoCT.setValue(item.montoCT);
     this.solicitudForm.controls.montoSolicitudCT.setValue(item.montoSolicitudCT);
     this.solicitudForm.controls.diasPrestamoCT.setValue(item.diasPrestamoCT);
@@ -242,7 +251,7 @@ export class CheckListComponent implements OnInit {
 
     this.detalle = item.solicitudDet;
     this.sustentos = item.solicitudCabSustento;
-
+    this.onCalcularCT(item);
     this.utilsService.blockUIStart("Obteniendo información...");
     this.clienteService.obtener({
       idCliente: item.idCliente
@@ -384,9 +393,8 @@ export class CheckListComponent implements OnInit {
       return;
     if (this.nroCuentaBancariaDestino === "" && this.cciDestino === "")
       return;
-    if ((this.nombreContacto === "" || this.telefonoContacto === "" || this.correoContacto === "") && this.idTipoOperacion === 1)
+    if ((this.nombreContacto === "" || this.telefonoContacto === "" || this.correoContacto === "") && (this.idTipoOperacion === 1 || this.idTipoOperacion === 2))
       return;
-    return;
     this.utilsService.blockUIStart("Guardando...");
     if (this.sustentosOld.length === 0)
       for (let item of this.sustentos) {
@@ -592,5 +600,63 @@ export class CheckListComponent implements OnInit {
     this.cciDestino = item.cci;
     this.solicitudForm.controls.tipoCuentaBancariaDestino.setValue("-");
     modal.dismiss("Cross Click");
+  }
+
+  onEliminarArchivo(item): void{
+    //item.remove();
+    let archivo = item.nombre;
+    let id = 0;
+    for (const arch of this.archivosSustento.queue) {
+      if (arch?.file?.name == archivo) {
+        arch.remove();
+        break;
+      }
+    }
+
+    for (const row of this.archivos) {
+      
+      if (row.nombre === archivo) {
+        this.archivos.splice(id, 1)
+      }
+      id = id + 1;
+    }
+  }
+
+  onCalcularCT(item: SolicitudCab): void{
+    this.igvCT = item.igvCT / 100;
+    let montoSolicitudCT, nroDias, mDescontar, intereses, montoSolicitado, totFacturar;
+    let gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
+    
+    montoSolicitudCT = this.solicitudForm.controls.montoSolicitudCT.value;
+    nroDias = this.solicitudForm.controls.diasPrestamoCT.value;
+    montoSolicitado = this.solicitudForm.controls.montoSolicitudCT.value;
+    gDiversonsSIgv = item.gastosContrato + item.servicioCustodia + item.servicioCobranza + item.comisionCartaNotarial;
+    gDiversonsCIgv = gDiversonsSIgv * this.igvCT;
+    this.igvCT = item.igvCT;
+    if (this.idTipoCT == 1) {
+      mDescontar = ((360 * montoSolicitudCT) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (item.tasaNominalMensual * 12))* this.igvCT ));
+      intereses = mDescontar * (item.tasaNominalAnual / 360) * nroDias * this.igvCT;
+      
+      gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
+      totFacturar = intereses + gastoIncluidoIGV;
+
+      this.solicitudForm.controls.montoDescontarCT.setValue(Math.round((mDescontar + Number.EPSILON) * 100)/100);
+      this.solicitudForm.controls.interesConIGVCT.setValue(Math.round((intereses + Number.EPSILON) * 100)/100); 
+      this.solicitudForm.controls.gastosConIGVCT.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.totFacurarConIGVCT.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.totDesembolsarConIGVCT.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
+    }
+    else
+    {
+      intereses = montoSolicitudCT * (item.tasaNominalAnual / 360) * (nroDias + 1) * this.igvCT;
+      gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
+      totFacturar = intereses + gastoIncluidoIGV;
+
+      this.solicitudForm.controls.interesConIGVCT.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.gastosConIGVCT.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.totFacurarConIGVCT.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.totDesembolsarConIGVCT.setValue(Math.round(((montoSolicitado + Number.EPSILON) - totFacturar) * 100) / 100);
+    }
+    
   }
 }

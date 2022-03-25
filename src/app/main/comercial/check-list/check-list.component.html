@@ -228,7 +228,7 @@
             <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
               <div class="form-group">
                 <label>Tipo</label>
-                <ng-select appendTo="body" [clearable]="false" [items]="tipoCT"
+                <ng-select appendTo="body" [clearable]="false" [items]="tipoCT" [(ngModel)]="idTipoCT"
                            bindLabel="descripcion" bindValue="idColumna" formControlName="idTipoCT">
                 </ng-select>
               </div>
@@ -260,6 +260,37 @@
                 <input class="form-control" formControlName="fechaPagoCT" type="text"/>
               </div>
             </div>
+            <div class="col-md-6 col-12" *ngIf="idTipoOperacion == 2 && idTipoCT == 1">
+              <div class="form-group">
+                <label>Monto a Descontar</label>
+                <input class="form-control" formControlName="montoDescontarCT" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Interes Incluido IGV</label>
+                <input class="form-control" formControlName="interesConIGVCT" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Gastos Incluido IGV</label>
+                <input class="form-control" formControlName="gastosConIGVCT" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Total a Facturar con IGV</label>
+                <input class="form-control" formControlName="totFacurarConIGVCT" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Total a Desembolsar con IGV</label>
+                <input class="form-control" formControlName="totDesembolsarConIGVCT" type="text"/>
+              </div>
+            </div>
+
             <div class="col-12">
               <div class="divider divider-success">
                 <div class="divider-text">Información de Gastos</div>
@@ -553,6 +584,7 @@
                     </td>
                     <td nowrap>
                       <button
+                        (click)="onEliminarArchivo(item)"
                         type="button"
                         class="btn btn-raised btn-outline-danger btn-sm"
                         rippleEffect>

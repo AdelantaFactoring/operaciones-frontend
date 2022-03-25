@@ -145,89 +145,20 @@ export class SolicitudesComponent implements OnInit {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesService.listar({
       idConsulta: 1,
+      idSubConsulta: 1,
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
     }).subscribe((response: SolicitudCab[]) => {
       this.solicitudes = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
-
+      console.log('list', response);
+      
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
-  }
-
-  uploadFile(event) {
-    var formData = new FormData();
-    formData.append("file", <File>event.target.files[0]);
-    event.target.files[0].name.toString()
-
-    this.solicitudesService.upload({
-      file: formData,
-      idSolicitudCab: this.idSolicitudCab,
-      idTipoOperacion: this.idTipoOperacion,
-      ruc: this.ruc
-    })
-      .subscribe((response) => {
-        },
-        (error) => {
-        })
-  }
-
-  onGuardar(): void {
-    this.submitted = true;
-    if (this.solicitudForm.invalid) {
-      return;
-    }
-    this.params = [];
-    for (const item of this.dataXml) {
-      this.params.push({
-        "idSolicitudDet": 0,
-        "nroDocumento": item.codFactura,
-        "fechaConfirmado": item.fechaVencimiento,
-        "NetoConfirmado": item.total,
-        "MontoSinIGV": item.subTotal,
-        "MontoConIGV": item.total,
-        "FormaPago": item.formaPago,
-        "ArchivoXML": "XML",
-        "ArchivoPDF": "PDF"
-      });
-    }
-
-
-    this.utilsService.blockUIStart('Guardando información...');
-    this.solicitudesService.guardar({
-      "idSolicitudCab": this.idSolicitudCab,
-      "rucCedente": this.ruc,
-      "rucAceptante": this.dataXml[0].rucDet,
-      "idTipoOperacion": this.idTipoOperacion,
-      "moneda": this.dataXml[0].tipoMoneda,
-      "idUsuarioAud": 1,
-      "solicitudDet": this.params
-    }).subscribe(response => {
-      console.log('res', response);
-
-      if (response.tipo == 1) {
-        this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
-        this.utilsService.blockUIStop();
-        this.onListarSolicitudes();
-        this.onCancelar();
-      } else if (response.tipo == 2) {
-        this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
-        this.utilsService.blockUIStop();
-      } else {
-        this.utilsService.showNotification(response.mensaje, 'Error', 3);
-        this.utilsService.blockUIStop();
-      }
-
-      this.utilsService.blockUIStop();
-    }, error => {
-      this.utilsService.blockUIStop();
-      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
-    });
-
   }
 
   onCancelar(): void {
@@ -269,154 +200,5 @@ export class SolicitudesComponent implements OnInit {
         });
       }, 0);
     }
-  }
-
-  onDetalle(item, modal): void {
-    this.utilsService.blockUIStart('Obteniendo información...');
-    this.idTipoOperacion = item.idTipoOperacion;
-    this.solicitudDet = item.solicitudDet;
-    this.rucPagProv = this.idTipoOperacion == 1 ? "Ruc Pagador" : "Ruc Proveedor"
-    this.pagProv = this.idTipoOperacion == 1 ? "Razón Social Pagador" : "Razón Social Proveedor"
-
-    this.solicitudDetForm.controls.nroSolicitud.setValue(item.codigo);
-    this.solicitudDetForm.controls.moneda.setValue(item.moneda);
-    this.solicitudDetForm.controls.cedente.setValue(item.razonSocialCliente);
-    this.solicitudDetForm.controls.rucCedente.setValue(item.rucCliente);
-    this.solicitudDetForm.controls.aceptante.setValue(item.razonSocialPagProv);
-    this.solicitudDetForm.controls.rucAceptante.setValue(item.rucPagProv);
-    
-    this.solicitudDetForm.controls.tipoOperacion.setValue(item.tipoOperacion);
-    this.solicitudDetForm.controls.bancoD.setValue(item.bancoDestino);
-    this.solicitudDetForm.controls.ctaBancariaD.setValue(item.nroCuentaBancariaDestino);
-    this.solicitudDetForm.controls.tipoCtaBancariaD.setValue(item.tipoCuentaBancariaDestino);
-    this.solicitudDetForm.controls.comisionCN.setValue(item.comisionCartaNotarial);
-    
-    this.solicitudDetForm.controls.comisionE.setValue(item.comisionEstructuracion);
-    this.solicitudDetForm.controls.financiamiento.setValue(item.financiamiento);
-    this.solicitudDetForm.controls.servicioCob.setValue(item.servicioCobranza);
-    this.solicitudDetForm.controls.servicioCus.setValue(item.servicioCustodia);
-    this.solicitudDetForm.controls.tnm.setValue(item.tasaNominalMensual);
-    
-    this.solicitudDetForm.controls.tna.setValue(item.tasaNominalAnual);
-    this.solicitudDetForm.controls.tnmm.setValue(item.tasaNominalMensualMora);
-    this.solicitudDetForm.controls.tnam.setValue(item.tasaNominalAnualMora);
-    this.solicitudDetForm.controls.totalDesCIgv.setValue(item.totalDesembolsoConIGV);
-    this.solicitudDetForm.controls.totalFacCIgv.setValue(item.totalFacConIGV);
-    
-    this.solicitudDetForm.controls.nombreC.setValue(item.nombreContacto);
-    this.solicitudDetForm.controls.correoC.setValue(item.correoContacto);
-    this.solicitudDetForm.controls.correoConCopiaC.setValue(item.conCopiaContacto);
-    this.solicitudDetForm.controls.telefonoC.setValue(item.telefonoContacto);
-    this.solicitudDetForm.controls.estado.setValue(item.estado);
-    setTimeout(() => {
-      this.modalService.open(modal, {
-        scrollable: true,
-        size: 'lg',
-        windowClass: 'my-class',
-        animation: true,
-        centered: false,
-        backdrop: "static",
-        beforeDismiss: () => {
-          return true;
-        }
-      });
-    }, 0);
-    this.utilsService.blockUIStop();
-  }
-
-  onCambiarVisibilidadDetalleTodo() {
-    this.cambiarIcono = !this.cambiarIcono;
-    this.solicitudes.forEach(el => {
-      if(el.idTipoOperacion != 2)
-      el.cambiarIcono = this.cambiarIcono;
-      document.getElementById('tr' + el.idSolicitudCab).style.visibility = (el.cambiarIcono) ? "visible" : "collapse";
-      document.getElementById('detail' + el.idSolicitudCab).style.display = (el.cambiarIcono) ? "block" : "none";
-    })
-  }
-
-  onCambiarVisibilidadDetalle(item: any) {
-    item.cambiarIcono = !item.cambiarIcono;
-    document.getElementById('tr' + item.idSolicitudCab).style.visibility = (item.cambiarIcono) ? "visible" : "collapse";
-    document.getElementById('detail' + item.idSolicitudCab).style.display = (item.cambiarIcono) ? "block" : "none";
-  }
-
-  onEliminar(idSolicitudCab, nroSolicitud): void {
-    console.log('cab', idSolicitudCab);
-
-    Swal.fire({
-      title: 'Confirmación',
-      text: `¿Desea eliminar el registro '${nroSolicitud}'?, esta acción no podrá revertirse`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí',
-      cancelButtonText: 'No',
-      customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-primary'
-      }
-    }).then(result => {
-      if (result.value) {
-        this.utilsService.blockUIStart('Eliminando...');
-        this.solicitudesService.eliminar({
-          idSolicitudCab: idSolicitudCab,
-          //idSolicitudDet: item.idSolicitudDet,
-          idUsuarioAud: 1
-        }).subscribe(response => {
-          if (response.tipo === 1) {
-            this.onListarSolicitudes();
-            this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
-            this.utilsService.blockUIStop();
-          } else if (response.tipo === 2) {
-            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
-          } else {
-            this.utilsService.showNotification(response.mensaje, 'Error', 3);
-          }
-          this.utilsService.blockUIStop();
-        }, error => {
-          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
-          this.utilsService.blockUIStop();
-        });
-      }
-    });
-  }
-
-  onEliminarDet(cab: SolicitudCab, item: SolicitudDet): void {
-    Swal.fire({
-      title: 'Confirmación',
-      text: `¿Desea eliminar el registro '${item.nroDocumento}'?, esta acción no podrá revertirse`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí',
-      cancelButtonText: 'No',
-      customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-primary'
-      }
-    }).then(result => {
-      if (result.value) {
-        this.utilsService.blockUIStart('Eliminando...');
-        this.solicitudesService.eliminarFactura({
-          idSolicitudCab: item.idSolicitudCab,
-          idSolicitudDet: item.idSolicitudDet,
-          idUsuarioAud: 1
-        }).subscribe(response => {
-          if (response.tipo === 1) {
-            cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);
-            if (cab.solicitudDet.length === 0)
-              this.onListarSolicitudes();
-            this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
-            this.utilsService.blockUIStop();
-          } else if (response.tipo === 2) {
-            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
-          } else {
-            this.utilsService.showNotification(response.mensaje, 'Error', 3);
-          }
-          this.utilsService.blockUIStop();
-        }, error => {
-          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
-          this.utilsService.blockUIStop();
-        });
-      }
-    });
   }
 }

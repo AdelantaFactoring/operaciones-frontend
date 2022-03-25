@@ -82,7 +82,7 @@ export class SolicitudesFormComponent implements OnInit {
   public flagConfirming: boolean = false;
   public flagRespuestaFac: boolean = false;
   public flagRespuestaCon: boolean = false;
-
+  public igvCT: number = 0;
   public selectedRowIds: number[] = [];
   public selectBasic = [
     { name: 'UK' },
@@ -184,6 +184,7 @@ export class SolicitudesFormComponent implements OnInit {
       cartaNotarial: ['', Validators.required],
       servicioCobranza: ['', Validators.required],
       servicioCustodia: ['', Validators.required],
+      igvCT: [0, Validators.required],
       mcTrabajo: ['', Validators.required],
       ctSolicitado: [0, Validators.required],
       diasPrestamo: [0, Validators.required],
@@ -197,7 +198,8 @@ export class SolicitudesFormComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.onRadioChange(this.tipoServicio, this.idTipoOperacion, this.flagConfirming, '')
+    this.onRadioChange(this.tipoServicio, this.idTipoOperacion, this.flagConfirming, '');
+    this.onTablaMaestra(1000, 2);
   }
   onRefrescar(): void {
     //this.onListarSolicitudes();
@@ -323,6 +325,7 @@ export class SolicitudesFormComponent implements OnInit {
       financiamiento: this.financiamiento,
       montoCT: this.capitalTrabajoForm.controls.mcTrabajo.value,
       montoSolicitudCT: this.capitalTrabajoForm.controls.ctSolicitado.value,
+      iGVCT: this.capitalTrabajoForm.controls.igvCT.value,
       diasPrestamoCT: this.capitalTrabajoForm.controls.diasPrestamo.value,
       fechaPagoCT: this.fechaPagoCT.year + this.zeroPad(this.fechaPagoCT.month, 2) + this.zeroPad(this.fechaPagoCT.day, 2),
       interesIncluidoIGV: this.capitalTrabajoForm.controls.iIncluidoIGV.value,
@@ -395,6 +398,9 @@ export class SolicitudesFormComponent implements OnInit {
 
   onRadioChange(value, idTipoOperacion, flagConfirming, modal): void {
     this.dataXml  = [];
+    this.uploader.clearQueue();
+    this.ruc = "";
+    this.razonSocial = "";
     this.tipoServicio = value;
     this.idTipoOperacion = idTipoOperacion;
     this.hasBaseDropZoneOver = false;
@@ -471,7 +477,6 @@ export class SolicitudesFormComponent implements OnInit {
   onRowClick(razon, ruc, idfila, modal) {
     this.idCliente = idfila;
     if (this.idTipoOperacion == 2) {
-
       this.onClienteObtener(idfila, ruc, razon);
     }
     else{
@@ -487,6 +492,7 @@ export class SolicitudesFormComponent implements OnInit {
   onProcesar(): void{
     this.mensaje = [];
     this.submitted = true;
+    
     // if (this.solicitudForm.invalid) {
     //   return;
     // }
@@ -519,7 +525,7 @@ export class SolicitudesFormComponent implements OnInit {
     });
 
 
-    //this.dataXml  = [];
+    this.dataXml  = [];
     this.uploader.uploadAll();
     let count = 0;
     this.uploader.response.observers = [];
@@ -709,17 +715,21 @@ export class SolicitudesFormComponent implements OnInit {
     });
   }
 
-  onTablaMaestra(idTabla): void{
+  onTablaMaestra(idTabla, idColumna = 0): void{
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesFormService.listarTablaMaestra({
       idTabla: idTabla,
-      idColumna: 0
+      idColumna: idColumna
     }).subscribe(response => {
       if (idTabla == 1) {
         this.optMoneda = response;
       }
-      else{
+      else if (idTabla == 5){
         this.optTipo = response;
+      }
+      else {
+        this.igvCT = response[0].valor;
+        this.capitalTrabajoForm.controls.igvCT.setValue(this.igvCT);
       }
       this.utilsService.blockUIStop();
     }, error => {
@@ -778,10 +788,11 @@ export class SolicitudesFormComponent implements OnInit {
     nroDias = this.capitalTrabajoForm.controls.diasPrestamo.value;
     montoSolicitado = this.capitalTrabajoForm.controls.ctSolicitado.value;
     gDiversonsSIgv = contrato + servicioCustodia + servicioCobranza + cartaNotarial;
+    this.igvCT = this.igvCT / 100;
     if (this.idTipo == 1) {
-      mDescontar = ((360 * capitalTrabajoS) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12))* 1.18 ));
-      intereses = mDescontar * (TNA / 360) * nroDias * 1.18;
-      gDiversonsCIgv = gDiversonsSIgv * 0.18;
+      mDescontar = ((360 * capitalTrabajoS) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12))* this.igvCT ));
+      intereses = mDescontar * (TNA / 360) * nroDias * this.igvCT;
+      gDiversonsCIgv = gDiversonsSIgv * this.igvCT;
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
@@ -793,8 +804,8 @@ export class SolicitudesFormComponent implements OnInit {
     }
     else
     {
-      gDiversonsCIgv = gDiversonsSIgv * 0.18;
-      intereses = capitalTrabajoS * (TNA / 360) * nroDias * 1.18;
+      gDiversonsCIgv = gDiversonsSIgv * this.igvCT;
+      intereses = capitalTrabajoS * (TNA / 360) * (nroDias + 1) * this.igvCT;
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 

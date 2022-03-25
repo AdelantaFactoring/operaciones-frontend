@@ -712,7 +712,8 @@
               <div class="form-group">
                 <label>Seleccione Tipo</label>
                 <ng-select appendTo="body" [clearable]="false" [items]="optTipo" bindLabel="descripcion"
-                  placeholder="Tipo" [(ngModel)]="idTipo" bindValue="idColumna" formControlName="tipo">
+                  placeholder="Tipo" [(ngModel)]="idTipo" bindValue="idColumna" formControlName="tipo"
+                  (change)="onCalcularCT()">
                 </ng-select>
               </div>
             </div>
@@ -809,6 +810,16 @@
                   class="form-control" formControlName="servicioCustodia" type="text" disabled />
                 <div *ngIf="CapitalIUForm.servicioCustodia.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.servicioCustodia.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>IGV</label>
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.igvCT.errors }"
+                  class="form-control" formControlName="igvCT" type="text" disabled />
+                <div *ngIf="CapitalIUForm.igvCT.errors" class="invalid-feedback">
+                  <div *ngIf="CapitalIUForm.igvCT.errors.required">* Campo obligatorio</div>
                 </div>
               </div>
             </div>

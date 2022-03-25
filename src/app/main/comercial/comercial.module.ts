@@ -19,6 +19,7 @@ import { SolicitudesFormComponent } from './solicitudes/solicitudes-form/solicit
 import { CardSnippetModule } from '@core/components/card-snippet/card-snippet.module';
 import { CoreDirectivesModule } from '@core/directives/directives';
 import { ClientePagadorComponent } from './clientes/cliente-pagador/cliente-pagador.component';
+import { SolicitudesGrillaComponent } from './solicitudes/solicitudes-grilla/solicitudes-grilla.component';
 
 const routes: Routes = [
   {
@@ -70,7 +71,7 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: 'solicitudes-form',
+        path: 'solicitudes/solicitudes-form',
         component: SolicitudesFormComponent
       }
     ]
@@ -85,7 +86,8 @@ const routes: Routes = [
     GastosComponent,
     PagadorComponent,
     SolicitudesFormComponent,
-    ClientePagadorComponent
+    ClientePagadorComponent,
+    SolicitudesGrillaComponent
   ],
   imports: [
     CommonModule,
