@@ -790,8 +790,8 @@ export class SolicitudesFormComponent implements OnInit {
     gDiversonsSIgv = contrato + servicioCustodia + servicioCobranza + cartaNotarial;
     this.igvCT = this.igvCT / 100;
     if (this.idTipo == 1) {
-      mDescontar = ((360 * capitalTrabajoS) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12))* this.igvCT ));
-      intereses = mDescontar * (TNA / 360) * nroDias * this.igvCT;
+      mDescontar = ((360 * capitalTrabajoS) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12))* (this.igvCT + 1) ));
+      intereses = mDescontar * (TNA / 360) * nroDias * (this.igvCT + 1);
       gDiversonsCIgv = gDiversonsSIgv * this.igvCT;
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
@@ -804,8 +804,8 @@ export class SolicitudesFormComponent implements OnInit {
     }
     else
     {
-      gDiversonsCIgv = gDiversonsSIgv * this.igvCT;
-      intereses = capitalTrabajoS * (TNA / 360) * (nroDias + 1) * this.igvCT;
+      gDiversonsCIgv = gDiversonsSIgv * (this.igvCT + 1);
+      intereses = capitalTrabajoS * (TNA / 360) * (nroDias + 1) * (this.igvCT + 1);
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
