@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
 import {SolicitudesService} from "../../comercial/solicitudes/solicitudes.service";
 import {LiquidacionesService} from "./liquidaciones.service";
 import {LiquidacionCab} from "../../../shared/models/operaciones/liquidacion-cab";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {SolicitudDet} from "../../../shared/models/comercial/solicitudDet";
 import {SolicitudCabSustento} from "../../../shared/models/comercial/solicitudCab-sustento";
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
@@ -14,7 +14,8 @@ import {TablaMaestraService} from "../../../shared/services/tabla-maestra.servic
 @Component({
   selector: 'app-liquidaciones',
   templateUrl: './liquidaciones.component.html',
-  styleUrls: ['./liquidaciones.component.scss']
+  styleUrls: ['./liquidaciones.component.scss'],
+  //encapsulation: ViewEncapsulation.None
 })
 export class LiquidacionesComponent implements OnInit {
   public contentHeader: object;
