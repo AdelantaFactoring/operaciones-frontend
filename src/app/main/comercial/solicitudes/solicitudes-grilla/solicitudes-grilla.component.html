@@ -1,11 +1,4 @@
 <div class="row">
-    <button class="btn btn-primary ml-1" rippleEffect [routerLink]="['/comercial/solicitudes/solicitudes-form']"
-        skipLocationChange [queryParams]="" queryParamsHandling="merge">
-        <i class="mr-0 mr-sm-1" data-feather="plus"></i><span class="d-none d-sm-inline-block">Nueva(s)
-            Solicitud(es)</span>
-    </button>
-</div>
-<div class="row">
     <div class="col-md-6 col-12">
         <div class="d-flex justify-content-between align-items-center m-1">
             <label class="d-flex align-items-center">Mostrar
@@ -75,7 +68,7 @@
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <a href="javascript:void(0)" title="Ver" (click)="onDetalle(cab, modalDetalle)"
+                                    <a href="javascript:void(0)" title="Ver" (click)="onVerDetalleSolicitud(cab, modalINFOSOLICITUD)"
                                         class="btn btn-raised btn-outline-info btn-sm">
                                         <i class="text-info cursor-pointer" data-feather="eye"></i>
                                     </a>
@@ -112,6 +105,8 @@
                                                 <th class="detail-th-color">Fecha Pago</th>
                                                 <th class="detail-th-color">Monto Pago Confirmado</th>
                                                 <th class="detail-th-color">Estado</th>
+                                                <th class="detail-th-color">Archivo XML</th>
+                                                <th class="detail-th-color">Archivo PDF</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -134,6 +129,14 @@
                                                 <td>{{item.fechaConfirmadoFormat}}</td>
                                                 <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
                                                 <td>{{item.estado}}</td>
+                                                <td>
+                                                    <a href="{{item.rutaArchivoPDF}}" target="_blank"><strong
+                                                            >{{ item.archivoPDF }}</strong></a>
+                                                </td>
+                                                <td>
+                                                    <a href="{{item.rutaArchivoXML}}" target="_blank"><strong
+                                                            >{{ item.archivoXML }}</strong></a>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -168,7 +171,7 @@
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <a href="javascript:void(0)" title="Ver" (click)="onDetalle(cab, modalDetalle)"
+                                    <a href="javascript:void(0)" title="Ver" (click)="onVerDetalleSolicitud(cab, modalINFOSOLICITUD)"
                                         class="btn btn-raised btn-outline-info btn-sm">
                                         <i class="text-info cursor-pointer" data-feather="eye"></i>
                                     </a>
@@ -452,3 +455,351 @@
         </div>
     </div>
 </ng-template>
+<ng-template #modalINFOSOLICITUD let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="myModalLabel1">N° Solicitud - [{{codigoSolicitud}}]</h4>
+      <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body" ngbAutofocus tabindex="0">
+      <form [formGroup]="solicitudForm">
+        <div class="row spaced">
+          <div class="col-12">
+            <div class="divider divider-info">
+              <div class="divider-text">Información General</div>
+            </div>
+          </div>
+          <div class="col-md-12 col-12" hidden>
+            <div class="form-group">
+              <label>Id</label>
+              <input class="form-control" formControlName="idSolicitudCab" type="text"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>RUC (Cliente)</label>
+              <input class="form-control" formControlName="rucCliente" type="text"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>Razón Social (Cliente)</label>
+              <input class="form-control" formControlName="razonSocialCliente" type="text"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>RUC (Pagador / Proveedor)</label>
+              <input class="form-control" formControlName="rucPagProv" type="text"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>Razón Social (Pagador / Proveedor)</label>
+              <input class="form-control" formControlName="razonSocialPagProv" type="text"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>Moneda</label>
+              <input class="form-control" formControlName="moneda" type="text"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>Tipo Operación</label>
+              <input class="form-control" formControlName="tipoOperacion" type="text"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+            <div class="form-group">
+              <label>Tipo</label>
+              <ng-select appendTo="body" [clearable]="false" [items]="tipoCT"
+                         bindLabel="descripcion" bindValue="idColumna" formControlName="idTipoCT">
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+            <div class="form-group">
+              <label>Monto</label>
+              <input class="form-control" formControlName="montoCT" type="text"
+                     mask="separator" thousandSeparator=","/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+            <div class="form-group">
+              <label>Monto Solicitud</label>
+              <input class="form-control" formControlName="montoSolicitudCT" type="text"
+                     mask="separator" thousandSeparator=","/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+            <div class="form-group">
+              <label>Día(s) Préstamo</label>
+              <input class="form-control" formControlName="diasPrestamoCT" type="text"
+                     mask="separator" thousandSeparator=","/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+            <div class="form-group">
+              <label>Fecha Pago</label>
+              <input class="form-control" formControlName="fechaPagoCT" type="text"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12" *ngIf="idTipoOperacion == 2 && idTipoCT == 1">
+            <div class="form-group">
+              <label>Monto a Descontar</label>
+              <input class="form-control" formControlName="montoDescontarCT" type="text"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+            <div class="form-group">
+              <label>Interes Incluido IGV</label>
+              <input class="form-control" formControlName="interesConIGVCT" type="text"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+            <div class="form-group">
+              <label>Gastos Incluido IGV</label>
+              <input class="form-control" formControlName="gastosConIGVCT" type="text"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+            <div class="form-group">
+              <label>Total a Facturar con IGV</label>
+              <input class="form-control" formControlName="totFacurarConIGVCT" type="text"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+            <div class="form-group">
+              <label>Total a Desembolsar con IGV</label>
+              <input class="form-control" formControlName="totDesembolsarConIGVCT" type="text"/>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="divider divider-success">
+              <div class="divider-text">Información de Gastos</div>
+            </div>
+          </div>
+          <div class="col-md-4 col-12" hidden>
+            <div class="form-group">
+              <label>Comisión Estructuración</label>
+              <input class="form-control" type="text" placeholder="0.00"
+                     mask="separator" thousandSeparator="," formControlName="comisionEstructuracion"/>
+            </div>
+          </div>
+          <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
+            <div class="form-group">
+              <div class="custom-control custom-switch custom-control-inline">
+                <input type="checkbox" class="custom-control-input"
+                       id="usoGC" formControlName="usarGastosContrato"
+                />
+                <label class="custom-control-label"
+                       for="usoGC">Aplicar Gastos de Contrato</label>
+              </div>
+              <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
+            </div>
+          </div>
+          <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
+            <div class="form-group">
+              <div class="custom-control custom-switch custom-control-inline">
+                <input type="checkbox" class="custom-control-input"
+                       id="usoGVP" formControlName="usarGastoVigenciaPoder"
+                />
+                <label class="custom-control-label"
+                       for="usoGVP">Aplicar Gasto Vigencia de Poder</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
+          </div>
+          <div class="col-md-4 col-12" [hidden]="idTipoOperacion === 2">
+            <div class="form-group">
+              <label>Gastos de Contrato</label>
+              <input class="form-control" type="text" placeholder="0.00"
+                     mask="separator" thousandSeparator="," formControlName="gastosContrato"/>
+            </div>
+          </div>
+          <div class="col-md-4 col-12" [hidden]="idTipoOperacion === 2">
+            <div class="form-group">
+              <label>Gasto Vigencia de Poder</label>
+              <input class="form-control" type="text" placeholder="0.00"
+                     mask="separator" thousandSeparator="," formControlName="gastoVigenciaPoder"/>
+            </div>
+          </div>
+          <div class="col-md-4 col-12">
+            <div class="form-group">
+              <label>Comisión Carta Notarial</label>
+              <input class="form-control" type="text" placeholder="0.00"
+                     mask="separator" thousandSeparator="," formControlName="comisionCartaNotarial"/>
+            </div>
+          </div>
+          <div class="col-md-4 col-12">
+            <div class="form-group">
+              <label>Servicio Cobranza</label>
+              <input class="form-control" type="text" placeholder="0.00"
+                     mask="separator" thousandSeparator="," formControlName="servicioCobranza"/>
+            </div>
+          </div>
+          <div class="col-md-4 col-12">
+            <div class="form-group">
+              <label>Servicio Custodia</label>
+              <input class="form-control" type="text" placeholder="0.00"
+                     mask="separator" thousandSeparator="," formControlName="servicioCustodia"/>
+            </div>
+          </div>
+          <div class="col-12" [hidden]="idTipoOperacion === 2">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th class="detail-th-color">N° Documento</th>
+                  <th class="detail-th-color">Forma Pago</th>
+                  <th class="detail-th-color">Monto sin IGV</th>
+                  <th class="detail-th-color">Monto con IGV</th>
+                  <th class="detail-th-color">Fecha Pago</th>
+                  <th class="detail-th-color">Monto Pago Confirmado</th>
+                  <th class="detail-th-color">Fondo Resguardo</th>
+                  <th class="detail-th-color">Estado</th>
+                  <th class="detail-th-color">Archivo PDF</th>
+                  <th class="detail-th-color">ARchivo XML</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of detalleSolicitud">
+                  <td>{{item.nroDocumento}}</td>
+                  <td>{{item.formaPago}}</td>
+                  <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
+                  <td>{{item.montoConIGV | number: '1.2-2'}}</td>
+                  <td>{{item.fechaConfirmadoFormat}}</td>
+                  <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                  <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                  <td>{{item.estado}}</td>
+                  <td>
+                    <a href="{{item.rutaArchivoPDF}}" target="_blank"><strong
+                            >{{ item.archivoPDF }}</strong></a>
+                    </td>
+                    <td>
+                        <a href="{{item.rutaArchivoXML}}" target="_blank"><strong
+                                >{{ item.archivoXML }}</strong></a>
+                    </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="divider divider-danger">
+              <div class="divider-text">Información del Contacto</div>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>Nombre(s) y Apellidos</label>
+              <input class="form-control" formControlName="nombreContacto" type="text" readonly/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input class="form-control" formControlName="telefonoContacto" type="text" readonly/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>Correo</label>
+              <input class="form-control" formControlName="correoContacto" type="text" readonly/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>Correo(s) a Copiar</label>
+              <input class="form-control" formControlName="conCopiaContacto" type="text"/>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="divider divider-warning">
+              <div class="divider-text">Información de Cuenta Bancaria</div>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>Titular</label>
+              <input class="form-control" formControlName="titularCuentaBancariaDestino" type="text" readonly/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>Moneda</label>
+              <input class="form-control" formControlName="monedaCuentaBancariaDestino" type="text" readonly/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>Banco</label>
+              <input class="form-control" formControlName="bancoDestino" type="text" readonly/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>N° Cuenta</label>
+              <input class="form-control" type="text" readonly formControlName="nroCuentaBancariaDestino"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>CCI</label>
+              <input class="form-control" type="text" readonly formControlName="cciDestino"/>
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <label>Tipo de Cuenta</label>
+              <input class="form-control" formControlName="tipoCuentaBancariaDestino" type="text" readonly/>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="divider divider-secondary">
+              <div class="divider-text">Documento(s) de Sustento</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="d-flex justify-content-between mb-1" *ngIf="idTipoOperacion == 2">
+              <h4>Archivo(s) adjuntos</h4>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>Tipo</th>
+                  <th>Nombre</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of sustentosSolicitud">
+                  <td [ngClass]="{'row-edicion': item.editado}"><p [ngClass]="{ 'eliminado': !item.estado }">{{item.tipo}}</p></td>
+                  <td [ngClass]="{'row-edicion': item.editado}">
+                    <a href="{{item.rutaArchivo}}" target="_blank"><strong [ngClass]="{ 'eliminado': !item.estado }">{{ item.archivo }}</strong></a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer" style="display: block !important;">
+      <div class="row">
+        <div class="col-md-12 col-12">
+          <div style="float: right">
+            <button class="btn btn-secondary" rippleEffect type="button" (click)="modal.dismiss('Cross click')">
+              <span [data-feather]="'x-circle'"></span> Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
