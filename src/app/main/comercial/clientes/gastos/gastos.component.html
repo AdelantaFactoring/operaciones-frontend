@@ -150,7 +150,7 @@
         <td [ngClass]="{'row-edicion': item.editado}">
           <p *ngIf="!item.edicion">{{item.servicioCobranza | number: '1.2-2'}}</p>
           <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Serv. Cobranza"
-                 [(ngModel)]="item.servicioCustodia" mask="separator" thousandSeparator=","
+                 [(ngModel)]="item.servicioCobranza" mask="separator" thousandSeparator=","
                  [ngModelOptions]="{standalone: true}"/>
         </td>
         <td [ngClass]="{'row-edicion': item.editado}">
