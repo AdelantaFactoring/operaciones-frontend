@@ -251,6 +251,8 @@ export class CheckListComponent implements OnInit {
     this.detalle = item.solicitudDet;
     this.sustentos = item.solicitudCabSustento;
     this.onCalcularCT(item);
+    console.log('det', this.detalle);
+    
     this.utilsService.blockUIStart("Obteniendo información...");
     this.clienteService.obtener({
       idCliente: item.idCliente
@@ -387,6 +389,8 @@ export class CheckListComponent implements OnInit {
   }
 
   onGuardar(): void {
+    console.log('esrt');
+    
     this.submitted = true;
     if (this.solicitudForm.invalid)
       return;
@@ -394,6 +398,22 @@ export class CheckListComponent implements OnInit {
       return;
     if ((this.nombreContacto === "" || this.telefonoContacto === "" || this.correoContacto === "") && (this.idTipoOperacion === 1 || this.idTipoOperacion === 2))
       return;
+    
+      console.log(this.archivos.filter(x => x.idTipo == 10));
+      console.log(this.sustentos.filter(x => x.idTipo == 10));
+      
+    for (const item of this.detalle) {
+      if (item.idEstado == 1 || item.idEstado == 3) {
+        if (this.archivos.filter(x => x.idTipo == 10).length == 0 && this.sustentos.filter(x => x.idTipo == 10 && x.estado == true).length == 0) {
+          this.utilsService.showNotification('Cargar un archivo de tipo Sustento de Aprobación', 'Alerta', 2);
+          return;
+        }
+      }
+      if (item.idEstado == 4) {
+        this.utilsService.showNotification('Una de las Facturas tiene un estado de Disconformidad','Alerta', 2);
+        return;
+      }
+    }
     this.utilsService.blockUIStart("Guardando...");
     if (this.sustentosOld.length === 0)
       for (let item of this.sustentos) {

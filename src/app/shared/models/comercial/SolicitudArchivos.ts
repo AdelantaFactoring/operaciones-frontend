@@ -16,7 +16,7 @@ export class SolicitudArchivos {
     fechaVencimiento: string;
     nombreXML: string;
     nombrePDF: string;
-    formaPago: string;
+    formaPago: string = "";
     estado: boolean = false;
     observacion: string = "";
     totalExcel: number = 0;

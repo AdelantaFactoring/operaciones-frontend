@@ -193,7 +193,9 @@ export class SolicitudesFormComponent implements OnInit {
       tFacturarIGV: [0],
       tDesembolsoIGV: [0],
       fechaPago: [''],
-      montoDesc: ['']
+      montoDesc: [''],
+      financiamiento: [''],
+      fondoResguardo: ['']
     });
    }
 
@@ -688,7 +690,7 @@ export class SolicitudesFormComponent implements OnInit {
           this.capitalTrabajoForm.controls.cartaNotarial.setValue(item.comisionCartaNotarial);
           this.capitalTrabajoForm.controls.servicioCobranza.setValue(item.servicioCobranza);
           this.capitalTrabajoForm.controls.servicioCustodia.setValue(item.servicioCustodia);
-
+          this.capitalTrabajoForm.controls.financiamiento.setValue(item.financiamiento);
         }
       }
       else
@@ -776,7 +778,7 @@ export class SolicitudesFormComponent implements OnInit {
     this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue('');
   }
   onCalcularCT(): void{
-    let capitalTrabajoS, TNM, TNA, nroDias, mDescontar, intereses, montoSolicitado, totFacturar;
+    let capitalTrabajoS, TNM, TNA, nroDias, mDescontar, intereses, montoSolicitado, totFacturar, fondoResguardo;
     let contrato, servicioCustodia, servicioCobranza, cartaNotarial, gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
     contrato = this.capitalTrabajoForm.controls.contrato.value;
     servicioCustodia = this.capitalTrabajoForm.controls.servicioCustodia.value;
@@ -788,6 +790,7 @@ export class SolicitudesFormComponent implements OnInit {
     nroDias = this.capitalTrabajoForm.controls.diasPrestamo.value;
     montoSolicitado = this.capitalTrabajoForm.controls.ctSolicitado.value;
     gDiversonsSIgv = contrato + servicioCustodia + servicioCobranza + cartaNotarial;
+    fondoResguardo = 
     this.igvCT = this.igvCT / 100;
     if (this.idTipo == 1) {
       mDescontar = ((360 * capitalTrabajoS) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12))* (this.igvCT + 1) ));
