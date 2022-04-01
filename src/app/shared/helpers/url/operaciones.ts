@@ -1,3 +1,4 @@
 export const LIQUIDACIONES = {
-  listar: '/liquidacion/listar'
+  listar: '/liquidacion/listar',
+  generar: '/liquidacion/generar'
 }

@@ -1,3 +1,14 @@
+.detail-th-color {
+  background-color: rgba(252, 120, 120, 0.12) !important;
+}
+
+.row-edicion {
+  background-color: lightgreen !important;
+  p {
+    color: white;
+  }
+}
+
 ::ng-deep .my-class .modal-dialog {
   min-width: 75%;
   //width: 60%;

@@ -120,7 +120,7 @@
                     <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.estado}}</td>
                   </tr>
-                  <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse">
+                  <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse" *ngIf="cab.solicitudDet.length > 0">
                     <td [colSpan]="10">
                       <div class="table-responsive" style="padding-left: 20px; display: none;"
                            id="{{ 'detail' + cab.idSolicitudCab }}">

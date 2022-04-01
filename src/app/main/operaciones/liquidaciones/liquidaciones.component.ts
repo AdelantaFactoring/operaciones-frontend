@@ -10,6 +10,7 @@ import {SolicitudDet} from "../../../shared/models/comercial/solicitudDet";
 import {SolicitudCabSustento} from "../../../shared/models/comercial/solicitudCab-sustento";
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
+import {LiquidacionDet} from "../../../shared/models/operaciones/liquidacion-det";
 
 @Component({
   selector: 'app-liquidaciones',
@@ -172,30 +173,30 @@ export class LiquidacionesComponent implements OnInit {
     this.cambiarIcono = !this.cambiarIcono;
     this.liquidaciones.forEach(el => {
       el.cambiarIcono = this.cambiarIcono;
-      document.getElementById('tr' + el.idLiquidacionCab).style.visibility = (el.cambiarIcono) ? "visible" : "collapse";
-      document.getElementById('detail' + el.idLiquidacionCab).style.display = (el.cambiarIcono) ? "block" : "none";
+      document.getElementById('trL' + el.idLiquidacionCab).style.visibility = (el.cambiarIcono) ? "visible" : "collapse";
+      document.getElementById('detailL' + el.idLiquidacionCab).style.display = (el.cambiarIcono) ? "block" : "none";
     });
   }
 
   onCambiarVisibilidadDetalle(item: LiquidacionCab): void {
     item.cambiarIcono = !item.cambiarIcono;
-    document.getElementById('tr' + item.idLiquidacionCab).style.visibility = (item.cambiarIcono) ? "visible" : "collapse";
-    document.getElementById('detail' + item.idLiquidacionCab).style.display = (item.cambiarIcono) ? "block" : "none";
+    document.getElementById('trL' + item.idLiquidacionCab).style.visibility = (item.cambiarIcono) ? "visible" : "collapse";
+    document.getElementById('detailL' + item.idLiquidacionCab).style.display = (item.cambiarIcono) ? "block" : "none";
   }
 
   onCambiarVisibilidadDetalleTodoSolicitud(): void {
     this.cambiarIconoSolicitud = !this.cambiarIconoSolicitud;
     this.solicitudes.forEach(el => {
       el.cambiarIcono = this.cambiarIconoSolicitud;
-      document.getElementById('tr' + el.idSolicitudCab).style.visibility = (el.cambiarIcono) ? "visible" : "collapse";
-      document.getElementById('detail' + el.idSolicitudCab).style.display = (el.cambiarIcono) ? "block" : "none";
+      document.getElementById('trS' + el.idSolicitudCab).style.visibility = (el.cambiarIcono) ? "visible" : "collapse";
+      document.getElementById('detailS' + el.idSolicitudCab).style.display = (el.cambiarIcono) ? "block" : "none";
     });
   }
 
   onCambiarVisibilidadDetalleSolicitud(item: SolicitudCab): void {
     item.cambiarIcono = !item.cambiarIcono;
-    document.getElementById('tr' + item.idSolicitudCab).style.visibility = (item.cambiarIcono) ? "visible" : "collapse";
-    document.getElementById('detail' + item.idSolicitudCab).style.display = (item.cambiarIcono) ? "block" : "none";
+    document.getElementById('trS' + item.idSolicitudCab).style.visibility = (item.cambiarIcono) ? "visible" : "collapse";
+    document.getElementById('detailS' + item.idSolicitudCab).style.display = (item.cambiarIcono) ? "block" : "none";
   }
 
   onSeleccionarTodo(): void {
@@ -326,5 +327,58 @@ export class LiquidacionesComponent implements OnInit {
       this.solicitudForm.controls.totFacurarConIGVCT.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totDesembolsarConIGVCT.setValue(Math.round(((montoSolicitado + Number.EPSILON) - totFacturar) * 100) / 100);
     }
+  }
+
+  onGenerar(modal: any) {
+    let solicitudes = this.solicitudes.filter(f => f.seleccionado);
+    if (solicitudes.length == 0) {
+      this.utilsService.showNotification("Seleccione una o varias solicitudes", "", 2);
+      return;
+    }
+
+    solicitudes.forEach(el => {
+      el.idUsuarioAud = 1;
+    });
+
+    this.utilsService.blockUIStart('Generando...');
+    this.liquidacionesService.generar(solicitudes).subscribe(response => {
+      if (response.tipo == 1) {
+        this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+        modal.dismiss();
+        this.onListarLiquidaciones();
+      } else if (response.tipo == 0) {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
+      }
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
+  }
+
+  onCambiarFechaOperacion($event: any, item: LiquidacionDet) {
+    item.fechaOperacionFormat = `${String($event.day).padStart(2, '0')}/${String($event.month).padStart(2, '0')}/${$event.year}`;
+    item.editado = true;
+    this.onCalcular(item);
+  }
+
+  onEditar(item: LiquidacionDet): void {
+    item.edicion = true;
+  }
+
+  onCalcular(item: LiquidacionDet): void {
+    // const fecConfirmado = new Date(parseInt(item.fechaConfirmado.split('/')[2]),
+    //   parseInt(item.fechaConfirmado.split('/')[1]) - 1,
+    //   parseInt(item.fechaConfirmado.split('/')[0]),0,0,0);
+    // const fecOperacion = new Date(parseInt(item.fechaOperacionFormat.split('/')[2]),
+    //   parseInt(item.fechaOperacionFormat.split('/')[1]) - 1,
+    //   parseInt(item.fechaOperacionFormat.split('/')[0]),0,0,0);
+    //
+    // const diffTime = Math.abs(fecOperacion.getTime() - fecConfirmado.getTime());
+    // const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    //
+    // item.diasEfectivo = diffDays;
+
   }
 }

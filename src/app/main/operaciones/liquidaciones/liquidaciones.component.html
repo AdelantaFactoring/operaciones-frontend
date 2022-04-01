@@ -61,9 +61,9 @@
                   </th>
                   <th>
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="customCheck" unchecked
+                      <input type="checkbox" class="custom-control-input" id="customCheckL" unchecked
                              [(ngModel)]="seleccionarTodo" (ngModelChange)="onSeleccionarTodo()"/>
-                      <label class="custom-control-label" for="customCheck"></label>
+                      <label class="custom-control-label" for="customCheckL"></label>
                     </div>
                   </th>
                   <th>Acción</th>
@@ -97,9 +97,9 @@
                     </td>
                     <td>
                       <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="{{'customCheck' + cab.idSolicitudCab}}"
+                        <input type="checkbox" class="custom-control-input" id="{{'customCheckL' + cab.idLiquidacionCab}}"
                                [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"/>
-                        <label class="custom-control-label" for="{{'customCheck' + cab.idSolicitudCab}}"></label>
+                        <label class="custom-control-label" for="{{'customCheckL' + cab.idLiquidacionCab}}"></label>
                       </div>
                     </td>
                     <td>
@@ -126,10 +126,12 @@
                     <td><strong>{{cab.nuevoMontoTotal | number: '1.2-2'}}</strong></td>
                     <td>{{cab.estado}}</td>
                   </tr>
-                  <tr id="{{ 'tr' + cab.idLiquidacionCab }}" style="visibility: collapse">
+                  <tr id="{{ 'trL' + cab.idLiquidacionCab }}" >
+<!--                    style="visibility: collapse"-->
                     <td [colSpan]="13">
-                      <div class="table-responsive" style="padding-left: 20px; display: none;"
-                           id="{{ 'detail' + cab.idLiquidacionCab }}">
+                      <div class="table-responsive" style="padding-left: 20px; "
+                           id="{{ 'detailL' + cab.idLiquidacionCab }}">
+<!--                        display: none;-->
                         <table class="table table-hover" >
                           <thead>
                           <tr>
@@ -138,8 +140,8 @@
                             <th class="detail-th-color">T.N.M (%)</th>
                             <th class="detail-th-color">T.N.A (%)</th>
                             <th class="detail-th-color">Financiamiento (%)</th>
-                            <th class="detail-th-color">Fecha Confirmada</th>
                             <th class="detail-th-color">Fecha Operación</th>
+                            <th class="detail-th-color">Fecha Confirmada</th>
                             <th class="detail-th-color">Día(s) Efectivo</th>
                             <th class="detail-th-color">Neto Confirmado</th>
                             <th class="detail-th-color">Comisión Estructuración (%)</th>
@@ -168,40 +170,79 @@
                           <tr *ngFor="let item of cab.liquidacionDet">
                             <td>
                               <div class="d-flex align-items-center">
-                                <a href="javascript:void(0)" title="Editar"
+                                <a href="javascript:void(0)" title="Editar" (click)="onEditar(item)"
                                    class="btn btn-raised btn-outline-success btn-sm">
                                   <i class="text-success cursor-pointer" data-feather="edit"></i>
                                 </a>
                               </div>
                             </td>
-                            <td>{{item.nroDocumento}}</td>
-                            <td>{{item.tasaNominalMensual | number: '1.2-2'}}</td>
-                            <td>{{item.tasaNominalAnual | number: '1.2-2'}}</td>
-                            <td>{{item.financiamiento | number: '1.2-2'}}</td>
-                            <td>{{item.fechaConfirmado}}</td>
-                            <td>{{item.fechaOperacionFormat}}</td>
-                            <td>{{item.diasEfectivo | number: '1.0-0'}}</td>
-                            <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
-                            <td>{{item.comisionEstructuracion | number: '1.2-2'}}</td>
-                            <td>{{item.montoComisionEstructuracion | number: '1.2-2'}}</td>
-                            <td>{{item.comisionEstructuracionIGV | number: '1.2-2'}}</td>
-                            <td>{{item.comisionEstructuracionConIGV | number: '1.2-2'}}</td>
-                            <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
-                            <td>{{item.montoCobrar | number: '1.2-2'}}</td>
-                            <td>{{item.interes | number: '1.2-2'}}</td>
-                            <td>{{item.interesIGV | number: '1.2-2'}}</td>
-                            <td>{{item.interesConIGV | number: '1.2-2'}}</td>
-                            <td>{{item.gastosContrato | number: '1.2-2'}}</td>
-                            <td>{{item.gastoVigenciaPoder | number: '1.2-2'}}</td>
-                            <td>{{item.servicioCustodia | number: '1.2-2'}}</td>
-                            <td>{{item.servicioCobranza | number: '1.2-2'}}</td>
-                            <td>{{item.comisionCartaNotarial | number: '1.2-2'}}</td>
-                            <td>{{item.gastosDiversos | number: '1.2-2'}}</td>
-                            <td>{{item.gastosDiversosIGV | number: '1.2-2'}}</td>
-                            <td>{{item.gastosDiversosConIGV | number: '1.2-2'}}</td>
-                            <td>{{item.montoTotalFacturado | number: '1.2-2'}}</td>
-                            <td>{{item.montoNotaCreditoDevolucion | number: '1.2-2'}}</td>
-                            <td>{{item.montoDesembolso | number: '1.2-2'}}</td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.nroDocumento}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.tasaNominalMensual | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.tasaNominalAnual | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.financiamiento | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}" style="min-width: 220px">
+                              <p *ngIf="!item.edicion">{{item.fechaOperacionFormat}}</p>
+                              <div class="input-group" *ngIf="item.edicion">
+                                <input class="form-control" placeholder="yyyy-mm-dd"
+                                       [(ngModel)]="item.fechaOperacion" container="body"
+                                       (ngModelChange)="onCambiarFechaOperacion($event, item)"
+                                       ngbDatepicker #basicDP="ngbDatepicker">
+                                <!---->
+                                <div class="input-group-append">
+                                  <button class="btn btn-outline-secondary feather icon-calendar"
+                                          (click)="basicDP.toggle()"
+                                          type="button" rippleEffect></button>
+                                </div>
+                              </div>
+                            </td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.fechaConfirmado}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.diasEfectivo | number: '1.0-0'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.netoConfirmado | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.comisionEstructuracion | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.montoComisionEstructuracion | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.comisionEstructuracionIGV | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.comisionEstructuracionConIGV | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.fondoResguardo | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.montoCobrar | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.interes | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.interesIGV | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.interesConIGV | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}">
+                              <p *ngIf="!item.edicion">{{item.gastosContrato | number: '1.2-2'}}</p>
+                              <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Gastos Contrato"
+                                     [(ngModel)]="item.gastosContrato" mask="separator" thousandSeparator=","
+                                     [ngModelOptions]="{standalone: true}"/>
+                            </td>
+                            <td [ngClass]="{'row-edicion': item.editado}">
+                              <p *ngIf="!item.edicion">{{item.gastoVigenciaPoder | number: '1.2-2'}}</p>
+                              <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Gasto Vigencia Poder"
+                                     [(ngModel)]="item.gastoVigenciaPoder" mask="separator" thousandSeparator=","
+                                     [ngModelOptions]="{standalone: true}"/>
+                            </td>
+                            <td [ngClass]="{'row-edicion': item.editado}">
+                              <p *ngIf="!item.edicion">{{item.servicioCustodia | number: '1.2-2'}}</p>
+                              <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Servicio Custodia"
+                                     [(ngModel)]="item.servicioCustodia" mask="separator" thousandSeparator=","
+                                     [ngModelOptions]="{standalone: true}"/>
+                            </td>
+                            <td [ngClass]="{'row-edicion': item.editado}">
+                              <p *ngIf="!item.edicion">{{item.servicioCobranza | number: '1.2-2'}}</p>
+                              <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Servicio Cobranza"
+                                     [(ngModel)]="item.servicioCobranza" mask="separator" thousandSeparator=","
+                                     [ngModelOptions]="{standalone: true}"/>
+                            </td>
+                            <td [ngClass]="{'row-edicion': item.editado}">
+                              <p *ngIf="!item.edicion">{{item.comisionCartaNotarial | number: '1.2-2'}}</p>
+                              <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Comisión Carta Notarial"
+                                     [(ngModel)]="item.comisionCartaNotarial" mask="separator" thousandSeparator=","
+                                     [ngModelOptions]="{standalone: true}"/>
+                            </td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.gastosDiversos | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.gastosDiversosIGV | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.gastosDiversosConIGV | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.montoTotalFacturado | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.montoNotaCreditoDevolucion | number: '1.2-2'}}</p></td>
+                            <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.montoDesembolso | number: '1.2-2'}}</p></td>
                           </tr>
                           </tbody>
                         </table>
@@ -232,7 +273,7 @@
             <div class="row">
               <div class="d-flex flex-wrap mb-0">
                 <div class="p-1">
-                  <button type="submit" rippleEffect class="btn btn-success" >
+                  <button type="submit" rippleEffect class="btn btn-success" (click)="onGenerar(modal)">
                     <i class="mr-0 mr-sm-1" data-feather="layers"></i>
                     <span class="d-none d-sm-inline-block">Generar</span>
                   </button>
@@ -309,7 +350,7 @@
                     <ng-template let-cab ngFor [ngForOf]="solicitudes">
                       <tr>
                         <td>
-                          <div class="d-flex align-items-center">
+                          <div class="d-flex align-items-center" *ngIf="cab.solicitudDet.length > 0">
                             <a href="javascript:void(0)" title="Ocultar / Mostrar"
                                (click)="onCambiarVisibilidadDetalleSolicitud(cab)">
                               <div *ngIf="!cab.cambiarIcono">
@@ -346,10 +387,10 @@
                         <td>{{cab.tipoOperacion}}</td>
                         <td>{{cab.estado}}</td>
                       </tr>
-                      <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse">
+                      <tr id="{{ 'trS' + cab.idSolicitudCab }}" style="visibility: collapse" *ngIf="cab.solicitudDet.length > 0">
                         <td [colSpan]="10">
                           <div class="table-responsive" style="padding-left: 20px; display: none;"
-                               id="{{ 'detail' + cab.idSolicitudCab }}">
+                               id="{{ 'detailS' + cab.idSolicitudCab }}">
                             <table class="table table-hover">
                               <thead>
                               <tr>

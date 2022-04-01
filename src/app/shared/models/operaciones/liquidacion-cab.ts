@@ -19,7 +19,7 @@ export class LiquidacionCab {
   bancoDestino: string;
   nroCuentaBancariaDestino: string;
   cciDestino: string;
-  twipoCuentaBancariaDestino: string;
+  tipoCuentaBancariaDestino: string;
   checkList: boolean;
   idEstado: number;
   estado: string;
@@ -27,4 +27,6 @@ export class LiquidacionCab {
   liquidacionDet: LiquidacionDet[]
   cambiarIcono: boolean = false;
   seleccionado: boolean = false;
+
+  edicion: boolean = false;
 }
