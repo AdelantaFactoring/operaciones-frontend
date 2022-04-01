@@ -36,4 +36,5 @@ export class LiquidacionDet {
 
   edicion: boolean = false;
   editado: boolean = false;
+  cambioConfirmado: boolean = false;
 }
