@@ -4,6 +4,7 @@ export class LiquidacionCab {
   idLiquidacionCab: number;
   idSolicitudCab: number;
   codigo: string;
+  idCliente: number;
   rucCliente: string;
   razonSocialCliente: string;
   rucPagProv: string;
