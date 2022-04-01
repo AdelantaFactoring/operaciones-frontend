@@ -32,6 +32,7 @@ export class LiquidacionesComponent implements OnInit {
   public detalleSolicitud: SolicitudDet[] = [];
   public sustentosSolicitud: SolicitudCabSustento[] = [];
   public tipoCT: TablaMaestra[] = [];
+  public oldLiquidacionDet: LiquidacionDet;
 
   public search: string = '';
   public collectionSize: number = 0;
@@ -357,28 +358,75 @@ export class LiquidacionesComponent implements OnInit {
     });
   }
 
-  onCambiarFechaOperacion($event: any, item: LiquidacionDet) {
+  onCambiarFechaOperacion($event: any, cab: LiquidacionCab, item: LiquidacionDet) {
     item.fechaOperacionFormat = `${String($event.day).padStart(2, '0')}/${String($event.month).padStart(2, '0')}/${$event.year}`;
     item.editado = true;
-    this.onCalcular(item);
+    this.onCalcular(cab, item);
   }
 
   onEditar(item: LiquidacionDet): void {
+    this.oldLiquidacionDet = {...item};
     item.edicion = true;
   }
 
-  onCalcular(item: LiquidacionDet): void {
-    // const fecConfirmado = new Date(parseInt(item.fechaConfirmado.split('/')[2]),
-    //   parseInt(item.fechaConfirmado.split('/')[1]) - 1,
-    //   parseInt(item.fechaConfirmado.split('/')[0]),0,0,0);
-    // const fecOperacion = new Date(parseInt(item.fechaOperacionFormat.split('/')[2]),
-    //   parseInt(item.fechaOperacionFormat.split('/')[1]) - 1,
-    //   parseInt(item.fechaOperacionFormat.split('/')[0]),0,0,0);
-    //
-    // const diffTime = Math.abs(fecOperacion.getTime() - fecConfirmado.getTime());
-    // const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    //
-    // item.diasEfectivo = diffDays;
+  onCancelar(item: LiquidacionDet): void {
+    if (!item.cambioConfirmado) {
+      item.fechaOperacion = this.oldLiquidacionDet.fechaOperacion;
+      item.fechaOperacionFormat = this.oldLiquidacionDet.fechaOperacionFormat;
+      item.diasEfectivo = this.oldLiquidacionDet.diasEfectivo;
+      item.interes = this.oldLiquidacionDet.interes;
+      item.interesIGV = this.oldLiquidacionDet.interesIGV;
+      item.interesConIGV = this.oldLiquidacionDet.interesConIGV;
+      item.gastosContrato = this.oldLiquidacionDet.gastosContrato;
+      item.gastoVigenciaPoder = this.oldLiquidacionDet.gastoVigenciaPoder;
+      item.servicioCustodia = this.oldLiquidacionDet.servicioCustodia;
+      item.servicioCobranza = this.oldLiquidacionDet.servicioCobranza;
+      item.comisionCartaNotarial = this.oldLiquidacionDet.comisionCartaNotarial;
+      item.gastosDiversos = this.oldLiquidacionDet.gastosDiversos;
+      item.gastosDiversosIGV = this.oldLiquidacionDet.gastosDiversosIGV;
+      item.gastosDiversosConIGV = this.oldLiquidacionDet.gastosDiversosConIGV;
+      item.montoTotalFacturado = this.oldLiquidacionDet.montoTotalFacturado;
+      item.montoDesembolso = this.oldLiquidacionDet.montoDesembolso;
+      item.edicion = false;
+      item.editado = false;
+    } else {
+      item.edicion = false;
+    }
+  }
 
+  onConfirmarCambio(item: LiquidacionDet): void {
+    item.edicion = false;
+    item.editado = true;
+    item.cambioConfirmado = true;
+  }
+
+  onCalcular(cab: LiquidacionCab, det: LiquidacionDet): void {
+    let diasEfectivo = det.diasEfectivo;
+    if (cab.idTipoOperacion != 2) {
+      const fecConfirmado = new Date(parseInt(det.fechaConfirmado.split('/')[2]),
+        parseInt(det.fechaConfirmado.split('/')[1]) - 1,
+        parseInt(det.fechaConfirmado.split('/')[0]), 0, 0, 0);
+      const fecOperacion = new Date(parseInt(det.fechaOperacionFormat.split('/')[2]),
+        parseInt(det.fechaOperacionFormat.split('/')[1]) - 1,
+        parseInt(det.fechaOperacionFormat.split('/')[0]), 0, 0, 0);
+
+      const diffTime = Math.abs(fecOperacion.getTime() - fecConfirmado.getTime());
+      diasEfectivo = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    }
+
+    det.diasEfectivo = diasEfectivo;
+
+    if (cab.idTipoOperacion != 2) {
+      det.interes = det.montoCobrar * ((det.tasaNominalAnual / 100) / 360) * det.diasEfectivo;
+      det.interesIGV = det.interes * (det.igv / 100);
+      det.interesConIGV = det.interes + det.interesIGV;
+    }
+    det.gastosDiversos = det.gastosContrato + det.gastoVigenciaPoder + det.servicioCustodia
+      + det.servicioCobranza + det.comisionCartaNotarial;
+    det.gastosDiversosIGV = det.gastosDiversos * (det.igv / 100);
+    det.gastosDiversosConIGV = det.gastosDiversos + det.gastosDiversosIGV;
+    det.montoTotalFacturado = det.gastosDiversosConIGV + det.interesConIGV;
+    if (cab.idTipoCT != 1)
+      det.montoDesembolso = (det.montoCobrar - det.montoTotalFacturado - det.comisionEstructuracionConIGV) + det.montoNotaCreditoDevolucion;
   }
 }
