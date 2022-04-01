@@ -12,6 +12,15 @@ export class LiquidacionCab {
   montoTotal: number;
   deudaAnterior: number;
   nuevoMontoTotal: number;
+  idTipoOperacion: number;
+  idTipoCT: number;
+  titularCuentaBancariaDestino: string;
+  monedaCuentaBancariaDestino: string;
+  bancoDestino: string;
+  nroCuentaBancariaDestino: string;
+  cciDestino: string;
+  twipoCuentaBancariaDestino: string;
+  checkList: boolean;
   idEstado: number;
   estado: string;
   totalRows: number;

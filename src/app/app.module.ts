@@ -25,7 +25,7 @@ export let InjectorInstance: Injector;
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,

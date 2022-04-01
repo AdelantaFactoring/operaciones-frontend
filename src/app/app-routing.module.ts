@@ -19,6 +19,11 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'desembolso',
+    loadChildren: () => import('app/main/desembolso/desembolso.module').then(m => m.DesembolsoModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'auth',
     loadChildren: () => import('app/auth/auth.module').then(m => m.AuthModule)
   },
