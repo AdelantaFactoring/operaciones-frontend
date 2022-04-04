@@ -104,7 +104,8 @@
                       <td>
                         <div class="custom-control custom-checkbox">
                           <input type="checkbox" class="custom-control-input" id="{{'customCheck' + cab.idSolicitudCab}}"
-                                 [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"/>
+                                 [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"
+                                 [disabled]="!cab.checkList"/>
                           <label class="custom-control-label" for="{{'customCheck' + cab.idSolicitudCab}}"></label>
                         </div>
                       </td>
@@ -252,7 +253,7 @@
                   <div class="col-md-12 col-12" hidden>
                     <div class="form-group">
                       <label>Id</label>
-                      <input class="form-control" formControlName="idSolicitudCab" type="text"/>
+                      <input class="form-control" formControlName="idLiquidacionCab" type="text"/>
                     </div>
                   </div>
                   <div class="col-md-6 col-12">
@@ -307,11 +308,6 @@
                     </div>
                   </div>
                 <!--
-                  <div class="col-12">
-                    <div class="divider divider-success">
-                      <div class="divider-text">Información de Gastos</div>
-                    </div>
-                  </div>
                   <div class="col-12">
                     <div class="d-flex flex-wrap mb-0">
                       <div class="pb-1">
@@ -471,7 +467,93 @@
                       <input class="form-control" formControlName="conCopiaContacto" type="text"/>
                     </div>
                   </div>-->
-                  
+                  <div class="col-12">
+                    <div class="divider divider-success">
+                      <div class="divider-text">Desembolsado</div>
+                    </div>
+                  </div>
+                  <div class="col-12" [hidden]="idTipoOperacion === 2">
+                    <div class="table-responsive">
+                      <table class="table table-hover">
+                        <thead>
+                        <tr>
+                          <!-- <th class="detail-th-color">Acción</th> -->
+                          <th class="detail-th-color">N° Documento</th>
+                          <th class="detail-th-color">T.N.M (%)</th>
+                          <th class="detail-th-color">T.N.A (%)</th>
+                          <th class="detail-th-color">Financiamiento (%)</th>
+                          <th class="detail-th-color">Fecha Confirmada</th>
+                          <th class="detail-th-color">Fecha Operación</th>
+                          <th class="detail-th-color">Día(s) Efectivo</th>
+                          <th class="detail-th-color">Neto Confirmado</th>
+                          <th class="detail-th-color">Comisión Estructuración (%)</th>
+                          <!-- <th class="detail-th-color">Monto Comisión E.</th>
+                          <th class="detail-th-color">Comisión E. (IGV)</th> -->
+                          <th class="detail-th-color">Monto Total Comisión E.</th>
+                          <th class="detail-th-color">Fondo Resguardo</th>
+                          <th class="detail-th-color">Monto a Financiar</th>
+                          <!-- <th class="detail-th-color">Interés</th>
+                          <th class="detail-th-color">Interés (IGV)</th> -->
+                          <th class="detail-th-color">Interés Total </th>
+                          <th class="detail-th-color">Gastos Contrato</th>
+                          <th class="detail-th-color">Gastos Vigencia Poder</th>
+                          <th class="detail-th-color">Servicio Custodia</th>
+                          <th class="detail-th-color">Servicio Cobranza</th>
+                          <th class="detail-th-color">Comisión Carta Notarial</th>
+                          <th class="detail-th-color">Gastos Diversos</th>
+                          <th class="detail-th-color">Gastos Diversos (IGV)</th>
+                          <th class="detail-th-color">Total Gastos Diversos</th>
+                          <th class="detail-th-color">Monto Total Facturado</th>
+                          <th class="detail-th-color">Nota Crédito por Dev.</th>
+                          <th class="detail-th-color">Monto Desembolso</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of desembolsoDet">
+                          <!-- <td>
+                            <div class="d-flex align-items-center">
+                              <a href="javascript:void(0)" title="Editar"
+                                  class="btn btn-raised btn-outline-success btn-sm">
+                                <i class="text-success cursor-pointer" data-feather="edit"></i>
+                              </a>
+                            </div>
+                          </td> -->
+                          <td>{{item.nroDocumento}}</td>
+                          <td>{{item.tasaNominalMensual | number: '1.2-2'}}</td>
+                          <td>{{item.tasaNominalAnual | number: '1.2-2'}}</td>
+                          <td>{{item.financiamiento | number: '1.2-2'}}</td>
+                          <td>{{item.fechaConfirmado}}</td>
+                          <td>{{item.fechaOperacionFormat}}</td>
+                          <td>{{item.diasEfectivo | number: '1.0-0'}}</td>
+                          <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                          <td>{{item.comisionEstructuracion | number: '1.2-2'}}</td>
+                          <!-- <td>{{item.montoComisionEstructuracion | number: '1.2-2'}}</td>
+                          <td>{{item.comisionEstructuracionIGV | number: '1.2-2'}}</td> -->
+                          <td>{{item.comisionEstructuracionConIGV | number: '1.2-2'}}</td>
+                          <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                          <td>{{item.montoCobrar | number: '1.2-2'}}</td>
+                          <!-- <td>{{item.interes | number: '1.2-2'}}</td>
+                          <td>{{item.interesIGV | number: '1.2-2'}}</td> -->
+                          <td>{{item.interesConIGV | number: '1.2-2'}}</td>
+                          <td>{{item.gastosContrato | number: '1.2-2'}}</td>
+                          <td>{{item.gastoVigenciaPoder | number: '1.2-2'}}</td>
+                          <td>{{item.servicioCustodia | number: '1.2-2'}}</td>
+                          <td>{{item.servicioCobranza | number: '1.2-2'}}</td>
+                          <td>{{item.comisionCartaNotarial | number: '1.2-2'}}</td>
+                          <td>{{item.gastosDiversos | number: '1.2-2'}}</td>
+                          <td>{{item.gastosDiversosIGV | number: '1.2-2'}}</td>
+                          <td>{{item.gastosDiversosConIGV | number: '1.2-2'}}</td>
+                          <td>{{item.montoTotalFacturado | number: '1.2-2'}}</td>
+                          <td>{{item.montoNotaCreditoDevolucion | number: '1.2-2'}}</td>
+                          <td>{{item.montoDesembolso | number: '1.2-2'}}</td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                          <td colspan="6">Total Monto a Desembolsar: {{totalMontoDescembolso | number: '1.2-2'}}</td>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
                   <div class="col-12">
                     <div class="divider divider-warning">
                       <div class="divider-text">Información de Cuenta Bancaria</div>
@@ -487,8 +569,29 @@
                       </div>
                     </div>
                   </div>
+                  <div class="col-md-6 col-12" *ngIf="codigoMonedaCab != codigoMonedaDet">
+                    <div class="form-group">  
+                      <label>Tipo de Cambio $</label>
+                      <input class="form-control" formControlName="tipoCambioDollar" type="number"
+                             [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.tipoCambioDollar.errors }"
+                             [(ngModel)]="tipoCambioDollar" (change)="onConvertirMontoTotal()"/>
+                      <div *ngIf="ReactiveIUForm.tipoCambioDollar.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.tipoCambioDollar.errors.required">* Campo obligatorio</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-12" *ngIf="codigoMonedaCab != codigoMonedaDet">
+                    <div class="form-group">  
+                      <label>Nuevo Monto a Desembolsar en {{moneda}}</label>
+                      <input class="form-control" formControlName="montoConvertido" type="number" readonly
+                             [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.montoConvertido.errors }"/>
+                      <div *ngIf="ReactiveIUForm.montoConvertido.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.montoConvertido.errors.required">* Campo obligatorio</div>
+                      </div>
+                    </div>
+                  </div>
                   <div class="col-md-6 col-12">
-                    <div class="form-group">
+                    <div class="form-group">  
                       <label>Titular</label>
                       <input class="form-control" formControlName="titularCuentaBancariaDestino" type="text" readonly
                              [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.titularCuentaBancariaDestino.errors }"/>

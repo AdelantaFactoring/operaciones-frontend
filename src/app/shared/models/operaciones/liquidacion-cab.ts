@@ -1,4 +1,5 @@
 import {LiquidacionDet} from "./liquidacion-det";
+import { LiquidacionCabSustento } from "./LiquidacionCab-Sustento";
 
 export class LiquidacionCab {
   idLiquidacionCab: number;
@@ -25,7 +26,8 @@ export class LiquidacionCab {
   idEstado: number;
   estado: string;
   totalRows: number;
-  liquidacionDet: LiquidacionDet[]
+  liquidacionDet: LiquidacionDet[];
+  liquidacionCabSustento: LiquidacionCabSustento[];
   cambiarIcono: boolean = false;
   seleccionado: boolean = false;
 

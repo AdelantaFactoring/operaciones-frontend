@@ -2,10 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ClientesService } from 'app/main/comercial/clientes/clientes.service';
-import { LiquidacionesService } from 'app/main/operaciones/liquidaciones/liquidaciones.service';
+import { Archivo } from 'app/shared/models/comercial/archivo';
 import { ClienteCuenta } from 'app/shared/models/comercial/cliente-cuenta';
 import { LiquidacionCab } from 'app/shared/models/operaciones/liquidacion-cab';
+import { LiquidacionDet } from 'app/shared/models/operaciones/liquidacion-det';
+import { LiquidacionCabSustento } from 'app/shared/models/operaciones/LiquidacionCab-Sustento';
+import { TablaMaestra } from 'app/shared/models/shared/tabla-maestra';
+import { TablaMaestraService } from 'app/shared/services/tabla-maestra.service';
 import { UtilsService } from 'app/shared/services/utils.service';
+import { FileUploader } from 'ng2-file-upload';
+import { DesembolsoService } from './desembolso.service';
 
 @Component({
   selector: 'app-desembolso',
@@ -21,6 +27,8 @@ export class DesembolsoComponent implements OnInit {
   public pageSize: number = 10;
   public collectionSize: number;
   public desembolso: LiquidacionCab[] = [];
+  public desembolsoDet: LiquidacionDet[] = [];
+  public totalMontoDescembolso: number;
   public cuentas: ClienteCuenta[] = [];
   public cambiarIcono: boolean = false;
   public seleccionarTodo: boolean = false;
@@ -28,18 +36,34 @@ export class DesembolsoComponent implements OnInit {
   public codigo: string = '';
   public nroCuentaBancariaDestino: string;
   public cciDestino: string;
-
+  public codigoMonedaCab: string = '';
+  public codigoMonedaDet: string;
+  public moneda: string;
+  public montoConvertido: number = 0;
+  public tipoCambioMoneda: number = 0;
+  public submitted: boolean = false;
+  public sustentos: LiquidacionCabSustento[] = [];
+  public sustentosOld: LiquidacionCabSustento[] = [];
+  public archivos: Archivo[] = [];
+  public tiposArchivos: TablaMaestra[] = [];
   
+  public hasBaseDropZoneOver: boolean = false;
+  public archivosSustento: FileUploader = new FileUploader({
+    //url: `${environment.apiUrl}${SOLICITUD.subirSustento}`,
+    isHTML5: true
+  });
+
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;
   }
 
   constructor(
     private utilsService: UtilsService,
-    private liquidacionesService: LiquidacionesService,
+    private desembolsoService: DesembolsoService,
     private formBuilder: FormBuilder,
     private modalService: NgbModal,
-    private clienteService: ClientesService
+    private clienteService: ClientesService,
+    private tablaMaestraService: TablaMaestraService
   ) { 
     this.contentHeader = {
       headerTitle: 'Desembolso',
@@ -65,6 +89,7 @@ export class DesembolsoComponent implements OnInit {
     };
     this.solicitudForm = this.formBuilder.group({
       idSolicitudCab: [0],
+      idLiquidacionCab: [0],
       idTipoOperacion: [0],
       codigo: [{value: '', disabled: true}],
       rucCliente: [{value: '', disabled: true}],
@@ -105,19 +130,29 @@ export class DesembolsoComponent implements OnInit {
       interesConIGVCT: [{value: 0, disabled: true}],
       gastosConIGVCT: [{value: 0, disabled: true}],
       totFacurarConIGVCT: [{value: 0, disabled: true}],
-      totDesembolsarConIGVCT: [{value: 0, disabled: true}]
+      totDesembolsarConIGVCT: [{value: 0, disabled: true}],
+      tipoCambioDollar: [{value: 0, disabled: false}],
+      montoConvertido: [{value: 0, disabled: true}, Validators.required]
     });
   };
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     console.log('hello');
     this.onListarDesembolso();
+    this.tiposArchivos = await this.onListarMaestros(6, 0);
   }
 
+  async onListarMaestros(idTabla: number, idColumna: number): Promise<TablaMaestra[]> {
+    return await this.tablaMaestraService.listar({
+      idTabla: idTabla,
+      idColumna: idColumna
+    }).then((response: TablaMaestra[]) => response, error => [])
+      .catch(error => []);
+  }
   onListarDesembolso(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
-    this.liquidacionesService.listar({
-      idConsulta: 1, // enviar 2
+    this.desembolsoService.listar({
+      idConsulta: 2, // enviar 2
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
@@ -131,6 +166,148 @@ export class DesembolsoComponent implements OnInit {
     });
   }
 
+  
+  onGuardar(): void {
+    this.submitted = true;
+    // if (this.solicitudForm.invalid)
+    //   return;
+    // if (this.nroCuentaBancariaDestino === "" && this.cciDestino === "")
+    //   return;
+   
+      
+    // for (const item of this.detalle) {
+    //   if (item.idEstado == 1 || item.idEstado == 3) {
+    //     if (this.archivos.filter(x => x.idTipo == 10).length == 0 && this.sustentos.filter(x => x.idTipo == 10 && x.estado == true).length == 0) {
+    //       this.utilsService.showNotification('Cargar un archivo de tipo Sustento de Aprobación', 'Alerta', 2);
+    //       return;
+    //     }
+    //   }
+    //   if (item.idEstado == 4) {
+    //     this.utilsService.showNotification('Una de las Facturas tiene un estado de Disconformidad','Alerta', 2);
+    //     return;
+    //   }
+    // }
+    this.utilsService.blockUIStart("Guardando...");
+    if (this.sustentosOld.length === 0)
+      for (let item of this.sustentos) {
+        this.sustentosOld.push({
+          idLiquidacionCabSustento: item.idLiquidacionCabSustento,
+          idLiquidacionCab: item.idLiquidacionCab,
+          idTipoSustento: item.idTipoSustento,
+          tipoSustento: item.tipoSustento,
+          idTipo: item.idTipo,
+          tipo: item.tipo,
+          archivo: item.archivo,
+          base64: item.base64,
+          rutaArchivo: item.rutaArchivo,
+          estado: item.estado,
+          editado: item.editado
+        });
+      }
+    else {
+      this.sustentos = []
+      for (let item of this.sustentosOld) {
+        this.sustentos.push({
+          idLiquidacionCabSustento: item.idLiquidacionCabSustento,
+          idLiquidacionCab: item.idLiquidacionCab,
+          idTipoSustento: item.idTipoSustento,
+          tipoSustento: item.tipoSustento,
+          idTipo: item.idTipo,
+          tipo: item.tipo,
+          archivo: item.archivo,
+          base64: item.base64,
+          rutaArchivo: item.rutaArchivo,
+          estado: item.estado,
+          editado: item.editado
+        });
+      }
+    }
+
+    // for (let item of this.archivos) {
+    //   this.sustentos.push({
+    //     idLiquidacionCabSustento: 0,
+    //     idLiquidacionCab: 0,
+    //     idTipoSustento: 0,
+    //     tipoSustento: "",
+    //     idTipo: item.idTipo,
+    //     tipo: "",
+    //     archivo: item.nombre,
+    //     base64: item.base64,
+    //     rutaArchivo: "",
+    //     estado: true,
+    //     editado: true
+    //   });
+    // }
+
+    this.desembolsoService.actualizar({
+      idLiquidacionCab: this.solicitudForm.controls.idLiquidacionCab.value,
+      titularCuentaBancariaDestino: this.solicitudForm.controls.titularCuentaBancariaDestino.value,
+      monedaCuentaBancariaDestino: this.solicitudForm.controls.monedaCuentaBancariaDestino.value,
+      bancoDestino: this.solicitudForm.controls.bancoDestino.value,
+      nroCuentaBancariaDestino: this.nroCuentaBancariaDestino,
+      cciDestino: this.cciDestino,
+      tipoCuentaBancariaDestino: this.solicitudForm.controls.tipoCuentaBancariaDestino.value,
+      tipoCambioMoneda: this.tipoCambioMoneda,
+      montoTotalConversion: this.montoConvertido,
+      idUsuarioAud: 1,
+      liquidacionCabSustento: this.sustentos.filter(f => f.editado)
+    }).subscribe((response: any) => {
+      switch (response.tipo) {
+        case 1:
+          this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+          this.utilsService.blockUIStop();
+          this.onListarDesembolso();
+          this.onCancelar();
+          break;
+        case 2:
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          this.utilsService.blockUIStop();
+          break;
+        default:
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          this.utilsService.blockUIStop();
+          break;
+      }
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+  }
+
+  async fileOverBase(e: any): Promise<void> {
+    this.hasBaseDropZoneOver = e;
+    if (e === false) {
+      let cola = this.archivosSustento.queue;
+      let nombres = cola.map(item => item?.file?.name)
+        .filter((value, index, self) => self.indexOf(value) === index)
+      let sinDuplicado = [];
+      for (let el of cola) {
+        let duplicado = cola.filter(f => f?.file?.name === el.file.name);
+        if (duplicado.length > 1) {
+          if (sinDuplicado.filter(f => f?.file?.name === el.file.name).length === 0) {
+            let ultimo = duplicado.sort((a, b) => b._file.lastModified - a._file.lastModified)[0]
+            sinDuplicado.push(ultimo);
+          }
+        } else {
+          sinDuplicado.push(duplicado[0]);
+        }
+      }
+
+      this.archivosSustento.queue = sinDuplicado;
+      this.archivos = [];
+      for (let item of sinDuplicado) {
+        //let base64 = await this.onArchivoABase64(item._file);
+        this.archivos.push({
+          idFila: this.utilsService.autoIncrement(this.archivos),
+          idTipo: 8,
+          nombre: item.file.name,
+          tamanio: `${(item.file.size / 1024 / 1024).toLocaleString('es-pe', {minimumFractionDigits: 2})} MB`,
+          base64: ""
+        });
+      }
+    }
+  }
+
   onGenerarArchivo(): void{
 
   }
@@ -141,6 +318,7 @@ export class DesembolsoComponent implements OnInit {
 
   onSeleccionarTodo(): void {
     this.desembolso.forEach(el => {
+      if(el.checkList)
       el.seleccionado = this.seleccionarTodo;
     });
   }
@@ -159,7 +337,13 @@ export class DesembolsoComponent implements OnInit {
     });
   }
   onEditar(item: LiquidacionCab, modal: any): void {
-    this.solicitudForm.controls.idSolicitudCab.setValue(item.idSolicitudCab);
+    
+    this.desembolsoDet = item.liquidacionDet;
+    this.totalMontoDescembolso = 0;
+    for (const row of this.desembolsoDet) {
+      this.totalMontoDescembolso += row.montoDesembolso;
+    }
+    this.solicitudForm.controls.idLiquidacionCab.setValue(item.idLiquidacionCab);
     //this.idCliente = item.idCliente;
     this.solicitudForm.controls.idTipoOperacion.setValue(item.idTipoOperacion);
    // this.idTipoOperacion = item.idTipoOperacion;
@@ -170,6 +354,9 @@ export class DesembolsoComponent implements OnInit {
     this.solicitudForm.controls.rucPagProv.setValue(item.rucPagProv);
     this.solicitudForm.controls.razonSocialPagProv.setValue(item.razonSocialPagProv);
     this.solicitudForm.controls.moneda.setValue(item.moneda);
+    this.codigoMonedaCab = item.moneda;
+    console.log('monedaCa', this.codigoMonedaCab);
+    
     //this.moneda = item.moneda;
     this.solicitudForm.controls.montoTotal.setValue(item.nuevoMontoTotal);
     // this.solicitudForm.controls.tasaNominalMensual.setValue(item.tasaNominalMensual);
@@ -202,15 +389,13 @@ export class DesembolsoComponent implements OnInit {
     // this.solicitudForm.controls.fechaPagoCT.setValue(item.fechaPagoCT);
 
     // this.detalle = item.solicitudDet;
-    // this.sustentos = item.solicitudCabSustento;
+    this.sustentos = item.liquidacionCabSustento;
     // this.onCalcularCT(item);
-    console.log('det', item);
     
     this.utilsService.blockUIStart("Obteniendo información...");
     this.clienteService.obtener({
       idCliente: item.idCliente
     }).subscribe((response: any) => {
-      console.log('res', response.clienteCuenta);
       
       // this.contactos = response.clienteContacto;
       this.cuentas = response.clienteCuenta;
@@ -251,7 +436,6 @@ export class DesembolsoComponent implements OnInit {
   }
 
   onSeleccioneCuenta(modal): void {
-    console.log('cuenta', this.cuentas);
     
     setTimeout(() => {
       this.modalService.open(modal, {
@@ -275,6 +459,23 @@ export class DesembolsoComponent implements OnInit {
     this.nroCuentaBancariaDestino = item.nroCuenta;
     this.cciDestino = item.cci;
     this.solicitudForm.controls.tipoCuentaBancariaDestino.setValue("-");
+    this.codigoMonedaDet = item.codigoMoneda;
+    this.moneda = item.moneda;
     modal.dismiss("Cross Click");
+  }
+  
+  onConvertirMontoTotal(): void
+  { 
+    if (this.codigoMonedaCab != this.codigoMonedaDet) {
+      if (this.codigoMonedaCab == "PEN") {
+        this.montoConvertido = Math.round((this.totalMontoDescembolso / this.tipoCambioMoneda) * 100) / 100;
+        this.solicitudForm.controls.montoConvertido.setValue(this.montoConvertido);
+      }
+      else
+      {
+        this.montoConvertido = Math.round((this.totalMontoDescembolso * this.tipoCambioMoneda) * 100) / 100;
+        this.solicitudForm.controls.montoConvertido.setValue(this.montoConvertido);
+      }
+    }
   }
 }

@@ -389,8 +389,6 @@ export class CheckListComponent implements OnInit {
   }
 
   onGuardar(): void {
-    console.log('esrt');
-    
     this.submitted = true;
     if (this.solicitudForm.invalid)
       return;
@@ -399,9 +397,6 @@ export class CheckListComponent implements OnInit {
     if ((this.nombreContacto === "" || this.telefonoContacto === "" || this.correoContacto === "") && (this.idTipoOperacion === 1 || this.idTipoOperacion === 2))
       return;
     
-      console.log(this.archivos.filter(x => x.idTipo == 10));
-      console.log(this.sustentos.filter(x => x.idTipo == 10));
-      
     for (const item of this.detalle) {
       if (item.idEstado == 1 || item.idEstado == 3) {
         if (this.archivos.filter(x => x.idTipo == 10).length == 0 && this.sustentos.filter(x => x.idTipo == 10 && x.estado == true).length == 0) {
