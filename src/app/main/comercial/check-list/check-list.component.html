@@ -82,7 +82,7 @@
                 <ng-template let-cab ngFor [ngForOf]="solicitudes">
                   <tr>
                     <td>
-                      <div class="d-flex align-items-center">
+                      <div class="d-flex align-items-center" *ngIf="cab.idTipoOperacion != 2">
                         <a href="javascript:void(0)" title="Ocultar / Mostrar"
                            (click)="onCambiarVisibilidadDetalle(cab)">
                           <div *ngIf="!cab.cambiarIcono">
@@ -97,7 +97,6 @@
                     <td>
                       <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="{{'customCheck' + cab.idSolicitudCab}}"
-                               [disabled]="!cab.checkList"
                                [disabled]="!cab.checkList"
                                [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"/>
                         <label class="custom-control-label" for="{{'customCheck' + cab.idSolicitudCab}}"></label>

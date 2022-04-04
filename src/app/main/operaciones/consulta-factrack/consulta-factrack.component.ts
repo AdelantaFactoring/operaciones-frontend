@@ -136,7 +136,8 @@ export class ConsultaFactrackComponent implements OnInit {
   }
 
   onConfirmar(idEstado: number): void {
-    let solicitudes = this.solicitudes.filter(f => f.seleccionado);
+    // @ts-ignore
+    let solicitudes = [...this.solicitudes.filter(f => f.seleccionado)];
     if (solicitudes.length == 0) {
       this.utilsService.showNotification("Seleccione una o varias solicitudes", "", 2);
       return;
