@@ -145,6 +145,7 @@ export class RespuestaPagadorComponent implements OnInit {
       this.utilsService.showNotification("Seleccione una o varias solicitudes", "", 2);
       return;
     }
+
     let val1 = this.solicitudes.filter(f => f.seleccionado && f.idTipoRegistro != (idEstado == 4 ? 1 : 2) && f.idTipoRegistro != 0);
     if (val1.length > 0) {
       this.utilsService.showNotification("Una o varias solicitudes ya se registraron con otro tipo de servicio", "", 2);

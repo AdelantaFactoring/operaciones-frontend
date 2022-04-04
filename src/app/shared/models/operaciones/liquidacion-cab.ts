@@ -25,6 +25,7 @@ export class LiquidacionCab {
   idEstado: number;
   estado: string;
   totalRows: number;
+  idUsuarioAud: number;
   liquidacionDet: LiquidacionDet[]
   cambiarIcono: boolean = false;
   seleccionado: boolean = false;

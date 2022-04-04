@@ -31,4 +31,24 @@ export class LiquidacionesService {
       }
     );
   }
+
+  actualizar(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${LIQUIDACIONES.actualizar}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  cambiarEstado(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${LIQUIDACIONES.cambiarEstado}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }
