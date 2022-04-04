@@ -11,6 +11,7 @@ import {SolicitudCabSustento} from "../../../shared/models/comercial/solicitudCa
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
 import {LiquidacionDet} from "../../../shared/models/operaciones/liquidacion-det";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-liquidaciones',
@@ -201,7 +202,7 @@ export class LiquidacionesComponent implements OnInit {
   }
 
   onSeleccionarTodo(): void {
-    this.liquidaciones.forEach(el => {
+    this.liquidaciones.filter(f => f.idEstado === 1).forEach(el => {
       el.seleccionado = this.seleccionarTodo;
     });
   }
@@ -330,7 +331,40 @@ export class LiquidacionesComponent implements OnInit {
     }
   }
 
-  onGenerar(modal: any) {
+  onAprobar(idEstado: number): void {
+    // @ts-ignore
+    let liquidaciones = [...this.liquidaciones.filter(f => f.seleccionado)];
+
+    if (liquidaciones.length === 0) {
+      this.utilsService.showNotification("Seleccione una o varias liquidaciones", "", 2);
+      return;
+    }
+
+    liquidaciones.forEach(el => {
+      el.idEstado = idEstado;
+      el.idUsuarioAud = 1;
+    });
+
+    this.utilsService.blockUIStart('Aprobando...');
+    this.liquidacionesService.cambiarEstado(liquidaciones).subscribe(response => {
+      if (response.tipo == 1) {
+        this.utilsService.showNotification('Aprobación Satisfactoria', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+        this.onListarLiquidaciones();
+      } else if (response.tipo == 2) {
+        this.utilsService.showNotification(response.mensaje, 'Validación', 2);
+        this.utilsService.blockUIStop();
+      } else if (response.tipo == 0) {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
+      }
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
+  }
+
+  onGenerar(modal: any): void {
     let solicitudes = this.solicitudes.filter(f => f.seleccionado);
     if (solicitudes.length == 0) {
       this.utilsService.showNotification("Seleccione una o varias solicitudes", "", 2);
@@ -428,5 +462,37 @@ export class LiquidacionesComponent implements OnInit {
     det.montoTotalFacturado = det.gastosDiversosConIGV + det.interesConIGV;
     if (cab.idTipoCT != 1)
       det.montoDesembolso = (det.montoCobrar - det.montoTotalFacturado - det.comisionEstructuracionConIGV) + det.montoNotaCreditoDevolucion;
+
+    det.editado = true;
+  }
+
+  onGuardarCambios(item: LiquidacionCab): void {
+    let itemActual = { ...item };
+    if (itemActual.liquidacionDet.filter(f => f.cambioConfirmado).length == 0) return;
+
+    itemActual.idUsuarioAud = 1;
+    itemActual.liquidacionDet = itemActual.liquidacionDet.filter(f => f.cambioConfirmado);
+
+    this.utilsService.blockUIStart('Guardando...');
+    this.liquidacionesService.actualizar(itemActual).subscribe(response => {
+      if (response.tipo == 1) {
+        this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+        this.onListarLiquidaciones();
+      } else if (response.tipo == 2) {
+        this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+        this.utilsService.blockUIStop();
+      } else {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
+      }
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
+  }
+
+  onDeshacerCambios(): void {
+    this.onListarLiquidaciones();
   }
 }

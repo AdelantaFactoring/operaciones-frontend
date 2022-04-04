@@ -12,6 +12,13 @@
                 <span class="d-none d-sm-inline-block">Generar Liquidación(es)</span>
               </button>
             </div>
+            <div class="pt-1 pb-1">
+              <button type="submit" rippleEffect class="btn btn-primary"
+                      (click)="onAprobar(3)">
+                <i class="mr-0 mr-sm-1" data-feather="check"></i>
+                <span class="d-none d-sm-inline-block">Aprobar</span>
+              </button>
+            </div>
           </div>
         </div>
         <div class="row">
@@ -98,7 +105,7 @@
                     </td>
                     <td>
                       <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input"
+                        <input type="checkbox" class="custom-control-input" [disabled]="cab.idEstado != 1"
                                id="{{'customCheckL' + cab.idLiquidacionCab}}"
                                [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"/>
                         <label class="custom-control-label" for="{{'customCheckL' + cab.idLiquidacionCab}}"></label>
@@ -133,13 +140,13 @@
                       <div class="row">
                         <div class="d-flex flex-wrap mb-0">
                           <div class="pl-1 pt-1 pb-1">
-                            <button type="submit" rippleEffect class="btn btn-success">
+                            <button type="submit" rippleEffect class="btn btn-success" (click)="onGuardarCambios(cab)">
                               <i class="mr-0 mr-sm-1" data-feather="save"></i>
                               <span class="d-none d-sm-inline-block">Guardar Cambios</span>
                             </button>
                           </div>
                           <div class="p-1">
-                            <button type="submit" rippleEffect class="btn btn-secondary">
+                            <button type="submit" rippleEffect class="btn btn-secondary" (click)="onDeshacerCambios()">
                               <i class="mr-0 mr-sm-1" data-feather="corner-up-left"></i>
                               <span class="d-none d-sm-inline-block">Deshacer Cambios</span>
                             </button>

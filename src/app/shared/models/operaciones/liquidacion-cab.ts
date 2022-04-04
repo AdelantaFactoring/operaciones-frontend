@@ -30,6 +30,6 @@ export class LiquidacionCab {
   liquidacionCabSustento: LiquidacionCabSustento[];
   cambiarIcono: boolean = false;
   seleccionado: boolean = false;
-
+  idUsuarioAud: number;
   edicion: boolean = false;
 }
