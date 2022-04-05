@@ -251,8 +251,7 @@ export class CheckListComponent implements OnInit {
     this.detalle = item.solicitudDet;
     this.sustentos = item.solicitudCabSustento;
     this.onCalcularCT(item);
-    console.log('det', this.detalle);
-    
+
     this.utilsService.blockUIStart("Obteniendo información...");
     this.clienteService.obtener({
       idCliente: item.idCliente
@@ -305,7 +304,8 @@ export class CheckListComponent implements OnInit {
   }
 
   onAprobar(idEstado: number): void {
-    let solicitudes = this.solicitudes.filter(f => f.seleccionado);
+    // @ts-ignore
+    let solicitudes = [...this.solicitudes.filter(f => f.seleccionado)];
     if (solicitudes.length == 0) {
       this.utilsService.showNotification("Seleccione una o varias solicitudes", "", 2);
       return;
@@ -394,9 +394,9 @@ export class CheckListComponent implements OnInit {
       return;
     if (this.nroCuentaBancariaDestino === "" && this.cciDestino === "")
       return;
-    if ((this.nombreContacto === "" || this.telefonoContacto === "" || this.correoContacto === "") && (this.idTipoOperacion === 1 || this.idTipoOperacion === 2))
+    if ((this.nombreContacto === "" || this.telefonoContacto === "" || this.correoContacto === ""))
       return;
-    
+
     for (const item of this.detalle) {
       if (item.idEstado == 1 || item.idEstado == 3) {
         if (this.archivos.filter(x => x.idTipo == 10).length == 0 && this.sustentos.filter(x => x.idTipo == 10 && x.estado == true).length == 0) {
