@@ -12,6 +12,7 @@ import { SolicitudArchivos, SolicitudArchivosXlsx } from 'app/shared/models/come
 import Swal from 'sweetalert2';
 import { SolicitudDetRespuesta } from 'app/shared/models/comercial/SolicitudDet-Respuesta';
 import { ItemsList } from '@ng-select/ng-select/lib/items-list';
+import { ClienteContacto } from 'app/shared/models/comercial/cliente-contacto';
 
 @Component({
   selector: 'app-solicitudes-form',
@@ -93,7 +94,7 @@ export class SolicitudesFormComponent implements OnInit {
     { name: 'Australia' }
   ];
   private horizontalWizardStepper: Stepper;
-
+  public contacto: ClienteContacto[] = [];
   public selectMulti = [{ name: 'English' }, { name: 'French' }, { name: 'Spanish' }];
   public selectMultiSelected;
   public zeroPad = (num, places) => String(num).padStart(places, '0');
@@ -237,7 +238,6 @@ export class SolicitudesFormComponent implements OnInit {
         }
       }
     }
-
     this.params = [];
     for (const item of this.dataXml) {
       this.params.push({
@@ -284,19 +284,6 @@ export class SolicitudesFormComponent implements OnInit {
         this.flagRespuestaCon = true;
       }
       this.onGenerarCarpeta(this.solicitudDetRespuesta);
-      //this.horizontalWizardStepperNext('RespuestaInfoForm', 0);
-
-      // if (response.tipo == 1) {
-      //   this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
-      //   this.utilsService.blockUIStop();
-      //   this.location.back();
-      // } else if (response.tipo == 2) {
-      //   this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
-      //   this.utilsService.blockUIStop();
-      // } else {
-      //   this.utilsService.showNotification(response.mensaje, 'Error', 3);
-      //   this.utilsService.blockUIStop();
-      // }
 
       this.utilsService.blockUIStop();
     }, error => {
@@ -482,6 +469,9 @@ export class SolicitudesFormComponent implements OnInit {
       this.onClienteObtener(idfila, ruc, razon);
     }
     else{
+      if (this.idTipoOperacion == 3) {
+        this.onClienteObtener(idfila, ruc, razon);
+      }
       this.selectedRowIds = [];
       this.selectedRowIds.push(idfila);
       this.razonSocial = razon;
@@ -576,7 +566,6 @@ export class SolicitudesFormComponent implements OnInit {
 
       let rs = JSON.parse(res);
       this.dataXlsx  = [];
-      console.log('res', rs);
       
       if (rs.tipo != 1) {
         this.dataXlsx = rs;
@@ -592,9 +581,9 @@ export class SolicitudesFormComponent implements OnInit {
               if (item.rucCab == row.ruc && item.tipoMoneda == row.moneda && item.codFactura == row.documento) {
                 item.netoPendiente = row.netoPagar;
                 item.fechaVencimiento = row.fechaVencimiento.substring(0,10);
-                item.nombreContacto = '';
-                item.telefonoContacto = '';
-                item.correoContacto = '';
+                item.nombreContacto = this.contacto[0].nombre;
+                item.telefonoContacto = this.contacto[0].telefono;
+                item.correoContacto = this.contacto[0].correo;
                 item.titularCuentaBancariaDestino = row.razonSocialProv;
                 item.monedaCuentaBancariaDestino = row.moneda;
                 item.bancoDestino = row.banco;
@@ -666,11 +655,14 @@ export class SolicitudesFormComponent implements OnInit {
   }
 
   onClienteObtener(id, ruc, razon): void{
+    this.contacto = [];
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesFormService.clienteObtener({
       idCliente: id
     }).subscribe(response => {
-      console.log('res', response);
+      if (this.idTipoOperacion == 3) {
+        this.contacto = response.clienteContacto;
+      }
       
       if (response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda).length > 0) {
         this.clienteGastos = response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda);

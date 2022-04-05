@@ -297,6 +297,7 @@ export class SolicitudesGrillaComponent implements OnInit {
     this.modalService.dismissAll();
   }
   onVerDetalleSolicitud(item: SolicitudCab, modal: any) {
+    console.log(item);
     
     this.solicitudForm.controls.idSolicitudCab.setValue(item.idSolicitudCab);
     this.solicitudForm.controls.idTipoOperacion.setValue(item.idTipoOperacion);

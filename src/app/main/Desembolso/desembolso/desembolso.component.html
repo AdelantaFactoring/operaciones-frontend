@@ -6,7 +6,7 @@
           <div class="row">
             <div class="d-flex flex-wrap mb-0">
               <div class="p-1">
-                <button type="submit" rippleEffect class="btn btn-success" (click)="onGenerarArchivo()">
+                <button type="submit" rippleEffect class="btn btn-success" (click)="onAprobar(4)">
                   <i class="mr-0 mr-sm-1" data-feather="layers"></i>
                   <span class="d-none d-sm-inline-block">Generar Archivo(s)</span>
                 </button>
@@ -307,6 +307,27 @@
                       mask="separator" thousandSeparator=","/>
                     </div>
                   </div>
+                  <div class="col-md-6 col-12" *ngIf="codigoMonedaCab != codigoMonedaDet">
+                    <div class="form-group">  
+                      <label>Tipo de Cambio</label>
+                      <input class="form-control" formControlName="tipoCambioDollar" type="number"
+                             [ngClass]="{ 'is-invalid': submitted &&  tipoCambioMoneda == 0}"
+                             [(ngModel)]="tipoCambioMoneda" (change)="onConvertirMontoTotal()"/>
+                      <div *ngIf="ReactiveIUForm.tipoCambioDollar.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.tipoCambioDollar.errors.required">* Campo obligatorio</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-12" *ngIf="codigoMonedaCab != codigoMonedaDet">
+                    <div class="form-group">  
+                      <label>Nuevo Monto a Desembolsar en {{moneda}}</label>
+                      <input class="form-control" formControlName="montoConvertido" type="text" readonly
+                             [ngClass]="{ 'is-invalid': submitted && tipoCambioMoneda == 0 }"/>
+                      <div *ngIf="ReactiveIUForm.montoConvertido.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.montoConvertido.errors.required">* Campo obligatorio</div>
+                      </div>
+                    </div>
+                  </div>
                 <!--
                   <div class="col-12">
                     <div class="d-flex flex-wrap mb-0">
@@ -469,7 +490,7 @@
                   </div>-->
                   <div class="col-12">
                     <div class="divider divider-success">
-                      <div class="divider-text">Desembolsado</div>
+                      <div class="divider-text">Información del Desembolso</div>
                     </div>
                   </div>
                   <div class="col-12" [hidden]="idTipoOperacion === 2">
@@ -569,27 +590,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-6 col-12" *ngIf="codigoMonedaCab != codigoMonedaDet">
-                    <div class="form-group">  
-                      <label>Tipo de Cambio $</label>
-                      <input class="form-control" formControlName="tipoCambioDollar" type="number"
-                             [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.tipoCambioDollar.errors }"
-                             [(ngModel)]="tipoCambioDollar" (change)="onConvertirMontoTotal()"/>
-                      <div *ngIf="ReactiveIUForm.tipoCambioDollar.errors" class="invalid-feedback">
-                        <div *ngIf="ReactiveIUForm.tipoCambioDollar.errors.required">* Campo obligatorio</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-12" *ngIf="codigoMonedaCab != codigoMonedaDet">
-                    <div class="form-group">  
-                      <label>Nuevo Monto a Desembolsar en {{moneda}}</label>
-                      <input class="form-control" formControlName="montoConvertido" type="number" readonly
-                             [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.montoConvertido.errors }"/>
-                      <div *ngIf="ReactiveIUForm.montoConvertido.errors" class="invalid-feedback">
-                        <div *ngIf="ReactiveIUForm.montoConvertido.errors.required">* Campo obligatorio</div>
-                      </div>
-                    </div>
-                  </div>
+                  
                   <div class="col-md-6 col-12">
                     <div class="form-group">  
                       <label>Titular</label>

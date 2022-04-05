@@ -5,3 +5,7 @@
 .selectedRow {
   background-color: rgba(247,246,248,255);
 }
+::ng-deep .my-class .modal-dialog {
+  min-width: 60%;
+  //width: 60%;
+}

@@ -1,5 +1,6 @@
 import {LiquidacionDet} from "./liquidacion-det";
 import { LiquidacionCabSustento } from "./LiquidacionCab-Sustento";
+import { LiquidacionCabSeleccionados } from "./liquidacionCab_Seleccionados";
 
 export class LiquidacionCab {
   idLiquidacionCab: number;
@@ -28,8 +29,11 @@ export class LiquidacionCab {
   totalRows: number;
   liquidacionDet: LiquidacionDet[];
   liquidacionCabSustento: LiquidacionCabSustento[];
+  liquidacionCabSeleccionados: LiquidacionCabSeleccionados[];
   cambiarIcono: boolean = false;
   seleccionado: boolean = false;
+  tipoCambioMoneda: number;
+  montoTotalConversion: number;
   idUsuarioAud: number;
   edicion: boolean = false;
 }

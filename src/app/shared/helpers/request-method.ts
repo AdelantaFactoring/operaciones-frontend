@@ -4,7 +4,6 @@ import {InjectorInstance} from 'app/app.module';
 
 export class RequestMethod {
   private http: HttpClient;
-
   constructor() {
     this.http = InjectorInstance.get<HttpClient>(HttpClient);
   }
@@ -31,4 +30,9 @@ export class RequestMethod {
   // postFile(url: string, body: FormData, headers: any): Observable<any> {
   //   return this.http.post(url, body, {headers: new HttpHeaders(headers)});
   // }
+  getNewTab(url: string, body: string, headers: any) {
+    //return this.http.post(url, body, {headers: new HttpHeaders(headers)});
+    // let _params = this._checkQueryGet(body);
+     window.open(url, body, '_blank');
+  }
 }
