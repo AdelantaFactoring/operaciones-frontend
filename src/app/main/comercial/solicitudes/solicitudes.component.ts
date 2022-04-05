@@ -152,8 +152,7 @@ export class SolicitudesComponent implements OnInit {
     }).subscribe((response: SolicitudCab[]) => {
       this.solicitudes = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
-      console.log('list', response);
-      
+
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();

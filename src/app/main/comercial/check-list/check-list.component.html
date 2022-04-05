@@ -305,14 +305,49 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-4 col-12" hidden>
+            <div class="col-md-4 col-12">
               <div class="form-group">
-                <label>Comisión Estructuración</label>
+                <label>Tasa Nominal Mensual (%)</label>
+                <input class="form-control" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator="," formControlName="tasaNominalMensual"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Tasa Nominal Anual (%)</label>
+                <input class="form-control" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator="," formControlName="tasaNominalAnual"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Tasa Nominal Mensual Mora (%)</label>
+                <input class="form-control" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator="," formControlName="tasaNominalMensualMora"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Tasa Nominal Anual Mora (%)</label>
+                <input class="form-control" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator="," formControlName="tasaNominalAnualMora"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Financiamiento (%)</label>
+                <input class="form-control" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator="," formControlName="financiamiento"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Comisión Estructuración (%)</label>
                 <input class="form-control" type="text" placeholder="0.00"
                        mask="separator" thousandSeparator="," formControlName="comisionEstructuracion"/>
               </div>
             </div>
-            <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
+            <div class="col-12 col-md-4">
               <div class="form-group">
                 <div class="custom-control custom-switch custom-control-inline">
                   <input type="checkbox" class="custom-control-input"
@@ -324,7 +359,7 @@
                 <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
               </div>
             </div>
-            <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
+            <div class="col-12 col-md-4">
               <div class="form-group">
                 <div class="custom-control custom-switch custom-control-inline">
                   <input type="checkbox" class="custom-control-input"
@@ -335,16 +370,16 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
+            <div class="col-12 col-md-4">
             </div>
-            <div class="col-md-4 col-12" [hidden]="idTipoOperacion === 2">
+            <div class="col-md-4 col-12">
               <div class="form-group">
                 <label>Gastos de Contrato</label>
                 <input class="form-control" type="text" placeholder="0.00"
                        mask="separator" thousandSeparator="," formControlName="gastosContrato"/>
               </div>
             </div>
-            <div class="col-md-4 col-12" [hidden]="idTipoOperacion === 2">
+            <div class="col-md-4 col-12">
               <div class="form-group">
                 <label>Gasto Vigencia de Poder</label>
                 <input class="form-control" type="text" placeholder="0.00"
@@ -410,7 +445,7 @@
             <div class="col-12">
               <div class="d-flex flex-wrap mb-0">
                 <div class="pb-1">
-                  <button type="submit" rippleEffect class="btn btn-danger" [disabled]="idTipoOperacion === 3"
+                  <button type="submit" rippleEffect class="btn btn-danger"
                           (click)="onSeleccioneContacto(modalCONTACTO)">
                     <i class="mr-0 mr-sm-1" data-feather="arrow-right-circle"></i>
                     <span class="d-none d-sm-inline-block">Seleccione...</span>
@@ -422,9 +457,9 @@
               <div class="form-group">
                 <label>Nombre(s) y Apellidos</label>
                 <input class="form-control" [(ngModel)]="nombreContacto" [ngModelOptions]="{standalone: true}" type="text" readonly
-                       [ngClass]="{ 'is-invalid': submitted && nombreContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2) }"/>
-                <div *ngIf="nombreContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)" class="invalid-feedback">
-                  <div *ngIf="nombreContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)">* Campo obligatorio</div>
+                       [ngClass]="{ 'is-invalid': submitted && nombreContacto === '' }"/>
+                <div *ngIf="nombreContacto === ''" class="invalid-feedback">
+                  <div *ngIf="nombreContacto === ''">* Campo obligatorio</div>
                 </div>
               </div>
             </div>
@@ -432,9 +467,9 @@
               <div class="form-group">
                 <label>Teléfono</label>
                 <input class="form-control" [(ngModel)]="telefonoContacto" [ngModelOptions]="{standalone: true}" type="text" readonly
-                       [ngClass]="{ 'is-invalid': submitted && telefonoContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2) }"/>
-                <div *ngIf="telefonoContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)" class="invalid-feedback">
-                  <div *ngIf="telefonoContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)">* Campo obligatorio</div>
+                       [ngClass]="{ 'is-invalid': submitted && telefonoContacto === '' }"/>
+                <div *ngIf="telefonoContacto === ''" class="invalid-feedback">
+                  <div *ngIf="telefonoContacto === ''">* Campo obligatorio</div>
                 </div>
               </div>
             </div>
@@ -442,9 +477,9 @@
               <div class="form-group">
                 <label>Correo</label>
                 <input class="form-control" [(ngModel)]="correoContacto" [ngModelOptions]="{standalone: true}" type="text" readonly
-                       [ngClass]="{ 'is-invalid': submitted && correoContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)}"/>
-                <div *ngIf="correoContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)" class="invalid-feedback">
-                  <div *ngIf="correoContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)">* Campo obligatorio</div>
+                       [ngClass]="{ 'is-invalid': submitted && correoContacto === ''}"/>
+                <div *ngIf="correoContacto === ''" class="invalid-feedback">
+                  <div *ngIf="correoContacto === ''">* Campo obligatorio</div>
                 </div>
               </div>
             </div>

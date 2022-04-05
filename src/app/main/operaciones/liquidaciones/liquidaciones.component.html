@@ -626,20 +626,54 @@
                     <input class="form-control" formControlName="totDesembolsarConIGVCT" type="text"/>
                   </div>
                 </div>
-
                 <div class="col-12">
                   <div class="divider divider-success">
                     <div class="divider-text">Información de Gastos</div>
                   </div>
                 </div>
-                <div class="col-md-4 col-12" hidden>
+                <div class="col-md-4 col-12">
                   <div class="form-group">
-                    <label>Comisión Estructuración</label>
+                    <label>Tasa Nominal Mensual (%)</label>
+                    <input class="form-control" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator="," formControlName="tasaNominalMensual"/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Tasa Nominal Anual (%)</label>
+                    <input class="form-control" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator="," formControlName="tasaNominalAnual"/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Tasa Nominal Mensual Mora (%)</label>
+                    <input class="form-control" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator="," formControlName="tasaNominalMensualMora"/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Tasa Nominal Anual Mora (%)</label>
+                    <input class="form-control" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator="," formControlName="tasaNominalAnualMora"/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Financiamiento (%)</label>
+                    <input class="form-control" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator="," formControlName="financiamiento"/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Comisión Estructuración (%)</label>
                     <input class="form-control" type="text" placeholder="0.00"
                            mask="separator" thousandSeparator="," formControlName="comisionEstructuracion"/>
                   </div>
                 </div>
-                <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
+                <div class="col-12 col-md-4">
                   <div class="form-group">
                     <div class="custom-control custom-switch custom-control-inline">
                       <input type="checkbox" class="custom-control-input"
@@ -651,7 +685,7 @@
                     <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
                   </div>
                 </div>
-                <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
+                <div class="col-12 col-md-4">
                   <div class="form-group">
                     <div class="custom-control custom-switch custom-control-inline">
                       <input type="checkbox" class="custom-control-input"
@@ -662,16 +696,16 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
+                <div class="col-12 col-md-4">
                 </div>
-                <div class="col-md-4 col-12" [hidden]="idTipoOperacion === 2">
+                <div class="col-md-4 col-12">
                   <div class="form-group">
                     <label>Gastos de Contrato</label>
                     <input class="form-control" type="text" placeholder="0.00"
                            mask="separator" thousandSeparator="," formControlName="gastosContrato"/>
                   </div>
                 </div>
-                <div class="col-md-4 col-12" [hidden]="idTipoOperacion === 2">
+                <div class="col-md-4 col-12">
                   <div class="form-group">
                     <label>Gasto Vigencia de Poder</label>
                     <input class="form-control" type="text" placeholder="0.00"
@@ -712,6 +746,8 @@
                         <th class="detail-th-color">Monto Pago Confirmado</th>
                         <th class="detail-th-color">Fondo Resguardo</th>
                         <th class="detail-th-color">Estado</th>
+                        <th class="detail-th-color">Archivo PDF</th>
+                        <th class="detail-th-color">ARchivo XML</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -724,6 +760,19 @@
                         <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
                         <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                         <td>{{item.estado}}</td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <a href="{{item.rutaArchivoPDF}}" title="{{ item.archivoPDF }}" target="_blank"
+                               class="btn btn-raised btn-outline-info btn-sm">
+                              <i class="fa fa-file-pdf"></i>
+<!--                              <i class="text cursor-pointer" data-feather="eye"></i>-->
+                            </a>
+                          </div>
+                        </td>
+                        <td>
+                          <a href="{{item.rutaArchivoXML}}" target="_blank"><strong
+                          >{{ item.archivoXML }}</strong></a>
+                        </td>
                       </tr>
                       </tbody>
                     </table>

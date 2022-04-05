@@ -43,7 +43,7 @@ export class SolicitudesGrillaComponent implements OnInit {
     private utilsService: UtilsService,
     private solicitudesService: SolicitudesService,
     private modalService: NgbModal
-    ) { 
+    ) {
     this.solicitudDetForm = this.formBuilder.group({
       nroSolicitud: [''],
       moneda: [''],
@@ -138,8 +138,7 @@ export class SolicitudesGrillaComponent implements OnInit {
     }).subscribe((response: SolicitudCab[]) => {
       this.solicitudes = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
-      console.log('list', response);
-      
+
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -176,25 +175,25 @@ export class SolicitudesGrillaComponent implements OnInit {
     this.solicitudDetForm.controls.rucCedente.setValue(item.rucCliente);
     this.solicitudDetForm.controls.aceptante.setValue(item.razonSocialPagProv);
     this.solicitudDetForm.controls.rucAceptante.setValue(item.rucPagProv);
-    
+
     this.solicitudDetForm.controls.tipoOperacion.setValue(item.tipoOperacion);
     this.solicitudDetForm.controls.bancoD.setValue(item.bancoDestino);
     this.solicitudDetForm.controls.ctaBancariaD.setValue(item.nroCuentaBancariaDestino);
     this.solicitudDetForm.controls.tipoCtaBancariaD.setValue(item.tipoCuentaBancariaDestino);
     this.solicitudDetForm.controls.comisionCN.setValue(item.comisionCartaNotarial);
-    
+
     this.solicitudDetForm.controls.comisionE.setValue(item.comisionEstructuracion);
     this.solicitudDetForm.controls.financiamiento.setValue(item.financiamiento);
     this.solicitudDetForm.controls.servicioCob.setValue(item.servicioCobranza);
     this.solicitudDetForm.controls.servicioCus.setValue(item.servicioCustodia);
     this.solicitudDetForm.controls.tnm.setValue(item.tasaNominalMensual);
-    
+
     this.solicitudDetForm.controls.tna.setValue(item.tasaNominalAnual);
     this.solicitudDetForm.controls.tnmm.setValue(item.tasaNominalMensualMora);
     this.solicitudDetForm.controls.tnam.setValue(item.tasaNominalAnualMora);
     this.solicitudDetForm.controls.totalDesCIgv.setValue(item.totalDesembolsoConIGV);
     this.solicitudDetForm.controls.totalFacCIgv.setValue(item.totalFacConIGV);
-    
+
     this.solicitudDetForm.controls.nombreC.setValue(item.nombreContacto);
     this.solicitudDetForm.controls.correoC.setValue(item.correoContacto);
     this.solicitudDetForm.controls.correoConCopiaC.setValue(item.conCopiaContacto);
@@ -297,7 +296,7 @@ export class SolicitudesGrillaComponent implements OnInit {
     this.modalService.dismissAll();
   }
   onVerDetalleSolicitud(item: SolicitudCab, modal: any) {
-    
+
     this.solicitudForm.controls.idSolicitudCab.setValue(item.idSolicitudCab);
     this.solicitudForm.controls.idTipoOperacion.setValue(item.idTipoOperacion);
     this.idTipoOperacion = item.idTipoOperacion;
@@ -345,7 +344,7 @@ export class SolicitudesGrillaComponent implements OnInit {
       this.modalService.open(modal, {
         scrollable: true,
         //size: 'lg',
-        windowClass: 'my-class1',
+        windowClass: 'my-class',
         animation: true,
         centered: false,
         backdrop: "static",

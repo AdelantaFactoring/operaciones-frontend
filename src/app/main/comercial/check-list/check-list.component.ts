@@ -251,7 +251,6 @@ export class CheckListComponent implements OnInit {
     this.detalle = item.solicitudDet;
     this.sustentos = item.solicitudCabSustento;
     this.onCalcularCT(item);
-    console.log('det', this.detalle);
 
     this.utilsService.blockUIStart("Obteniendo información...");
     this.clienteService.obtener({
@@ -395,7 +394,7 @@ export class CheckListComponent implements OnInit {
       return;
     if (this.nroCuentaBancariaDestino === "" && this.cciDestino === "")
       return;
-    if ((this.nombreContacto === "" || this.telefonoContacto === "" || this.correoContacto === "") && (this.idTipoOperacion === 1 || this.idTipoOperacion === 2))
+    if ((this.nombreContacto === "" || this.telefonoContacto === "" || this.correoContacto === ""))
       return;
 
     for (const item of this.detalle) {
