@@ -259,37 +259,6 @@
                 <input class="form-control" formControlName="fechaPagoCT" type="text"/>
               </div>
             </div>
-            <div class="col-md-6 col-12" *ngIf="idTipoOperacion == 2 && idTipoCT == 1">
-              <div class="form-group">
-                <label>Monto a Descontar</label>
-                <input class="form-control" formControlName="montoDescontarCT" type="text"/>
-              </div>
-            </div>
-            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
-              <div class="form-group">
-                <label>Interes Incluido IGV</label>
-                <input class="form-control" formControlName="interesConIGVCT" type="text"/>
-              </div>
-            </div>
-            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
-              <div class="form-group">
-                <label>Gastos Incluido IGV</label>
-                <input class="form-control" formControlName="gastosConIGVCT" type="text"/>
-              </div>
-            </div>
-            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
-              <div class="form-group">
-                <label>Total a Facturar con IGV</label>
-                <input class="form-control" formControlName="totFacurarConIGVCT" type="text"/>
-              </div>
-            </div>
-            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
-              <div class="form-group">
-                <label>Total a Desembolsar con IGV</label>
-                <input class="form-control" formControlName="totDesembolsarConIGVCT" type="text"/>
-              </div>
-            </div>
-
             <div class="col-12">
               <div class="divider divider-success">
                 <div class="divider-text">Información de Gastos</div>
@@ -405,6 +374,55 @@
                 <label>Servicio Custodia</label>
                 <input class="form-control" type="text" placeholder="0.00"
                        mask="separator" thousandSeparator="," formControlName="servicioCustodia"/>
+              </div>
+            </div>
+
+            <div class="col-12" [hidden]="idTipoOperacion != 2">
+              <div class="divider divider-danger">
+                <div class="divider-text">Monto calculado</div>
+              </div>
+            </div>
+            <div class="col-md-6 col-12"  [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Fondo Resguardo</label>
+                <input class="form-control" formControlName="fondoResguardo" type="text" placeholder="0.00"
+                      mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Monto a financiar</label>
+                <input class="form-control"  formControlName="netoSolicitado" type="text" placeholder="0.00"
+                        mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Intereses incluido IGV</label>
+                <input class="form-control" formControlName="interesIncluidoIGV" type="text" placeholder="0.00" 
+                       mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Gastos incluido IGV</label>
+                <input class="form-control" formControlName="gastosIncluidoIGV" type="text'" placeholder="0.00"
+                       mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Total a Facturar</label>
+                <input class="form-control" formControlName="totalFacturarIGV" type="text" placeholder="0.00" 
+                      mask="separator" thousandSeparator=","/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+              <div class="form-group">
+                <label>Total a Desembolsar</label>
+                <input class="form-control" formControlName="totalDesembolso" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator=","/>
               </div>
             </div>
             <div class="col-12" [hidden]="idTipoOperacion === 2">

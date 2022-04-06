@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import { SolicitudDetRespuesta } from 'app/shared/models/comercial/SolicitudDet-Respuesta';
 import { ItemsList } from '@ng-select/ng-select/lib/items-list';
 import { ClienteContacto } from 'app/shared/models/comercial/cliente-contacto';
+import { LOADIPHLPAPI } from 'dns';
 
 @Component({
   selector: 'app-solicitudes-form',
@@ -179,8 +180,12 @@ export class SolicitudesFormComponent implements OnInit {
       moneda: [1],
       ruc: ['', Validators.required],
       razonSocial: ['', Validators.required],
-      tasaAnual: ['', Validators.required],
       tasaMensual: ['', Validators.required],
+      tasaAnual: ['', Validators.required],
+      tasaMoraMensual: [0.0, Validators.required],
+      tasaMoraAnual: [0.0, Validators.required],
+      financiamiento: [''],
+      comisionEstructuracion: [''],
       contrato: [0, Validators.required],
       cartaNotarial: ['', Validators.required],
       servicioCobranza: ['', Validators.required],
@@ -195,8 +200,10 @@ export class SolicitudesFormComponent implements OnInit {
       tDesembolsoIGV: [0],
       fechaPago: [''],
       montoDesc: [''],
-      financiamiento: [''],
-      fondoResguardo: ['']
+      fondoResguardo: [''],
+      netoSolicitado: [0],
+      usarGastosContrato: [0],
+      usarGastoVigenciaPoder: [0]
     });
    }
 
@@ -663,9 +670,10 @@ export class SolicitudesFormComponent implements OnInit {
       if (this.idTipoOperacion == 3) {
         this.contacto = response.clienteContacto;
       }
-      
+      console.log('item', response);
       if (response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda).length > 0) {
         this.clienteGastos = response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda);
+        
         for (const item of this.clienteGastos) {
           this.ruc = item.ruc;
           this.razonSocial = item.razonSocial;
@@ -676,13 +684,17 @@ export class SolicitudesFormComponent implements OnInit {
           this.financiamiento = item.financiamiento;
           this.capitalTrabajoForm.controls.ruc.setValue(ruc);
           this.capitalTrabajoForm.controls.razonSocial.setValue(razon);
-          this.capitalTrabajoForm.controls.tasaAnual.setValue(item.tasaNominalAnual);
           this.capitalTrabajoForm.controls.tasaMensual.setValue(item.tasaNominalMensual);
+          this.capitalTrabajoForm.controls.tasaAnual.setValue(item.tasaNominalAnual);
+          this.capitalTrabajoForm.controls.tasaMoraMensual.setValue(item.tasaNominalMensualMora);
+          this.capitalTrabajoForm.controls.tasaMoraAnual.setValue(item.tasaNominalAnualMora);
+          this.capitalTrabajoForm.controls.usarGastosContrato.setValue(true);
           this.capitalTrabajoForm.controls.contrato.setValue(item.gastosContrato);
           this.capitalTrabajoForm.controls.cartaNotarial.setValue(item.comisionCartaNotarial);
           this.capitalTrabajoForm.controls.servicioCobranza.setValue(item.servicioCobranza);
           this.capitalTrabajoForm.controls.servicioCustodia.setValue(item.servicioCustodia);
           this.capitalTrabajoForm.controls.financiamiento.setValue(item.financiamiento);
+
         }
       }
       else
@@ -770,27 +782,31 @@ export class SolicitudesFormComponent implements OnInit {
     this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue('');
   }
   onCalcularCT(): void{
-    let capitalTrabajoS, TNM, TNA, nroDias, mDescontar, intereses, montoSolicitado, totFacturar, fondoResguardo;
+    let TNM, TNA, nroDias, mDescontar, intereses, montoSolicitado, totFacturar, fondoResguardo = 0;
     let contrato, servicioCustodia, servicioCobranza, cartaNotarial, gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
+    let netoSolicitado = 0, IGV ;
+    
     contrato = this.capitalTrabajoForm.controls.contrato.value;
     servicioCustodia = this.capitalTrabajoForm.controls.servicioCustodia.value;
     servicioCobranza = this.capitalTrabajoForm.controls.servicioCobranza.value;
     cartaNotarial = this.capitalTrabajoForm.controls.cartaNotarial.value;
-    capitalTrabajoS = this.capitalTrabajoForm.controls.ctSolicitado.value;
     TNM = this.capitalTrabajoForm.controls.tasaMensual.value;
     TNA = this.capitalTrabajoForm.controls.tasaAnual.value;
     nroDias = this.capitalTrabajoForm.controls.diasPrestamo.value;
     montoSolicitado = this.capitalTrabajoForm.controls.ctSolicitado.value;
     gDiversonsSIgv = contrato + servicioCustodia + servicioCobranza + cartaNotarial;
-    fondoResguardo = 
-    this.igvCT = this.igvCT / 100;
+    IGV = this.igvCT / 100;
     if (this.idTipo == 1) {
-      mDescontar = ((360 * capitalTrabajoS) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12))* (this.igvCT + 1) ));
-      intereses = mDescontar * (TNA / 360) * nroDias * (this.igvCT + 1);
-      gDiversonsCIgv = gDiversonsSIgv * this.igvCT;
+
+      netoSolicitado = ((360 * montoSolicitado) + (360 * gDiversonsSIgv)) /(360 - ((nroDias * ((TNM / 100) * 12)) * (IGV + 1)));
+      mDescontar = ((360 * netoSolicitado) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12))* (IGV + 1) ));
+      intereses = netoSolicitado * ((TNA / 100) / 360) * nroDias * (IGV + 1);
+      gDiversonsCIgv = gDiversonsSIgv * IGV;
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
+      this.capitalTrabajoForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100)/100);
+      this.capitalTrabajoForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100)/100);
       this.capitalTrabajoForm.controls.montoDesc.setValue(Math.round((mDescontar + Number.EPSILON) * 100)/100);
       this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100); 
       this.capitalTrabajoForm.controls.gIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
@@ -798,16 +814,21 @@ export class SolicitudesFormComponent implements OnInit {
       this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
     }
     else
-    {
-      gDiversonsCIgv = gDiversonsSIgv * (this.igvCT + 1);
-      intereses = capitalTrabajoS * (TNA / 360) * (nroDias + 1) * (this.igvCT + 1);
+    { 
+      fondoResguardo = montoSolicitado - ((montoSolicitado * this.financiamiento) / 100);
+      netoSolicitado = montoSolicitado - fondoResguardo;
+
+      gDiversonsCIgv = gDiversonsSIgv * IGV;
+      intereses = netoSolicitado * ((TNA / 100) / 360) * (nroDias) * (IGV + 1);
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
-
+      
+      this.capitalTrabajoForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100)/100);
+      this.capitalTrabajoForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100)/100);
       this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
       this.capitalTrabajoForm.controls.gIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
       this.capitalTrabajoForm.controls.tFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
-      this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(Math.round(((montoSolicitado + Number.EPSILON) - totFacturar) * 100) / 100);
+      this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(Math.round(((netoSolicitado + Number.EPSILON) - totFacturar) * 100) / 100);
     }
     
   }
@@ -817,12 +838,13 @@ export class SolicitudesFormComponent implements OnInit {
     ctSolicitado = Number(this.capitalTrabajoForm.controls.ctSolicitado.value);
 
     if (montoCT < ctSolicitado) {
-      this.utilsService.showNotification('Capital solicitado no puede ser mayor al monto de capital de trabajo.', 'Alerta', 2);
+      this.utilsService.showNotification('Monto solicitado no puede ser mayor al Monto.', 'Alerta', 2);
       this.mayor = true;
     }
     else
     {
       this.mayor = false;
+      this.onCalcularCT();
     }
   }
   onGenerarCarpeta(data): void{

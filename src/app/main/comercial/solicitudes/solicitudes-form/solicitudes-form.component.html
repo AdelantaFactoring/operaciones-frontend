@@ -728,6 +728,11 @@
       <div class="modal-body" ngbAutofocus tabindex="0">
         <form [formGroup]="capitalTrabajoForm">
           <div class="row">
+            <div class="col-12">
+              <div class="divider divider-warning">
+                <div class="divider-text">Información General</div>
+              </div>
+            </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Seleccione Tipo</label>
@@ -774,82 +779,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label>Tasa Anual</label>
-                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaAnual.errors }" class="form-control"
-                       formControlName="tasaAnual" type="text" disabled mask="separator" thousandSeparator=","/>
-                <div *ngIf="CapitalIUForm.tasaAnual.errors" class="invalid-feedback">
-                  <div *ngIf="CapitalIUForm.tasaAnual.errors.required">* Campo obligatorio</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label>Tasa Mensual</label>
-                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaMensual.errors }" class="form-control"
-                       formControlName="tasaMensual" type="text" disabled mask="separator" thousandSeparator=","/>
-                <div *ngIf="CapitalIUForm.tasaMensual.errors" class="invalid-feedback">
-                  <div *ngIf="CapitalIUForm.tasaMensual.errors.required">* Campo obligatorio</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label>Gastos Contrato</label>
-                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.contrato.errors }"
-                       class="form-control" formControlName="contrato" type="text" disabled mask="separator" thousandSeparator=","/>
-                <div *ngIf="CapitalIUForm.contrato.errors" class="invalid-feedback">
-                  <div *ngIf="CapitalIUForm.contrato.errors.required">* Campo obligatorio</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label>Comisión Carta Notarial</label>
-                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.cartaNotarial.errors }"
-                       class="form-control" formControlName="cartaNotarial" type="text" disabled mask="separator" thousandSeparator=","/>
-                <div *ngIf="CapitalIUForm.cartaNotarial.errors" class="invalid-feedback">
-                  <div *ngIf="CapitalIUForm.cartaNotarial.errors.required">* Campo obligatorio</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label>Servicio Cobranza</label>
-                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.servicioCobranza.errors }"
-                       class="form-control" formControlName="servicioCobranza" type="text" disabled mask="separator" thousandSeparator=","/>
-                <div *ngIf="CapitalIUForm.servicioCobranza.errors" class="invalid-feedback">
-                  <div *ngIf="CapitalIUForm.servicioCobranza.errors.required">* Campo obligatorio</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label>Servicio Custodia</label>
-                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.servicioCustodia.errors }"
-                       class="form-control" formControlName="servicioCustodia" type="text" disabled mask="separator" thousandSeparator=","/>
-                <div *ngIf="CapitalIUForm.servicioCustodia.errors" class="invalid-feedback">
-                  <div *ngIf="CapitalIUForm.servicioCustodia.errors.required">* Campo obligatorio</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label>IGV</label>
-                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.igvCT.errors }"
-                       class="form-control" formControlName="igvCT" type="text" disabled/>
-                <div *ngIf="CapitalIUForm.igvCT.errors" class="invalid-feedback">
-                  <div *ngIf="CapitalIUForm.igvCT.errors.required">* Campo obligatorio</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label>Financiamiento</label>
-                <input class="form-control" formControlName="financiamiento" type="text" disabled/>
-              </div>
-            </div>
+            
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Monto</label>
@@ -862,7 +792,7 @@
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
-                <label>Monto Solicitud</label>
+                <label>Monto Solicitado</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.ctSolicitado.errors || mayor}"
                        class="form-control" formControlName="ctSolicitado" type="number" (change)="validacionCT()"/>
                 <div *ngIf="CapitalIUForm.ctSolicitado.errors" class="invalid-feedback">
@@ -893,17 +823,173 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-12" *ngIf="idTipo == 1">
+            <div class="col-12">
+              <div class="divider divider-success">
+                <div class="divider-text">Información de Gastos</div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
               <div class="form-group">
-                <label>Fondo Resguardo</label>
-                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.montoDesc.errors }" class="form-control"
-                       formControlName="fondoResguardo" type="text" disabled mask="separator" thousandSeparator=","/>
-                <div *ngIf="CapitalIUForm.montoDesc.errors" class="invalid-feedback">
-                  <div *ngIf="CapitalIUForm.montoDesc.errors.required">* Campo obligatorio</div>
+                <label>Tasa Nominal Mensual (%)</label>
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaMensual.errors }" class="form-control"
+                       formControlName="tasaMensual" type="text" disabled mask="separator" thousandSeparator=","/>
+                <div *ngIf="CapitalIUForm.tasaMensual.errors" class="invalid-feedback">
+                  <div *ngIf="CapitalIUForm.tasaMensual.errors.required">* Campo obligatorio</div>
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-12" *ngIf="idTipo == 1">
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Tasa Nominal Anual (%)</label>
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaAnual.errors }" class="form-control"
+                       formControlName="tasaAnual" type="text" disabled mask="separator" thousandSeparator=","/>
+                <div *ngIf="CapitalIUForm.tasaAnual.errors" class="invalid-feedback">
+                  <div *ngIf="CapitalIUForm.tasaAnual.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Tasa Nominal Mensual Mora (%)</label>
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaMoraMensual.errors }" class="form-control"
+                       formControlName="tasaMoraMensual" type="text" disabled mask="separator" thousandSeparator=","/>
+                <div *ngIf="CapitalIUForm.tasaMoraMensual.errors" class="invalid-feedback">
+                  <div *ngIf="CapitalIUForm.tasaMoraMensual.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Tasa Nominal Anual Mora (%)</label>
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaMoraAnual.errors }" class="form-control"
+                       formControlName="tasaMoraAnual" type="text" disabled mask="separator" thousandSeparator=","/>
+                <div *ngIf="CapitalIUForm.tasaMoraAnual.errors" class="invalid-feedback">
+                  <div *ngIf="CapitalIUForm.tasaMoraAnual.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Financiamiento (%)</label>
+                <input class="form-control" formControlName="financiamiento" type="text" disabled/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Comisión Estructuración (%)</label>
+                <input class="form-control" formControlName="comisionEstructuracion" type="text" disabled/>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-switch custom-control-inline">
+                  <input type="checkbox" class="custom-control-input"
+                         id="usoGC" formControlName="usarGastosContrato" checked
+                  />
+                  <label class="custom-control-label"
+                         for="usoGC">Aplicar Gastos de Contrato</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <div class="custom-control custom-switch custom-control-inline">
+                  <input type="checkbox" class="custom-control-input"
+                         id="usoGVP" formControlName="usarGastoVigenciaPoder" checked
+                  />
+                  <label class="custom-control-label"
+                         for="usoGVP">Aplicar Gasto Vigencia de Poder</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+            </div>
+
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Gastos Contrato</label>
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.contrato.errors }"
+                       class="form-control" formControlName="contrato" type="text" disabled mask="separator" thousandSeparator=","/>
+                <div *ngIf="CapitalIUForm.contrato.errors" class="invalid-feedback">
+                  <div *ngIf="CapitalIUForm.contrato.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Gasto Vigencia de Poder</label>
+                <input class="form-control" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator="," formControlName="gastoVigenciaPoder"/>
+              </div>
+            </div>
+
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Comisión Carta Notarial</label>
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.cartaNotarial.errors }"
+                       class="form-control" formControlName="cartaNotarial" type="text" disabled mask="separator" thousandSeparator=","/>
+                <div *ngIf="CapitalIUForm.cartaNotarial.errors" class="invalid-feedback">
+                  <div *ngIf="CapitalIUForm.cartaNotarial.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Servicio Cobranza</label>
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.servicioCobranza.errors }"
+                       class="form-control" formControlName="servicioCobranza" type="text" disabled mask="separator" thousandSeparator=","/>
+                <div *ngIf="CapitalIUForm.servicioCobranza.errors" class="invalid-feedback">
+                  <div *ngIf="CapitalIUForm.servicioCobranza.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Servicio Custodia</label>
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.servicioCustodia.errors }"
+                       class="form-control" formControlName="servicioCustodia" type="text" disabled mask="separator" thousandSeparator=","/>
+                <div *ngIf="CapitalIUForm.servicioCustodia.errors" class="invalid-feedback">
+                  <div *ngIf="CapitalIUForm.servicioCustodia.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>IGV</label>
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.igvCT.errors }"
+                       class="form-control" formControlName="igvCT" type="text" disabled/>
+                <div *ngIf="CapitalIUForm.igvCT.errors" class="invalid-feedback">
+                  <div *ngIf="CapitalIUForm.igvCT.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+           
+            <div class="col-12">
+              <div class="divider divider-danger">
+                <div class="divider-text">Monto calculado</div>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Fondo Resguardo</label>
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.fondoResguardo.errors }" class="form-control"
+                       formControlName="fondoResguardo" type="text" disabled mask="separator" thousandSeparator=","/>
+                <div *ngIf="CapitalIUForm.fondoResguardo.errors" class="invalid-feedback">
+                  <div *ngIf="CapitalIUForm.fondoResguardo.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Monto a financiar</label>
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.netoSolicitado.errors }" class="form-control"
+                       formControlName="netoSolicitado" type="text" disabled mask="separator" thousandSeparator=","/>
+                <div *ngIf="CapitalIUForm.netoSolicitado.errors" class="invalid-feedback">
+                  <div *ngIf="CapitalIUForm.netoSolicitado.errors.required">* Campo obligatorio</div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col-md-6 col-12" *ngIf="idTipo == 1">
               <div class="form-group">
                 <label>Monto a descontar</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.montoDesc.errors }" class="form-control"
@@ -912,7 +998,7 @@
                   <div *ngIf="CapitalIUForm.montoDesc.errors.required">* Campo obligatorio</div>
                 </div>
               </div>
-            </div>
+            </div> -->
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Intereses incluido IGV</label>
@@ -936,7 +1022,7 @@
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
-                <label>Total a Facturar con IGV</label>
+                <label>Total a Facturar</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tFacturarIGV.errors }" class="form-control"
                        formControlName="tFacturarIGV" type="text" disabled mask="separator" thousandSeparator=","/>
                 <div *ngIf="CapitalIUForm.tFacturarIGV.errors" class="invalid-feedback">
@@ -946,7 +1032,7 @@
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
-                <label>Total a Desembolsar con IGV</label>
+                <label>Total a Desembolsar</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tDesembolsoIGV.errors }"
                        class="form-control" formControlName="tDesembolsoIGV" type="text" disabled mask="separator" thousandSeparator=","/>
                 <div *ngIf="CapitalIUForm.tDesembolsoIGV.errors" class="invalid-feedback">

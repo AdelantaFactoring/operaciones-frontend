@@ -6,13 +6,13 @@
           <div class="row">
             <div class="d-flex flex-wrap mb-0">
               <div class="p-1">
-                <button type="submit" rippleEffect class="btn btn-success" (click)="onAprobar(4)">
+                <button type="submit" rippleEffect class="btn btn-success" (click)="onAprobar(4, 1)">
                   <i class="mr-0 mr-sm-1" data-feather="layers"></i>
                   <span class="d-none d-sm-inline-block">Generar Archivo(s)</span>
                 </button>
               </div>
               <div class="pt-1 pb-1">
-                <button type="submit" rippleEffect class="btn btn-primary" (click)="onConfirmar()">
+                <button type="submit" rippleEffect class="btn btn-primary" (click)="onAprobar(5, 2)">
                   <i class="mr-0 mr-sm-1" data-feather="refresh-ccw"></i>
                   <span class="d-none d-sm-inline-block">Confirmar</span>
                 </button>
@@ -103,10 +103,10 @@
                       </td>
                       <td>
                         <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="{{'customCheck' + cab.idSolicitudCab}}"
+                          <input type="checkbox" class="custom-control-input" id="{{'customCheck' + cab.idLiquidacionCab}}"
                                  [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"
                                  [disabled]="!cab.checkList"/>
-                          <label class="custom-control-label" for="{{'customCheck' + cab.idSolicitudCab}}"></label>
+                          <label class="custom-control-label" for="{{'customCheck' + cab.idLiquidacionCab}}"></label>
                         </div>
                       </td>
                       <td>

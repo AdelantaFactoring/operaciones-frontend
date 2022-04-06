@@ -186,27 +186,17 @@ export class DesembolsoComponent implements OnInit {
     });
   }
 
-  
+  onConformimar(): void{
+
+  }
+
   onGuardar(): void {
     this.submitted = true;
     if (this.solicitudForm.invalid)
       return;
     if (this.tipoCambioMoneda === 0 && this.codigoMonedaCab !== this.codigoMonedaDet)
       return;
-   
-      
-    // for (const item of this.detalle) {
-    //   if (item.idEstado == 1 || item.idEstado == 3) {
-    //     if (this.archivos.filter(x => x.idTipo == 10).length == 0 && this.sustentos.filter(x => x.idTipo == 10 && x.estado == true).length == 0) {
-    //       this.utilsService.showNotification('Cargar un archivo de tipo Sustento de Aprobación', 'Alerta', 2);
-    //       return;
-    //     }
-    //   }
-    //   if (item.idEstado == 4) {
-    //     this.utilsService.showNotification('Una de las Facturas tiene un estado de Disconformidad','Alerta', 2);
-    //     return;
-    //   }
-    // }
+
     this.utilsService.blockUIStart("Guardando...");
     if (this.sustentosOld.length === 0)
       for (let item of this.sustentos) {
@@ -243,21 +233,21 @@ export class DesembolsoComponent implements OnInit {
       }
     }
 
-    // for (let item of this.archivos) {
-    //   this.sustentos.push({
-    //     idLiquidacionCabSustento: 0,
-    //     idLiquidacionCab: 0,
-    //     idTipoSustento: 0,
-    //     tipoSustento: "",
-    //     idTipo: item.idTipo,
-    //     tipo: "",
-    //     archivo: item.nombre,
-    //     base64: item.base64,
-    //     rutaArchivo: "",
-    //     estado: true,
-    //     editado: true
-    //   });
-    // }
+    for (let item of this.archivos) {
+      this.sustentos.push({
+        idLiquidacionCabSustento: 0,
+        idLiquidacionCab: 0,
+        idTipoSustento: 0,
+        tipoSustento: "",
+        idTipo: item.idTipo,
+        tipo: "",
+        archivo: item.nombre,
+        base64: item.base64,
+        rutaArchivo: "",
+        estado: true,
+        editado: true
+      });
+    }
 
     this.desembolsoService.actualizar({
       idLiquidacionCab: this.solicitudForm.controls.idLiquidacionCab.value,
@@ -316,7 +306,7 @@ export class DesembolsoComponent implements OnInit {
       this.archivosSustento.queue = sinDuplicado;
       this.archivos = [];
       for (let item of sinDuplicado) {
-        //let base64 = await this.onArchivoABase64(item._file);
+        let base64 = await this.onArchivoABase64(item._file);
         this.archivos.push({
           idFila: this.utilsService.autoIncrement(this.archivos),
           idTipo: 8,
@@ -353,8 +343,6 @@ export class DesembolsoComponent implements OnInit {
     });
   }
   onEditar(item: LiquidacionCab, modal: any): void {
-    
-    console.log('item', item);
     
     this.desembolsoDet = item.liquidacionDet;
     this.totalMontoDescembolso = 0;
@@ -434,6 +422,15 @@ export class DesembolsoComponent implements OnInit {
     this.modalService.dismissAll();
   }
 
+  async onArchivoABase64(file): Promise<any> {
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+
   onSeleccioneCuenta(modal): void {
     
     setTimeout(() => {
@@ -478,7 +475,7 @@ export class DesembolsoComponent implements OnInit {
     }
   }
 
-  onAprobar(idEstado: number): void {
+  onAprobar(idEstado: number, tipo: number): void {
     // @ts-ignore
     let liquidaciones = [...this.desembolso.filter(f => f.seleccionado)];
 
@@ -493,13 +490,24 @@ export class DesembolsoComponent implements OnInit {
       el.idUsuarioAud = 1;
     });
     
+    if (tipo == 2) {
+      for (const item of liquidaciones) {
+        if (item.liquidacionCabSustento.length === 0) {
+          this.utilsService.showNotification('La liquidación con codigo ' + item.codigo + ' no contiene un(os) archivo(s) de sustento', 'Alerta', 2);
+          return;
+        }
+      }
+    }
+    
     this.utilsService.blockUIStart('Aprobando...');
     this.desembolsoService.cambiarEstado(liquidaciones).subscribe(response => {
       if (response.tipo == 1) {
         this.utilsService.showNotification('Aprobación Satisfactoria', 'Confirmación', 1);
         this.utilsService.blockUIStop();
         this.onGenerarArchivo(liquidaciones);
-        this.onListarDesembolso();
+        if (tipo != 2) {
+          this.onListarDesembolso();
+        }
       } else if (response.tipo == 2) {
         this.utilsService.showNotification(response.mensaje, 'Validación', 2);
         this.utilsService.blockUIStop();
@@ -552,4 +560,5 @@ export class DesembolsoComponent implements OnInit {
       id = id + 1;
     }
   }
+
 }
