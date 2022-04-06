@@ -565,6 +565,7 @@ export class CheckListComponent implements OnInit {
         this.archivos.push({
           idFila: this.utilsService.autoIncrement(this.archivos),
           idTipo: 8,
+          idTipoSustento: 1,
           nombre: item.file.name,
           tamanio: `${(item.file.size / 1024 / 1024).toLocaleString('es-pe', {minimumFractionDigits: 2})} MB`,
           base64: base64

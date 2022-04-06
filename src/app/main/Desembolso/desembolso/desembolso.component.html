@@ -105,15 +105,19 @@
                         <div class="custom-control custom-checkbox">
                           <input type="checkbox" class="custom-control-input" id="{{'customCheck' + cab.idLiquidacionCab}}"
                                  [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"
-                                 [disabled]="!cab.checkList"/>
+                                 [disabled]="!cab.checkList || cab.idEstado == 5"/>
                           <label class="custom-control-label" for="{{'customCheck' + cab.idLiquidacionCab}}"></label>
                         </div>
                       </td>
                       <td>
                         <div class="d-flex align-items-center">
-                          <a href="javascript:void(0)" title="Editar" (click)="onEditar(cab,  modalINFO)"
+                          <a href="javascript:void(0)" *ngIf="cab.idEstado !== 5" title="Editar" (click)="onEditar(cab,  modalINFO)"
                             class="btn btn-raised btn-outline-success btn-sm">
-                           <i class="text-success cursor-pointer" data-feather="edit"></i>
+                            <i class="text-success cursor-pointer" data-feather="edit"></i>
+                          </a>
+                          <a href="javascript:void(0)" *ngIf="cab.idEstado == 5" title="Ver" (click)="onEditar(cab,  modalINFO)"
+                            class="btn btn-raised btn-outline-info btn-sm">
+                            <i class="text-info cursor-pointer" data-feather="eye"></i>
                           </a>
                           <!-- <a href="javascript:void(0)" title="Ver Detalle"
                              class="btn btn-raised btn-outline-info btn-sm">
@@ -307,14 +311,14 @@
                       mask="separator" thousandSeparator=","/>
                     </div>
                   </div>
-                  <div class="col-md-6 col-12" *ngIf="codigoMonedaCab != codigoMonedaDet">
+                  <div class="col-md-6 col-12" *ngIf="codigoMonedaCab !== codigoMonedaDet">
                     <div class="form-group">  
                       <label>Tipo de Cambio</label>
-                      <input class="form-control" formControlName="tipoCambioDollar" type="number"
+                      <input class="form-control" formControlName="tipoCambioMoneda" type="number"
                              [ngClass]="{ 'is-invalid': submitted &&  tipoCambioMoneda == 0}"
                              [(ngModel)]="tipoCambioMoneda" (change)="onConvertirMontoTotal()"/>
-                      <div *ngIf="ReactiveIUForm.tipoCambioDollar.errors" class="invalid-feedback">
-                        <div *ngIf="ReactiveIUForm.tipoCambioDollar.errors.required">* Campo obligatorio</div>
+                      <div *ngIf="ReactiveIUForm.tipoCambioMoneda.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.tipoCambioMoneda.errors.required">* Campo obligatorio</div>
                       </div>
                     </div>
                   </div>
@@ -662,7 +666,7 @@
                       <div class="divider-text">Documento(s) de Sustento</div>
                     </div>
                   </div>
-                  <div class="col-12">
+                  <div class="col-12" *ngIf="!ver">
                     <div
                       ng2FileDrop
                       [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
@@ -673,7 +677,7 @@
                       Arrastre aquí los archivos
                     </div>
                   </div>
-                  <div class="col-12">
+                  <div class="col-12" *ngIf="!ver">
                     <div class="d-flex justify-content-between mb-1">
                       <h4>Archivo(s) a subir</h4>
                     </div>
@@ -717,7 +721,7 @@
                       </table>
                     </div>
                   </div>
-                  <div class="col-12">
+                  <div class="col-12" *ngIf="!ver">
                     <div class="divider divider-secondary">
                       <div class="divider-text"><span [data-feather]="'chevrons-down'"></span></div>
                     </div>
@@ -761,12 +765,15 @@
               <div class="row">
                 <div class="col-md-12 col-12">
                   <div style="float: right">
-                    <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()">
+                    <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()" *ngIf="!ver">
                       <span [data-feather]="'save'"></span> Guardar
                     </button>
                     &nbsp;
-                    <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()">
+                    <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()" *ngIf="!ver">
                       <span [data-feather]="'x-circle'"></span> Cancelar
+                    </button>
+                    <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()" *ngIf="ver">
+                      <span [data-feather]="'x-circle'"></span> Cerrar
                     </button>
                   </div>
                 </div>
