@@ -248,9 +248,14 @@ export class DesembolsoComponent implements OnInit {
         editado: true
       });
     }
+    // console.log('sustento', this.sustentos);
+    // console.log('archivos', this.archivos);
+    // console.log('sustentosOld', this.sustentosOld);
+    // return;
 
     this.desembolsoService.actualizar({
       idLiquidacionCab: this.solicitudForm.controls.idLiquidacionCab.value,
+      codigo: this.codigo,
       titularCuentaBancariaDestino: this.solicitudForm.controls.titularCuentaBancariaDestino.value,
       monedaCuentaBancariaDestino: this.solicitudForm.controls.monedaCuentaBancariaDestino.value,
       bancoDestino: this.solicitudForm.controls.bancoDestino.value,
@@ -312,7 +317,7 @@ export class DesembolsoComponent implements OnInit {
           idTipo: 8,
           nombre: item.file.name,
           tamanio: `${(item.file.size / 1024 / 1024).toLocaleString('es-pe', {minimumFractionDigits: 2})} MB`,
-          base64: ""
+          base64: base64
         });
       }
     }
@@ -410,15 +415,15 @@ export class DesembolsoComponent implements OnInit {
   }
 
   onCancelar(): void {
-    //this.submitted = false;
-    // this.sustentosOld = [];
+    this.submitted = false;
+    this.sustentosOld = [];
     // this.nroCuentaBancariaDestino = "";
     // this.cciDestino = "";
     this.solicitudForm.reset();
-    // this.onListarSolicitudes();
-    // this.archivos = [];
+    this.onListarDesembolso();
+    this.archivos = [];
     this.codigo = "";
-    //this.archivosSustento.clearQueue();
+    this.archivosSustento.clearQueue();
     this.modalService.dismissAll();
   }
 
@@ -559,6 +564,27 @@ export class DesembolsoComponent implements OnInit {
       }
       id = id + 1;
     }
+  }
+
+  
+  onEliminarArchivoAdjunto(item: LiquidacionCabSustento): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea eliminar el archivo "${item.archivo}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      }
+    }).then(result => {
+      if (result.value) {
+        item.editado = true;
+        item.estado = false;
+      }
+    });
   }
 
 }
