@@ -146,7 +146,7 @@ export class LiquidacionesComponent implements OnInit {
     }).subscribe((response: SolicitudCab[]) => {
       this.solicitudes = response;
       this.collectionSizeSolicitud = response.length > 0 ? response[0].totalRows : 0;
-
+      
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -377,15 +377,17 @@ export class LiquidacionesComponent implements OnInit {
 
     this.utilsService.blockUIStart('Generando...');
     this.liquidacionesService.generar(solicitudes).subscribe(response => {
-      if (response.tipo == 1) {
+ 
+      if (response.comun.tipo == 1) {
         this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();
         modal.dismiss();
         this.onListarLiquidaciones();
-      } else if (response.tipo == 0) {
+      } else if (response.comun.tipo == 0) {
         this.utilsService.showNotification(response.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
       }
+      this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();

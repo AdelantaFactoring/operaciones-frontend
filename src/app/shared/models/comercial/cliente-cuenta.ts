@@ -8,6 +8,7 @@ export class ClienteCuenta {
   codigoMoneda: string;
   nroCuenta: string;
   cci: string;
+  tipoCuenta: string;
   predeterminado: boolean = false;
 
   idFila: number;

@@ -350,6 +350,7 @@
                       <th>Moneda</th>
                       <th>N° Cuenta</th>
                       <th>CCI</th>
+                      <th>Tipo Cuenta</th>
                       <th>Activo</th>
                     </tr>
                     </thead>
@@ -378,6 +379,8 @@
                       </td>
                       <td><input class="form-control" type="text" placeholder="CCI"
                                  formControlName="cci"/></td>
+                      <td><input class="form-control" type="text" placeholder="Tipo Cuenta"
+                                  formControlName="tipoCuenta"/></td>
                       <td>
                         <div class="custom-control custom-switch custom-control-inline">
                           <input type="checkbox" class="custom-control-input"
@@ -441,6 +444,12 @@
                         <p *ngIf="!item.edicion">{{item.cci}}</p>
                         <input *ngIf="item.edicion" class="form-control" type="text" placeholder="CCI"
                                [(ngModel)]="item.cci"
+                               [ngModelOptions]="{standalone: true}"/>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <p *ngIf="!item.edicion">{{item.tipoCuenta}}</p>
+                        <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Tipo Cuenta"
+                               [(ngModel)]="item.tipoCuenta"
                                [ngModelOptions]="{standalone: true}"/>
                       </td>
                       <td [ngClass]="{'row-edicion': item.editado}">

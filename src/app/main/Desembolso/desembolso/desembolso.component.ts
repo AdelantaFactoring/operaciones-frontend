@@ -192,7 +192,10 @@ export class DesembolsoComponent implements OnInit {
     if (this.solicitudForm.invalid)
       return;
     if (this.tipoCambioMoneda === 0 && this.codigoMonedaCab !== this.codigoMonedaDet)
+    {
+      this.utilsService.showNotification('El monto en Tipo de Cambio no puede se cero(0)', 'Alerta', 2);
       return;
+    }
 
     this.utilsService.blockUIStart("Guardando...");
     if (this.sustentosOld.length === 0)
@@ -242,10 +245,6 @@ export class DesembolsoComponent implements OnInit {
         editado: true
       });
     }
-    // console.log('sustento', this.sustentos);
-    // console.log('archivos', this.archivos);
-    // console.log('sustentosOld', this.sustentosOld);
-    // return;
 
     this.desembolsoService.actualizar({
       idLiquidacionCab: this.solicitudForm.controls.idLiquidacionCab.value,
@@ -484,26 +483,25 @@ export class DesembolsoComponent implements OnInit {
       this.utilsService.showNotification("Seleccione una o varias liquidaciones", "", 2);
       return;
     }
-
-    console.log('liqu', liquidaciones);
     
     if (tipo == 2) {
       for (const item of liquidaciones) {
         if (item.idEstado !== 4) {
-          this.utilsService.showNotification('La(s) liquidación(es) no contiene un Estado de Confirmación de Desembolso', 'Alerta', 2);
+          this.utilsService.showNotification('Una o varias liquidaciones seleccionas no contiene un Estado de Desembolso Pendiente', 'Alerta', 2);
           return;
         }
         if (item.liquidacionCabSustento.filter(x => x.idTipoSustento === 2 && x.idTipo === 2).length === 0) {
-          this.utilsService.showNotification('La liquidación con codigo ' + item.codigo + ' no contiene archivo(s) de sustento con tipo Conformidad de Desembolso', 'Alerta', 2);
+          this.utilsService.showNotification('La liquidación con código ' + item.codigo + ' no contiene archivo(s) de sustento con tipo Confirmación de Desembolso', 'Alerta', 2);
           return;
         }
       }
     }
-
+    
     liquidaciones.forEach(el => {
       el.idEstado = idEstado;
       el.idUsuarioAud = 1;
     });
+    
     
     this.utilsService.blockUIStart('Aprobando...');
     this.desembolsoService.cambiarEstado(liquidaciones).subscribe(response => {

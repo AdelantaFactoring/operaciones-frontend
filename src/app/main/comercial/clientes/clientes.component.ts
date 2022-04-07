@@ -95,6 +95,7 @@ export class ClientesComponent implements OnInit {
       idMoneda: [1],
       nroCuenta: ['', Validators.required],
       cci: [''],
+      tipoCuenta: [''],
       predeterminado: [false],
     });
     this.contactoForm = this.formBuilder.group({
@@ -309,6 +310,7 @@ export class ClientesComponent implements OnInit {
       codigoMoneda: '',
       nroCuenta: this.cuentaForm.controls.nroCuenta.value,
       cci: this.cuentaForm.controls.cci.value,
+      tipoCuenta: '',
       predeterminado: this.cuentaForm.controls.predeterminado.value,
       idFila: this.utilsService.autoIncrement(this.cuentas),
       edicion: false,
@@ -330,6 +332,7 @@ export class ClientesComponent implements OnInit {
       codigoMoneda: item.codigoMoneda,
       nroCuenta: item.nroCuenta,
       cci: item.cci,
+      tipoCuenta: '',
       predeterminado: item.predeterminado,
       idFila: item.idFila,
       edicion: item.edicion,

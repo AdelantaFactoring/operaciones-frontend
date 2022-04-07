@@ -81,6 +81,8 @@ export class SolicitudesFormComponent implements OnInit {
   facCheck: boolean = true;
   idMoneda: number = 1;
   mayor: boolean = false;
+  public usarGastosContrato: boolean = true;
+  public usarGastoVigenciaPoder: boolean = true;
   public flagConfirming: boolean = false;
   public flagRespuestaFac: boolean = false;
   public flagRespuestaCon: boolean = false;
@@ -203,7 +205,8 @@ export class SolicitudesFormComponent implements OnInit {
       fondoResguardo: [''],
       netoSolicitado: [0],
       usarGastosContrato: [0],
-      usarGastoVigenciaPoder: [0]
+      usarGastoVigenciaPoder: [0],
+      gastoVigenciaPoder: [0]
     });
    }
 
@@ -308,10 +311,8 @@ export class SolicitudesFormComponent implements OnInit {
     this.utilsService.blockUIStart('Guardando información...');
     this.solicitudesFormService.guardarCT({
       idSolicitudCab: 0,
-      idTipoOperacion: this.idTipoOperacion,
-      idTipoCT: this.capitalTrabajoForm.controls.tipo.value,
-      idMoneda: this.capitalTrabajoForm.controls.moneda.value,
       idCliente: this.idCliente,
+      idMoneda: this.capitalTrabajoForm.controls.moneda.value,
       rucPagProv: this.ruc,
       razonSocialPagProv: this.razonSocial,
       tasaNominalMensual: this.tasaNominalMensual,
@@ -319,6 +320,12 @@ export class SolicitudesFormComponent implements OnInit {
       tasaNominalMensualMora: this.tasaNominalMensualMora,
       tasaNominalAnualMora: this.tasaNominalAnualMora,
       financiamiento: this.financiamiento,
+      usarGastosContrato: this.usarGastosContrato,
+      gastosContrato: this.capitalTrabajoForm.controls.contrato.value,
+      idTipoOperacion: this.idTipoOperacion,
+      usarGastoVigenciaPoder: this.usarGastoVigenciaPoder,
+      gastoVigenciaPoder: this.capitalTrabajoForm.controls.gastoVigenciaPoder.value,
+      idTipoCT: this.capitalTrabajoForm.controls.tipo.value,
       montoCT: this.capitalTrabajoForm.controls.mcTrabajo.value,
       montoSolicitudCT: this.capitalTrabajoForm.controls.ctSolicitado.value,
       iGVCT: this.capitalTrabajoForm.controls.igvCT.value,
@@ -689,7 +696,8 @@ export class SolicitudesFormComponent implements OnInit {
           this.capitalTrabajoForm.controls.tasaMoraMensual.setValue(item.tasaNominalMensualMora);
           this.capitalTrabajoForm.controls.tasaMoraAnual.setValue(item.tasaNominalAnualMora);
           this.capitalTrabajoForm.controls.usarGastosContrato.setValue(true);
-          this.capitalTrabajoForm.controls.contrato.setValue(item.gastosContrato);
+          this.capitalTrabajoForm.controls.usarGastoVigenciaPoder.setValue(true);
+          this.capitalTrabajoForm.controls.contrato.setValue(item.gastosContrato); //obtener este valor de la TM
           this.capitalTrabajoForm.controls.cartaNotarial.setValue(item.comisionCartaNotarial);
           this.capitalTrabajoForm.controls.servicioCobranza.setValue(item.servicioCobranza);
           this.capitalTrabajoForm.controls.servicioCustodia.setValue(item.servicioCustodia);

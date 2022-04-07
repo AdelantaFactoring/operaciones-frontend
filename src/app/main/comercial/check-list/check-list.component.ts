@@ -402,7 +402,11 @@ export class CheckListComponent implements OnInit {
       return;
     if ((this.nombreContacto === "" || this.telefonoContacto === "" || this.correoContacto === ""))
       return;
-
+    if (this.sustentos.length === 0 && this.archivos.length === 0)
+    {
+      this.utilsService.showNotification('Cargar un Documento de Sustento', 'Alerta', 2);
+      return;
+    }
     for (const item of this.detalle) {
       if (item.idEstado == 1 || item.idEstado == 3) {
         if (this.archivos.filter(x => x.idTipo == 10).length == 0 && this.sustentos.filter(x => x.idTipo == 10 && x.estado == true).length == 0) {
@@ -415,6 +419,7 @@ export class CheckListComponent implements OnInit {
         return;
       }
     }
+
     this.utilsService.blockUIStart("Guardando...");
     if (this.sustentosOld.length === 0)
       for (let item of this.sustentos) {
@@ -619,7 +624,7 @@ export class CheckListComponent implements OnInit {
     this.solicitudForm.controls.bancoDestino.setValue(item.banco);
     this.nroCuentaBancariaDestino = item.nroCuenta;
     this.cciDestino = item.cci;
-    this.solicitudForm.controls.tipoCuentaBancariaDestino.setValue("-");
+    this.solicitudForm.controls.tipoCuentaBancariaDestino.setValue(item.tipoCuenta);
     modal.dismiss("Cross Click");
   }
 
