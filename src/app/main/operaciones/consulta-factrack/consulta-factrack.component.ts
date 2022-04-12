@@ -188,5 +188,5 @@ export class ConsultaFactrackComponent implements OnInit {
       .subscribe(response => {
 
       });
-  };
+  }
 }
