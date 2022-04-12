@@ -24,6 +24,7 @@ export class ClientesComponent implements OnInit {
   public submittedContacto: boolean;
   public submittedGastos: boolean;
   public clienteForm: FormGroup;
+  public oldClienteForm: FormGroup;
   public cuentaForm: FormGroup;
   public contactoForm: FormGroup;
   public gastosForm: FormGroup;
@@ -106,7 +107,7 @@ export class ClientesComponent implements OnInit {
       correo: ['', [Validators.required, Validators.email]],
       predeterminado: [false]
     });
-
+    this.oldClienteForm = this.clienteForm.value;
   }
 
   async ngOnInit(): Promise<void> {
@@ -146,6 +147,8 @@ export class ClientesComponent implements OnInit {
   }
 
   onNuevo(modal: any): void {
+    console.log('Id', this.clienteForm.controls.idCliente.value);
+    
     setTimeout(() => {
       this.modalService.open(modal, {
         scrollable: true,
@@ -162,6 +165,7 @@ export class ClientesComponent implements OnInit {
   }
 
   onEditar(item: Cliente, modal: any): void {
+    
     this.utilsService.blockUIStart('Obteniendo información...');
     this.clienteForm.controls.idCliente.setValue(item.idCliente);
     this.clienteForm.controls.ruc.setValue(item.ruc);
@@ -278,7 +282,7 @@ export class ClientesComponent implements OnInit {
     this.submitted = false;
     this.contactos = [];
     this.cuentas = [];
-    this.clienteForm.reset();
+    this.clienteForm.reset(this.oldClienteForm);
     this.modalService.dismissAll();
   }
 

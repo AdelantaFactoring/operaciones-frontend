@@ -541,6 +541,8 @@ export class SolicitudesFormComponent implements OnInit {
 
       let rs = JSON.parse(res);
 
+      console.log(rs);
+      
       if (rs.tipo == 0) {
         this.dataXml.push(rs);
         this.procesar = false;
@@ -554,7 +556,6 @@ export class SolicitudesFormComponent implements OnInit {
         if (rs.tipo == 1) {
           this.dataPdf.push(rs);
         } else if (rs.tipo == 2) {
-          count = 0;
           this.mensaje.push(rs.mensaje + '<br/>');
           count = Number(count) + 1;
           if (count == this.cantXml) {

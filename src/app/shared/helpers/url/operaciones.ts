@@ -3,4 +3,5 @@ export const LIQUIDACIONES = {
   generar: '/liquidacion/generar',
   actualizar: '/liquidacion/actualizar',
   cambiarEstado: '/liquidacion/cambiarestado',
+  pdf: '/liquidacion/liquidacion_PDF'
 }

@@ -51,4 +51,14 @@ export class LiquidacionesService {
       }
     );
   }
+
+  pdf(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${LIQUIDACIONES.pdf}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }

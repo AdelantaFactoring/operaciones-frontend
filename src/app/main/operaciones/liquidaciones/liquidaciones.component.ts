@@ -372,15 +372,35 @@ export class LiquidacionesComponent implements OnInit {
     }
 
     solicitudes.forEach(el => {
+      el.idEstado = 1;
       el.idUsuarioAud = 1;
     });
 
     this.utilsService.blockUIStart('Generando...');
+    this.liquidacionesService.pdf(solicitudes).subscribe(response => {
+ 
+      if (response.comun.tipo == 1) {
+        this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+
+        modal.dismiss();
+        this.onListarLiquidaciones();
+      } else if (response.comun.tipo == 0) {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
+      }
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
+    
     this.liquidacionesService.generar(solicitudes).subscribe(response => {
  
       if (response.comun.tipo == 1) {
         this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();
+
         modal.dismiss();
         this.onListarLiquidaciones();
       } else if (response.comun.tipo == 0) {
