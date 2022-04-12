@@ -453,8 +453,7 @@ export class LiquidacionesComponent implements OnInit {
                 ${this.onFilas(response.liquidacionCabValidacion)}
                 </tbody>
               </table>
-            </div>
-            <p style="text-align: justify">Consulte las facturas de las solicitudes para verificar su estado. Utilice el código de respuesta como referencia para su validación.</p>`,
+            </div>`,
           icon: 'info',
           width: '750px',
           showCancelButton: false,
@@ -493,6 +492,8 @@ export class LiquidacionesComponent implements OnInit {
                                       '<i class="text-danger cursor-pointer" data-feather="minus-circle"></i>')}</td>
                 </tr>`
     }
+    console.log('fi', filas);
+    
     return filas;
   }
 
