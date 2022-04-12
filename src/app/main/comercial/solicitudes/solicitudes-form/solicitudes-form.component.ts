@@ -102,7 +102,6 @@ export class SolicitudesFormComponent implements OnInit {
   public selectMulti = [{ name: 'English' }, { name: 'French' }, { name: 'Spanish' }];
   public selectMultiSelected;
   public zeroPad = (num, places) => String(num).padStart(places, '0');
-  // public fechaPagoActual = this.calendar.getToday();
   public fechaPagoCT = this.calendar.getToday();
 
   horizontalWizardStepperNext(data, form, id) {
@@ -304,9 +303,6 @@ export class SolicitudesFormComponent implements OnInit {
     });
 
   }
-  onRegresar(): void {
-    this.router.navigate(['/comercial/solicitudes']);
-  }
   onGuardarCT(): void {
     this.submitted = true;
     if (this.capitalTrabajoForm.invalid) {
@@ -345,7 +341,6 @@ export class SolicitudesFormComponent implements OnInit {
       if (response.tipo == 1) {
         this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();
-        //this.location.back();
         this.router.navigate(['/comercial/solicitudes']);
         this.modalService.dismissAll();
       } else if (response.tipo == 2) {
@@ -375,7 +370,6 @@ export class SolicitudesFormComponent implements OnInit {
         flagEliminado = true;
         item.remove();
       }
-    //this.name = item._file.name;
     }
 
     this.onEliminarRepetidas();
@@ -397,7 +391,6 @@ export class SolicitudesFormComponent implements OnInit {
         flagEliminado = true;
         item.remove();
       }
-    //this.name = item._file.name;
     }
 
     if (flagEliminado == true) {
@@ -541,7 +534,6 @@ export class SolicitudesFormComponent implements OnInit {
     this.uploader.uploadAll();
     let count = 0;
     this.uploader.response.observers = [];
-    //console.log('upl',this.uploader);
 
     this.uploader.response.subscribe( res => {
 
@@ -863,7 +855,6 @@ export class SolicitudesFormComponent implements OnInit {
   }
   onGenerarCarpeta(data): void{
     this.solicitudesFormService.generarCarpeta(data).subscribe(response => {
-      //console.log('res', response);
       this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
       this.utilsService.blockUIStop();
     }, error => {

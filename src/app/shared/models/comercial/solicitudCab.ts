@@ -2,6 +2,7 @@ import {SolicitudDet} from "./solicitudDet";
 import {SolicitudCabSustento} from "./solicitudCab-sustento";
 
 export class SolicitudCab {
+  idEmpresa: number;
   seleccionado: boolean = false;
   idSolicitudCab: number;
   codigo: string;
