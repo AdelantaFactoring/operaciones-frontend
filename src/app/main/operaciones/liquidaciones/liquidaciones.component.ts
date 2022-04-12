@@ -116,7 +116,13 @@ export class LiquidacionesComponent implements OnInit {
       interesConIGVCT: [{value: 0, disabled: true}],
       gastosConIGVCT: [{value: 0, disabled: true}],
       totFacurarConIGVCT: [{value: 0, disabled: true}],
-      totDesembolsarConIGVCT: [{value: 0, disabled: true}]
+      totDesembolsarConIGVCT: [{value: 0, disabled: true}],
+      fondoResguardo:  [{value: 0, disabled: true}],
+      netoSolicitado:  [{value: 0, disabled: true}],
+      interesIncluidoIGV:  [{value: 0, disabled: true}],
+      gastosIncluidoIGV:  [{value: 0, disabled: true}],
+      totalFacturarIGV:  [{value: 0, disabled: true}],
+      totalDesembolso:  [{value: 0, disabled: true}]
     });
   }
 
@@ -146,7 +152,7 @@ export class LiquidacionesComponent implements OnInit {
     }).subscribe((response: SolicitudCab[]) => {
       this.solicitudes = response;
       this.collectionSizeSolicitud = response.length > 0 ? response[0].totalRows : 0;
-      
+
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -296,38 +302,51 @@ export class LiquidacionesComponent implements OnInit {
   }
 
   onCalcularCT(item: SolicitudCab): void{
-    let igvCT = item.igvct / 100;
-    let mDescontar, intereses, totFacturar, gastoIncluidoIGV;
+    let TNM, TNA, nroDias, intereses, montoSolicitado, totFacturar, fondoResguardo = 0;
+    let contrato, servicioCustodia, servicioCobranza, cartaNotarial, gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
+    let netoSolicitado = 0, igvCT,  financiamiento;
 
-    let montoSolicitudCT = this.solicitudForm.controls.montoSolicitudCT.value;
-    let nroDias = this.solicitudForm.controls.diasPrestamoCT.value;
-    let montoSolicitado = this.solicitudForm.controls.montoSolicitudCT.value;
-    let gDiversonsSIgv = item.gastosContrato + item.servicioCustodia + item.servicioCobranza + item.comisionCartaNotarial;
-    let gDiversonsCIgv = gDiversonsSIgv * igvCT;
-
+    contrato = this.solicitudForm.controls.gastosContrato.value;
+    servicioCustodia = this.solicitudForm.controls.servicioCustodia.value;
+    servicioCobranza = this.solicitudForm.controls.servicioCobranza.value;
+    cartaNotarial = this.solicitudForm.controls.comisionCartaNotarial.value;
+    TNM = this.solicitudForm.controls.tasaNominalMensual.value;
+    TNA = this.solicitudForm.controls.tasaNominalAnual.value;
+    nroDias = this.solicitudForm.controls.diasPrestamoCT.value;
+    montoSolicitado = this.solicitudForm.controls.montoSolicitudCT.value;
+    gDiversonsSIgv = contrato + servicioCustodia + servicioCobranza + cartaNotarial;
+    igvCT = item.igvct / 100;
+    financiamiento = item.financiamiento;
     if (item.idTipoCT == 1) {
-      mDescontar = ((360 * montoSolicitudCT) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (item.tasaNominalMensual * 12))* igvCT ));
-      intereses = mDescontar * (item.tasaNominalAnual / 360) * nroDias * igvCT;
-
+      netoSolicitado = ((360 * montoSolicitado) + (360 * (gDiversonsSIgv * (igvCT + 1)))) / (360 - ((nroDias * ((TNM / 100) * 12)) * (igvCT + 1)));
+      intereses = netoSolicitado * ((TNA / 100) / 360) * nroDias * (igvCT + 1);
+      gDiversonsCIgv = gDiversonsSIgv * igvCT;
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
-      this.solicitudForm.controls.montoDescontarCT.setValue(Math.round((mDescontar + Number.EPSILON) * 100)/100);
-      this.solicitudForm.controls.interesConIGVCT.setValue(Math.round((intereses + Number.EPSILON) * 100)/100);
-      this.solicitudForm.controls.gastosConIGVCT.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
-      this.solicitudForm.controls.totFacurarConIGVCT.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
-      this.solicitudForm.controls.totDesembolsarConIGVCT.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100)/100);
+      this.solicitudForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100)/100);
+      this.solicitudForm.controls.interesIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100);
+      this.solicitudForm.controls.gastosIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.totalFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.totalDesembolso.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
     }
     else
     {
-      intereses = montoSolicitudCT * (item.tasaNominalAnual / 360) * (nroDias + 1) * igvCT;
+      fondoResguardo = montoSolicitado - ((montoSolicitado * financiamiento) / 100);
+      netoSolicitado = montoSolicitado - fondoResguardo;
+
+      gDiversonsCIgv = gDiversonsSIgv * igvCT;
+      intereses = netoSolicitado * ((TNA / 100) / 360) * (nroDias) * (igvCT + 1);
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
-      this.solicitudForm.controls.interesConIGVCT.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
-      this.solicitudForm.controls.gastosConIGVCT.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
-      this.solicitudForm.controls.totFacurarConIGVCT.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
-      this.solicitudForm.controls.totDesembolsarConIGVCT.setValue(Math.round(((montoSolicitado + Number.EPSILON) - totFacturar) * 100) / 100);
+      this.solicitudForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100)/100);
+      this.solicitudForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100)/100);
+      this.solicitudForm.controls.interesIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.gastosIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.totalFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.totalDesembolso.setValue(Math.round(((netoSolicitado + Number.EPSILON) - totFacturar) * 100) / 100);
     }
   }
 
@@ -377,7 +396,7 @@ export class LiquidacionesComponent implements OnInit {
 
     this.utilsService.blockUIStart('Generando...');
     this.liquidacionesService.generar(solicitudes).subscribe(response => {
- 
+
       if (response.comun.tipo == 1) {
         this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();

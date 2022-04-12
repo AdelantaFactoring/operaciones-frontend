@@ -82,8 +82,9 @@
                   <th>Pagador / Proveedor RUC</th>
                   <th>Moneda</th>
                   <th>Monto Total</th>
-                  <th>Deuda Anterior</th>
+                  <th>Monto Descuento</th>
                   <th>Nuevo Monto Total</th>
+                  <th>Observación</th>
                   <th>Estado</th>
                 </tr>
                 </thead>
@@ -133,6 +134,7 @@
                     <td><strong>{{cab.montoTotal | number: '1.2-2'}}</strong></td>
                     <td>{{cab.deudaAnterior | number: '1.2-2'}}</td>
                     <td><strong>{{cab.nuevoMontoTotal | number: '1.2-2'}}</strong></td>
+                    <td>{{cab.observacion}}</td>
                     <td>{{cab.estado}}</td>
                   </tr>
                   <tr id="{{ 'trL' + cab.idLiquidacionCab }}" style="visibility: collapse">
@@ -596,36 +598,6 @@
                     <input class="form-control" formControlName="fechaPagoCT" type="text"/>
                   </div>
                 </div>
-                <div class="col-md-6 col-12" *ngIf="idTipoOperacion == 2 && idTipoCT == 1">
-                  <div class="form-group">
-                    <label>Monto a Descontar</label>
-                    <input class="form-control" formControlName="montoDescontarCT" type="text"/>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
-                  <div class="form-group">
-                    <label>Interes Incluido IGV</label>
-                    <input class="form-control" formControlName="interesConIGVCT" type="text"/>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
-                  <div class="form-group">
-                    <label>Gastos Incluido IGV</label>
-                    <input class="form-control" formControlName="gastosConIGVCT" type="text"/>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
-                  <div class="form-group">
-                    <label>Total a Facturar con IGV</label>
-                    <input class="form-control" formControlName="totFacurarConIGVCT" type="text"/>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
-                  <div class="form-group">
-                    <label>Total a Desembolsar con IGV</label>
-                    <input class="form-control" formControlName="totDesembolsarConIGVCT" type="text"/>
-                  </div>
-                </div>
                 <div class="col-12">
                   <div class="divider divider-success">
                     <div class="divider-text">Información de Gastos</div>
@@ -731,6 +703,54 @@
                     <label>Servicio Custodia</label>
                     <input class="form-control" type="text" placeholder="0.00"
                            mask="separator" thousandSeparator="," formControlName="servicioCustodia"/>
+                  </div>
+                </div>
+                <div class="col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="divider divider-danger">
+                    <div class="divider-text">Monto calculado</div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12"  [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Fondo Resguardo</label>
+                    <input class="form-control" formControlName="fondoResguardo" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Monto a financiar</label>
+                    <input class="form-control"  formControlName="netoSolicitado" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Intereses incluido IGV</label>
+                    <input class="form-control" formControlName="interesIncluidoIGV" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Gastos incluido IGV</label>
+                    <input class="form-control" formControlName="gastosIncluidoIGV" type="text'" placeholder="0.00"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Total a Facturar</label>
+                    <input class="form-control" formControlName="totalFacturarIGV" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
+                  <div class="form-group">
+                    <label>Total a Desembolsar</label>
+                    <input class="form-control" formControlName="totalDesembolso" type="text" placeholder="0.00"
+                           mask="separator" thousandSeparator=","/>
                   </div>
                 </div>
                 <div class="col-12" [hidden]="idTipoOperacion === 2">
@@ -886,6 +906,198 @@
               <div class="col-md-12 col-12">
                 <div style="float: right">
                   <button class="btn btn-secondary" rippleEffect type="button" (click)="modal.dismiss('Cross click')">
+                    <span [data-feather]="'x-circle'"></span> Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template #modalINFO let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Liquidación - [{{'codigo'}}]</h4>
+            <button aria-label="Close" class="close" type="button" >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" ngbAutofocus tabindex="0">
+            <form [formGroup]="solicitudForm">
+              <div class="row spaced">
+                <div class="col-12">
+                  <div class="divider divider-info">
+                    <div class="divider-text">Información General</div>
+                  </div>
+                </div>
+                <div class="col-md-12 col-12" hidden>
+                  <div class="form-group">
+                    <label>Id</label>
+                    <input class="form-control" formControlName="idLiquidacionCab" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>RUC (Cliente)</label>
+                    <input class="form-control" formControlName="rucCliente" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Razón Social (Cliente)</label>
+                    <input class="form-control" formControlName="razonSocialCliente" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>RUC (Pagador / Proveedor)</label>
+                    <input class="form-control" formControlName="rucPagProv" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Razón Social (Pagador / Proveedor)</label>
+                    <input class="form-control" formControlName="razonSocialPagProv" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Moneda</label>
+                    <input class="form-control" formControlName="moneda" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Monto Total</label>
+                    <input class="form-control" formControlName="montoTotal" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Deuda Anterior</label>
+                    <input class="form-control" formControlName="montoTotal" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Nuevo Monto Total</label>
+                    <input class="form-control" formControlName="montoTotal" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="divider divider-secondary">
+                    <div class="divider-text">Documento(s) de Sustento</div>
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="!ver">
+                  <div
+                    ng2FileDrop
+                    [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
+                    (fileOver)="fileOverBase($event)"
+                    [uploader]="archivosSustento"
+                    class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
+                  >
+                    Arrastre aquí los archivos
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="!ver">
+                  <div class="d-flex justify-content-between mb-1">
+                    <h4>Archivo(s) a subir</h4>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                      <tr>
+                        <th [width]="250">Tipo</th>
+                        <th>Nombre</th>
+                        <th>Tamaño</th>
+                        <th>Acción</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let item of archivos">
+                        <td [width]="250">
+                          <ng-select appendTo="body" [clearable]="false" [items]="tiposArchivos"
+                                     style="width: 250px"
+                                     bindLabel="descripcion" placeholder="Tipo Archivo"
+                                     bindValue="idColumna" [(ngModel)]="item.idTipo"
+                                     [ngModelOptions]="{standalone: true}">
+                          </ng-select>
+                        </td>
+                        <td>
+                          <strong>{{ item.nombre }}</strong>
+                        </td>
+                        <td>
+                          {{item.tamanio}}
+                        </td>
+                        <td nowrap>
+                          <button
+                            (click)="onEliminarArchivo(item)"
+                            type="button"
+                            class="btn btn-raised btn-outline-danger btn-sm"
+                            rippleEffect>
+                            <i data-feather="trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="!ver">
+                  <div class="divider divider-secondary">
+                    <div class="divider-text"><span [data-feather]="'chevrons-down'"></span></div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="d-flex justify-content-between mb-1">
+                    <h4>Archivo(s) adjuntos</h4>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                      <tr>
+                        <th>Tipo</th>
+                        <th>Nombre</th>
+                        <th (click)="onCancelar()" *ngIf="!ver">Acción</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let item of sustentos">
+                        <td [ngClass]="{'row-edicion': item.editado}"><p [ngClass]="{ 'eliminado': !item.estado }">{{item.tipo}}</p></td>
+                        <td [ngClass]="{'row-edicion': item.editado}">
+                          <a href="{{item.rutaArchivo}}" target="_blank"><strong [ngClass]="{ 'eliminado': !item.estado }">{{ item.archivo }}</strong></a>
+                        </td>
+                        <td nowrap (click)="onCancelar()" *ngIf="!ver">
+                          <button *ngIf="item.estado"
+                                  type="button"
+                                  class="btn btn-raised btn-outline-danger btn-sm"
+                                  rippleEffect (click)="onEliminarArchivoAdjunto(item)">
+                            <i data-feather="trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer" style="display: block !important;">
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div style="float: right">
+                  <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()" *ngIf="!ver">
+                    <span [data-feather]="'save'"></span> Guardar
+                  </button>
+                  &nbsp;
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()" *ngIf="!ver">
+                    <span [data-feather]="'x-circle'"></span> Cancelar
+                  </button>
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()" *ngIf="ver">
                     <span [data-feather]="'x-circle'"></span> Cerrar
                   </button>
                 </div>
