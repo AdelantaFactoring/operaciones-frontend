@@ -23,6 +23,7 @@ export class LiquidacionCab {
   nroCuentaBancariaDestino: string;
   cciDestino: string;
   tipoCuentaBancariaDestino: string;
+  observacion: string;
   checkList: boolean;
   idEstado: number;
   estado: string;

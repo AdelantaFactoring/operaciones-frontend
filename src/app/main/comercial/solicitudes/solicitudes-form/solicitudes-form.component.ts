@@ -498,7 +498,7 @@ export class SolicitudesFormComponent implements OnInit {
   onProcesar(): void{
     this.mensaje = [];
     this.submitted = true;
-    
+
     // if (this.solicitudForm.invalid) {
     //   return;
     // }
@@ -536,7 +536,7 @@ export class SolicitudesFormComponent implements OnInit {
     let count = 0;
     this.uploader.response.observers = [];
     //console.log('upl',this.uploader);
-    
+
     this.uploader.response.subscribe( res => {
 
       let rs = JSON.parse(res);
@@ -581,7 +581,7 @@ export class SolicitudesFormComponent implements OnInit {
 
       let rs = JSON.parse(res);
       this.dataXlsx  = [];
-      
+
       if (rs.tipo != 1) {
         this.dataXlsx = rs;
 
@@ -590,7 +590,7 @@ export class SolicitudesFormComponent implements OnInit {
           this.procesarXlsx = true;
         }
         else
-        { 
+        {
           for (const row of this.dataXlsx) {
             for (const item of this.dataXml) {
               if (item.rucCab == row.ruc && item.tipoMoneda == row.moneda && item.codFactura == row.documento) {
@@ -681,7 +681,7 @@ export class SolicitudesFormComponent implements OnInit {
       console.log('item', response);
       if (response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda).length > 0) {
         this.clienteGastos = response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda);
-        
+
         for (const item of this.clienteGastos) {
           this.ruc = item.ruc;
           this.razonSocial = item.razonSocial;
@@ -761,7 +761,7 @@ export class SolicitudesFormComponent implements OnInit {
       month: fecha.getMonth() + 1,
       day: fecha.getDate()
     }
-    
+
     //this.fechaPagoCT = date;
     this.capitalTrabajoForm.controls.fechaPago.setValue(date);
     this.onCalcularCT();
@@ -794,7 +794,7 @@ export class SolicitudesFormComponent implements OnInit {
     let TNM, TNA, nroDias, mDescontar, intereses, montoSolicitado, totFacturar, fondoResguardo = 0;
     let contrato, servicioCustodia, servicioCobranza, cartaNotarial, gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
     let netoSolicitado = 0, IGV ;
-    
+
     contrato = this.capitalTrabajoForm.controls.contrato.value;
     servicioCustodia = this.capitalTrabajoForm.controls.servicioCustodia.value;
     servicioCobranza = this.capitalTrabajoForm.controls.servicioCobranza.value;
@@ -807,7 +807,7 @@ export class SolicitudesFormComponent implements OnInit {
     IGV = this.igvCT / 100;
     if (this.idTipo == 1) {
 
-      netoSolicitado = ((360 * montoSolicitado) + (360 * gDiversonsSIgv)) /(360 - ((nroDias * ((TNM / 100) * 12)) * (IGV + 1)));
+      netoSolicitado = ((360 * montoSolicitado) + (360 * (gDiversonsSIgv * (IGV + 1)))) / (360 - ((nroDias * ((TNM / 100) * 12)) * (IGV + 1)));
       mDescontar = ((360 * netoSolicitado) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12))* (IGV + 1) ));
       intereses = netoSolicitado * ((TNA / 100) / 360) * nroDias * (IGV + 1);
       gDiversonsCIgv = gDiversonsSIgv * IGV;
@@ -817,13 +817,13 @@ export class SolicitudesFormComponent implements OnInit {
       this.capitalTrabajoForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100)/100);
       this.capitalTrabajoForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100)/100);
       this.capitalTrabajoForm.controls.montoDesc.setValue(Math.round((mDescontar + Number.EPSILON) * 100)/100);
-      this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100); 
+      this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100);
       this.capitalTrabajoForm.controls.gIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
       this.capitalTrabajoForm.controls.tFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
       this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
     }
     else
-    { 
+    {
       fondoResguardo = montoSolicitado - ((montoSolicitado * this.financiamiento) / 100);
       netoSolicitado = montoSolicitado - fondoResguardo;
 
@@ -831,7 +831,7 @@ export class SolicitudesFormComponent implements OnInit {
       intereses = netoSolicitado * ((TNA / 100) / 360) * (nroDias) * (IGV + 1);
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
-      
+
       this.capitalTrabajoForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100)/100);
       this.capitalTrabajoForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100)/100);
       this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
@@ -839,7 +839,7 @@ export class SolicitudesFormComponent implements OnInit {
       this.capitalTrabajoForm.controls.tFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
       this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(Math.round(((netoSolicitado + Number.EPSILON) - totFacturar) * 100) / 100);
     }
-    
+
   }
   validacionCT(): void{
     let montoCT, ctSolicitado;
@@ -882,7 +882,7 @@ export class SolicitudesFormComponent implements OnInit {
     }
 
     for (const row of this.dataXml) {
-      
+
       if (row.nombreXML.includes(archivo)) {
         this.dataXml.splice(id, 1)
       }

@@ -378,7 +378,7 @@ export class SolicitudesGrillaComponent implements OnInit {
     let TNM, TNA, nroDias, intereses, montoSolicitado, totFacturar, fondoResguardo = 0;
     let contrato, servicioCustodia, servicioCobranza, cartaNotarial, gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
     let netoSolicitado = 0, igvCT,  financiamiento;
-    
+
     contrato = this.solicitudForm.controls.gastosContrato.value;
     servicioCustodia = this.solicitudForm.controls.servicioCustodia.value;
     servicioCobranza = this.solicitudForm.controls.servicioCobranza.value;
@@ -391,7 +391,7 @@ export class SolicitudesGrillaComponent implements OnInit {
     igvCT = item.igvct / 100;
     financiamiento = item.financiamiento;
     if (item.idTipoCT == 1) {
-      netoSolicitado = ((360 * montoSolicitado) + (360 * gDiversonsSIgv)) /(360 - ((nroDias * ((TNM / 100) * 12)) * (igvCT + 1)));
+      netoSolicitado = ((360 * montoSolicitado) + (360 * (gDiversonsSIgv * (igvCT + 1)))) / (360 - ((nroDias * ((TNM / 100) * 12)) * (igvCT + 1)));
       intereses = netoSolicitado * ((TNA / 100) / 360) * nroDias * (igvCT + 1);
       gDiversonsCIgv = gDiversonsSIgv * igvCT;
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
@@ -399,7 +399,7 @@ export class SolicitudesGrillaComponent implements OnInit {
 
       this.solicitudForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100)/100);
       this.solicitudForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100)/100);
-      this.solicitudForm.controls.interesIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100); 
+      this.solicitudForm.controls.interesIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100);
       this.solicitudForm.controls.gastosIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totalFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totalDesembolso.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
