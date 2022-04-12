@@ -12,6 +12,9 @@ import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
 import {LiquidacionDet} from "../../../shared/models/operaciones/liquidacion-det";
 import Swal from "sweetalert2";
+import {FileUploader} from "ng2-file-upload";
+import {Archivo} from "../../../shared/models/comercial/archivo";
+import {LiquidacionCabSustento} from "../../../shared/models/operaciones/LiquidacionCab-Sustento";
 
 @Component({
   selector: 'app-liquidaciones',
@@ -21,6 +24,7 @@ import Swal from "sweetalert2";
 })
 export class LiquidacionesComponent implements OnInit {
   public contentHeader: object;
+  public submitted: boolean = false;
   public seleccionarTodoSolicitud: boolean = false;
   public cambiarIconoSolicitud: boolean = false;
   public solicitudes: SolicitudCab[] = [];
@@ -28,12 +32,21 @@ export class LiquidacionesComponent implements OnInit {
   public seleccionarTodo: boolean = false;
   public cambiarIcono: boolean = false;
   public solicitudForm: FormGroup;
+  public liquidacionForm: FormGroup;
   public codigoSolicitud: string = '';
   public idTipoOperacion: number = 0;
   public detalleSolicitud: SolicitudDet[] = [];
   public sustentosSolicitud: SolicitudCabSustento[] = [];
   public tipoCT: TablaMaestra[] = [];
   public oldLiquidacionDet: LiquidacionDet;
+  public archivos: Archivo[] = [];
+  public hasBaseDropZoneOver: boolean = false;
+  public archivosSustento: FileUploader = new FileUploader({
+    isHTML5: true
+  });
+  public tiposArchivos: TablaMaestra[] = [];
+  public sustentos: LiquidacionCabSustento[] = [];
+  public sustentosOld: LiquidacionCabSustento[] = [];
 
   public search: string = '';
   public collectionSize: number = 0;
@@ -44,6 +57,14 @@ export class LiquidacionesComponent implements OnInit {
   public collectionSizeSolicitud: number = 0;
   public pageSizeSolicitud: number = 10;
   public pageSolicitud: number = 1;
+
+  public codigo: string;
+  public deudaAnterior: number = 0;
+  public observacion: string = '';
+
+  get ReactiveIUForm(): any {
+    return this.liquidacionForm.controls;
+  }
 
   constructor(
     private modalService: NgbModal,
@@ -124,11 +145,25 @@ export class LiquidacionesComponent implements OnInit {
       totalFacturarIGV:  [{value: 0, disabled: true}],
       totalDesembolso:  [{value: 0, disabled: true}]
     });
+    this.liquidacionForm = this.formBuilder.group({
+      idLiquidacionCab: [0],
+      codigo: [{value: '', disabled: true}],
+      rucCliente: [{value: '', disabled: true}],
+      razonSocialCliente: [{value: '', disabled: true}],
+      rucPagProv: [{value: '', disabled: true}],
+      razonSocialPagProv: [{value: '', disabled: true}],
+      moneda: [{value: '', disabled: true}],
+      montoTotal: [{value: 0, disabled: true}],
+      //deudaAnterior: [0],
+      nuevoMontoTotal: [{value: 0, disabled: true}],
+      //observacion: [''],
+    });
   }
 
   async ngOnInit(): Promise<void> {
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.tipoCT = await this.onListarMaestros(5, 0);
+    this.tiposArchivos = await this.onListarMaestros(8, 0);
     this.utilsService.blockUIStop();
     this.onListarLiquidaciones();
   }
@@ -397,7 +432,7 @@ export class LiquidacionesComponent implements OnInit {
 
     this.utilsService.blockUIStart('Generando...');
     this.liquidacionesService.pdf(solicitudes).subscribe(response => {
- 
+
       if (response.comun.tipo == 1) {
         this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();
@@ -413,12 +448,43 @@ export class LiquidacionesComponent implements OnInit {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();
     });
-    
+
     this.liquidacionesService.generar(solicitudes).subscribe(response => {
-
       if (response.comun.tipo == 1) {
         this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();
+
+        Swal.fire({
+          title: 'Información',
+          html: `
+            <p style="text-align: justify">Resultado de la generación de liquidacion(es)</p>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>N° Liquidación</th>
+                  <th>Superó Monto Mínimo</th>
+                  <th>Correo Enviado</th>
+                </tr>
+                </thead>
+                <tbody>
+                ${this.onFilas(response.liquidacionCabValidacion)}
+                </tbody>
+              </table>
+            </div>
+            <p style="text-align: justify">Consulte las facturas de las solicitudes para verificar su estado. Utilice el código de respuesta como referencia para su validación.</p>`,
+          icon: 'info',
+          width: '750px',
+          showCancelButton: false,
+          confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
+          customClass: {
+            confirmButton: 'btn btn-info',
+          },
+        }).then(result => {
+          if (result.value) {
+
+          }
+        });
 
         modal.dismiss();
         this.onListarLiquidaciones();
@@ -426,11 +492,26 @@ export class LiquidacionesComponent implements OnInit {
         this.utilsService.showNotification(response.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
       }
+
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();
     });
+  }
+
+  onFilas(liquidaciones: any): string {
+    let filas = "";
+    for (const item of liquidaciones) {
+      filas += `<tr><td>${item.codigo}</td>
+                <td>${item.montoSuperado ? '<i class="text-success cursor-pointer" data-feather="check"></i>' :
+                      '<i class="text-danger cursor-pointer" data-feather="slash"></i>'}</td>
+                <td>${item.correoEnviado === 1  ? '<i class="text-success cursor-pointer" data-feather="check"></i>' :
+                                    (item.correoEnviado === 0 ? '<i class="text-danger cursor-pointer" data-feather="slash"></i>' :
+                                      '<i class="text-danger cursor-pointer" data-feather="minus-circle"></i>')}</td>
+                </tr>`
+    }
+    return filas;
   }
 
   onCambiarFechaOperacion($event: any, cab: LiquidacionCab, item: LiquidacionDet) {
@@ -535,5 +616,216 @@ export class LiquidacionesComponent implements OnInit {
 
   onDeshacerCambios(): void {
     this.onListarLiquidaciones();
+  }
+
+  onEditarCab(cab: LiquidacionCab, modal): void {
+    this.codigo = cab.codigo;
+    this.liquidacionForm.controls.rucCliente.setValue(cab.rucCliente);
+    this.liquidacionForm.controls.razonSocialCliente.setValue(cab.razonSocialCliente);
+    this.liquidacionForm.controls.rucPagProv.setValue(cab.rucPagProv);
+    this.liquidacionForm.controls.razonSocialPagProv.setValue(cab.razonSocialPagProv);
+    this.liquidacionForm.controls.moneda.setValue(cab.moneda);
+    this.liquidacionForm.controls.montoTotal.setValue(cab.montoTotal);
+    //this.liquidacionForm.controls.deudaAnterior.setValue(cab.deudaAnterior);
+    this.deudaAnterior = cab.deudaAnterior;
+    this.liquidacionForm.controls.nuevoMontoTotal.setValue(cab.nuevoMontoTotal);
+    //this.liquidacionForm.controls.observacion.setValue(cab.observacion);
+    this.observacion = cab.observacion ?? '';
+    this.sustentos = cab.liquidacionCabSustento.filter(x => x.idTipoSustento === 1);
+
+    setTimeout(() => {
+      this.modalService.open(modal, {
+        scrollable: true,
+        //size: 'lg',
+        windowClass: 'my-class',
+        animation: true,
+        centered: false,
+        backdrop: "static",
+        beforeDismiss: () => {
+          return true;
+        }
+      });
+    }, 0);
+  }
+
+  onDeudaAnteriorCambio($event): void {
+    if ($event === '') this.deudaAnterior = 0;
+    this.liquidacionForm.controls.nuevoMontoTotal.setValue(
+      this.liquidacionForm.controls.montoTotal.value - this.deudaAnterior
+    );
+  }
+
+  async onArchivoABase64(file): Promise<any> {
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+
+  async fileOverBase(e: any): Promise<void> {
+    this.hasBaseDropZoneOver = e;
+    if (e === false) {
+      let cola = this.archivosSustento.queue;
+      let nombres = cola.map(item => item?.file?.name)
+        .filter((value, index, self) => self.indexOf(value) === index)
+      let sinDuplicado = [];
+      for (let el of cola) {
+        let duplicado = cola.filter(f => f?.file?.name === el.file.name);
+        if (duplicado.length > 1) {
+          if (sinDuplicado.filter(f => f?.file?.name === el.file.name).length === 0) {
+            let ultimo = duplicado.sort((a, b) => b._file.lastModified - a._file.lastModified)[0]
+            sinDuplicado.push(ultimo);
+          }
+        } else {
+          sinDuplicado.push(duplicado[0]);
+        }
+      }
+
+      this.archivosSustento.queue = sinDuplicado;
+      this.archivos = [];
+      for (let item of sinDuplicado) {
+        let base64 = await this.onArchivoABase64(item._file);
+        this.archivos.push({
+          idFila: this.utilsService.autoIncrement(this.archivos),
+          idTipo: 1,
+          idTipoSustento : 1,
+          nombre: item.file.name,
+          tamanio: `${(item.file.size / 1024 / 1024).toLocaleString('es-pe', {minimumFractionDigits: 2})} MB`,
+          base64: base64
+        });
+      }
+    }
+  }
+
+  onEliminarArchivo(item): void{
+    //item.remove();
+    let archivo = item.nombre;
+    let id = 0;
+    for (const arch of this.archivosSustento.queue) {
+      if (arch?.file?.name == archivo) {
+        arch.remove();
+        break;
+      }
+    }
+
+    for (const row of this.archivos) {
+      if (row.nombre === archivo) {
+        this.archivos.splice(id, 1)
+      }
+      id = id + 1;
+    }
+  }
+
+  onEliminarArchivoAdjunto(item: LiquidacionCabSustento): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea eliminar el archivo "${item.archivo}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      }
+    }).then(result => {
+      if (result.value) {
+        item.editado = true;
+        item.estado = false;
+      }
+    });
+  }
+
+  onGuardar(): void {
+    this.submitted = true;
+    if (this.deudaAnterior > 0 && this.observacion === '')
+      return;
+
+    this.utilsService.blockUIStart("Guardando...");
+    if (this.sustentosOld.length === 0)
+      for (let item of this.sustentos) {
+        this.sustentosOld.push({
+          idLiquidacionCabSustento: item.idLiquidacionCabSustento,
+          idLiquidacionCab: item.idLiquidacionCab,
+          idTipoSustento: 2,
+          idTipo: item.idTipo,
+          tipo: item.tipo,
+          archivo: item.archivo,
+          base64: item.base64,
+          rutaArchivo: item.rutaArchivo,
+          estado: item.estado,
+          editado: item.editado
+        });
+      }
+    else {
+      this.sustentos = []
+      for (let item of this.sustentosOld) {
+        this.sustentos.push({
+          idLiquidacionCabSustento: item.idLiquidacionCabSustento,
+          idLiquidacionCab: item.idLiquidacionCab,
+          idTipoSustento: 2,
+          idTipo: item.idTipo,
+          tipo: item.tipo,
+          archivo: item.archivo,
+          base64: item.base64,
+          rutaArchivo: item.rutaArchivo,
+          estado: item.estado,
+          editado: item.editado
+        });
+      }
+    }
+
+    for (let item of this.archivos) {
+      this.sustentos.push({
+        idLiquidacionCabSustento: 0,
+        idLiquidacionCab: 0,
+        idTipoSustento: 2,
+        idTipo: item.idTipo,
+        tipo: "",
+        archivo: item.nombre,
+        base64: item.base64,
+        rutaArchivo: "",
+        estado: true,
+        editado: true
+      });
+    }
+
+    this.liquidacionesService.actualizar({
+      idDestino: 1, //1: cab | 2: det
+      idLiquidacionCab: this.liquidacionForm.controls.idLiquidacionCab.value,
+      deudaAnterior: this.deudaAnterior,
+      nuevoMontoTotal: this.liquidacionForm.controls.nuevoMontoTotal.value,
+      observacion: this.observacion,
+      idUsuarioAud: 1,
+      liquidacionCabSustento: this.sustentos.filter(f => f.editado)
+    }).subscribe(response => {
+      if (response.tipo == 1) {
+        this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+        this.onListarLiquidaciones();
+      } else if (response.tipo == 2) {
+        this.utilsService.showNotification(response.mensaje, 'Validación', 2);
+        this.utilsService.blockUIStop();
+      } else if (response.tipo == 0) {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
+      }
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
+  }
+
+  onCancelarCab(): void {
+    this.submitted = false;
+    this.sustentosOld = [];
+    this.liquidacionForm.reset();
+    this.onListarLiquidaciones();
+    this.archivos = [];
+    this.codigo = "";
+    this.archivosSustento.clearQueue();
+    this.modalService.dismissAll();
   }
 }

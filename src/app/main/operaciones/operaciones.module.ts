@@ -12,6 +12,7 @@ import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 import { ConsultaFactrackComponent } from './consulta-factrack/consulta-factrack.component';
 import { RespuestaPagadorComponent } from './respuesta-pagador/respuesta-pagador.component';
 import { LiquidacionesComponent } from './liquidaciones/liquidaciones.component';
+import {FileUploadModule} from "ng2-file-upload";
 
 const routes: Routes = [
   {
@@ -60,6 +61,7 @@ const routes: Routes = [
         NgSelectModule,
         NgxMaskModule.forRoot(),
         NgxDatatableModule,
+        FileUploadModule,
     ]
 })
 export class OperacionesModule { }

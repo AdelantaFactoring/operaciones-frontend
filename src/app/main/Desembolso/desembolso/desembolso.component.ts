@@ -61,7 +61,7 @@ export class DesembolsoComponent implements OnInit {
     //url: `${environment.apiUrl}${SOLICITUD.subirSustento}`,
     isHTML5: true
   });
-  
+
   sundayDate = null;
 
   get ReactiveIUForm(): any {
@@ -75,7 +75,7 @@ export class DesembolsoComponent implements OnInit {
     private modalService: NgbModal,
     private clienteService: ClientesService,
     private tablaMaestraService: TablaMaestraService
-  ) { 
+  ) {
     this.contentHeader = {
       headerTitle: 'Desembolso',
       actionButton: true,
@@ -109,6 +109,8 @@ export class DesembolsoComponent implements OnInit {
       razonSocialPagProv: [{value: '', disabled: true}],
       moneda: [{value: '', disabled: true}],
       montoTotal: [{value: 0, disabled: true}],
+      deudaAnterior: [{value: '', disabled: true}],
+      nuevoMontoTotal: [{value: 0, disabled: true}],
       tasaNominalMensual: [{value: 0, disabled: true}],
       tasaNominalAnual: [{value: 0, disabled: true}],
       tasaNominalMensualMora: [{value: 0, disabled: true}],
@@ -362,10 +364,12 @@ export class DesembolsoComponent implements OnInit {
     this.codigoMonedaDet = item.tipoCambioMoneda == 0 ? item.moneda : '';
     this.solicitudForm.controls.montoConvertido.setValue(item.montoTotalConversion);
     this.solicitudForm.controls.tipoCambioMoneda.setValue(item.tipoCambioMoneda);
-  
+
     this.tipoCambioMoneda = item.tipoCambioMoneda;
 
     this.solicitudForm.controls.montoTotal.setValue(item.nuevoMontoTotal);
+    this.solicitudForm.controls.deudaAnterior.setValue(item.deudaAnterior);
+    this.solicitudForm.controls.nuevoMontoTotal.setValue(item.nuevoMontoTotal);
     this.solicitudForm.controls.titularCuentaBancariaDestino.setValue(item.titularCuentaBancariaDestino);
     this.solicitudForm.controls.monedaCuentaBancariaDestino.setValue(item.monedaCuentaBancariaDestino);
     this.solicitudForm.controls.bancoDestino.setValue(item.bancoDestino);
@@ -377,12 +381,12 @@ export class DesembolsoComponent implements OnInit {
     // this.detalle = item.solicitudDet;
     this.sustentos = item.liquidacionCabSustento.filter(x => x.idTipoSustento === 2);
     // this.onCalcularCT(item);
-    
+
     this.utilsService.blockUIStart("Obteniendo información...");
     this.clienteService.obtener({
       idCliente: item.idCliente
     }).subscribe((response: any) => {
-      
+
       // this.contactos = response.clienteContacto;
       this.cuentas = response.clienteCuenta;
       // this.cuentas = this.cuentas.filter(f => f.codigoMoneda === item.moneda);
@@ -431,7 +435,7 @@ export class DesembolsoComponent implements OnInit {
   }
 
   onSeleccioneCuenta(modal): void {
-    
+
     setTimeout(() => {
       this.modalService.open(modal, {
         scrollable: true,
@@ -446,7 +450,7 @@ export class DesembolsoComponent implements OnInit {
       });
     }, 0);
   }
-  
+
   onSeleccionarCuenta(item: ClienteCuenta, modal): void {
     this.solicitudForm.controls.titularCuentaBancariaDestino.setValue(item.titular);
     this.solicitudForm.controls.monedaCuentaBancariaDestino.setValue(item.moneda);
@@ -459,9 +463,9 @@ export class DesembolsoComponent implements OnInit {
     this.tipoCambioMoneda = 0;
     modal.dismiss("Cross Click");
   }
-  
+
   onConvertirMontoTotal(): void
-  { 
+  {
     if (this.codigoMonedaCab != this.codigoMonedaDet) {
       if (this.codigoMonedaCab == "PEN") {
         this.montoConvertido = Math.round((this.totalMontoDescembolso / this.tipoCambioMoneda) * 100) / 100;
@@ -478,12 +482,12 @@ export class DesembolsoComponent implements OnInit {
   onAprobar(idEstado: number, tipo: number): void {
     // @ts-ignore
     let liquidaciones = [...this.desembolso.filter(f => f.seleccionado)];
-    
+
     if (liquidaciones.length === 0) {
       this.utilsService.showNotification("Seleccione una o varias liquidaciones", "", 2);
       return;
     }
-    
+
     if (tipo == 2) {
       for (const item of liquidaciones) {
         if (item.idEstado !== 4) {
@@ -496,13 +500,13 @@ export class DesembolsoComponent implements OnInit {
         }
       }
     }
-    
+
     liquidaciones.forEach(el => {
       el.idEstado = idEstado;
       el.idUsuarioAud = 1;
     });
-    
-    
+
+
     this.utilsService.blockUIStart('Aprobando...');
     this.desembolsoService.cambiarEstado(liquidaciones).subscribe(response => {
       if (response.tipo == 1) {
@@ -526,7 +530,7 @@ export class DesembolsoComponent implements OnInit {
   }
 
   onGenerarArchivo(item): void{
-    
+
     this.utilsService.blockUIStart('Exportando archivo EXCEL...');
 
     this.desembolsoService.export(item).subscribe(s => {
@@ -544,7 +548,7 @@ export class DesembolsoComponent implements OnInit {
       this.utilsService.blockUIStop();
     });
   }
- 
+
   onEliminarArchivo(item): void{
     //item.remove();
     let archivo = item.nombre;
@@ -557,7 +561,6 @@ export class DesembolsoComponent implements OnInit {
     }
 
     for (const row of this.archivos) {
-
       if (row.nombre === archivo) {
         this.archivos.splice(id, 1)
       }
@@ -565,7 +568,6 @@ export class DesembolsoComponent implements OnInit {
     }
   }
 
-  
   onEliminarArchivoAdjunto(item: LiquidacionCabSustento): void {
     Swal.fire({
       title: 'Confirmación',
