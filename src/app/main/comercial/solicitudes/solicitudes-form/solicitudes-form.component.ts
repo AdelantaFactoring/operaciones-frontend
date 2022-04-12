@@ -14,6 +14,7 @@ import { SolicitudDetRespuesta } from 'app/shared/models/comercial/SolicitudDet-
 import { ItemsList } from '@ng-select/ng-select/lib/items-list';
 import { ClienteContacto } from 'app/shared/models/comercial/cliente-contacto';
 import { LOADIPHLPAPI } from 'dns';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-solicitudes-form',
@@ -151,7 +152,8 @@ export class SolicitudesFormComponent implements OnInit {
     private solicitudesFormService: SolicitudesFormService,
     private formBuilder: FormBuilder,
     private location: Location,
-    private calendar: NgbCalendar,) {
+    private calendar: NgbCalendar,
+    public router: Router) {
     this.contentHeader = {
       headerTitle: 'Solicitudes',
       actionButton: true,
@@ -302,6 +304,9 @@ export class SolicitudesFormComponent implements OnInit {
     });
 
   }
+  onRegresar(): void {
+    this.router.navigate(['/comercial/solicitudes']);
+  }
   onGuardarCT(): void {
     this.submitted = true;
     if (this.capitalTrabajoForm.invalid) {
@@ -340,7 +345,8 @@ export class SolicitudesFormComponent implements OnInit {
       if (response.tipo == 1) {
         this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();
-        this.location.back();
+        //this.location.back();
+        this.router.navigate(['/comercial/solicitudes']);
         this.modalService.dismissAll();
       } else if (response.tipo == 2) {
         this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
@@ -678,7 +684,6 @@ export class SolicitudesFormComponent implements OnInit {
       if (this.idTipoOperacion == 3) {
         this.contacto = response.clienteContacto;
       }
-      console.log('item', response);
       if (response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda).length > 0) {
         this.clienteGastos = response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda);
 

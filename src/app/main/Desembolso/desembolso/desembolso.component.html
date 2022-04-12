@@ -328,244 +328,34 @@
                       </div>
                     </div>
                   </div>
-                <!--
-                  <div class="col-12">
-                    <div class="d-flex flex-wrap mb-0">
-                      <div class="pb-1">
-                        <button type="submit" rippleEffect class="btn btn-success" (click)="onActualizar()">
-                          <i class="mr-0 mr-sm-1" data-feather="refresh-ccw"></i>
-                          <span class="d-none d-sm-inline-block">Actualizar</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-4 col-12" hidden>
-                    <div class="form-group">
-                      <label>Comisión Estructuración</label>
-                      <input class="form-control" type="text" placeholder="0.00"
-                             mask="separator" thousandSeparator="," formControlName="comisionEstructuracion"/>
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
-                    <div class="form-group">
-                      <div class="custom-control custom-switch custom-control-inline">
-                        <input type="checkbox" class="custom-control-input"
-                               id="usoGC" formControlName="usarGastosContrato"
-                        />
-                        <label class="custom-control-label"
-                               for="usoGC">Aplicar Gastos de Contrato</label>
-                      </div>-->
-                      <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
-                    <!-- </div>
-                  </div>
-                  <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
-                    <div class="form-group">
-                      <div class="custom-control custom-switch custom-control-inline">
-                        <input type="checkbox" class="custom-control-input"
-                               id="usoGVP" formControlName="usarGastoVigenciaPoder"
-                        />
-                        <label class="custom-control-label"
-                               for="usoGVP">Aplicar Gasto Vigencia de Poder</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-4" [hidden]="idTipoOperacion === 2">
-                  </div>
-                  <div class="col-md-4 col-12" [hidden]="idTipoOperacion === 2">
-                    <div class="form-group">
-                      <label>Gastos de Contrato</label>
-                      <input class="form-control" type="text" placeholder="0.00"
-                             mask="separator" thousandSeparator="," formControlName="gastosContrato"/>
-                    </div>
-                  </div>
-                  <div class="col-md-4 col-12" [hidden]="idTipoOperacion === 2">
-                    <div class="form-group">
-                      <label>Gasto Vigencia de Poder</label>
-                      <input class="form-control" type="text" placeholder="0.00"
-                             mask="separator" thousandSeparator="," formControlName="gastoVigenciaPoder"/>
-                    </div>
-                  </div>
-                  <div class="col-md-4 col-12">
-                    <div class="form-group">
-                      <label>Comisión Carta Notarial</label>
-                      <input class="form-control" type="text" placeholder="0.00"
-                             mask="separator" thousandSeparator="," formControlName="comisionCartaNotarial"/>
-                    </div>
-                  </div>
-                  <div class="col-md-4 col-12">
-                    <div class="form-group">
-                      <label>Servicio Cobranza</label>
-                      <input class="form-control" type="text" placeholder="0.00"
-                             mask="separator" thousandSeparator="," formControlName="servicioCobranza"/>
-                    </div>
-                  </div>
-                  <div class="col-md-4 col-12">
-                    <div class="form-group">
-                      <label>Servicio Custodia</label>
-                      <input class="form-control" type="text" placeholder="0.00"
-                             mask="separator" thousandSeparator="," formControlName="servicioCustodia"/>
-                    </div>
-                  </div>
-                  <div class="col-12" [hidden]="idTipoOperacion === 2">
-                    <div class="table-responsive">
-                      <table class="table table-hover">
-                        <thead>
-                        <tr>
-                          <th class="detail-th-color">N° Documento</th>
-                          <th class="detail-th-color">Forma Pago</th>
-                          <th class="detail-th-color">Monto sin IGV</th>
-                          <th class="detail-th-color">Monto con IGV</th>
-                          <th class="detail-th-color">Fecha Pago</th>
-                          <th class="detail-th-color">Monto Pago Confirmado</th>
-                          <th class="detail-th-color">Fondo Resguardo</th>
-                          <th class="detail-th-color">Estado</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr *ngFor="let item of detalle">
-                          <td>{{item.nroDocumento}}</td>
-                          <td>{{item.formaPago}}</td>
-                          <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
-                          <td>{{item.montoConIGV | number: '1.2-2'}}</td>
-                          <td>{{item.fechaConfirmadoFormat}}</td>
-                          <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
-                          <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
-                          <td>{{item.estado}}</td>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <div class="divider divider-danger">
-                      <div class="divider-text">Información del Contacto</div>
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <div class="d-flex flex-wrap mb-0">
-                      <div class="pb-1">
-                        <button type="submit" rippleEffect class="btn btn-danger" [disabled]="idTipoOperacion === 3"
-                                (click)="onSeleccioneContacto(modalCONTACTO)">
-                          <i class="mr-0 mr-sm-1" data-feather="arrow-right-circle"></i>
-                          <span class="d-none d-sm-inline-block">Seleccione...</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-12">
-                    <div class="form-group">
-                      <label>Nombre(s) y Apellidos</label>
-                      <input class="form-control" [(ngModel)]="nombreContacto" [ngModelOptions]="{standalone: true}" type="text" readonly
-                             [ngClass]="{ 'is-invalid': submitted && nombreContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2) }"/>
-                      <div *ngIf="nombreContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)" class="invalid-feedback">
-                        <div *ngIf="nombreContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)">* Campo obligatorio</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-12">
-                    <div class="form-group">
-                      <label>Teléfono</label>
-                      <input class="form-control" [(ngModel)]="telefonoContacto" [ngModelOptions]="{standalone: true}" type="text" readonly
-                             [ngClass]="{ 'is-invalid': submitted && telefonoContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2) }"/>
-                      <div *ngIf="telefonoContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)" class="invalid-feedback">
-                        <div *ngIf="telefonoContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)">* Campo obligatorio</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-12">
-                    <div class="form-group">
-                      <label>Correo</label>
-                      <input class="form-control" [(ngModel)]="correoContacto" [ngModelOptions]="{standalone: true}" type="text" readonly
-                             [ngClass]="{ 'is-invalid': submitted && correoContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)}"/>
-                      <div *ngIf="correoContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)" class="invalid-feedback">
-                        <div *ngIf="correoContacto === '' && (idTipoOperacion === 1 || idTipoOperacion === 2)">* Campo obligatorio</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-12">
-                    <div class="form-group">
-                      <label>Correo(s) a Copiar</label>
-                      <input class="form-control" formControlName="conCopiaContacto" type="text"/>
-                    </div>
-                  </div>-->
+               
                   <div class="col-12">
                     <div class="divider divider-success">
                       <div class="divider-text">Información del Desembolso</div>
                     </div>
                   </div>
-                  <div class="col-12" [hidden]="idTipoOperacion === 2">
+                  <div class="col-12">
                     <div class="table-responsive">
                       <table class="table table-hover">
                         <thead>
                         <tr>
-                          <!-- <th class="detail-th-color">Acción</th> -->
-                          <th class="detail-th-color">N° Documento</th>
-                          <th class="detail-th-color">T.N.M (%)</th>
-                          <th class="detail-th-color">T.N.A (%)</th>
-                          <th class="detail-th-color">Financiamiento (%)</th>
-                          <th class="detail-th-color">Fecha Confirmada</th>
-                          <th class="detail-th-color">Fecha Operación</th>
-                          <th class="detail-th-color">Día(s) Efectivo</th>
-                          <th class="detail-th-color">Neto Confirmado</th>
-                          <th class="detail-th-color">Comisión Estructuración (%)</th>
-                          <!-- <th class="detail-th-color">Monto Comisión E.</th>
-                          <th class="detail-th-color">Comisión E. (IGV)</th> -->
-                          <th class="detail-th-color">Monto Total Comisión E.</th>
-                          <th class="detail-th-color">Fondo Resguardo</th>
-                          <th class="detail-th-color">Monto a Financiar</th>
-                          <!-- <th class="detail-th-color">Interés</th>
-                          <th class="detail-th-color">Interés (IGV)</th> -->
-                          <th class="detail-th-color">Interés Total </th>
-                          <th class="detail-th-color">Gastos Contrato</th>
-                          <th class="detail-th-color">Gastos Vigencia Poder</th>
-                          <th class="detail-th-color">Servicio Custodia</th>
-                          <th class="detail-th-color">Servicio Cobranza</th>
-                          <th class="detail-th-color">Comisión Carta Notarial</th>
-                          <th class="detail-th-color">Gastos Diversos</th>
-                          <th class="detail-th-color">Gastos Diversos (IGV)</th>
-                          <th class="detail-th-color">Total Gastos Diversos</th>
-                          <th class="detail-th-color">Monto Total Facturado</th>
-                          <th class="detail-th-color">Nota Crédito por Dev.</th>
-                          <th class="detail-th-color">Monto Desembolso</th>
+                          <th class="detail-th-color">N° DOCUMENTO</th>
+                          <th class="detail-th-color">NETO CONFIRMADO</th>
+                          <th class="detail-th-color">FONDO RESGUARDO</th>
+                          <th class="detail-th-color">MONTO A FINANCIAR</th>
+                          <th class="detail-th-color">INTERÉS	</th>
+                          <th class="detail-th-color">TOTAL GASTOS DIVERSOS</th>
+                          <th class="detail-th-color">MONTO DESEMBOLSO</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr *ngFor="let item of desembolsoDet">
-                          <!-- <td>
-                            <div class="d-flex align-items-center">
-                              <a href="javascript:void(0)" title="Editar"
-                                  class="btn btn-raised btn-outline-success btn-sm">
-                                <i class="text-success cursor-pointer" data-feather="edit"></i>
-                              </a>
-                            </div>
-                          </td> -->
                           <td>{{item.nroDocumento}}</td>
-                          <td>{{item.tasaNominalMensual | number: '1.2-2'}}</td>
-                          <td>{{item.tasaNominalAnual | number: '1.2-2'}}</td>
-                          <td>{{item.financiamiento | number: '1.2-2'}}</td>
-                          <td>{{item.fechaConfirmado}}</td>
-                          <td>{{item.fechaOperacionFormat}}</td>
-                          <td>{{item.diasEfectivo | number: '1.0-0'}}</td>
                           <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
-                          <td>{{item.comisionEstructuracion | number: '1.2-2'}}</td>
-                          <!-- <td>{{item.montoComisionEstructuracion | number: '1.2-2'}}</td>
-                          <td>{{item.comisionEstructuracionIGV | number: '1.2-2'}}</td> -->
-                          <td>{{item.comisionEstructuracionConIGV | number: '1.2-2'}}</td>
                           <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                           <td>{{item.montoCobrar | number: '1.2-2'}}</td>
-                          <!-- <td>{{item.interes | number: '1.2-2'}}</td>
-                          <td>{{item.interesIGV | number: '1.2-2'}}</td> -->
-                          <td>{{item.interesConIGV | number: '1.2-2'}}</td>
-                          <td>{{item.gastosContrato | number: '1.2-2'}}</td>
-                          <td>{{item.gastoVigenciaPoder | number: '1.2-2'}}</td>
-                          <td>{{item.servicioCustodia | number: '1.2-2'}}</td>
-                          <td>{{item.servicioCobranza | number: '1.2-2'}}</td>
-                          <td>{{item.comisionCartaNotarial | number: '1.2-2'}}</td>
-                          <td>{{item.gastosDiversos | number: '1.2-2'}}</td>
-                          <td>{{item.gastosDiversosIGV | number: '1.2-2'}}</td>
-                          <td>{{item.gastosDiversosConIGV | number: '1.2-2'}}</td>
-                          <td>{{item.montoTotalFacturado | number: '1.2-2'}}</td>
-                          <td>{{item.montoNotaCreditoDevolucion | number: '1.2-2'}}</td>
+                          <td>{{item.interesConIGV}}</td>
+                          <td>{{item.gastosDiversosConIGV}}</td>
                           <td>{{item.montoDesembolso | number: '1.2-2'}}</td>
                         </tr>
                         </tbody>
@@ -583,7 +373,7 @@
                   <div class="col-12">
                     <div class="d-flex flex-wrap mb-0">
                       <div class="pb-1">
-                        <button type="submit" rippleEffect class="btn btn-warning" (click)="onSeleccioneCuenta(modalCUENTA)" [disabled]="idTipoOperacion === 3">
+                        <button type="submit" rippleEffect class="btn btn-warning" (click)="onSeleccioneCuenta(modalCUENTA)">
                           <i class="mr-0 mr-sm-1" data-feather="arrow-right-circle"></i>
                           <span class="d-none d-sm-inline-block">Seleccione...</span>
                         </button>
