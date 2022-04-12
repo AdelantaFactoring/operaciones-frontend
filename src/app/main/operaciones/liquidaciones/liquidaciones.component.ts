@@ -485,11 +485,11 @@ export class LiquidacionesComponent implements OnInit {
     let filas = "";
     for (const item of liquidaciones) {
       filas += `<tr><td>${item.codigo}</td>
-                <td>${item.montoSuperado ? '<div class="d-flex align-items-center"><i class="text-success cursor-pointer" data-feather="check"></i></div>' :
-                      '<div class="d-flex align-items-center"><i class="text-danger cursor-pointer" data-feather="slash"></i></div>'}</td>
-                <td>${item.correoEnviado === 1  ? '<div class="d-flex align-items-center"><i class="text-success cursor-pointer" data-feather="check"></i></div>' :
-                                    (item.correoEnviado === 0 ? '<div class="d-flex align-items-center"><i class="text-danger cursor-pointer" data-feather="slash"></i></div>' :
-                                      '<div class="d-flex align-items-center"><i class="text-danger cursor-pointer" data-feather="minus-circle"></i></div>')}</td>
+                <td>${item.montoSuperado ? '<i class="text-success cursor-pointer fa fa-check"></i>' :
+                      '<i class="text-danger fa fa-ban"></i>'}</td>
+                <td>${item.correoEnviado === 1  ? '<i class="text-success fa fa-check"></i>' :
+                                    (item.correoEnviado === 0 ? '<i class="text-danger cursor-pointer fa fa-ban"></i>' :
+                                      '<i class="text-secondary cursor-pointer fa fa-minus-circle"></i>')}</td>
                 </tr>`
     }
     console.log('fi', filas);
