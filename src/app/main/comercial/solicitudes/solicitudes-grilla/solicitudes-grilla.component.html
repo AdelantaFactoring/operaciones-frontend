@@ -754,12 +754,20 @@
                 <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                 <td>{{item.estado}}</td>
                 <td>
-                  <a href="{{item.rutaArchivoPDF}}" target="_blank"><strong
-                  >{{ item.archivoPDF }}</strong></a>
+                  <div class="d-flex align-items-center">
+                    <a href="{{item.rutaArchivoPDF}}" title="{{ item.archivoPDF }}" target="_blank"
+                       class="btn btn-raised btn-outline-info btn-sm">
+                      <i class="fa fa-file-pdf-o"></i>
+                    </a>
+                  </div>
                 </td>
                 <td>
-                  <a href="{{item.rutaArchivoXML}}" target="_blank"><strong
-                  >{{ item.archivoXML }}</strong></a>
+                  <div class="d-flex align-items-center">
+                    <a href="{{item.rutaArchivoXML}}" title="{{ item.archivoXML }}" target="_blank"
+                       class="btn btn-raised btn-outline-secondary btn-sm">
+                      <i class="fa fa-file-code-o"></i>
+                    </a>
+                  </div>
                 </td>
               </tr>
               </tbody>
