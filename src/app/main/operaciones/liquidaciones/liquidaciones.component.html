@@ -469,9 +469,9 @@
                                 <th class="detail-th-color">Forma Pago</th>
                                 <th class="detail-th-color">Monto sin IGV</th>
                                 <th class="detail-th-color">Monto con IGV</th>
-                                <th class="detail-th-color">Fondo Resguardo</th>
                                 <th class="detail-th-color">Fecha Pago</th>
                                 <th class="detail-th-color">Monto Pago Confirmado</th>
+                                <th class="detail-th-color">Fondo Resguardo</th>
                                 <th class="detail-th-color">Estado</th>
                               </tr>
                               </thead>
@@ -481,9 +481,9 @@
                                 <td>{{item.formaPago}}</td>
                                 <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
                                 <td>{{item.montoConIGV | number: '1.2-2'}}</td>
-                                <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                                 <td>{{item.fechaConfirmadoFormat}}</td>
                                 <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                                <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                                 <td>{{item.estado}}</td>
                               </tr>
                               </tbody>
@@ -784,14 +784,17 @@
                           <div class="d-flex align-items-center">
                             <a href="{{item.rutaArchivoPDF}}" title="{{ item.archivoPDF }}" target="_blank"
                                class="btn btn-raised btn-outline-info btn-sm">
-                              <i class="fa fa-file-pdf"></i>
-<!--                              <i class="text cursor-pointer" data-feather="eye"></i>-->
+                              <i class="fa fa-file-pdf-o"></i>
                             </a>
                           </div>
                         </td>
                         <td>
-                          <a href="{{item.rutaArchivoXML}}" target="_blank"><strong
-                          >{{ item.archivoXML }}</strong></a>
+                          <div class="d-flex align-items-center">
+                            <a href="{{item.rutaArchivoXML}}" title="{{ item.archivoXML }}" target="_blank"
+                               class="btn btn-raised btn-outline-secondary btn-sm">
+                              <i class="fa fa-file-code-o"></i>
+                            </a>
+                          </div>
                         </td>
                       </tr>
                       </tbody>

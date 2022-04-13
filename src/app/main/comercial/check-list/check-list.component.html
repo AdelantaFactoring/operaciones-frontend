@@ -399,7 +399,7 @@
             <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
               <div class="form-group">
                 <label>Intereses incluido IGV</label>
-                <input class="form-control" formControlName="interesIncluidoIGV" type="text" placeholder="0.00" 
+                <input class="form-control" formControlName="interesIncluidoIGV" type="text" placeholder="0.00"
                        mask="separator" thousandSeparator=","/>
               </div>
             </div>
@@ -414,7 +414,7 @@
             <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
               <div class="form-group">
                 <label>Total a Facturar</label>
-                <input class="form-control" formControlName="totalFacturarIGV" type="text" placeholder="0.00" 
+                <input class="form-control" formControlName="totalFacturarIGV" type="text" placeholder="0.00"
                       mask="separator" thousandSeparator=","/>
               </div>
             </div>
@@ -438,6 +438,8 @@
                     <th class="detail-th-color">Monto Pago Confirmado</th>
                     <th class="detail-th-color">Fondo Resguardo</th>
                     <th class="detail-th-color">Estado</th>
+                    <th class="detail-th-color">Archivo PDF</th>
+                    <th class="detail-th-color">Archivo XML</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -450,6 +452,22 @@
                     <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
                     <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                     <td>{{item.estado}}</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="{{item.rutaArchivoPDF}}" title="{{ item.archivoPDF }}" target="_blank"
+                           class="btn btn-raised btn-outline-info btn-sm">
+                          <i class="fa fa-file-pdf-o"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="{{item.rutaArchivoXML}}" title="{{ item.archivoXML }}" target="_blank"
+                           class="btn btn-raised btn-outline-secondary btn-sm">
+                          <i class="fa fa-file-code-o"></i>
+                        </a>
+                      </div>
+                    </td>
                   </tr>
                   </tbody>
                 </table>

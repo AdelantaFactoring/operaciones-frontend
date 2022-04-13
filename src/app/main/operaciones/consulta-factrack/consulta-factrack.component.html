@@ -127,9 +127,9 @@
                             <th class="detail-th-color">Forma Pago</th>
                             <th class="detail-th-color">Monto sin IGV</th>
                             <th class="detail-th-color">Monto con IGV</th>
-                            <th class="detail-th-color">Fondo Resguardo</th>
                             <th class="detail-th-color">Fecha Pago</th>
                             <th class="detail-th-color">Monto Pago Confirmado</th>
+                            <th class="detail-th-color">Fondo Resguardo</th>
                             <th class="detail-th-color">Estado</th>
                           </tr>
                           </thead>
@@ -148,9 +148,9 @@
                             <td>{{item.formaPago}}</td>
                             <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
                             <td>{{item.montoConIGV | number: '1.2-2'}}</td>
-                            <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                             <td>{{item.fechaConfirmadoFormat}}</td>
                             <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                            <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                             <td>{{item.estado}}</td>
                           </tr>
                           </tbody>
