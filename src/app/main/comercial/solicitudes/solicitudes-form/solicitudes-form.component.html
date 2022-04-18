@@ -54,7 +54,7 @@
               <input [(ngModel)]="razonSocial" [ngClass]="{ 'is-invalid': !rucRequired }" class="form-control"
                      type="text" disabled>
               <span *ngIf="!rucRequired" class="invalid-form">
-                <small class="form-text text-danger" *ngIf="!rucRequired">This field is required!</small>
+                <small class="form-text text-danger" *ngIf="!rucRequired">* Campo obligatorio</small>
               </span>
             </div>
           </div>

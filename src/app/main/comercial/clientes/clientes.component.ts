@@ -314,7 +314,7 @@ export class ClientesComponent implements OnInit {
       codigoMoneda: '',
       nroCuenta: this.cuentaForm.controls.nroCuenta.value,
       cci: this.cuentaForm.controls.cci.value,
-      tipoCuenta: '',
+      tipoCuenta: this.cuentaForm.controls.tipoCuenta.value,
       predeterminado: this.cuentaForm.controls.predeterminado.value,
       idFila: this.utilsService.autoIncrement(this.cuentas),
       edicion: false,

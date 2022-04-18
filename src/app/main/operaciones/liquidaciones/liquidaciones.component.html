@@ -114,6 +114,12 @@
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Re-Emviar"
+                           (click)="onReEnviar(cab,  modalINFO)"
+                           class="btn btn-raised btn-outline-warning btn-sm">
+                          <i class="text-warning cursor-pointer" data-feather="mail"></i>
+                        </a>
+                        &nbsp;
                         <a href="javascript:void(0)" *ngIf="cab.idEstado == 1" title="Editar"
                            (click)="onEditarCab(cab,  modalINFO)"
                            class="btn btn-raised btn-outline-success btn-sm">

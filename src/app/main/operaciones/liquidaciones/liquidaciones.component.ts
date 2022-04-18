@@ -814,4 +814,9 @@ export class LiquidacionesComponent implements OnInit {
     this.archivosSustento.clearQueue();
     this.modalService.dismissAll();
   }
+
+  onReEnviar(cab,  modalINFO): void{
+
+    
+  }
 }

@@ -504,8 +504,6 @@ export class SolicitudesFormComponent implements OnInit {
     this.cantXml = 0;
     this.cantPdf = 0;
     let nameXml = "";
-    let namePdf = "";
-    let xml = [];
     let pdf = [];
 
     if (this.rucRequired == false || this.ruc == "") {
@@ -516,19 +514,24 @@ export class SolicitudesFormComponent implements OnInit {
     let list = [];
     for (const item of this.uploader.queue) {
       list.push({'name': item?.file?.name});
+      nameXml = item?.file?.name.substring(0, item?.file?.name.length - 4);
 
       if (item?.file?.name.includes('.xml') || item?.file?.name.includes('.XML')) {
         this.cantXml = this.cantXml + 1;
+        pdf = this.uploader.queue.filter(x => x?.file?.name.includes(nameXml));
+
+        if (pdf.length !== 2) {
+          this.utilsService.showNotification("El nombre del archivo " + item?.file?.name + " no coincide con ningun archivo .PDF", 'Alerta', 2);
+          return;
+        }
       }
       else {
         this.cantPdf = this.cantPdf + 1;
       }
-
-
     }
 
     if (this.cantXml != this.cantPdf) {
-      this.utilsService.showNotification("La cantidad de archivos XML no coincide con la cantidad de PDF", 'Alerta', 2);
+      this.utilsService.showNotification("La cantidad de archivos .XML no coincide con la cantidad de .PDF", 'Alerta', 2);
       return;
     }
     this.uploader.setOptions({
@@ -883,7 +886,6 @@ export class SolicitudesFormComponent implements OnInit {
     }
 
     for (const row of this.dataXml) {
-
       if (row.nombreXML.includes(archivo)) {
         this.dataXml.splice(id, 1)
       }
