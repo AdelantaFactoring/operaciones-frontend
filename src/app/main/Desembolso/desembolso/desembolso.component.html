@@ -13,7 +13,7 @@
             </div>
             <div class="pt-1 pb-1">
               <button type="submit" rippleEffect class="btn btn-primary" (click)="onAprobar(5, 2)">
-                <i class="mr-0 mr-sm-1" data-feather="refresh-ccw"></i>
+                <i class="mr-0 mr-sm-1" data-feather="check"></i>
                 <span class="d-none d-sm-inline-block">Confirmar</span>
               </button>
             </div>
@@ -122,11 +122,6 @@
                            class="btn btn-raised btn-outline-info btn-sm">
                           <i class="text-info cursor-pointer" data-feather="eye"></i>
                         </a>
-                        <!-- <a href="javascript:void(0)" title="Ver Detalle"
-                           class="btn btn-raised btn-outline-info btn-sm">
-                          <i class="text-info cursor-pointer" data-feather="eye"></i>
-                        </a> -->
-
                       </div>
                     </td>
                     <td>{{cab.codigo}}</td>
@@ -147,7 +142,6 @@
                         <table class="table table-hover">
                           <thead>
                           <tr>
-                            <!-- <th class="detail-th-color">Acción</th> -->
                             <th class="detail-th-color">N° Documento</th>
                             <th class="detail-th-color">T.N.M (%)</th>
                             <th class="detail-th-color">T.N.A (%)</th>
@@ -180,14 +174,6 @@
                           </thead>
                           <tbody>
                           <tr *ngFor="let item of cab.liquidacionDet">
-                            <!-- <td>
-                              <div class="d-flex align-items-center">
-                                <a href="javascript:void(0)" title="Editar"
-                                   class="btn btn-raised btn-outline-success btn-sm">
-                                  <i class="text-success cursor-pointer" data-feather="edit"></i>
-                                </a>
-                              </div>
-                            </td> -->
                             <td>{{item.nroDocumento}}</td>
                             <td>{{item.tasaNominalMensual | number: '1.2-2'}}</td>
                             <td>{{item.tasaNominalAnual | number: '1.2-2'}}</td>
@@ -218,9 +204,6 @@
                             <td>{{item.montoDesembolso | number: '1.2-2'}}</td>
                           </tr>
                           </tbody>
-                          <!-- <tfoot>
-                              <td>{{1+1}}</td>
-                          </tfoot> -->
                         </table>
                       </div>
                     </td>
@@ -373,7 +356,7 @@
                     <div class="divider-text">Información de Cuenta Bancaria</div>
                   </div>
                 </div>
-                <div class="col-12">
+                <div class="col-12" *ngIf="!ver">
                   <div class="d-flex flex-wrap mb-0">
                     <div class="pb-1">
                       <button type="submit" rippleEffect class="btn btn-warning"
@@ -461,6 +444,7 @@
                     [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
                     (fileOver)="fileOverBase($event)"
                     [uploader]="archivosSustento"
+                    
                     class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
                   >
                     Arrastre aquí los archivos

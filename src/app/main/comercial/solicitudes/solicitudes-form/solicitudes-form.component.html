@@ -150,11 +150,6 @@
             <form (ngSubmit)="(HWForm.form.valid)" #HWForm="ngForm">
               <div id="xml-pdf" class="content">
                 <form #accountDetailsForm="ngForm">
-                  <!-- <div class="content-header">
-                    <h5 class="mb-0">Account Details</h5>
-                    <small class="text-muted">Enter Your Account Details.</small>
-                  </div> -->
-
                   <div class="row">
                     <div class="col-md-12">
                       <div ng2FileDrop [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
@@ -206,24 +201,6 @@
                             <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
                           </td>
                           <td nowrap>
-                            <!-- <button
-                                    type="button"
-                                    class="btn btn-raised btn-outline-success btn-sm mr-50"
-                                    (click)="item.upload()"
-                                    [disabled]="item.isReady || item.isUploading || item.isSuccess"
-                                    rippleEffect
-                                  >
-                                    <span data-feather="upload"></span>
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="btn btn-raised btn-outline-warning btn-sm mr-50"
-                                    (click)="item.cancel()"
-                                    [disabled]="!item.isUploading"
-                                    rippleEffect
-                                  >
-                                    <i data-feather="slash"></i>
-                                  </button> -->
                             <button type="button" class="btn btn-raised btn-outline-danger btn-sm"
                                     (click)="onEliminarFactura(item)" rippleEffect>
                               <i data-feather="trash"></i>
@@ -308,12 +285,6 @@
                       </div>
                     </div>
                   </div>
-                  <!-- <div class="row">
-                  <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
-                    <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
-                                    (pageChange)="onRefrescar()" [pageSize]="pageSize"></ngb-pagination>
-                  </div>
-                </div> -->
                   <div class="d-flex justify-content-between pt-1">
                     <button type="button" (click)="horizontalWizardStepperPrevious(0)" class="btn btn-primary btn-prev"
                             rippleEffect>
@@ -331,11 +302,6 @@
                       <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
-                    <!-- <button *ngIf="!flagConfirming && flagRespuestaFac" (click)="horizontalWizardStepperNext(personalInfoForm, 0)"
-                      class="btn btn-primary btn-next" rippleEffect>
-                      <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
-                      <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
-                    </button> -->
                   </div>
                 </form>
               </div>
@@ -352,7 +318,6 @@
                         <table class="table table-hover">
                           <thead>
                           <tr>
-                            <!-- <th>IdEstado</th> -->
                             <th>Codigo de Solicitud</th>
                             <th>Nombre del Archivo</th>
                             <th>Observación</th>
@@ -361,7 +326,6 @@
                           <tbody>
                           <tr *ngFor="let item of solicitudDetRespuesta" class="cursor-pointer"
                               [ngClass]="{validacionRow: item.idEstado == 2}">
-                            <!-- <td>{{item.idEstado}}</td> -->
                             <td>{{item.codigo}}</td>
                             <td>{{item.nombreArchivoXml}}</td>
                             <td>{{item.observacion}}</td>
@@ -371,12 +335,6 @@
                       </div>
                     </div>
                   </div>
-                  <!-- <div class="row">
-                  <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
-                    <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
-                                    (pageChange)="onRefrescar()" [pageSize]="pageSize"></ngb-pagination>
-                  </div>
-                </div> -->
                   <div class="d-flex justify-content-between pt-1">
                     <button [routerLink]="['/comercial/solicitudes']" skipLocationChange
                             [queryParams]=""
@@ -415,20 +373,6 @@
                         Arrastre aqui el archivo XLSX
                       </div>
                     </div>
-                    <!-- <div class="col-12">
-                      <div class="form-group">
-                        <label>Selección de archivo(s) </label>
-                      </div>
-                    </div>
-                     <div class="col-12">
-                      <fieldset class="form-group">
-                        <div class="custom-file">
-                          <input type="file" class="custom-file-input" ng2FileSelect accept=".xlsx"
-                            [uploader]="uploaderXlsx" multiple id="file-upload-single" (change)="onBrowseChange()" />
-                          <label class="custom-file-label">Elija el archivo</label>
-                        </div>
-                      </fieldset>
-                    </div> -->
                   </div>
                   <div class="row">
                     <div class="col-lg-12 overflow-auto">
@@ -523,10 +467,6 @@
                             <th>Nombre XML</th>
                             <th>Nombre PDF</th>
                             <th>Forma Pago</th>
-
-                            <!-- <th>Contacto</th>
-                            <th>Telefono</th>
-                            <th>Correo</th> -->
                             <th>Titular Cta Bancaria</th>
                             <th>Moneda</th>
                             <th>Banco</th>
@@ -553,10 +493,6 @@
                             <td>{{item.nombreXML}}</td>
                             <td>{{item.nombrePDF}}</td>
                             <td>{{item.formaPago}}</td>
-
-                            <!-- <td [ngClass]="{validacionRow: item.nombreContacto == null}">{{item.nombreContacto}}</td>
-                            <td [ngClass]="{validacionRow: item.telefonoContacto == null}" >{{item.telefonoContacto}}</td>
-                            <td [ngClass]="{validacionRow: item.correoContacto == null}">{{item.correoContacto}}</td> -->
                             <td
                               [ngClass]="{validacionRow: item.titularCuentaBancariaDestino == null || item.titularCuentaBancariaDestino == ''}">{{item.titularCuentaBancariaDestino}}</td>
                             <td
@@ -608,7 +544,6 @@
                         <table class="table table-hover">
                           <thead>
                           <tr>
-                            <!-- <th>IdEstado</th> -->
                             <th>Codigo de Solicitud</th>
                             <th>Nombre del Archivo</th>
                             <th>Observación</th>
@@ -617,7 +552,6 @@
                           <tbody>
                           <tr *ngFor="let item of solicitudDetRespuesta" class="cursor-pointer"
                               [ngClass]="{validacionRow: item.idEstado == 2}">
-                            <!-- <td>{{item.idEstado}}</td> -->
                             <td>{{item.codigo}}</td>
                             <td>{{item.nombreArchivoXml}}</td>
                             <td>{{item.observacion}}</td>
@@ -627,12 +561,6 @@
                       </div>
                     </div>
                   </div>
-                  <!-- <div class="row">
-                  <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
-                    <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
-                                    (pageChange)="onRefrescar()" [pageSize]="pageSize"></ngb-pagination>
-                  </div>
-                </div> -->
                   <div class="d-flex justify-content-between pt-1">
 
                     <button [routerLink]="['/comercial/solicitudes']" skipLocationChange

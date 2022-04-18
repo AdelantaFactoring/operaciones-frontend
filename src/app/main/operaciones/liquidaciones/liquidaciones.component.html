@@ -114,9 +114,15 @@
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Editar" (click)="onEditarCab(cab, modalINFO)"
+                        <a href="javascript:void(0)" *ngIf="cab.idEstado == 1" title="Editar"
+                           (click)="onEditarCab(cab,  modalINFO)"
                            class="btn btn-raised btn-outline-success btn-sm">
                           <i class="text-success cursor-pointer" data-feather="edit"></i>
+                        </a>
+                        <a href="javascript:void(0)" *ngIf="cab.idEstado !== 1" title="Ver"
+                           (click)="onEditarCab(cab,  modalINFO)"
+                           class="btn btn-raised btn-outline-info btn-sm">
+                          <i class="text-info cursor-pointer" data-feather="eye"></i>
                         </a>
                         &nbsp;
                         <a href="javascript:void(0)" title="Anular"
@@ -980,7 +986,7 @@
                     <label>Monto Descuento</label>
                     <input class="form-control" [(ngModel)]="deudaAnterior" [ngModelOptions]="{standalone: true}" type="text"
                            (ngModelChange)="onDeudaAnteriorCambio($event)"
-                           mask="separator" thousandSeparator=","/>
+                           mask="separator" thousandSeparator="," [disabled] ="ver"/>
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
@@ -994,7 +1000,8 @@
                   <div class="form-group">
                     <label>Observación</label>
                     <textarea class="form-control" [(ngModel)]="observacion" [ngModelOptions]="{standalone: true}" type="text"
-                              [ngClass]="{ 'is-invalid': submitted && deudaAnterior > 0 && observacion === '' }"></textarea>
+                              [ngClass]="{ 'is-invalid': submitted && deudaAnterior > 0 && observacion === '' }" 
+                              [disabled] ="ver"></textarea>
                     <div *ngIf="deudaAnterior > 0 && observacion === ''" class="invalid-feedback">
                       <div *ngIf="deudaAnterior > 0 && observacion === ''">* Campo obligatorio</div>
                     </div>
@@ -1005,7 +1012,7 @@
                     <div class="divider-text">Documento(s) de Sustento</div>
                   </div>
                 </div>
-                <div class="col-12">
+                <div class="col-12" *ngIf="!ver">
                   <div
                     ng2FileDrop
                     [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
@@ -1016,7 +1023,7 @@
                     Arrastre aquí los archivos
                   </div>
                 </div>
-                <div class="col-12">
+                <div class="col-12" *ngIf="!ver">
                   <div class="d-flex justify-content-between mb-1">
                     <h4>Archivo(s) a subir</h4>
                   </div>
@@ -1060,7 +1067,7 @@
                     </table>
                   </div>
                 </div>
-                <div class="col-12">
+                <div class="col-12" *ngIf="!ver">
                   <div class="divider divider-secondary">
                     <div class="divider-text"><span [data-feather]="'chevrons-down'"></span></div>
                   </div>
@@ -1104,14 +1111,14 @@
             <div class="row">
               <div class="col-md-12 col-12">
                 <div style="float: right">
-                  <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()">
+                  <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()" *ngIf="!ver">
                     <span [data-feather]="'save'"></span> Guardar
                   </button>
                   &nbsp;
-                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelarCab()">
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelarCab()" *ngIf="!ver">
                     <span [data-feather]="'x-circle'"></span> Cancelar
                   </button>
-                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelarCab()">
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelarCab()" *ngIf="ver">
                     <span [data-feather]="'x-circle'"></span> Cerrar
                   </button>
                 </div>

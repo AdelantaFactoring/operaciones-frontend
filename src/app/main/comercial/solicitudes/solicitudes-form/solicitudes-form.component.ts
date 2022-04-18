@@ -503,6 +503,11 @@ export class SolicitudesFormComponent implements OnInit {
     // }
     this.cantXml = 0;
     this.cantPdf = 0;
+    let nameXml = "";
+    let namePdf = "";
+    let xml = [];
+    let pdf = [];
+
     if (this.rucRequired == false || this.ruc == "") {
       this.rucRequired = false;
       return;
@@ -518,6 +523,8 @@ export class SolicitudesFormComponent implements OnInit {
       else {
         this.cantPdf = this.cantPdf + 1;
       }
+
+
     }
 
     if (this.cantXml != this.cantPdf) {
@@ -538,8 +545,6 @@ export class SolicitudesFormComponent implements OnInit {
     this.uploader.response.subscribe( res => {
 
       let rs = JSON.parse(res);
-
-      console.log(rs);
       
       if (rs.tipo == 0) {
         this.dataXml.push(rs);

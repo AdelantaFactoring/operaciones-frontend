@@ -33,6 +33,7 @@ export class LiquidacionesComponent implements OnInit {
   public cambiarIcono: boolean = false;
   public solicitudForm: FormGroup;
   public liquidacionForm: FormGroup;
+  public oldLiquidacionForm: FormGroup;
   public codigoSolicitud: string = '';
   public idTipoOperacion: number = 0;
   public detalleSolicitud: SolicitudDet[] = [];
@@ -61,6 +62,7 @@ export class LiquidacionesComponent implements OnInit {
   public codigo: string;
   public deudaAnterior: number = 0;
   public observacion: string = '';
+  public ver: boolean = false;
 
   get ReactiveIUForm(): any {
     return this.liquidacionForm.controls;
@@ -158,6 +160,7 @@ export class LiquidacionesComponent implements OnInit {
       nuevoMontoTotal: [{value: 0, disabled: true}],
       //observacion: [''],
     });
+    this.oldLiquidacionForm = this.liquidacionForm.value;
   }
 
   async ngOnInit(): Promise<void> {
@@ -492,8 +495,6 @@ export class LiquidacionesComponent implements OnInit {
                                       '<i class="text-secondary cursor-pointer fa fa-minus-circle"></i>')}</td>
                 </tr>`
     }
-    console.log('fi', filas);
-    
     return filas;
   }
 
@@ -602,6 +603,8 @@ export class LiquidacionesComponent implements OnInit {
   }
 
   onEditarCab(cab: LiquidacionCab, modal): void {
+    this.ver = cab.idEstado !== 1 ? true : false;
+    
     this.codigo = cab.codigo;
     this.liquidacionForm.controls.rucCliente.setValue(cab.rucCliente);
     this.liquidacionForm.controls.razonSocialCliente.setValue(cab.razonSocialCliente);
@@ -804,7 +807,7 @@ export class LiquidacionesComponent implements OnInit {
   onCancelarCab(): void {
     this.submitted = false;
     this.sustentosOld = [];
-    this.liquidacionForm.reset();
+    this.liquidacionForm.reset(this.oldLiquidacionForm);
     this.onListarLiquidaciones();
     this.archivos = [];
     this.codigo = "";

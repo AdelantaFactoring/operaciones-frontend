@@ -288,6 +288,15 @@ export class DesembolsoComponent implements OnInit {
     this.hasBaseDropZoneOver = e;
     if (e === false) {
       let cola = this.archivosSustento.queue;
+      for (const item of this.archivosSustento.queue) {
+        if (item?.file?.name.includes(".eml")) {
+          
+        }
+        else
+        {
+          item.remove();
+        }
+      }
       let nombres = cola.map(item => item?.file?.name)
         .filter((value, index, self) => self.indexOf(value) === index)
       let sinDuplicado = [];
@@ -345,6 +354,7 @@ export class DesembolsoComponent implements OnInit {
   }
   onEditar(item: LiquidacionCab, modal: any): void {
     this.ver = item.idEstado == 5 ? true : false;
+    
     this.desembolsoDet = item.liquidacionDet;
     this.totalMontoDescembolso = 0;
     for (const row of this.desembolsoDet) {
