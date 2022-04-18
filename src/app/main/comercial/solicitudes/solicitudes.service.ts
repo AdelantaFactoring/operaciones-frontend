@@ -83,4 +83,14 @@ export class SolicitudesService {
       }
     );
   }
+
+  cambiarEstado(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${SOLICITUD.cambiarEstado}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }

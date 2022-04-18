@@ -140,12 +140,12 @@ export class LiquidacionesComponent implements OnInit {
       gastosConIGVCT: [{value: 0, disabled: true}],
       totFacurarConIGVCT: [{value: 0, disabled: true}],
       totDesembolsarConIGVCT: [{value: 0, disabled: true}],
-      fondoResguardo:  [{value: 0, disabled: true}],
-      netoSolicitado:  [{value: 0, disabled: true}],
-      interesIncluidoIGV:  [{value: 0, disabled: true}],
-      gastosIncluidoIGV:  [{value: 0, disabled: true}],
-      totalFacturarIGV:  [{value: 0, disabled: true}],
-      totalDesembolso:  [{value: 0, disabled: true}]
+      fondoResguardo: [{value: 0, disabled: true}],
+      netoSolicitado: [{value: 0, disabled: true}],
+      interesIncluidoIGV: [{value: 0, disabled: true}],
+      gastosIncluidoIGV: [{value: 0, disabled: true}],
+      totalFacturarIGV: [{value: 0, disabled: true}],
+      totalDesembolso: [{value: 0, disabled: true}]
     });
     this.liquidacionForm = this.formBuilder.group({
       idLiquidacionCab: [0],
@@ -339,10 +339,51 @@ export class LiquidacionesComponent implements OnInit {
     }, 0);
   }
 
-  onCalcularCT(item: SolicitudCab): void{
+  onRechazarSolicitud(cab: SolicitudCab): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Está seguro de rechazar la solicitud '${cab.codigo}'?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart('Eliminando...');
+        this.solicitudesService.cambiarEstado(
+          [{
+            idSolicitudCab: cab.idSolicitudCab,
+            idEstado: 4,
+            idUsuarioAud: 1
+          }]
+        ).subscribe(response => {
+          if (response.tipo === 1) {
+            this.utilsService.showNotification('Solicitud rechazada correctamente', 'Confirmación', 1);
+            this.utilsService.blockUIStop();
+            this.onListarSolicitudes();
+          } else if (response.tipo === 2) {
+            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          } else {
+            this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          }
+
+          this.utilsService.blockUIStop();
+        }, error => {
+          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+          this.utilsService.blockUIStop();
+        });
+      }
+    });
+  }
+
+  onCalcularCT(item: SolicitudCab): void {
     let TNM, TNA, nroDias, intereses, montoSolicitado, totFacturar, fondoResguardo = 0;
     let contrato, servicioCustodia, servicioCobranza, cartaNotarial, gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
-    let netoSolicitado = 0, igvCT,  financiamiento;
+    let netoSolicitado = 0, igvCT, financiamiento;
 
     contrato = this.solicitudForm.controls.gastosContrato.value;
     servicioCustodia = this.solicitudForm.controls.servicioCustodia.value;
@@ -362,15 +403,13 @@ export class LiquidacionesComponent implements OnInit {
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
-      this.solicitudForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100)/100);
-      this.solicitudForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100)/100);
-      this.solicitudForm.controls.interesIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100);
+      this.solicitudForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.interesIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.gastosIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totalFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totalDesembolso.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
-    }
-    else
-    {
+    } else {
       fondoResguardo = montoSolicitado - ((montoSolicitado * financiamiento) / 100);
       netoSolicitado = montoSolicitado - fondoResguardo;
 
@@ -379,8 +418,8 @@ export class LiquidacionesComponent implements OnInit {
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
-      this.solicitudForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100)/100);
-      this.solicitudForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100)/100);
+      this.solicitudForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.interesIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.gastosIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totalFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
@@ -489,10 +528,10 @@ export class LiquidacionesComponent implements OnInit {
     for (const item of liquidaciones) {
       filas += `<tr><td>${item.codigo}</td>
                 <td>${item.montoSuperado ? '<i class="text-success cursor-pointer fa fa-check"></i>' :
-                      '<i class="text-danger fa fa-ban"></i>'}</td>
-                <td>${item.correoEnviado === 1  ? '<i class="text-success fa fa-check"></i>' :
-                                    (item.correoEnviado === 0 ? '<i class="text-danger cursor-pointer fa fa-ban"></i>' :
-                                      '<i class="text-secondary cursor-pointer fa fa-minus-circle"></i>')}</td>
+        '<i class="text-danger fa fa-ban"></i>'}</td>
+                <td>${item.correoEnviado === 1 ? '<i class="text-success fa fa-check"></i>' :
+        (item.correoEnviado === 0 ? '<i class="text-danger cursor-pointer fa fa-ban"></i>' :
+          '<i class="text-secondary cursor-pointer fa fa-minus-circle"></i>')}</td>
                 </tr>`
     }
     return filas;
@@ -573,7 +612,7 @@ export class LiquidacionesComponent implements OnInit {
   }
 
   onGuardarCambios(item: LiquidacionCab): void {
-    let itemActual = { ...item };
+    let itemActual = {...item};
     if (itemActual.liquidacionDet.filter(f => f.cambioConfirmado).length == 0) return;
 
     itemActual.idUsuarioAud = 1;
@@ -604,7 +643,7 @@ export class LiquidacionesComponent implements OnInit {
 
   onEditarCab(cab: LiquidacionCab, modal): void {
     this.ver = cab.idEstado !== 1 ? true : false;
-    
+
     this.codigo = cab.codigo;
     this.liquidacionForm.controls.rucCliente.setValue(cab.rucCliente);
     this.liquidacionForm.controls.razonSocialCliente.setValue(cab.razonSocialCliente);
@@ -676,7 +715,7 @@ export class LiquidacionesComponent implements OnInit {
         this.archivos.push({
           idFila: this.utilsService.autoIncrement(this.archivos),
           idTipo: 1,
-          idTipoSustento : 1,
+          idTipoSustento: 1,
           nombre: item.file.name,
           tamanio: `${(item.file.size / 1024 / 1024).toLocaleString('es-pe', {minimumFractionDigits: 2})} MB`,
           base64: base64
@@ -685,7 +724,7 @@ export class LiquidacionesComponent implements OnInit {
     }
   }
 
-  onEliminarArchivo(item): void{
+  onEliminarArchivo(item): void {
     //item.remove();
     let archivo = item.nombre;
     let id = 0;
@@ -815,8 +854,8 @@ export class LiquidacionesComponent implements OnInit {
     this.modalService.dismissAll();
   }
 
-  onReEnviar(cab,  modalINFO): void{
+  onReEnviar(cab, modalINFO): void {
 
-    
+
   }
 }
