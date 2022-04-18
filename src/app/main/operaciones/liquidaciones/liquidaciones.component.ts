@@ -906,8 +906,8 @@ export class LiquidacionesComponent implements OnInit {
                 </tbody>
               </table>
             </div>
-            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Satisfactorio&nbsp;&nbsp;
-            <i class="text-danger cursor-pointer fa fa-ban"></i> : Incorrecto</p>`,
+            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Superó &nbsp;&nbsp;
+            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Superó</p>`,
           icon: 'info',
           width: '750px',
           showCancelButton: false,
