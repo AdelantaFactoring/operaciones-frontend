@@ -63,7 +63,7 @@ export class LiquidacionesComponent implements OnInit {
   public deudaAnterior: number = 0;
   public observacion: string = '';
   public ver: boolean = false;
-
+  public MontoTotalFacturadoMinimoTM: TablaMaestra[] = [];;
   get ReactiveIUForm(): any {
     return this.liquidacionForm.controls;
   }
@@ -167,6 +167,7 @@ export class LiquidacionesComponent implements OnInit {
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.tipoCT = await this.onListarMaestros(5, 0);
     this.tiposArchivos = await this.onListarMaestros(8, 0);
+    this.MontoTotalFacturadoMinimoTM = await this.onListarMaestros(1000, 3);
     this.utilsService.blockUIStop();
     this.onListarLiquidaciones();
   }
@@ -190,7 +191,6 @@ export class LiquidacionesComponent implements OnInit {
     }).subscribe((response: SolicitudCab[]) => {
       this.solicitudes = response;
       this.collectionSizeSolicitud = response.length > 0 ? response[0].totalRows : 0;
-
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -448,15 +448,16 @@ export class LiquidacionesComponent implements OnInit {
                 <thead>
                 <tr>
                   <th>N° Liquidación</th>
-                  <th>Superó Monto Mínimo</th>
-                  <th>Correo Enviado</th>
+                  <th>Superó Monto Mínimo (${this.MontoTotalFacturadoMinimoTM[0].valor})</th>
                 </tr>
                 </thead>
                 <tbody>
-                ${this.onFilas(response.liquidacionCabValidacion)}
+                ${this.onFilas(response.liquidacionCabValidacion, true)}
                 </tbody>
               </table>
-            </div>`,
+            </div>
+            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Satisfactorio&nbsp;&nbsp;
+            <i class="text-danger cursor-pointer fa fa-ban"></i> : Incorrecto</p>`,
           icon: 'info',
           width: '750px',
           showCancelButton: false,
@@ -484,15 +485,16 @@ export class LiquidacionesComponent implements OnInit {
     });
   }
 
-  onFilas(liquidaciones: any): string {
+  onFilas(liquidaciones: any, ocultar: boolean = false): string {
     let filas = "";
     for (const item of liquidaciones) {
       filas += `<tr><td>${item.codigo}</td>
-                <td>${item.montoSuperado ? '<i class="text-success cursor-pointer fa fa-check"></i>' :
-                      '<i class="text-danger fa fa-ban"></i>'}</td>
-                <td>${item.correoEnviado === 1  ? '<i class="text-success fa fa-check"></i>' :
-                                    (item.correoEnviado === 0 ? '<i class="text-danger cursor-pointer fa fa-ban"></i>' :
-                                      '<i class="text-secondary cursor-pointer fa fa-minus-circle"></i>')}</td>
+                  <td>${item.montoSuperado ? '<i class="text-success cursor-pointer fa fa-check"></i>' :
+                        '<i class="text-danger fa fa-ban"></i>'}</td>
+                  ${!ocultar ? `
+                  <td>${item.correoEnviado === 1  ? '<i class="text-success fa fa-check"></i>' :
+                  (item.correoEnviado === 0 ? '<i class="text-danger cursor-pointer fa fa-ban"></i>' :
+                    '<i class="text-secondary cursor-pointer fa fa-minus-circle"></i>')}</td>` : '' }
                 </tr>`
     }
     return filas;
@@ -815,8 +817,79 @@ export class LiquidacionesComponent implements OnInit {
     this.modalService.dismissAll();
   }
 
-  onReEnviar(cab,  modalINFO): void{
+  onEnviar(idTipo: number, cab: LiquidacionCab): void{
+    let liquidaciones = idTipo == 1 ? [...this.liquidaciones.filter(f => f.seleccionado)] : [{...cab}];
 
+    if (idTipo == 1) {
+      if (liquidaciones.length === 0) {
+        this.utilsService.showNotification("Seleccione una o varias liquidaciones", "", 2);
+        return;
+      }
+    }
+
+    for (const item of liquidaciones) {
+      for (const row of item.liquidacionDet) {
+        if (row.montoTotalFacturado < Number(this.MontoTotalFacturadoMinimoTM[0].valor))
+        {
+          this.utilsService.showNotification("La Factura " + row.nroDocumento + " no supera el monto total facturado minimo (" + this.MontoTotalFacturadoMinimoTM[0].valor + ")", "Alerta", 2);
+          return;
+        }
+      }
+    }
+
+    liquidaciones.forEach(el => {
+      el.idEmpresa = 1;
+      el.idUsuarioAud = 1;
+    });
     
+    this.utilsService.blockUIStart('Enviando...');
+    this.liquidacionesService.pdf(liquidaciones).subscribe(response => {
+      console.log('resp', response);
+      
+      if (response.comun.tipo == 1) {
+        this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+
+        Swal.fire({
+          title: 'Información',
+          html: `
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>N° Liquidación</th>
+                  <th>Superó Monto Mínimo (${this.MontoTotalFacturadoMinimoTM[0].valor})</th>
+                  <th>Correo Enviado</th>
+                </tr>
+                </thead>
+                <tbody>
+                ${this.onFilas(response.liquidacionCabValidacion)}
+                </tbody>
+              </table>
+            </div>
+            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Satisfactorio&nbsp;&nbsp;
+            <i class="text-danger cursor-pointer fa fa-ban"></i> : Incorrecto</p>`,
+          icon: 'info',
+          width: '750px',
+          showCancelButton: false,
+          confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
+          customClass: {
+            confirmButton: 'btn btn-info',
+          },
+        }).then(result => {
+          if (result.value) {
+          }
+        });
+        this.onListarLiquidaciones();
+      } else if (response.comun.tipo == 0) {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
+      }
+
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
   }
 }

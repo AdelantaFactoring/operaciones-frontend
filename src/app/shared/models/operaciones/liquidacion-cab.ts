@@ -3,6 +3,7 @@ import { LiquidacionCabSustento } from "./LiquidacionCab-Sustento";
 import { LiquidacionCabSeleccionados } from "./liquidacionCab_Seleccionados";
 
 export class LiquidacionCab {
+  idEmpresa: number;
   idLiquidacionCab: number;
   idSolicitudCab: number;
   codigo: string;
