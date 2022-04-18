@@ -465,6 +465,13 @@
                                class="btn btn-raised btn-outline-info btn-sm">
                               <i class="text cursor-pointer" data-feather="eye"></i>
                             </a>
+                            &nbsp;
+                            <a href="javascript:void(0)" title="Rechazar"
+                               (click)="onRechazarSolicitud(cab)"
+                               class="btn btn-raised btn-outline-danger btn-sm">
+<!--                              <i class="text cursor-pointer" data-feather="eye"></i>-->
+                              <i class="fa fa-minus-circle"></i>
+                            </a>
                           </div>
                         </td>
                         <td>{{cab.codigo}}</td>
@@ -1013,7 +1020,7 @@
                   <div class="form-group">
                     <label>Observación</label>
                     <textarea class="form-control" [(ngModel)]="observacion" [ngModelOptions]="{standalone: true}" type="text"
-                              [ngClass]="{ 'is-invalid': submitted && deudaAnterior > 0 && observacion === '' }" 
+                              [ngClass]="{ 'is-invalid': submitted && deudaAnterior > 0 && observacion === '' }"
                               [disabled] ="ver"></textarea>
                     <div *ngIf="deudaAnterior > 0 && observacion === ''" class="invalid-feedback">
                       <div *ngIf="deudaAnterior > 0 && observacion === ''">* Campo obligatorio</div>
