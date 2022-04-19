@@ -408,7 +408,7 @@ export class CheckListComponent implements OnInit {
       return;
     }
     for (const item of this.detalle) {
-      if (item.idEstado == 1 || item.idEstado == 3) {
+      if (item.idEstado == 1) {
         if (this.archivos.filter(x => x.idTipo == 10).length == 0 && this.sustentos.filter(x => x.idTipo == 10 && x.estado == true).length == 0) {
           this.utilsService.showNotification('Cargar un archivo de tipo Sustento de Aprobación', 'Alerta', 2);
           return;

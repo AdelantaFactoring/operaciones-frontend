@@ -77,7 +77,7 @@ export class DesembolsoComponent implements OnInit {
     private tablaMaestraService: TablaMaestraService
   ) {
     this.contentHeader = {
-      headerTitle: 'Desembolso',
+      headerTitle: 'desembolsos',
       actionButton: true,
       breadcrumb: {
         type: '',
@@ -88,11 +88,11 @@ export class DesembolsoComponent implements OnInit {
             link: '/'
           },
           {
-            name: 'Desembolso',
+            name: 'desembolsos',
             isLink: false
           },
           {
-            name: 'Aprobación Desembolso',
+            name: 'Aprobación desembolsos',
             isLink: false
           }
         ]
@@ -196,7 +196,7 @@ export class DesembolsoComponent implements OnInit {
     if (this.solicitudForm.invalid)
       return;
     if (this.tipoCambioMoneda === 0 && this.codigoMonedaCab !== this.codigoMonedaDet) {
-      this.utilsService.showNotification('El monto en Tipo de Cambio no puede se cero(0)', 'Alerta', 2);
+      this.utilsService.showNotification('El monto en Tipo de Cambio no puede se 0', 'Alerta', 2);
       return;
     }
 
@@ -265,13 +265,12 @@ export class DesembolsoComponent implements OnInit {
     this.hasBaseDropZoneOver = e;
     if (e === false) {
       let cola = this.archivosSustento.queue;
-      for (const item of this.archivosSustento.queue) {
-        if (item?.file?.name.includes(".eml")) {
+      // for (const item of this.archivosSustento.queue) {
+      //   if (!item?.file?.name.includes(".eml")) {
+      //     item.remove();
+      //   }
+      // }
 
-        } else {
-          item.remove();
-        }
-      }
       let nombres = cola.map(item => item?.file?.name)
         .filter((value, index, self) => self.indexOf(value) === index)
       let sinDuplicado = [];
@@ -475,11 +474,11 @@ export class DesembolsoComponent implements OnInit {
     if (tipo == 2) {
       for (const item of liquidaciones) {
         if (item.idEstado !== 4) {
-          this.utilsService.showNotification('Una o varias liquidaciones seleccionas no contiene un Estado de Desembolso Pendiente', 'Alerta', 2);
+          this.utilsService.showNotification('Una o varias liquidaciones seleccionas no contiene un Estado de desembolsos Pendiente', 'Alerta', 2);
           return;
         }
         if (item.liquidacionCabSustento.filter(x => x.idTipoSustento === 2 && x.idTipo === 2).length === 0) {
-          this.utilsService.showNotification('La liquidación con código ' + item.codigo + ' no contiene archivo(s) de sustento con tipo Confirmación de Desembolso', 'Alerta', 2);
+          this.utilsService.showNotification('La liquidación con código ' + item.codigo + ' no contiene archivo(s) de sustento con tipo Confirmación de desembolsos', 'Alerta', 2);
           return;
         }
       }

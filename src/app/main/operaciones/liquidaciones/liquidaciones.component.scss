@@ -11,6 +11,10 @@
   }
 }
 
+.eliminado {
+  text-decoration: line-through;
+}
+
 ::ng-deep .my-class .modal-dialog {
   min-width: 75%;
   //width: 60%;
