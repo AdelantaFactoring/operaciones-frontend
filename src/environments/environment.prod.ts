@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://createk.xyz/adelanta-factoring-service/api',
+  apiUrl: 'https://adelanta.xyz/service/api',
   hmr: false
 };

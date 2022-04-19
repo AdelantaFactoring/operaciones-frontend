@@ -12,11 +12,18 @@
                 <span class="d-none d-sm-inline-block">Generar Liquidación(es)</span>
               </button>
             </div>
-            <div class="pt-1 pb-1">
+            <div class="pt-1 pb-1 pr-1">
               <button type="submit" rippleEffect class="btn btn-primary"
                       (click)="onAprobar(3)">
                 <i class="mr-0 mr-sm-1" data-feather="check"></i>
                 <span class="d-none d-sm-inline-block">Aprobar</span>
+              </button>
+            </div>
+            <div class="pt-1 pb-1">
+              <button type="submit" rippleEffect class="btn btn-warning"
+                      (click)="onEnviar(1, null)">
+                <i class="mr-0 mr-sm-1" data-feather="mail"></i>
+                <span class="d-none d-sm-inline-block">Enviar Correo(s)</span>
               </button>
             </div>
           </div>
@@ -114,8 +121,8 @@
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Re-Emviar"
-                           (click)="onReEnviar(cab,  modalINFO)"
+                        <a href="javascript:void(0)" title="Emviar"
+                           (click)="onEnviar(2, cab)"
                            class="btn btn-raised btn-outline-warning btn-sm">
                           <i class="text-warning cursor-pointer" data-feather="mail"></i>
                         </a>
