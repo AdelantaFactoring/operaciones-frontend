@@ -615,6 +615,7 @@ export class LiquidacionesComponent implements OnInit {
     let itemActual = {...item};
     if (itemActual.liquidacionDet.filter(f => f.cambioConfirmado).length == 0) return;
 
+    itemActual.idDestino = 2;
     itemActual.idUsuarioAud = 1;
     itemActual.liquidacionDet = itemActual.liquidacionDet.filter(f => f.cambioConfirmado);
 
@@ -644,6 +645,7 @@ export class LiquidacionesComponent implements OnInit {
   onEditarCab(cab: LiquidacionCab, modal): void {
     this.ver = cab.idEstado !== 1 ? true : false;
 
+    this.liquidacionForm.controls.idLiquidacionCab.setValue(cab.idLiquidacionCab);
     this.codigo = cab.codigo;
     this.liquidacionForm.controls.rucCliente.setValue(cab.rucCliente);
     this.liquidacionForm.controls.razonSocialCliente.setValue(cab.razonSocialCliente);
@@ -676,7 +678,7 @@ export class LiquidacionesComponent implements OnInit {
   onDeudaAnteriorCambio($event): void {
     if ($event === '') this.deudaAnterior = 0;
     this.liquidacionForm.controls.nuevoMontoTotal.setValue(
-      this.liquidacionForm.controls.montoTotal.value - this.deudaAnterior
+      Math.round((this.liquidacionForm.controls.montoTotal.value - this.deudaAnterior) * 100) / 100
     );
   }
 
@@ -774,7 +776,7 @@ export class LiquidacionesComponent implements OnInit {
         this.sustentosOld.push({
           idLiquidacionCabSustento: item.idLiquidacionCabSustento,
           idLiquidacionCab: item.idLiquidacionCab,
-          idTipoSustento: 2,
+          idTipoSustento: 1,
           idTipo: item.idTipo,
           tipo: item.tipo,
           archivo: item.archivo,
@@ -806,7 +808,7 @@ export class LiquidacionesComponent implements OnInit {
       this.sustentos.push({
         idLiquidacionCabSustento: 0,
         idLiquidacionCab: 0,
-        idTipoSustento: 2,
+        idTipoSustento: 1,
         idTipo: item.idTipo,
         tipo: "",
         archivo: item.nombre,
@@ -820,6 +822,7 @@ export class LiquidacionesComponent implements OnInit {
     this.liquidacionesService.actualizar({
       idDestino: 1, //1: cab | 2: det
       idLiquidacionCab: this.liquidacionForm.controls.idLiquidacionCab.value,
+      codigo: this.codigo,
       deudaAnterior: this.deudaAnterior,
       nuevoMontoTotal: this.liquidacionForm.controls.nuevoMontoTotal.value,
       observacion: this.observacion,
@@ -830,6 +833,7 @@ export class LiquidacionesComponent implements OnInit {
         this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();
         this.onListarLiquidaciones();
+        this.onCancelarCab();
       } else if (response.tipo == 2) {
         this.utilsService.showNotification(response.mensaje, 'Validación', 2);
         this.utilsService.blockUIStop();

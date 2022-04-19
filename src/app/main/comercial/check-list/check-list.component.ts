@@ -422,34 +422,9 @@ export class CheckListComponent implements OnInit {
 
     this.utilsService.blockUIStart("Guardando...");
     if (this.sustentosOld.length === 0)
-      for (let item of this.sustentos) {
-        this.sustentosOld.push({
-          idSolicitudCabSustento: item.idSolicitudCabSustento,
-          idSolicitudCab: item.idSolicitudCab,
-          idTipo: item.idTipo,
-          tipo: item.tipo,
-          archivo: item.archivo,
-          base64: item.base64,
-          rutaArchivo: item.rutaArchivo,
-          estado: item.estado,
-          editado: item.editado
-        });
-      }
+      this.sustentosOld = [...this.sustentos];
     else {
-      this.sustentos = []
-      for (let item of this.sustentosOld) {
-        this.sustentos.push({
-          idSolicitudCabSustento: item.idSolicitudCabSustento,
-          idSolicitudCab: item.idSolicitudCab,
-          idTipo: item.idTipo,
-          tipo: item.tipo,
-          archivo: item.archivo,
-          base64: item.base64,
-          rutaArchivo: item.rutaArchivo,
-          estado: item.estado,
-          editado: item.editado
-        });
-      }
+      this.sustentos = [...this.sustentosOld];
     }
 
     for (let item of this.archivos) {
@@ -512,10 +487,12 @@ export class CheckListComponent implements OnInit {
         case 2:
           this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
           this.utilsService.blockUIStop();
+          this.sustentos = [...this.sustentosOld];
           break;
         default:
           this.utilsService.showNotification(response.mensaje, 'Error', 3);
           this.utilsService.blockUIStop();
+          this.sustentos = [...this.sustentosOld];
           break;
       }
     }, error => {

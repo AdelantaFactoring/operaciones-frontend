@@ -1,22 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { LoginComponent } from 'app/auth/login/login.component';
-import { ClientesService } from 'app/main/comercial/clientes/clientes.service';
-import { DESEMBOLSO } from 'app/shared/helpers/url/desembolso';
-import { Archivo } from 'app/shared/models/comercial/archivo';
-import { ClienteCuenta } from 'app/shared/models/comercial/cliente-cuenta';
-import { SolicitudCab } from 'app/shared/models/comercial/solicitudCab';
-import { LiquidacionCab } from 'app/shared/models/operaciones/liquidacion-cab';
-import { LiquidacionDet } from 'app/shared/models/operaciones/liquidacion-det';
-import { LiquidacionCabSustento } from 'app/shared/models/operaciones/LiquidacionCab-Sustento';
-import { LiquidacionCabSeleccionados } from 'app/shared/models/operaciones/liquidacionCab_Seleccionados';
-import { TablaMaestra } from 'app/shared/models/shared/tabla-maestra';
-import { TablaMaestraService } from 'app/shared/services/tabla-maestra.service';
-import { UtilsService } from 'app/shared/services/utils.service';
-import { environment } from 'environments/environment';
-import { FileUploader } from 'ng2-file-upload';
-import { DesembolsoService } from './desembolso.service';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {LoginComponent} from 'app/auth/login/login.component';
+import {ClientesService} from 'app/main/comercial/clientes/clientes.service';
+import {DESEMBOLSO} from 'app/shared/helpers/url/desembolso';
+import {Archivo} from 'app/shared/models/comercial/archivo';
+import {ClienteCuenta} from 'app/shared/models/comercial/cliente-cuenta';
+import {SolicitudCab} from 'app/shared/models/comercial/solicitudCab';
+import {LiquidacionCab} from 'app/shared/models/operaciones/liquidacion-cab';
+import {LiquidacionDet} from 'app/shared/models/operaciones/liquidacion-det';
+import {LiquidacionCabSustento} from 'app/shared/models/operaciones/LiquidacionCab-Sustento';
+import {LiquidacionCabSeleccionados} from 'app/shared/models/operaciones/liquidacionCab_Seleccionados';
+import {TablaMaestra} from 'app/shared/models/shared/tabla-maestra';
+import {TablaMaestraService} from 'app/shared/services/tabla-maestra.service';
+import {UtilsService} from 'app/shared/services/utils.service';
+import {environment} from 'environments/environment';
+import {FileUploader} from 'ng2-file-upload';
+import {DesembolsoService} from './desembolso.service';
 import * as fileSaver from 'file-saver';
 import Swal from 'sweetalert2';
 
@@ -154,6 +154,7 @@ export class DesembolsoComponent implements OnInit {
     this.tiposArchivos = await this.onListarMaestros(8, 0);
     this.getLastSunday();
   }
+
   getLastSunday(): void {
     var t = new Date();
     t.setDate(t.getDate() - t.getDay() + 7);
@@ -172,6 +173,7 @@ export class DesembolsoComponent implements OnInit {
     }).then((response: TablaMaestra[]) => response, error => [])
       .catch(error => []);
   }
+
   onListarDesembolso(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.desembolsoService.listar({
@@ -193,44 +195,17 @@ export class DesembolsoComponent implements OnInit {
     this.submitted = true;
     if (this.solicitudForm.invalid)
       return;
-    if (this.tipoCambioMoneda === 0 && this.codigoMonedaCab !== this.codigoMonedaDet)
-    {
+    if (this.tipoCambioMoneda === 0 && this.codigoMonedaCab !== this.codigoMonedaDet) {
       this.utilsService.showNotification('El monto en Tipo de Cambio no puede se cero(0)', 'Alerta', 2);
       return;
     }
 
     this.utilsService.blockUIStart("Guardando...");
-    if (this.sustentosOld.length === 0)
-      for (let item of this.sustentos) {
-        this.sustentosOld.push({
-          idLiquidacionCabSustento: item.idLiquidacionCabSustento,
-          idLiquidacionCab: item.idLiquidacionCab,
-          idTipoSustento: 2,
-          idTipo: item.idTipo,
-          tipo: item.tipo,
-          archivo: item.archivo,
-          base64: item.base64,
-          rutaArchivo: item.rutaArchivo,
-          estado: item.estado,
-          editado: item.editado
-        });
-      }
-    else {
-      this.sustentos = []
-      for (let item of this.sustentosOld) {
-        this.sustentos.push({
-          idLiquidacionCabSustento: item.idLiquidacionCabSustento,
-          idLiquidacionCab: item.idLiquidacionCab,
-          idTipoSustento: 2,
-          idTipo: item.idTipo,
-          tipo: item.tipo,
-          archivo: item.archivo,
-          base64: item.base64,
-          rutaArchivo: item.rutaArchivo,
-          estado: item.estado,
-          editado: item.editado
-        });
-      }
+    if (this.sustentosOld.length === 0) {
+      // @ts-ignore
+      this.sustentosOld = [...this.sustentos];
+    } else {
+      this.sustentos = [...this.sustentosOld];
     }
 
     for (let item of this.archivos) {
@@ -272,10 +247,12 @@ export class DesembolsoComponent implements OnInit {
         case 2:
           this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
           this.utilsService.blockUIStop();
+          this.sustentos = [...this.sustentosOld];
           break;
         default:
           this.utilsService.showNotification(response.mensaje, 'Error', 3);
           this.utilsService.blockUIStop();
+          this.sustentos = [...this.sustentosOld];
           break;
       }
     }, error => {
@@ -290,10 +267,8 @@ export class DesembolsoComponent implements OnInit {
       let cola = this.archivosSustento.queue;
       for (const item of this.archivosSustento.queue) {
         if (item?.file?.name.includes(".eml")) {
-          
-        }
-        else
-        {
+
+        } else {
           item.remove();
         }
       }
@@ -319,7 +294,7 @@ export class DesembolsoComponent implements OnInit {
         this.archivos.push({
           idFila: this.utilsService.autoIncrement(this.archivos),
           idTipo: 2,
-          idTipoSustento : 2,
+          idTipoSustento: 2,
           nombre: item.file.name,
           tamanio: `${(item.file.size / 1024 / 1024).toLocaleString('es-pe', {minimumFractionDigits: 2})} MB`,
           base64: base64
@@ -328,16 +303,17 @@ export class DesembolsoComponent implements OnInit {
     }
   }
 
-  onConfirmar(): void{
+  onConfirmar(): void {
 
   }
 
   onSeleccionarTodo(): void {
     this.desembolso.forEach(el => {
-      if(el.checkList && el.idEstado !== 5)
-      el.seleccionado = this.seleccionarTodo;
+      if (el.checkList && el.idEstado !== 5)
+        el.seleccionado = this.seleccionarTodo;
     });
   }
+
   onCambiarVisibilidadDetalle(item: any): void {
     item.cambiarIcono = !item.cambiarIcono;
     document.getElementById('tr' + item.idLiquidacionCab).style.visibility = (item.cambiarIcono) ? "visible" : "collapse";
@@ -352,9 +328,10 @@ export class DesembolsoComponent implements OnInit {
       document.getElementById('detail' + el.idLiquidacionCab).style.display = (el.cambiarIcono) ? "block" : "none";
     });
   }
+
   onEditar(item: LiquidacionCab, modal: any): void {
     this.ver = item.idEstado == 5 ? true : false;
-    
+
     this.desembolsoDet = item.liquidacionDet;
     this.totalMontoDescembolso = 0;
     for (const row of this.desembolsoDet) {
@@ -474,15 +451,12 @@ export class DesembolsoComponent implements OnInit {
     modal.dismiss("Cross Click");
   }
 
-  onConvertirMontoTotal(): void
-  {
+  onConvertirMontoTotal(): void {
     if (this.codigoMonedaCab != this.codigoMonedaDet) {
       if (this.codigoMonedaCab == "PEN") {
         this.montoConvertido = Math.round((this.totalMontoDescembolso / this.tipoCambioMoneda) * 100) / 100;
         this.solicitudForm.controls.montoConvertido.setValue(this.montoConvertido);
-      }
-      else
-      {
+      } else {
         this.montoConvertido = Math.round((this.totalMontoDescembolso * this.tipoCambioMoneda) * 100) / 100;
         this.solicitudForm.controls.montoConvertido.setValue(this.montoConvertido);
       }
@@ -539,12 +513,12 @@ export class DesembolsoComponent implements OnInit {
     });
   }
 
-  onGenerarArchivo(item): void{
+  onGenerarArchivo(item): void {
 
     this.utilsService.blockUIStart('Exportando archivo EXCEL...');
 
     this.desembolsoService.export(item).subscribe(s => {
-      let blob: any = new Blob([s], { type: 'application/vnd.ms-excel' });
+      let blob: any = new Blob([s], {type: 'application/vnd.ms-excel'});
       const url = window.URL.createObjectURL(blob);
       fileSaver.saveAs(blob, 'Archivo'
         + this.sundayDate.year.toString()
@@ -559,7 +533,7 @@ export class DesembolsoComponent implements OnInit {
     });
   }
 
-  onEliminarArchivo(item): void{
+  onEliminarArchivo(item): void {
     //item.remove();
     let archivo = item.nombre;
     let id = 0;

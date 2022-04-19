@@ -1,5 +1,18 @@
 @import '~@core/scss/angular/libs/file-uploader.component.scss';
+
 ::ng-deep .my-class .modal-dialog {
-    min-width: 60%;
-    //width: 60%;
+  min-width: 60%;
+  //width: 60%;
+}
+
+.row-edicion {
+  background-color: lightgreen !important;
+
+  p, strong {
+    color: white;
   }
+}
+
+.eliminado {
+  text-decoration: line-through;
+}

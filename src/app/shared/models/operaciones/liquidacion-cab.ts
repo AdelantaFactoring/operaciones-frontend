@@ -37,4 +37,5 @@ export class LiquidacionCab {
   montoTotalConversion: number;
   idUsuarioAud: number;
   edicion: boolean = false;
+  idDestino: number;
 }
