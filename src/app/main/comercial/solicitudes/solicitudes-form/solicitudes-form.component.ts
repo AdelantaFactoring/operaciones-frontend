@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import Stepper from 'bs-stepper';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {UtilsService} from "../../../../shared/services/utils.service";
-import {SolicitudesFormService} from "./solicitudes-form.service";
-import {NgbModal, NgbCalendar, NgbDate} from "@ng-bootstrap/ng-bootstrap";
-import {FileItem, FileUploader, ParsedResponseHeaders} from 'ng2-file-upload';
-import {environment} from '../../../../../environments/environment';
-import {SOLICITUD} from "../../../../shared/helpers/url/comercial";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UtilsService } from "../../../../shared/services/utils.service";
+import { SolicitudesFormService } from "./solicitudes-form.service";
+import { NgbModal, NgbCalendar, NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { FileItem, FileUploader, ParsedResponseHeaders } from 'ng2-file-upload';
+import { environment } from '../../../../../environments/environment';
+import { SOLICITUD } from "../../../../shared/helpers/url/comercial";
 import { SolicitudArchivos, SolicitudArchivosXlsx } from 'app/shared/models/comercial/SolicitudArchivos';
 import Swal from 'sweetalert2';
 import { SolicitudDetRespuesta } from 'app/shared/models/comercial/SolicitudDet-Respuesta';
@@ -81,7 +81,6 @@ export class SolicitudesFormComponent implements OnInit {
   procesarXlsx: boolean = true;
   facCheck: boolean = true;
   idMoneda: number = 1;
-  mayor: boolean = false;
   public usarGastosContrato: boolean = true;
   public usarGastoVigenciaPoder: boolean = true;
   public flagConfirming: boolean = false;
@@ -183,33 +182,33 @@ export class SolicitudesFormComponent implements OnInit {
       moneda: [1],
       ruc: ['', Validators.required],
       razonSocial: ['', Validators.required],
-      tasaMensual: ['', Validators.required],
-      tasaAnual: ['', Validators.required],
+      tasaMensual: [0, Validators.required],
+      tasaAnual: [0, Validators.required],
       tasaMoraMensual: [0.0, Validators.required],
       tasaMoraAnual: [0.0, Validators.required],
-      financiamiento: [''],
-      comisionEstructuracion: [''],
+      financiamiento: [0],
+      comisionEstructuracion: [0],
       contrato: [0, Validators.required],
-      cartaNotarial: ['', Validators.required],
-      servicioCobranza: ['', Validators.required],
-      servicioCustodia: ['', Validators.required],
+      cartaNotarial: [0, Validators.required],
+      servicioCobranza: [0, Validators.required],
+      servicioCustodia: [0, Validators.required],
       igvCT: [0, Validators.required],
-      mcTrabajo: ['', Validators.required],
-      ctSolicitado: [0, Validators.required],
-      diasPrestamo: [0, Validators.required],
+      mcTrabajo: [0],
+      ctSolicitado: [0, [Validators.required, Validators.min(1)]],
+      diasPrestamo: [0, [Validators.required, Validators.min(1)]],
       iIncluidoIGV: [0],
       gIncluidoIGV: [0],
       tFacturarIGV: [0],
       tDesembolsoIGV: [0],
       fechaPago: [''],
-      montoDesc: [''],
-      fondoResguardo: [''],
+      montoDesc: [0],
+      fondoResguardo: [0],
       netoSolicitado: [0],
       usarGastosContrato: [0],
       usarGastoVigenciaPoder: [0],
       gastoVigenciaPoder: [0]
     });
-   }
+  }
 
   ngOnInit(): void {
     this.onRadioChange(this.tipoServicio, this.idTipoOperacion, this.flagConfirming, '');
@@ -238,8 +237,7 @@ export class SolicitudesFormComponent implements OnInit {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
           return;
         }
-        else if(row.nroCuentaBancariaDestino == null && row.cCIDestino == null || row.nroCuentaBancariaDestino == '' && row.cCIDestino == '')
-        {
+        else if (row.nroCuentaBancariaDestino == null && row.cCIDestino == null || row.nroCuentaBancariaDestino == '' && row.cCIDestino == '') {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
           return;
         }
@@ -290,8 +288,7 @@ export class SolicitudesFormComponent implements OnInit {
       if (this.idTipoOperacion == 1) {
         this.flagRespuestaFac = true;
       }
-      else
-      {
+      else {
         this.flagRespuestaCon = true;
       }
       this.onGenerarCarpeta(this.solicitudDetRespuesta);
@@ -321,10 +318,14 @@ export class SolicitudesFormComponent implements OnInit {
       tasaNominalMensualMora: this.tasaNominalMensualMora,
       tasaNominalAnualMora: this.tasaNominalAnualMora,
       financiamiento: this.financiamiento,
+      comisionEstructuracion: this.capitalTrabajoForm.controls.comisionEstructuracion.value,
       usarGastosContrato: this.usarGastosContrato,
       gastosContrato: this.capitalTrabajoForm.controls.contrato.value,
       idTipoOperacion: this.idTipoOperacion,
       usarGastoVigenciaPoder: this.usarGastoVigenciaPoder,
+      comisionCartaNotarial: this.capitalTrabajoForm.controls.cartaNotarial.value,
+      servicioCobranza: this.capitalTrabajoForm.controls.servicioCobranza.value,
+      servicioCustodia: this.capitalTrabajoForm.controls.servicioCustodia.value,
       gastoVigenciaPoder: this.capitalTrabajoForm.controls.gastoVigenciaPoder.value,
       idTipoCT: this.capitalTrabajoForm.controls.tipo.value,
       montoCT: this.capitalTrabajoForm.controls.mcTrabajo.value,
@@ -399,7 +400,7 @@ export class SolicitudesFormComponent implements OnInit {
   }
 
   onRadioChange(value, idTipoOperacion, flagConfirming, modal): void {
-    this.dataXml  = [];
+    this.dataXml = [];
     this.uploader.clearQueue();
     this.ruc = "";
     this.razonSocial = "";
@@ -432,7 +433,7 @@ export class SolicitudesFormComponent implements OnInit {
         });
       }, 0);
     }
-    else{
+    else {
       this.rucCab = "Ruc Proveedor";
       this.razonSocialCab = "Razon Social Proveedor";
       this.rucDet = "Ruc Cliente";
@@ -481,7 +482,7 @@ export class SolicitudesFormComponent implements OnInit {
     if (this.idTipoOperacion == 2) {
       this.onClienteObtener(idfila, ruc, razon);
     }
-    else{
+    else {
       if (this.idTipoOperacion == 3) {
         this.onClienteObtener(idfila, ruc, razon);
       }
@@ -494,7 +495,7 @@ export class SolicitudesFormComponent implements OnInit {
     modal.dismiss('Cross click');
   }
 
-  onProcesar(): void{
+  onProcesar(): void {
     this.mensaje = [];
     this.submitted = true;
 
@@ -513,7 +514,7 @@ export class SolicitudesFormComponent implements OnInit {
 
     let list = [];
     for (const item of this.uploader.queue) {
-      list.push({'name': item?.file?.name});
+      list.push({ 'name': item?.file?.name });
       nameXml = item?.file?.name.substring(0, item?.file?.name.length - 4);
 
       if (item?.file?.name.includes('.xml') || item?.file?.name.includes('.XML')) {
@@ -540,15 +541,15 @@ export class SolicitudesFormComponent implements OnInit {
     });
 
 
-    this.dataXml  = [];
+    this.dataXml = [];
     this.uploader.uploadAll();
     let count = 0;
     this.uploader.response.observers = [];
 
-    this.uploader.response.subscribe( res => {
+    this.uploader.response.subscribe(res => {
 
       let rs = JSON.parse(res);
-      
+
       if (rs.tipo == 0) {
         this.dataXml.push(rs);
         this.procesar = false;
@@ -557,8 +558,7 @@ export class SolicitudesFormComponent implements OnInit {
           this.utilsService.showNotification('Información Procesada correctamente', 'Confirmación', 1);
         }
       }
-      else
-      {
+      else {
         if (rs.tipo == 1) {
           this.dataPdf.push(rs);
         } else if (rs.tipo == 2) {
@@ -567,7 +567,7 @@ export class SolicitudesFormComponent implements OnInit {
           if (count == this.cantXml) {
             this.onMensajeValidacion(this.mensaje);
           }
-        } else if (rs.tipo == 3){
+        } else if (rs.tipo == 3) {
           this.utilsService.showNotification(rs.mensaje, 'Error', 3);
           this.utilsService.blockUIStop();
         }
@@ -575,18 +575,18 @@ export class SolicitudesFormComponent implements OnInit {
 
     });
   }
-  onProcesarXlsx(): void{
+  onProcesarXlsx(): void {
     this.uploaderXlsx.setOptions({
       url: `${environment.apiUrl}${SOLICITUD.uploadXlsx}`,
     });
 
-    this.dataXlsx  = [];
+    this.dataXlsx = [];
     this.uploaderXlsx.uploadAll();
 
-    this.uploaderXlsx.response.subscribe( res => {
+    this.uploaderXlsx.response.subscribe(res => {
 
       let rs = JSON.parse(res);
-      this.dataXlsx  = [];
+      this.dataXlsx = [];
 
       if (rs.tipo != 1) {
         this.dataXlsx = rs;
@@ -595,13 +595,12 @@ export class SolicitudesFormComponent implements OnInit {
           this.utilsService.showNotification("La cantida de registros en el Excel no coincide con la cantidad de facturas adjuntadas", 'Alerta', 2);
           this.procesarXlsx = true;
         }
-        else
-        {
+        else {
           for (const row of this.dataXlsx) {
             for (const item of this.dataXml) {
               if (item.rucCab == row.ruc && item.tipoMoneda == row.moneda && item.codFactura == row.documento) {
                 item.netoPendiente = row.netoPagar;
-                item.fechaVencimiento = row.fechaVencimiento.substring(0,10);
+                item.fechaVencimiento = row.fechaVencimiento.substring(0, 10);
                 item.nombreContacto = this.contacto[0].nombre;
                 item.telefonoContacto = this.contacto[0].telefono;
                 item.correoContacto = this.contacto[0].correo;
@@ -617,8 +616,7 @@ export class SolicitudesFormComponent implements OnInit {
           this.procesarXlsx = false;
         }
       }
-      else
-      {
+      else {
         if (rs.tipo == 1) {
           this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
 
@@ -634,7 +632,7 @@ export class SolicitudesFormComponent implements OnInit {
     });
   }
 
-  onEliminarRepetidas(): void{
+  onEliminarRepetidas(): void {
     let name = '';
     let cant = 0;
 
@@ -651,11 +649,11 @@ export class SolicitudesFormComponent implements OnInit {
       }
     }
   }
-  onMensajeValidacion(msg): void{
+  onMensajeValidacion(msg): void {
     Swal.fire({
       title: 'No Coincide',
       //text: msg,
-      html:msg,
+      html: msg,
       icon: 'warning',
       showCancelButton: false,
       // confirmButtonColor: '#3085d6',
@@ -667,15 +665,15 @@ export class SolicitudesFormComponent implements OnInit {
     });
   }
 
-  onCancelar(): void{
+  onCancelar(): void {
     this.submitted = false;
     this.modalService.dismissAll();
     this.idTipoOperacion = 1;
     this.facCheck = true;
-    this.onRadioChange('Factoring',1,false,'');
+    this.onRadioChange('Factoring', 1, false, '');
   }
 
-  onClienteObtener(id, ruc, razon): void{
+  onClienteObtener(id, ruc, razon): void {
     this.contacto = [];
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesFormService.clienteObtener({
@@ -703,30 +701,34 @@ export class SolicitudesFormComponent implements OnInit {
           this.capitalTrabajoForm.controls.tasaMoraAnual.setValue(item.tasaNominalAnualMora);
           this.capitalTrabajoForm.controls.usarGastosContrato.setValue(true);
           this.capitalTrabajoForm.controls.usarGastoVigenciaPoder.setValue(true);
-          this.capitalTrabajoForm.controls.contrato.setValue(item.gastosContrato); //obtener este valor de la TM
+          this.capitalTrabajoForm.controls.contrato.setValue(item.gastosContrato);
           this.capitalTrabajoForm.controls.cartaNotarial.setValue(item.comisionCartaNotarial);
           this.capitalTrabajoForm.controls.servicioCobranza.setValue(item.servicioCobranza);
           this.capitalTrabajoForm.controls.servicioCustodia.setValue(item.servicioCustodia);
           this.capitalTrabajoForm.controls.financiamiento.setValue(item.financiamiento);
+          this.capitalTrabajoForm.controls.comisionEstructuracion.setValue(item.comisionEstructuracion);
 
         }
       }
-      else
-      {
-          this.ruc = ruc;
-          this.razonSocial = razon;
-          this.tasaNominalMensual = 0;
-          this.tasaNominalAnual = 0;
-          this.tasaNominalMensualMora = 0;
-          this.tasaNominalAnualMora = 0;
-          this.financiamiento = 0;
-          this.capitalTrabajoForm.controls.ruc.setValue(ruc);
-          this.capitalTrabajoForm.controls.razonSocial.setValue(razon);
-          this.capitalTrabajoForm.controls.tasaAnual.setValue(0);
-          this.capitalTrabajoForm.controls.tasaMensual.setValue(0);
-          this.capitalTrabajoForm.controls.cartaNotarial.setValue(0);
-          this.capitalTrabajoForm.controls.servicioCobranza.setValue(0);
-          this.capitalTrabajoForm.controls.servicioCustodia.setValue(0);
+      else {
+        this.ruc = ruc;
+        this.razonSocial = razon;
+        this.tasaNominalMensual = 0;
+        this.tasaNominalAnual = 0;
+        this.tasaNominalMensualMora = 0;
+        this.tasaNominalAnualMora = 0;
+        this.financiamiento = 0;
+        this.capitalTrabajoForm.controls.ruc.setValue(ruc);
+        this.capitalTrabajoForm.controls.razonSocial.setValue(razon);
+        this.capitalTrabajoForm.controls.tasaAnual.setValue(0);
+        this.capitalTrabajoForm.controls.tasaMensual.setValue(0);
+        this.capitalTrabajoForm.controls.tasaMoraMensual.setValue(0);
+        this.capitalTrabajoForm.controls.tasaMoraAnual.setValue(0);
+        this.capitalTrabajoForm.controls.cartaNotarial.setValue(0);
+        this.capitalTrabajoForm.controls.servicioCobranza.setValue(0);
+        this.capitalTrabajoForm.controls.servicioCustodia.setValue(0);
+        this.capitalTrabajoForm.controls.financiamiento.setValue(0);
+        this.capitalTrabajoForm.controls.comisionEstructuracion.setValue(0);
       }
       this.utilsService.blockUIStop();
     }, error => {
@@ -735,7 +737,7 @@ export class SolicitudesFormComponent implements OnInit {
     });
   }
 
-  onTablaMaestra(idTabla, idColumna = 0): void{
+  onTablaMaestra(idTabla, idColumna = 0): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesFormService.listarTablaMaestra({
       idTabla: idTabla,
@@ -744,7 +746,7 @@ export class SolicitudesFormComponent implements OnInit {
       if (idTabla == 1) {
         this.optMoneda = response;
       }
-      else if (idTabla == 5){
+      else if (idTabla == 5) {
         this.optTipo = response;
       }
       else {
@@ -757,48 +759,57 @@ export class SolicitudesFormComponent implements OnInit {
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
   }
-  calcularFP(): void{
-    let fecha = new Date();
-    fecha.setDate(fecha.getDate() +  Number(this.capitalTrabajoForm.controls.diasPrestamo.value));
+  calcularFP(idTipo: number, modalCalendario): void {
+    if (idTipo == 2) {
+      modalCalendario.toggle();
+      console.log('fehca', this.fechaPagoCT);
 
-    let date = {
-      year: fecha.getFullYear(),
-      month: fecha.getMonth() + 1,
-      day: fecha.getDate()
+    }
+    else {
+      let fecha = new Date();
+      fecha.setDate(fecha.getDate() + Number(this.capitalTrabajoForm.controls.diasPrestamo.value) - 1);
+
+      let date = {
+        year: fecha.getFullYear(),
+        month: fecha.getMonth() + 1,
+        day: fecha.getDate()
+      }
+
+      //this.fechaPagoCT = date;
+      this.capitalTrabajoForm.controls.fechaPago.setValue(date);
     }
 
-    //this.fechaPagoCT = date;
-    this.capitalTrabajoForm.controls.fechaPago.setValue(date);
+    console.log('fehca2', this.fechaPagoCT);
     this.onCalcularCT();
   }
-  onChangeMoneda(): void{
+  onChangeMoneda(): void {
     this.ruc = '';
     this.razonSocial = '';
     this.capitalTrabajoForm.controls.ruc.setValue('');
     this.capitalTrabajoForm.controls.razonSocial.setValue('');
-    this.capitalTrabajoForm.controls.tasaAnual.setValue('');
-    this.capitalTrabajoForm.controls.tasaMensual.setValue('');
-    this.capitalTrabajoForm.controls.cartaNotarial.setValue('');
-    this.capitalTrabajoForm.controls.servicioCobranza.setValue('');
-    this.capitalTrabajoForm.controls.servicioCustodia.setValue('');
+    this.capitalTrabajoForm.controls.tasaAnual.setValue(0);
+    this.capitalTrabajoForm.controls.tasaMensual.setValue(0);
+    this.capitalTrabajoForm.controls.cartaNotarial.setValue(0);
+    this.capitalTrabajoForm.controls.servicioCobranza.setValue(0);
+    this.capitalTrabajoForm.controls.servicioCustodia.setValue(0);
     this.tasaNominalMensual = 0;
     this.tasaNominalAnual = 0;
     this.tasaNominalMensualMora = 0;
     this.tasaNominalAnualMora = 0;
     this.financiamiento = 0;
 
-    this.capitalTrabajoForm.controls.mcTrabajo.setValue('');
-    this.capitalTrabajoForm.controls.ctSolicitado.setValue('');
-    this.capitalTrabajoForm.controls.diasPrestamo.setValue('');
-    this.capitalTrabajoForm.controls.iIncluidoIGV.setValue('');
-    this.capitalTrabajoForm.controls.gIncluidoIGV.setValue('');
-    this.capitalTrabajoForm.controls.tFacturarIGV.setValue('');
-    this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue('');
+    this.capitalTrabajoForm.controls.mcTrabajo.setValue(0);
+    this.capitalTrabajoForm.controls.ctSolicitado.setValue(0);
+    this.capitalTrabajoForm.controls.diasPrestamo.setValue(0);
+    this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(0);
+    this.capitalTrabajoForm.controls.gIncluidoIGV.setValue(0);
+    this.capitalTrabajoForm.controls.tFacturarIGV.setValue(0);
+    this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(0);
   }
-  onCalcularCT(): void{
+  onCalcularCT(): void {
     let TNM, TNA, nroDias, mDescontar, intereses, montoSolicitado, totFacturar, fondoResguardo = 0;
     let contrato, servicioCustodia, servicioCobranza, cartaNotarial, gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
-    let netoSolicitado = 0, IGV ;
+    let netoSolicitado = 0, IGV;
 
     contrato = this.capitalTrabajoForm.controls.contrato.value;
     servicioCustodia = this.capitalTrabajoForm.controls.servicioCustodia.value;
@@ -813,22 +824,21 @@ export class SolicitudesFormComponent implements OnInit {
     if (this.idTipo == 1) {
 
       netoSolicitado = ((360 * montoSolicitado) + (360 * (gDiversonsSIgv * (IGV + 1)))) / (360 - ((nroDias * ((TNM / 100) * 12)) * (IGV + 1)));
-      mDescontar = ((360 * netoSolicitado) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12))* (IGV + 1) ));
+      mDescontar = ((360 * netoSolicitado) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12)) * (IGV + 1)));
       intereses = netoSolicitado * ((TNA / 100) / 360) * nroDias * (IGV + 1);
       gDiversonsCIgv = gDiversonsSIgv * IGV;
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
-      this.capitalTrabajoForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100)/100);
-      this.capitalTrabajoForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100)/100);
-      this.capitalTrabajoForm.controls.montoDesc.setValue(Math.round((mDescontar + Number.EPSILON) * 100)/100);
-      this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100);
+      this.capitalTrabajoForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100) / 100);
+      this.capitalTrabajoForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100) / 100);
+      this.capitalTrabajoForm.controls.montoDesc.setValue(Math.round((mDescontar + Number.EPSILON) * 100) / 100);
+      this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
       this.capitalTrabajoForm.controls.gIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
       this.capitalTrabajoForm.controls.tFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
       this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
     }
-    else
-    {
+    else {
       fondoResguardo = montoSolicitado - ((montoSolicitado * this.financiamiento) / 100);
       netoSolicitado = montoSolicitado - fondoResguardo;
 
@@ -837,8 +847,8 @@ export class SolicitudesFormComponent implements OnInit {
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
-      this.capitalTrabajoForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100)/100);
-      this.capitalTrabajoForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100)/100);
+      this.capitalTrabajoForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100) / 100);
+      this.capitalTrabajoForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100) / 100);
       this.capitalTrabajoForm.controls.iIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
       this.capitalTrabajoForm.controls.gIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
       this.capitalTrabajoForm.controls.tFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
@@ -846,22 +856,14 @@ export class SolicitudesFormComponent implements OnInit {
     }
 
   }
-  validacionCT(): void{
+  validacionCT(): void {
     let montoCT, ctSolicitado;
     montoCT = Number(this.capitalTrabajoForm.controls.mcTrabajo.value);
     ctSolicitado = Number(this.capitalTrabajoForm.controls.ctSolicitado.value);
 
-    if (montoCT < ctSolicitado) {
-      this.utilsService.showNotification('Monto solicitado no puede ser mayor al Monto.', 'Alerta', 2);
-      this.mayor = true;
-    }
-    else
-    {
-      this.mayor = false;
-      this.onCalcularCT();
-    }
+    this.onCalcularCT();
   }
-  onGenerarCarpeta(data): void{
+  onGenerarCarpeta(data): void {
     this.solicitudesFormService.generarCarpeta(data).subscribe(response => {
       this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
       this.utilsService.blockUIStop();
@@ -870,11 +872,11 @@ export class SolicitudesFormComponent implements OnInit {
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
   }
-  onGenerarPlantilla(): void{
+  onGenerarPlantilla(): void {
     let reportURL = environment.apiUrl + SOLICITUD.plantilla;
-    window.location.href =  reportURL;
+    window.location.href = reportURL;
   }
-  onEliminarFactura(item): void{
+  onEliminarFactura(item): void {
     item.remove();
     let archivo = item?.file?.name.substring(0, item?.file?.name.length - 4);
     let id = 0;
