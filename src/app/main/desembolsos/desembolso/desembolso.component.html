@@ -325,13 +325,13 @@
                     <table class="table table-hover">
                       <thead>
                       <tr>
-                        <th class="detail-th-color">N° DOCUMENTO</th>
-                        <th class="detail-th-color">NETO CONFIRMADO</th>
-                        <th class="detail-th-color">FONDO RESGUARDO</th>
-                        <th class="detail-th-color">MONTO A FINANCIAR</th>
-                        <th class="detail-th-color">INTERÉS</th>
-                        <th class="detail-th-color">TOTAL GASTOS DIVERSOS</th>
-                        <th class="detail-th-color">MONTO DESEMBOLSO</th>
+                        <th class="detail-th-color">N° Documento</th>
+                        <th class="detail-th-color">Neto Confirmado</th>
+                        <th class="detail-th-color">Fondo Resguardo</th>
+                        <th class="detail-th-color">Monto a Financiar</th>
+                        <th class="detail-th-color">Interés</th>
+                        <th class="detail-th-color">Total Gastos Diversos</th>
+                        <th class="detail-th-color">Monto Desembolso</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -346,7 +346,7 @@
                       </tr>
                       </tbody>
                       <tfoot>
-                      <td colspan="6">Total Monto a Desembolsar: {{totalMontoDescembolso | number: '1.2-2'}}</td>
+                      <td colspan="7">Total Monto a Desembolsar: {{totalMontoDescembolso | number: '1.2-2'}}</td>
                       </tfoot>
                     </table>
                   </div>
@@ -444,7 +444,7 @@
                     [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
                     (fileOver)="fileOverBase($event)"
                     [uploader]="archivosSustento"
-                    
+
                     class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
                   >
                     Arrastre aquí los archivos

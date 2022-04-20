@@ -63,7 +63,7 @@ export class LiquidacionesComponent implements OnInit {
   public deudaAnterior: number = 0;
   public observacion: string = '';
   public ver: boolean = false;
-  public MontoTotalFacturadoMinimoTM: TablaMaestra[] = [];;
+  public montoTotalFacturadoMinimoTM: TablaMaestra[] = [];
   get ReactiveIUForm(): any {
     return this.liquidacionForm.controls;
   }
@@ -167,7 +167,7 @@ export class LiquidacionesComponent implements OnInit {
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.tipoCT = await this.onListarMaestros(5, 0);
     this.tiposArchivos = await this.onListarMaestros(8, 0);
-    this.MontoTotalFacturadoMinimoTM = await this.onListarMaestros(1000, 3);
+    this.montoTotalFacturadoMinimoTM = await this.onListarMaestros(1000, 3);
     this.utilsService.blockUIStop();
     this.onListarLiquidaciones();
   }
@@ -436,6 +436,13 @@ export class LiquidacionesComponent implements OnInit {
       return;
     }
 
+    for (const el of liquidaciones) {
+      if (el.liquidacionCabSustento.filter(f => f.idTipoSustento === 1 && f.idTipo === 1).length === 0) {
+        this.utilsService.showNotification(`La liquidación '${el.codigo}' seleccionada no contiene un archivo de sustento de aprobación`, "Advertencia", 2);
+        return;
+      }
+    }
+
     liquidaciones.forEach(el => {
       el.idEstado = idEstado;
       el.idUsuarioAud = 1;
@@ -487,7 +494,7 @@ export class LiquidacionesComponent implements OnInit {
                 <thead>
                 <tr>
                   <th>N° Liquidación</th>
-                  <th>Superó Monto Mínimo (${this.MontoTotalFacturadoMinimoTM[0].valor})</th>
+                  <th>Superó Monto Mínimo (${this.montoTotalFacturadoMinimoTM[0].valor})</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -539,13 +546,29 @@ export class LiquidacionesComponent implements OnInit {
     return filas;
   }
 
+  onFilas2(liquidaciones: LiquidacionCab[]): string {
+    let filas = "";
+    for (const cab of liquidaciones) {
+      filas += `<tr>
+                    <td>${cab.codigo}</td>
+                </tr>
+                `
+    }
+    return filas;
+  }
+
   onCambiarFechaOperacion($event: any, cab: LiquidacionCab, item: LiquidacionDet) {
     item.fechaOperacionFormat = `${String($event.day).padStart(2, '0')}/${String($event.month).padStart(2, '0')}/${$event.year}`;
     item.editado = true;
     this.onCalcular(cab, item);
   }
 
-  onEditar(item: LiquidacionDet): void {
+  onEditar(cab: LiquidacionCab, item: LiquidacionDet): void {
+    if (cab.liquidacionDet.filter(f => f.edicion || f.editado).length > 0){
+      this.utilsService.showNotification("Guarda o cancela los cambios primero", "Advertencia", 2);
+      return;
+    }
+
     this.oldLiquidacionDet = {...item};
     item.edicion = true;
   }
@@ -645,7 +668,12 @@ export class LiquidacionesComponent implements OnInit {
   }
 
   onEditarCab(cab: LiquidacionCab, modal): void {
-    this.ver = cab.idEstado !== 1 ? true : false;
+    if (cab.liquidacionDet.filter(f => f.edicion || f.editado).length > 0){
+      this.utilsService.showNotification("Guarda o cancela los cambios primero", "Advertencia", 2);
+      return;
+    }
+
+    this.ver = cab.idEstado != 1 ? true : false;
 
     this.liquidacionForm.controls.idLiquidacionCab.setValue(cab.idLiquidacionCab);
     this.codigo = cab.codigo;
@@ -697,6 +725,14 @@ export class LiquidacionesComponent implements OnInit {
     this.hasBaseDropZoneOver = e;
     if (e === false) {
       let cola = this.archivosSustento.queue;
+
+      for (const item of this.archivosSustento.queue) {
+        if (!item?.file?.name.includes(".eml")) {
+          item.remove();
+          this.utilsService.showNotification("Solo se permite archivos de correo con extensión '.eml'", "Advertencia", 2);
+        }
+      }
+
       let nombres = cola.map(item => item?.file?.name)
         .filter((value, index, self) => self.indexOf(value) === index)
       let sinDuplicado = [];
@@ -773,37 +809,10 @@ export class LiquidacionesComponent implements OnInit {
       return;
 
     this.utilsService.blockUIStart("Guardando...");
-    if (this.sustentosOld.length === 0)
-      for (let item of this.sustentos) {
-        this.sustentosOld.push({
-          idLiquidacionCabSustento: item.idLiquidacionCabSustento,
-          idLiquidacionCab: item.idLiquidacionCab,
-          idTipoSustento: 1,
-          idTipo: item.idTipo,
-          tipo: item.tipo,
-          archivo: item.archivo,
-          base64: item.base64,
-          rutaArchivo: item.rutaArchivo,
-          estado: item.estado,
-          editado: item.editado
-        });
-      }
-    else {
-      this.sustentos = []
-      for (let item of this.sustentosOld) {
-        this.sustentos.push({
-          idLiquidacionCabSustento: item.idLiquidacionCabSustento,
-          idLiquidacionCab: item.idLiquidacionCab,
-          idTipoSustento: 2,
-          idTipo: item.idTipo,
-          tipo: item.tipo,
-          archivo: item.archivo,
-          base64: item.base64,
-          rutaArchivo: item.rutaArchivo,
-          estado: item.estado,
-          editado: item.editado
-        });
-      }
+    if (this.sustentosOld.length === 0) {
+      this.sustentosOld = [...this.sustentos];
+    } else {
+      this.sustentos = [...this.sustentosOld];
     }
 
     for (let item of this.archivos) {
@@ -839,9 +848,11 @@ export class LiquidacionesComponent implements OnInit {
       } else if (response.tipo == 2) {
         this.utilsService.showNotification(response.mensaje, 'Validación', 2);
         this.utilsService.blockUIStop();
+        this.sustentos = [...this.sustentosOld];
       } else if (response.tipo == 0) {
         this.utilsService.showNotification(response.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
+        this.sustentos = [...this.sustentosOld];
       }
     }, error => {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
@@ -870,21 +881,54 @@ export class LiquidacionesComponent implements OnInit {
       }
     }
 
-    for (const item of liquidaciones) {
-      for (const row of item.liquidacionDet) {
-        if (row.montoTotalFacturado < Number(this.MontoTotalFacturadoMinimoTM[0].valor))
-        {
-          this.utilsService.showNotification("La Factura " + row.nroDocumento + " no supera el monto total facturado minimo (" + this.MontoTotalFacturadoMinimoTM[0].valor + ")", "Alerta", 2);
-          return;
-        }
-      }
+    if (cab.liquidacionDet.filter(f => f.edicion || f.editado).length > 0){
+      this.utilsService.showNotification("Guarda o cancela los cambios primero", "Advertencia", 2);
+      return;
     }
 
+    if (liquidaciones.filter(f =>
+                  f.liquidacionDet.filter(f1 =>
+                      f1.montoTotalFacturado < Number(this.montoTotalFacturadoMinimoTM[0].valor)).length > 0).length > 0) {
+      Swal.fire({
+        title: 'Advertencia',
+        html: `
+            <p style="text-align: justify">La(s) siguiente(s) liquidacion(es) no supera(n) el monto total facturado mínimo de ${this.montoTotalFacturadoMinimoTM[0].valor}. ¿Desea continuar?</p>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>N° Liquidación</th>
+                </tr>
+                </thead>
+                <tbody>
+                ${this.onFilas2(liquidaciones)}
+                </tbody>
+              </table>
+            </div>`,
+        icon: 'warning',
+        width: '500px',
+        showCancelButton: true,
+        confirmButtonText: '<i class="fa fa-check"></i> Sí',
+        cancelButtonText: '<i class="fa fa-times"></i> No',
+        customClass: {
+          confirmButton: 'btn btn-warning',
+          cancelButton: 'btn btn-secondary'
+        },
+      }).then(result => {
+        if (result.value) {
+          this._OnEnviar(liquidaciones);
+        }
+      });
+    } else
+      this._OnEnviar(liquidaciones);
+  }
+
+   private _OnEnviar(liquidaciones: any): void {
     liquidaciones.forEach(el => {
       el.idEmpresa = 1;
       el.idUsuarioAud = 1;
     });
-    
+
     this.utilsService.blockUIStart('Enviando...');
     this.liquidacionesService.pdf(liquidaciones).subscribe(response => {
       
@@ -900,7 +944,7 @@ export class LiquidacionesComponent implements OnInit {
                 <thead>
                 <tr>
                   <th>N° Liquidación</th>
-                  <th>Superó Monto Mínimo (${this.MontoTotalFacturadoMinimoTM[0].valor})</th>
+                  <th>Superó Monto Mínimo (${this.montoTotalFacturadoMinimoTM[0].valor})</th>
                   <th>Correo Enviado</th>
                 </tr>
                 </thead>
@@ -909,8 +953,8 @@ export class LiquidacionesComponent implements OnInit {
                 </tbody>
               </table>
             </div>
-            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Superó &nbsp;&nbsp;
-            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Superó</p>`,
+            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Superó / Enviado &nbsp;&nbsp;
+            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Superó / No Enviado</p>`,
           icon: 'info',
           width: '750px',
           showCancelButton: false,

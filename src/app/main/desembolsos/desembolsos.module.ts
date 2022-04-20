@@ -47,4 +47,4 @@ const routes: Routes = [
     CoreDirectivesModule
   ]
 })
-export class DesembolsoModule { }
+export class DesembolsosModule { }
