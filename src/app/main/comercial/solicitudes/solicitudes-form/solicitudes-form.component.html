@@ -648,7 +648,7 @@
     </ng-template>
     <ng-template #modalCapitalTrabajo let-modal>
       <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel1">Nueva Solicitud Capital de Trabajo</h4>
+        <h4 class="modal-title" >Nueva Solicitud Capital de Trabajo</h4>
         <button aria-label="Close" class="close" type="button" (click)="onCancelar()">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -707,7 +707,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="col-md-6 col-12" hidden>
               <div class="form-group">
                 <label>Monto</label>
@@ -735,8 +735,8 @@
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.diasPrestamo.errors }" class="form-control"
                        formControlName="diasPrestamo" type="number" (change)="calcularFP(1)"/>
                 <div *ngIf="CapitalIUForm.diasPrestamo.errors" class="invalid-feedback">
-                  <div *ngIf="CapitalIUForm.diasPrestamo.errors.required">* Campo obligatorio</div>
-                  <div *ngIf="CapitalIUForm.diasPrestamo.errors.min">* La cantidad de días debe ser mayor a 0</div>
+                  <div *ngIf="CapitalIUForm.diasPrestamo.errors?.required">* Campo obligatorio</div>
+                  <div *ngIf="CapitalIUForm.diasPrestamo.errors?.min">* La cantidad de días debe ser mayor a 0</div>
                 </div>
               </div>
             </div>
@@ -894,7 +894,7 @@
                 </div>
               </div>
             </div>
-           
+
             <div class="col-12">
               <div class="divider divider-danger">
                 <div class="divider-text">Monto calculado</div>

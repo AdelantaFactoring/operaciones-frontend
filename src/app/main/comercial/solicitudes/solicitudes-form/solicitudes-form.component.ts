@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import Stepper from 'bs-stepper';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -124,7 +124,7 @@ export class SolicitudesFormComponent implements OnInit {
     }
 
   }
-  
+
   horizontalWizardStepperPrevious(flagDoble) {
     this.horizontalWizardStepper.previous();
     if (flagDoble == 1) {
@@ -182,8 +182,8 @@ export class SolicitudesFormComponent implements OnInit {
       razonSocial: ['', Validators.required],
       tasaMensual: [0, Validators.required],
       tasaAnual: [0, Validators.required],
-      tasaMoraMensual: [0.0, Validators.required],
-      tasaMoraAnual: [0.0, Validators.required],
+      tasaMoraMensual: [0, Validators.required],
+      tasaMoraAnual: [0, Validators.required],
       financiamiento: [0],
       comisionEstructuracion: [0],
       contrato: [0, Validators.required],
@@ -192,8 +192,8 @@ export class SolicitudesFormComponent implements OnInit {
       servicioCustodia: [0, Validators.required],
       igvCT: [0, Validators.required],
       mcTrabajo: [0],
-      ctSolicitado: [0, [Validators.required, Validators.min(1)]],
-      diasPrestamo: [0, [Validators.required, Validators.min(1)]],
+      ctSolicitado: [1, [Validators.required, Validators.min(1)]],
+      diasPrestamo: [1, [Validators.required, Validators.min(1)]],
       iIncluidoIGV: [0],
       gIncluidoIGV: [0],
       tFacturarIGV: [0],
@@ -202,16 +202,17 @@ export class SolicitudesFormComponent implements OnInit {
       montoDesc: [0],
       fondoResguardo: [0],
       netoSolicitado: [0],
-      usarGastosContrato: [0],
-      usarGastoVigenciaPoder: [0],
+      usarGastosContrato: [true],
+      usarGastoVigenciaPoder: [true],
       gastoVigenciaPoder: [0]
     });
   }
 
   ngOnInit(): void {
-    this.onRadioChange(this.tipoServicio, this.idTipoOperacion, this.flagConfirming, '');
     this.onTablaMaestra(1000, 2);
+    this.onRadioChange(this.tipoServicio, this.idTipoOperacion, this.flagConfirming, '');
   }
+
   onRefrescar(): void {
     //this.onListarSolicitudes();
   }
@@ -757,19 +758,22 @@ export class SolicitudesFormComponent implements OnInit {
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
   }
-  
+
   calcularFP(idTipo: number = 0): void {
     let fecha = new Date();
     let diasEfectivo = 0;
     if (idTipo == 2) {
+      fecha.setHours(0,0,0,0);
       let fecConfirmado = new Date(this.fechaPagoCT.year,
         this.fechaPagoCT.month - 1,
         this.fechaPagoCT.day, 0, 0, 0);
       let diffTime = Math.abs(fecha.getTime() - fecConfirmado.getTime());
       diasEfectivo = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-      this.capitalTrabajoForm.controls.diasPrestamo.setValue(diasEfectivo)
+      setTimeout(() => {
+        this.capitalTrabajoForm.controls.diasPrestamo.setValue(diasEfectivo)
+      }, 0);
     }
-    else 
+    else
     {
       fecha.setDate(fecha.getDate() + Number(this.capitalTrabajoForm.controls.diasPrestamo.value) - 1);
 
@@ -822,7 +826,6 @@ export class SolicitudesFormComponent implements OnInit {
     gDiversonsSIgv = contrato + servicioCustodia + servicioCobranza + cartaNotarial;
     IGV = this.igvCT / 100;
     if (this.idTipo == 1) {
-
       netoSolicitado = ((360 * montoSolicitado) + (360 * (gDiversonsSIgv * (IGV + 1)))) / (360 - ((nroDias * ((TNM / 100) * 12)) * (IGV + 1)));
       mDescontar = ((360 * netoSolicitado) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12)) * (IGV + 1)));
       intereses = netoSolicitado * ((TNA / 100) / 360) * nroDias * (IGV + 1);
@@ -857,9 +860,9 @@ export class SolicitudesFormComponent implements OnInit {
 
   }
   validacionCT(): void {
-    let montoCT, ctSolicitado;
-    montoCT = Number(this.capitalTrabajoForm.controls.mcTrabajo.value);
-    ctSolicitado = Number(this.capitalTrabajoForm.controls.ctSolicitado.value);
+    // let montoCT, ctSolicitado;
+    // montoCT = Number(this.capitalTrabajoForm.controls.mcTrabajo.value);
+    // ctSolicitado = Number(this.capitalTrabajoForm.controls.ctSolicitado.value);
 
     this.onCalcularCT();
   }
