@@ -124,9 +124,7 @@ export class SolicitudesFormComponent implements OnInit {
     }
 
   }
-  /**
-   * Horizontal Wizard Stepper Previous
-   */
+  
   horizontalWizardStepperPrevious(flagDoble) {
     this.horizontalWizardStepper.previous();
     if (flagDoble == 1) {
@@ -759,14 +757,20 @@ export class SolicitudesFormComponent implements OnInit {
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
   }
-  calcularFP(idTipo: number, modalCalendario): void {
+  
+  calcularFP(idTipo: number = 0): void {
+    let fecha = new Date();
+    let diasEfectivo = 0;
     if (idTipo == 2) {
-      modalCalendario.toggle();
-      console.log('fehca', this.fechaPagoCT);
-
+      let fecConfirmado = new Date(this.fechaPagoCT.year,
+        this.fechaPagoCT.month - 1,
+        this.fechaPagoCT.day, 0, 0, 0);
+      let diffTime = Math.abs(fecha.getTime() - fecConfirmado.getTime());
+      diasEfectivo = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+      this.capitalTrabajoForm.controls.diasPrestamo.setValue(diasEfectivo)
     }
-    else {
-      let fecha = new Date();
+    else 
+    {
       fecha.setDate(fecha.getDate() + Number(this.capitalTrabajoForm.controls.diasPrestamo.value) - 1);
 
       let date = {
@@ -774,12 +778,8 @@ export class SolicitudesFormComponent implements OnInit {
         month: fecha.getMonth() + 1,
         day: fecha.getDate()
       }
-
-      //this.fechaPagoCT = date;
       this.capitalTrabajoForm.controls.fechaPago.setValue(date);
     }
-
-    console.log('fehca2', this.fechaPagoCT);
     this.onCalcularCT();
   }
   onChangeMoneda(): void {
