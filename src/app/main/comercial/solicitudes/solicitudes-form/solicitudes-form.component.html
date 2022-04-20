@@ -736,7 +736,7 @@
                        formControlName="diasPrestamo" type="number" (change)="calcularFP(1)"/>
                 <div *ngIf="CapitalIUForm.diasPrestamo.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.diasPrestamo.errors.required">* Campo obligatorio</div>
-                  <div *ngIf="CapitalIUForm.ctSolicitado.errors.min">* La cantidad de días debe ser mayor a 0</div>
+                  <div *ngIf="CapitalIUForm.diasPrestamo.errors.min">* La cantidad de días debe ser mayor a 0</div>
                 </div>
               </div>
             </div>
@@ -745,9 +745,10 @@
                 <label>Fecha de Pago</label>
                 <div class="input-group">
                   <input #basicDPFrom="ngbDatepicker" #i18nDP="ngbDatepicker" [(ngModel)]="fechaPagoCT"
-                         class="form-control" ngbDatepicker placeholder="dd/mm/yyyy" formControlName="fechaPago">
+                         class="form-control" ngbDatepicker placeholder="dd/mm/yyyy" formControlName="fechaPago"
+                         (ngModelChange)="calcularFP(2)">
                   <div class="input-group-append">
-                    <button (click)="calcularFP(2, basicDPFrom)" class="btn btn-outline-secondary feather icon-calendar"
+                    <button (click)="basicDPFrom.toggle()" class="btn btn-outline-secondary feather icon-calendar"
                             rippleEffect type="button"></button>
                   </div>
                 </div>

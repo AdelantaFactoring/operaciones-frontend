@@ -887,7 +887,6 @@ export class LiquidacionesComponent implements OnInit {
     
     this.utilsService.blockUIStart('Enviando...');
     this.liquidacionesService.pdf(liquidaciones).subscribe(response => {
-      console.log('resp', response);
       
       if (response.comun.tipo == 1) {
         this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
