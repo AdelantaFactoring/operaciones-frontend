@@ -531,12 +531,14 @@ export class LiquidacionesComponent implements OnInit {
     });
   }
 
-  onFilas(liquidaciones: any, ocultar: boolean = false): string {
+  onFilas(liquidaciones: any, ocultar: boolean = false, ocultar2: boolean = false): string {
     let filas = "";
     for (const item of liquidaciones) {
       filas += `<tr><td>${item.codigo}</td>
+                  ${!ocultar2 ? `
                   <td>${item.montoSuperado ? '<i class="text-success cursor-pointer fa fa-check"></i>' :
-                        '<i class="text-danger fa fa-ban"></i>'}</td>
+                        '<i class="text-danger fa fa-ban"></i>'}</td>`
+                  : ''}
                   ${!ocultar ? `
                   <td>${item.correoEnviado === 1  ? '<i class="text-success fa fa-check"></i>' :
                   (item.correoEnviado === 0 ? '<i class="text-danger cursor-pointer fa fa-ban"></i>' :
@@ -944,17 +946,17 @@ export class LiquidacionesComponent implements OnInit {
                 <thead>
                 <tr>
                   <th>N° Liquidación</th>
-                  <th>Superó Monto Mínimo (${this.montoTotalFacturadoMinimoTM[0].valor})</th>
+<!--                  <th>Superó Monto Mínimo (${this.montoTotalFacturadoMinimoTM[0].valor})</th>-->
                   <th>Correo Enviado</th>
                 </tr>
                 </thead>
                 <tbody>
-                ${this.onFilas(response.liquidacionCabValidacion)}
+                ${this.onFilas(response.liquidacionCabValidacion, false, true)}
                 </tbody>
               </table>
             </div>
-            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Superó / Enviado &nbsp;&nbsp;
-            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Superó / No Enviado</p>`,
+            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Enviado &nbsp;&nbsp;
+            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Enviado</p>`,
           icon: 'info',
           width: '750px',
           showCancelButton: false,
