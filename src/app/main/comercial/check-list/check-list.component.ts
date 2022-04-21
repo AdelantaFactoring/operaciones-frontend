@@ -58,6 +58,7 @@ export class CheckListComponent implements OnInit {
   public pageSize: number = 10;
   public page: number = 1;
 
+  public solicitudCabActual: SolicitudCab;
   public hasBaseDropZoneOver: boolean = false;
   public archivosSustento: FileUploader = new FileUploader({
     //url: `${environment.apiUrl}${SOLICITUD.subirSustento}`,
@@ -212,6 +213,7 @@ export class CheckListComponent implements OnInit {
   }
 
   onEditar(item: SolicitudCab, modal: any): void {
+    this.solicitudCabActual = {...item};
     this.solicitudForm.controls.idSolicitudCab.setValue(item.idSolicitudCab);
     this.idCliente = item.idCliente;
     this.solicitudForm.controls.idTipoOperacion.setValue(item.idTipoOperacion);
@@ -382,6 +384,9 @@ export class CheckListComponent implements OnInit {
             item.editado = true;
           item.fondoResguardo = valor;
         }
+
+        if (this.idTipoOperacion === 2)
+          this.onCalcularCT(this.solicitudCabActual);
 
         this.utilsService.showNotification('Información de Gastos actualizado', '', 1);
       } else {
