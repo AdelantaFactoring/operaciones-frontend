@@ -30,9 +30,9 @@
             <p>
               <small class="mr-50"><span class="font-weight-bold">Admin:</span> admin@demo.com | admin</small>
             </p>
-            <p>
-              <small class="mr-50"><span class="font-weight-bold">Client:</span> client@demo.com | client</small>
-            </p>
+<!--            <p>-->
+<!--              <small class="mr-50"><span class="font-weight-bold">Client:</span> client@demo.com | client</small>-->
+<!--            </p>-->
           </div>
           <span
             class="feather icon-help-circle auth-help-icon font-medium-3"
@@ -67,8 +67,8 @@
           </div>
           <div class="form-group">
             <div class="d-flex justify-content-between">
-              <label for="login-password">Password</label
-              ><a routerLink="/pages/authentication/forgot-password-v2"><small>Forgot Password?</small></a>
+              <label for="login-password">Contraseña</label
+              ><a routerLink="/pages/authentication/forgot-password-v2"><small>Has olvidado tu contraseña?</small></a>
             </div>
             <div class="input-group input-group-merge form-password-toggle">
               <input
@@ -98,32 +98,32 @@
               class="invalid-feedback"
               [ngClass]="{ 'd-block': submitted && f.password.errors }"
             >
-              <div *ngIf="f.password.errors.required">Password is required</div>
+              <div *ngIf="f.password.errors.required">Contraseña requerida</div>
             </div>
           </div>
           <div class="form-group">
             <div class="custom-control custom-checkbox">
               <input class="custom-control-input" id="remember-me" type="checkbox" tabindex="3" />
-              <label class="custom-control-label" for="remember-me"> Remember Me</label>
+              <label class="custom-control-label" for="remember-me"> Recuérdame</label>
             </div>
           </div>
           <button [disabled]="loading" class="btn btn-primary btn-block" tabindex="4" rippleEffect>
             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>Iniciar Sesión
           </button>
         </form>
-        <p class="text-center mt-2">
-          <span>New on our platform?</span
-          ><a routerLink="/pages/authentication/register-v2"><span>&nbsp;Create an account</span></a>
-        </p>
-        <div class="divider my-2">
-          <div class="divider-text">or</div>
-        </div>
-        <div class="auth-footer-btn d-flex justify-content-center">
-          <a class="btn btn-facebook" href="javascript:void(0)"><i data-feather="facebook"></i></a
-          ><a class="btn btn-twitter white" href="javascript:void(0)"><i data-feather="twitter"></i></a
-        ><a class="btn btn-google" href="javascript:void(0)"><i data-feather="mail"></i></a
-        ><a class="btn btn-github" href="javascript:void(0)"><i data-feather="github"></i></a>
-        </div>
+<!--        <p class="text-center mt-2">-->
+<!--          <span>New on our platform?</span-->
+<!--          ><a routerLink="/pages/authentication/register-v2"><span>&nbsp;Create an account</span></a>-->
+<!--        </p>-->
+<!--        <div class="divider my-2">-->
+<!--          <div class="divider-text">o</div>-->
+<!--        </div>-->
+<!--        <div class="auth-footer-btn d-flex justify-content-center">-->
+<!--          <a class="btn btn-facebook" href="javascript:void(0)"><i data-feather="facebook"></i></a-->
+<!--          ><a class="btn btn-twitter white" href="javascript:void(0)"><i data-feather="twitter"></i></a-->
+<!--        ><a class="btn btn-google" href="javascript:void(0)"><i data-feather="mail"></i></a-->
+<!--        ><a class="btn btn-github" href="javascript:void(0)"><i data-feather="github"></i></a>-->
+<!--        </div>-->
       </div>
     </div>
     <!-- /Login-->

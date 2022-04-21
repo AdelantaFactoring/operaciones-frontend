@@ -141,7 +141,7 @@ export class CoreThemeCustomizerComponent implements OnInit, OnDestroy {
               type: 'floating-nav',
               background: 'navbar-light',
               customBackgroundColor: true,
-              backgroundColor: ''
+              backgroundColor: 'bg-primary'
             },
             footer: {
               hidden: false,
@@ -183,6 +183,7 @@ export class CoreThemeCustomizerComponent implements OnInit, OnDestroy {
 
     // Set navbar color
     this.navbarColor(this.form.get('layout.navbar.backgroundColor').value);
+    location.reload();
   }
 
   // Public methods

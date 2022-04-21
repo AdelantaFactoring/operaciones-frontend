@@ -574,7 +574,7 @@
               <div class="form-group">
                 <label>N° Cuenta</label>
                 <input class="form-control" type="text" readonly
-                       [ngClass]="{ 'is-invalid': submitted && nroCuentaBancariaDestino === '' }"
+                       [ngClass]="{ 'is-invalid': submitted && nroCuentaBancariaDestino === '' && cciDestino === '' }"
                        [(ngModel)]="nroCuentaBancariaDestino" [ngModelOptions]="{standalone: true}"/>
                 <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''" class="invalid-feedback">
                   <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''">* Campo obligatorio solo si no
@@ -587,7 +587,7 @@
               <div class="form-group">
                 <label>CCI</label>
                 <input class="form-control" type="text" readonly
-                       [ngClass]="{ 'is-invalid': submitted && nroCuentaBancariaDestino === '' }"
+                       [ngClass]="{ 'is-invalid': submitted && nroCuentaBancariaDestino === '' && cciDestino === '' }"
                        [(ngModel)]="cciDestino" [ngModelOptions]="{standalone: true}"/>
                 <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''" class="invalid-feedback">
                   <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''">* Campo obligatorio solo si no

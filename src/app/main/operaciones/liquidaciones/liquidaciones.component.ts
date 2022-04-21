@@ -881,7 +881,7 @@ export class LiquidacionesComponent implements OnInit {
       }
     }
 
-    if (cab.liquidacionDet.filter(f => f.edicion || f.editado).length > 0){
+    if (liquidaciones.filter(f => f.liquidacionDet.filter(f => f.edicion || f.editado).length > 0).length > 0){
       this.utilsService.showNotification("Guarda o cancela los cambios primero", "Advertencia", 2);
       return;
     }
@@ -931,7 +931,7 @@ export class LiquidacionesComponent implements OnInit {
 
     this.utilsService.blockUIStart('Enviando...');
     this.liquidacionesService.pdf(liquidaciones).subscribe(response => {
-      
+
       if (response.comun.tipo == 1) {
         this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();

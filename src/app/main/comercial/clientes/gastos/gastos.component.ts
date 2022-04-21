@@ -87,6 +87,10 @@ export class GastosComponent implements OnInit {
   }
 
   onEditarGastos(item: ClienteGastos): void {
+    if (this.gastos.filter(f => f.edicion && f.idFila != item.idFila).length > 0) {
+      this.utilsService.showNotification("Guarda o confirma los cambios primero", "Advertencia", 2);
+      return;
+    }
     this.oldGastos = {
       idClienteGastos: item.idClienteGastos,
       idCliente: item.idCliente,

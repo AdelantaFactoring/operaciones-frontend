@@ -147,8 +147,6 @@ export class ClientesComponent implements OnInit {
   }
 
   onNuevo(modal: any): void {
-    console.log('Id', this.clienteForm.controls.idCliente.value);
-    
     setTimeout(() => {
       this.modalService.open(modal, {
         scrollable: true,
@@ -165,7 +163,7 @@ export class ClientesComponent implements OnInit {
   }
 
   onEditar(item: Cliente, modal: any): void {
-    
+
     this.utilsService.blockUIStart('Obteniendo información...');
     this.clienteForm.controls.idCliente.setValue(item.idCliente);
     this.clienteForm.controls.ruc.setValue(item.ruc);
@@ -245,6 +243,14 @@ export class ClientesComponent implements OnInit {
     this.submitted = true;
     if (this.clienteForm.invalid)
       return;
+
+    if (this.cuentas.filter(f => f.edicion).length > 0
+      || this.contactos.filter(f => f.edicion).length > 0
+      || this.gastos.filter(f => f.edicion).length > 0) {
+      this.utilsService.showNotification("Guarda o confirma los cambios primero", "Advertencia", 2);
+      return;
+    }
+
     this.utilsService.blockUIStart('Guardando...');
     this.clienteService.guardar({
       idCliente: this.clienteForm.controls.idCliente.value,
@@ -282,6 +288,7 @@ export class ClientesComponent implements OnInit {
     this.submitted = false;
     this.contactos = [];
     this.cuentas = [];
+    this.gastos = [];
     this.clienteForm.reset(this.oldClienteForm);
     this.modalService.dismissAll();
   }
@@ -326,6 +333,11 @@ export class ClientesComponent implements OnInit {
   }
 
   onEditarCuenta(item: ClienteCuenta): void {
+    if (this.cuentas.filter(f => f.edicion && f.idFila != item.idFila).length > 0) {
+      this.utilsService.showNotification("Guarda o confirma los cambios primero", "Advertencia", 2);
+      return;
+    }
+
     this.oldCuenta = {
       idClienteCuenta: item.idClienteCuenta,
       idCliente: item.idCliente,
@@ -453,6 +465,11 @@ export class ClientesComponent implements OnInit {
   }
 
   onEditarContacto(item: ClienteContacto): void {
+    if (this.contactos.filter(f => f.edicion && f.idFila != item.idFila).length > 0) {
+      this.utilsService.showNotification("Guarda o confirma los cambios primero", "Advertencia", 2);
+      return;
+    }
+
     this.oldContacto = {
       idClienteContacto: item.idClienteContacto,
       idCliente: item.idCliente,
