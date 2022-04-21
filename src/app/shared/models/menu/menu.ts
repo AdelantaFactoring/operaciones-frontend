@@ -1,42 +1,6 @@
 import { CoreMenu } from '@core/types';
 
 export const menu: CoreMenu[] = [
-  // {
-  //   id: 'clientes',
-  //   title: 'Clientes',
-  //   // translate: 'MENU.DASHBOARD.COLLAPSIBLE',
-  //   type: 'collapsible',
-  //   icon: 'users',
-  //   children: [{
-  //     id: 'solicitudes',
-  //     title: 'Solicitudes',
-  //     // translate: 'MENU.DASHBOARD.ANALYTICS',
-  //     type: 'item',
-  //     icon: 'circle',
-  //     url: 'clientes/solicitudes'
-  //   },{
-  //     id: 'liquidaciones',
-  //     title: 'Liquidaciones',
-  //     // translate: 'MENU.DASHBOARD.ANALYTICS',
-  //     type: 'item',
-  //     icon: 'circle',
-  //     url: 'test/test'
-  //   },{
-  //     id: 'desembolsos',
-  //     title: 'Desembolsos',
-  //     // translate: 'MENU.DASHBOARD.ANALYTICS',
-  //     type: 'item',
-  //     icon: 'circle',
-  //     url: 'test/test'
-  //   },{
-  //     id: 'facturas',
-  //     title: 'Facturas',
-  //     // translate: 'MENU.DASHBOARD.ANALYTICS',
-  //     type: 'item',
-  //     icon: 'circle',
-  //     url: 'test/test'
-  //   }]
-  // },
   {
     id: 'comercial',
     title: 'Comercial',
@@ -80,35 +44,6 @@ export const menu: CoreMenu[] = [
       url: 'comercial/solicitudes'
     }]
   },
-  // {
-  //   id: 'riegos',
-  //   title: 'Riesgos',
-  //   // translate: 'MENU.DASHBOARD.COLLAPSIBLE',
-  //   type: 'collapsible',
-  //   icon: 'alert-triangle',
-  //   children: [{
-  //     id: 'aprobacionSolicitud',
-  //     title: 'Aprobación de Solicitudes',
-  //     // translate: 'MENU.DASHBOARD.ANALYTICS',
-  //     type: 'item',
-  //     icon: 'circle',
-  //     url: 'test/test'
-  //   },{
-  //     id: 'aprobarCondicion',
-  //     title: 'Aprobar Condiciones',
-  //     // translate: 'MENU.DASHBOARD.ANALYTICS',
-  //     type: 'item',
-  //     icon: 'circle',
-  //     url: 'test/test'
-  //   },{
-  //     id: 'aprobarExcepcion',
-  //     title: 'Aprobar Excepciones',
-  //     // translate: 'MENU.DASHBOARD.ANALYTICS',
-  //     type: 'item',
-  //     icon: 'circle',
-  //     url: 'test/test'
-  //   }]
-  // },
   {
     id: 'operaciones',
     title: 'Operaciones',
@@ -160,19 +95,20 @@ export const menu: CoreMenu[] = [
     type: 'section',
     icon: 'dollar-sign',
     children: [{
-      id: 'estadFactura',
-      title: 'Estado de Factura',
+      id: 'registroPagos',
+      title: 'Registro de Pagos',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
-      icon: 'circle',
-      url: 'test/test'
+      icon: 'file-plus',
+      //url: 'cobranza/registroPagos'
+      url: 'pages/miscellaneous/coming-soon'
     },{
       id: 'devoluciones',
       title: 'Devoluciones',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
-      icon: 'circle',
-      url: 'test/test'
+      icon: 'rotate-ccw',
+      url: 'pages/miscellaneous/coming-soon'
     }]
   },
   {

@@ -19,6 +19,15 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'cobranza',
+    loadChildren: () => import('app/main/cobranza/cobranza.module').then(m => m.CobranzaModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'pages',
+    loadChildren: () => import('app/main/pages/pages.module').then(m => m.PagesModule)
+  },
+  {
     path: 'auth',
     loadChildren: () => import('app/auth/auth.module').then(m => m.AuthModule)
   },
