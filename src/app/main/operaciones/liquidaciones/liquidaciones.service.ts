@@ -32,6 +32,16 @@ export class LiquidacionesService {
     );
   }
 
+  eliminar(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${LIQUIDACIONES.eliminar}`,
+      `?idLiquidacionCab=${payload.idLiquidacionCab}&idUsuarioAud=${payload.idUsuarioAud}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
   actualizar(payload): Observable<any> {
     return this.requestMethod.put(
       `${environment.apiUrl}${LIQUIDACIONES.actualizar}`,

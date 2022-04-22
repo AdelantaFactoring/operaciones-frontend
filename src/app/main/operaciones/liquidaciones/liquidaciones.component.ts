@@ -679,6 +679,7 @@ export class LiquidacionesComponent implements OnInit {
 
     this.liquidacionForm.controls.idLiquidacionCab.setValue(cab.idLiquidacionCab);
     this.codigo = cab.codigo;
+    this.idTipoOperacion = cab.idTipoOperacion;
     this.liquidacionForm.controls.rucCliente.setValue(cab.rucCliente);
     this.liquidacionForm.controls.razonSocialCliente.setValue(cab.razonSocialCliente);
     this.liquidacionForm.controls.rucPagProv.setValue(cab.rucPagProv);
@@ -978,6 +979,43 @@ export class LiquidacionesComponent implements OnInit {
     }, error => {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();
+    });
+  }
+
+  onEliminar(cab: LiquidacionCab): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea eliminar el registro '${cab.codigo}'?, esta acción no podrá revertirse`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-primary'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart('Eliminando...');
+        this.liquidacionesService.eliminar({
+          idLiquidacionCab: cab.idLiquidacionCab,
+          idUsuarioAud: 1
+        }).subscribe(response => {
+          if (response.tipo === 1) {
+            this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
+            this.utilsService.blockUIStop();
+            this.onListarLiquidaciones();
+          } else if (response.tipo === 2) {
+            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          } else {
+            this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          }
+          this.utilsService.blockUIStop();
+        }, error => {
+          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+          this.utilsService.blockUIStop();
+        });
+      }
     });
   }
 }

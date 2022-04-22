@@ -118,8 +118,8 @@ export const menu: CoreMenu[] = [
     type: 'section',
     icon: 'file-text',
     children: [{
-      id: 'factura',
-      title: 'Factura',
+      id: 'documentos',
+      title: 'Documentos',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'file-text',

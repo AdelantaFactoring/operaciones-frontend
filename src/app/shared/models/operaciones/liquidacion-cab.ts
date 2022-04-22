@@ -17,6 +17,7 @@ export class LiquidacionCab {
   deudaAnterior: number;
   nuevoMontoTotal: number;
   idTipoOperacion: number;
+  tipoOperacion: string;
   idTipoCT: number;
   titularCuentaBancariaDestino: string;
   monedaCuentaBancariaDestino: string;
@@ -31,7 +32,7 @@ export class LiquidacionCab {
   totalRows: number;
   liquidacionDet: LiquidacionDet[];
   liquidacionCabSustento: LiquidacionCabSustento[];
-  liquidacionCabSeleccionados: LiquidacionCabSeleccionados[];
+  //liquidacionCabSeleccionados: LiquidacionCabSeleccionados[];
   cambiarIcono: boolean = false;
   seleccionado: boolean = false;
   tipoCambioMoneda: number;

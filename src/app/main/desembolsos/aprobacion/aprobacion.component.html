@@ -6,6 +6,12 @@
         <div class="row">
           <div class="d-flex flex-wrap mb-0">
             <div class="p-1">
+              <button type="submit" rippleEffect class="btn btn-secondary" (click)="onListarDesembolso()">
+                <i class="mr-0 mr-sm-1" data-feather="refresh-cw"></i>
+                <span class="d-none d-sm-inline-block">Refrescar</span>
+              </button>
+            </div>
+            <div class="pt-1 pb-1 pr-1">
               <button type="submit" rippleEffect class="btn btn-success" (click)="onGenerarArchivo()">
                 <i class="mr-0 mr-sm-1" data-feather="layers"></i>
                 <span class="d-none d-sm-inline-block">Generar Archivo(s)</span>
@@ -83,6 +89,7 @@
                   <th>Monto Total</th>
                   <th>Monto Descuento</th>
                   <th>Nuevo Monto Total</th>
+                  <th>Tipo Operación</th>
                   <th>Estado</th>
                 </tr>
                 </thead>
@@ -134,10 +141,11 @@
                     <td><strong>{{cab.montoTotal | number: '1.2-2'}}</strong></td>
                     <td>{{cab.deudaAnterior | number: '1.2-2'}}</td>
                     <td><strong>{{cab.nuevoMontoTotal | number: '1.2-2'}}</strong></td>
+                    <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.estado}}</td>
                   </tr>
                   <tr id="{{ 'tr' + cab.idLiquidacionCab }}" style="visibility: collapse">
-                    <td [colSpan]="13">
+                    <td [colSpan]="14">
                       <div class="table-responsive" style="padding-left: 20px; display: none;"
                            id="{{ 'detail' + cab.idLiquidacionCab }}">
                         <table class="table table-hover">

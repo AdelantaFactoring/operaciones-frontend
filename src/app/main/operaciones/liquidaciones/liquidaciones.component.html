@@ -99,6 +99,7 @@
                   <th>Monto Descuento</th>
                   <th>Nuevo Monto Total</th>
                   <th>Observación</th>
+                  <th>Tipo Operación</th>
                   <th>Estado</th>
                 </tr>
                 </thead>
@@ -145,9 +146,10 @@
                           <i class="text-info cursor-pointer" data-feather="eye"></i>
                         </a>
                         &nbsp;
-                        <a href="javascript:void(0)" title="Anular"
+                        <a href="javascript:void(0)" title="Eliminar" [class.disabled]="cab.idEstado >= 5 ? true : null"
+                           (click)="onEliminar(cab)"
                            class="btn btn-raised btn-outline-danger btn-sm">
-                          <i class="text-danger cursor-pointer" data-feather="slash"></i>
+                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
                         </a>
                       </div>
                     </td>
@@ -161,10 +163,11 @@
                     <td>{{cab.deudaAnterior | number: '1.2-2'}}</td>
                     <td><strong>{{cab.nuevoMontoTotal | number: '1.2-2'}}</strong></td>
                     <td>{{cab.observacion}}</td>
+                    <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.estado}}</td>
                   </tr>
                   <tr id="{{ 'trL' + cab.idLiquidacionCab }}" style="visibility: collapse">
-                    <td [colSpan]="14">
+                    <td [colSpan]="15">
                       <div class="row">
                         <div class="d-flex flex-wrap mb-0">
                           <div class="pl-1 pt-1 pb-1">
@@ -1015,7 +1018,7 @@
                     <label>Monto Descuento</label>
                     <input class="form-control" [(ngModel)]="deudaAnterior" [ngModelOptions]="{standalone: true}" type="text"
                            (ngModelChange)="onDeudaAnteriorCambio($event)"
-                           mask="separator" thousandSeparator="," [disabled] ="ver"/>
+                           mask="separator" thousandSeparator="," [disabled] ="ver || idTipoOperacion === 3"/>
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
@@ -1030,7 +1033,7 @@
                     <label>Observación</label>
                     <textarea class="form-control" [(ngModel)]="observacion" [ngModelOptions]="{standalone: true}" type="text"
                               [ngClass]="{ 'is-invalid': submitted && deudaAnterior > 0 && observacion === '' }"
-                              [disabled] ="ver"></textarea>
+                              [disabled] ="ver || idTipoOperacion === 3"></textarea>
                     <div *ngIf="deudaAnterior > 0 && observacion === ''" class="invalid-feedback">
                       <div *ngIf="deudaAnterior > 0 && observacion === ''">* Campo obligatorio</div>
                     </div>
