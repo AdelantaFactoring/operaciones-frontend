@@ -460,7 +460,7 @@ export class AprobacionComponent implements OnInit {
     }
   }
 
-  onAprobar(idEstado: number, tipo: number): void {
+  onAprobar(idEstado: number): void {
     // @ts-ignore
     let liquidaciones = [...this.desembolso.filter(f => f.seleccionado)];
 
@@ -469,33 +469,16 @@ export class AprobacionComponent implements OnInit {
       return;
     }
 
-    if (tipo == 2) {
-      for (const item of liquidaciones) {
-        if (item.idEstado !== 4) {
-          this.utilsService.showNotification('Una o varias liquidaciones seleccionas no contiene un Estado de desembolsos Pendiente', 'Alerta', 2);
-          return;
-        }
-        if (item.liquidacionCabSustento.filter(x => x.idTipoSustento === 2 && x.idTipo === 2).length === 0) {
-          this.utilsService.showNotification('La liquidación con código ' + item.codigo + ' no contiene archivo(s) de sustento con tipo Confirmación de desembolsos', 'Alerta', 2);
-          return;
-        }
-      }
-    }
-
     liquidaciones.forEach(el => {
       el.idEstado = idEstado;
       el.idUsuarioAud = 1;
     });
-
 
     this.utilsService.blockUIStart('Aprobando...');
     this.desembolsoService.cambiarEstado(liquidaciones).subscribe(response => {
       if (response.tipo == 1) {
         this.utilsService.showNotification('Aprobación Satisfactoria', 'Confirmación', 1);
         this.utilsService.blockUIStop();
-        if (tipo != 2) {
-          this.onGenerarArchivo(liquidaciones);
-        }
         this.onListarDesembolso();
       } else if (response.tipo == 2) {
         this.utilsService.showNotification(response.mensaje, 'Validación', 2);
@@ -510,20 +493,57 @@ export class AprobacionComponent implements OnInit {
     });
   }
 
-  onGenerarArchivo(item): void {
+  onGenerarArchivo(): void {
+    let liquidaciones = [...this.desembolso.filter(f => f.seleccionado)];
 
-    this.utilsService.blockUIStart('Exportando archivo EXCEL...');
+    if (liquidaciones.length === 0) {
+      this.utilsService.showNotification("Seleccione una o varias liquidaciones", "", 2);
+      return;
+    }
 
-    this.desembolsoService.export(item).subscribe(s => {
-      let blob: any = new Blob([s], {type: 'application/vnd.ms-excel'});
-      const url = window.URL.createObjectURL(blob);
-      fileSaver.saveAs(blob, 'Archivo'
-        + this.sundayDate.year.toString()
-        + this.sundayDate.month.toString().padStart(2, "0")
-        + this.sundayDate.day.toString().padStart(2, "0")
-        + '.xlsx');
-      this.utilsService.showNotification('No todas las lineas de programa han sido incluidas en el Excel', 'Operación satisfactoria', 4);
-      this.utilsService.blockUIStop();
+    for (const item of liquidaciones) {
+      if (item.idEstado !== 4) {
+        this.utilsService.showNotification('Una o varias liquidaciones seleccionas no contiene un Estado de desembolsos Pendiente', 'Alerta', 2);
+        return;
+      }
+      if (item.liquidacionCabSustento.filter(x => x.idTipoSustento === 2 && x.idTipo === 2).length === 0) {
+        this.utilsService.showNotification('La liquidación con código ' + item.codigo + ' no contiene archivo(s) de sustento con tipo Confirmación de desembolsos', 'Alerta', 2);
+        return;
+      }
+    }
+
+    liquidaciones.forEach(el => {
+      el.idEstado = 4;
+      el.idUsuarioAud = 1;
+    });
+
+    this.utilsService.blockUIStart('Generando archivo...');
+    this.desembolsoService.cambiarEstado(liquidaciones).subscribe(response => {
+      if (response.tipo == 1) {
+        this.utilsService.blockUIStop();
+        this.utilsService.blockUIStart('Exportando archivo...');
+        this.desembolsoService.export(liquidaciones).subscribe(s => {
+          let blob: any = new Blob([s], {type: 'application/vnd.ms-excel'});
+          const url = window.URL.createObjectURL(blob);
+          fileSaver.saveAs(blob, 'Archivo'
+            + this.sundayDate.year.toString()
+            + this.sundayDate.month.toString().padStart(2, "0")
+            + this.sundayDate.day.toString().padStart(2, "0")
+            + '.xlsx');
+          this.utilsService.showNotification('Generación satisfactoria', 'Confirmación', 1);
+          this.utilsService.blockUIStop();
+          this.onListarDesembolso();
+        }, error => {
+          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+          this.utilsService.blockUIStop();
+        });
+      } else if (response.tipo == 2) {
+        this.utilsService.showNotification(response.mensaje, 'Validación', 2);
+        this.utilsService.blockUIStop();
+      } else if (response.tipo == 0) {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
+      }
     }, error => {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();

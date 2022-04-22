@@ -1,7 +1,8 @@
 <div class="row">
   <div class="col-md-6 col-12">
-    <div class="d-flex justify-content-between align-items-center m-1">
-      <label class="d-flex align-items-center">Mostrar
+    <div class="d-flex justify-content-between align-items-center mb-1">
+      <label class="d-flex align-items-center"
+      >Mostrar
         <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
                 (change)="onRefrescar()">
           <option value="10">10</option>
@@ -9,15 +10,19 @@
           <option value="50">50</option>
           <option value="100">100</option>
         </select>
-        filas</label>
+        filas</label
+      >
     </div>
   </div>
   <div class="col-md-6 col-12 d-flex justify-content-md-end">
-    <div class="d-flex align-items-center justify-content-end pr-1 pb-1 pl-1 pl-md-0 pb-md-0">
-      <label class="d-flex align-items-center">Buscar<input type="search" placeholder="Buscar"
-                                                            class="form-control ml-25" [(ngModel)]="search"
-                                                            [ngModelOptions]="{ standalone: true }"
-                                                            (change)="onRefrescar()"/></label>
+    <div class="d-flex align-items-center justify-content-end mb-1">
+      <label class="d-flex align-items-center"
+      >Buscar<input
+        type="search"
+        placeholder="Buscar"
+        class="form-control ml-25"
+        [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" (change)="onRefrescar()"
+      /></label>
     </div>
   </div>
 </div>
