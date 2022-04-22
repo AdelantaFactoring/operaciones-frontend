@@ -123,14 +123,36 @@ export const menu: CoreMenu[] = [
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'circle',
-      url: 'test/test'
+      url: 'pages/miscellaneous/coming-soon'
     },{
       id: 'consultaFactura',
       title: 'Consuta de Factura',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'circle',
-      url: 'test/test'
+      url: 'pages/miscellaneous/coming-soon'
+    }]
+  },
+  {
+    id: 'seguridad',
+    title: 'Seguridad',
+    // translate: 'MENU.DASHBOARD.COLLAPSIBLE',
+    type: 'section',
+    icon: 'lock',
+    children: [{
+      id: 'usuario',
+      title: 'Usuario',
+      // translate: 'MENU.DASHBOARD.ANALYTICS',
+      type: 'item',
+      icon: 'user',
+      url: 'pages/miscellaneous/coming-soon'
+    },{
+      id: 'perfil',
+      title: 'Perfil',
+      // translate: 'MENU.DASHBOARD.ANALYTICS',
+      type: 'item',
+      icon: 'tag',
+      url: 'pages/miscellaneous/coming-soon'
     }]
   }
 ];

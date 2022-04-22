@@ -476,7 +476,7 @@ export class SolicitudesFormComponent implements OnInit {
     return this.selectedRowIds.includes(idfila);
   }
 
-  onRowClick(razon, ruc, idfila, modal) {
+  onRowClick(razon: string, ruc: string, idfila: number, modal: any) {
     this.idCliente = idfila;
     if (this.idTipoOperacion == 2) {
       this.onClienteObtener(idfila, ruc, razon);

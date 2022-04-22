@@ -20,6 +20,7 @@ import { CardSnippetModule } from '@core/components/card-snippet/card-snippet.mo
 import { CoreDirectivesModule } from '@core/directives/directives';
 import { ClientePagadorComponent } from './cliente-pagador/cliente-pagador.component';
 import { SolicitudesGrillaComponent } from './solicitudes/solicitudes-grilla/solicitudes-grilla.component';
+import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 
 const routes: Routes = [
   {
@@ -89,21 +90,22 @@ const routes: Routes = [
     ClientePagadorComponent,
     SolicitudesGrillaComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    NgbModule,
-    FormsModule,
-    ReactiveFormsModule,
-    CoreCommonModule,
-    BlockUIModule.forRoot(),
-    ContentHeaderModule,
-    CoreTouchspinModule,
-    NgSelectModule,
-    NgxMaskModule.forRoot(),
-    FileUploadModule,
-    CardSnippetModule,
-    CoreDirectivesModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        NgbModule,
+        FormsModule,
+        ReactiveFormsModule,
+        CoreCommonModule,
+        BlockUIModule.forRoot(),
+        ContentHeaderModule,
+        CoreTouchspinModule,
+        NgSelectModule,
+        NgxMaskModule.forRoot(),
+        FileUploadModule,
+        CardSnippetModule,
+        CoreDirectivesModule,
+        PerfectScrollbarModule
+    ]
 })
 export class ComercialModule { }

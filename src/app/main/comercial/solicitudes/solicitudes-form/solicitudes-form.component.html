@@ -586,7 +586,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" ngbAutofocus tabindex="0">
+      <div class="modal-body" ngbAutofocus tabindex="0" [perfectScrollbar]>
         <form [formGroup]="solicitudForm">
           <div class="row">
             <div class="col-md-12 col-12">
@@ -616,7 +616,7 @@
                   <tbody>
                   <tr *ngFor="let item of optClienteP" class="cursor-pointer"
                       [class.selectedRow]="rowIsSelected(item.idCliente)"
-                      (click)="onRowClick(item.razonSocial,item.ruc, item.idCliente, modal, item)">
+                      (click)="onRowClick(item.razonSocial,item.ruc, item.idCliente, modal)">
                     <td>{{item.razonSocial}}</td>
                     <td>{{item.ruc}}</td>
                   </tr>
@@ -648,12 +648,12 @@
     </ng-template>
     <ng-template #modalCapitalTrabajo let-modal>
       <div class="modal-header">
-        <h4 class="modal-title" >Nueva Solicitud Capital de Trabajo</h4>
+        <h4 class="modal-title">Nueva Solicitud Capital de Trabajo</h4>
         <button aria-label="Close" class="close" type="button" (click)="onCancelar()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" ngbAutofocus tabindex="0">
+      <div class="modal-body" ngbAutofocus tabindex="0" [perfectScrollbar]>
         <form [formGroup]="capitalTrabajoForm">
           <div class="row">
             <div class="col-12">
@@ -782,7 +782,8 @@
             <div class="col-md-4 col-12">
               <div class="form-group">
                 <label>Tasa Nominal Mensual Mora (%)</label>
-                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaMoraMensual.errors }" class="form-control"
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaMoraMensual.errors }"
+                       class="form-control"
                        formControlName="tasaMoraMensual" type="text" disabled mask="separator" thousandSeparator=","/>
                 <div *ngIf="CapitalIUForm.tasaMoraMensual.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.tasaMoraMensual.errors.required">* Campo obligatorio</div>
@@ -792,7 +793,8 @@
             <div class="col-md-4 col-12">
               <div class="form-group">
                 <label>Tasa Nominal Anual Mora (%)</label>
-                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaMoraAnual.errors }" class="form-control"
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tasaMoraAnual.errors }"
+                       class="form-control"
                        formControlName="tasaMoraAnual" type="text" disabled mask="separator" thousandSeparator=","/>
                 <div *ngIf="CapitalIUForm.tasaMoraAnual.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.tasaMoraAnual.errors.required">* Campo obligatorio</div>
@@ -840,7 +842,8 @@
               <div class="form-group">
                 <label>Gastos Contrato</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.contrato.errors }"
-                       class="form-control" formControlName="contrato" type="text" disabled mask="separator" thousandSeparator=","/>
+                       class="form-control" formControlName="contrato" type="text" disabled mask="separator"
+                       thousandSeparator=","/>
                 <div *ngIf="CapitalIUForm.contrato.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.contrato.errors.required">* Campo obligatorio</div>
                 </div>
@@ -858,7 +861,8 @@
               <div class="form-group">
                 <label>Comisión Carta Notarial</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.cartaNotarial.errors }"
-                       class="form-control" formControlName="cartaNotarial" type="text" disabled mask="separator" thousandSeparator=","/>
+                       class="form-control" formControlName="cartaNotarial" type="text" disabled mask="separator"
+                       thousandSeparator=","/>
                 <div *ngIf="CapitalIUForm.cartaNotarial.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.cartaNotarial.errors.required">* Campo obligatorio</div>
                 </div>
@@ -868,7 +872,8 @@
               <div class="form-group">
                 <label>Servicio Cobranza</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.servicioCobranza.errors }"
-                       class="form-control" formControlName="servicioCobranza" type="text" disabled mask="separator" thousandSeparator=","/>
+                       class="form-control" formControlName="servicioCobranza" type="text" disabled mask="separator"
+                       thousandSeparator=","/>
                 <div *ngIf="CapitalIUForm.servicioCobranza.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.servicioCobranza.errors.required">* Campo obligatorio</div>
                 </div>
@@ -878,7 +883,8 @@
               <div class="form-group">
                 <label>Servicio Custodia</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.servicioCustodia.errors }"
-                       class="form-control" formControlName="servicioCustodia" type="text" disabled mask="separator" thousandSeparator=","/>
+                       class="form-control" formControlName="servicioCustodia" type="text" disabled mask="separator"
+                       thousandSeparator=","/>
                 <div *ngIf="CapitalIUForm.servicioCustodia.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.servicioCustodia.errors.required">* Campo obligatorio</div>
                 </div>
@@ -903,7 +909,8 @@
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Fondo Resguardo</label>
-                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.fondoResguardo.errors }" class="form-control"
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.fondoResguardo.errors }"
+                       class="form-control"
                        formControlName="fondoResguardo" type="text" disabled mask="separator" thousandSeparator=","/>
                 <div *ngIf="CapitalIUForm.fondoResguardo.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.fondoResguardo.errors.required">* Campo obligatorio</div>
@@ -913,7 +920,8 @@
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Monto a financiar</label>
-                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.netoSolicitado.errors }" class="form-control"
+                <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.netoSolicitado.errors }"
+                       class="form-control"
                        formControlName="netoSolicitado" type="text" disabled mask="separator" thousandSeparator=","/>
                 <div *ngIf="CapitalIUForm.netoSolicitado.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.netoSolicitado.errors.required">* Campo obligatorio</div>
@@ -945,7 +953,8 @@
               <div class="form-group">
                 <label>Gastos incluido IGV</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.gIncluidoIGV.errors }" class="form-control"
-                       formControlName="gIncluidoIGV" type="number:'.0-2'" disabled mask="separator" thousandSeparator=","/>
+                       formControlName="gIncluidoIGV" type="number:'.0-2'" disabled mask="separator"
+                       thousandSeparator=","/>
                 <div *ngIf="CapitalIUForm.gIncluidoIGV.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.gIncluidoIGV.errors.required">* Campo obligatorio</div>
                 </div>
@@ -965,7 +974,8 @@
               <div class="form-group">
                 <label>Total a Desembolsar</label>
                 <input [ngClass]="{ 'is-invalid': submitted && CapitalIUForm.tDesembolsoIGV.errors }"
-                       class="form-control" formControlName="tDesembolsoIGV" type="text" disabled mask="separator" thousandSeparator=","/>
+                       class="form-control" formControlName="tDesembolsoIGV" type="text" disabled mask="separator"
+                       thousandSeparator=","/>
                 <div *ngIf="CapitalIUForm.tDesembolsoIGV.errors" class="invalid-feedback">
                   <div *ngIf="CapitalIUForm.tDesembolsoIGV.errors.required">* Campo obligatorio</div>
                 </div>
