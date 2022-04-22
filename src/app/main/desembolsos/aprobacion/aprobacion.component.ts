@@ -75,7 +75,7 @@ export class AprobacionComponent implements OnInit {
     private tablaMaestraService: TablaMaestraService
   ) {
     this.contentHeader = {
-      headerTitle: 'desembolsos',
+      headerTitle: 'Aprobación',
       actionButton: true,
       breadcrumb: {
         type: '',
@@ -90,7 +90,7 @@ export class AprobacionComponent implements OnInit {
             isLink: false
           },
           {
-            name: 'Aprobación desembolsos',
+            name: 'Aprobación',
             isLink: false
           }
         ]

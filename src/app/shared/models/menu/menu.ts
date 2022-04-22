@@ -118,18 +118,11 @@ export const menu: CoreMenu[] = [
     type: 'section',
     icon: 'file-text',
     children: [{
-      id: 'emitirFactura',
-      title: 'Emitir Factura',
+      id: 'factura',
+      title: 'Factura',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
-      icon: 'circle',
-      url: 'pages/miscellaneous/coming-soon'
-    },{
-      id: 'consultaFactura',
-      title: 'Consuta de Factura',
-      // translate: 'MENU.DASHBOARD.ANALYTICS',
-      type: 'item',
-      icon: 'circle',
+      icon: 'file-text',
       url: 'pages/miscellaneous/coming-soon'
     }]
   },
