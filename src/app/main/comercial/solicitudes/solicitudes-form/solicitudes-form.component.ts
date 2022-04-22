@@ -103,7 +103,7 @@ export class SolicitudesFormComponent implements OnInit {
   public zeroPad = (num, places) => String(num).padStart(places, '0');
   public fechaPagoCT = this.calendar.getToday();
 
-  horizontalWizardStepperNext(data, form, id) {
+  horizontalWizardStepperNext(data: any, form: any, id: number) {
     let nombreArchivo;
     if (data.form.valid === true) {
       if (id == 1) {

@@ -1,8 +1,8 @@
 export class SolicitudDetRespuesta
 {
-    IdEstado: number;
-    Codigo: string;
-    NombreArchivoXml: string;
-    NombreArchivoPdf: string;
-    Observacion: string;
+    idEstado: number;
+    codigo: string;
+    nombreArchivoXml: string;
+    nombreArchivoPdf: string;
+    observacion: string;
 }
