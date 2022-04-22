@@ -11,7 +11,7 @@ import { InjectorInstance } from 'app/app.module';
 @Injectable({
   providedIn: 'root'
 })
-export class DesembolsoService {
+export class AprobacionService {
   private requestMethod = new RequestMethod();
   private http: HttpClient;
   constructor() {
@@ -57,7 +57,7 @@ export class DesembolsoService {
   // }
   generarArchivo(payload): any {
     return this.requestMethod.getNewTab(
-      `${environment.apiUrl}${DESEMBOLSO.GenerarArchivo}`, 
+      `${environment.apiUrl}${DESEMBOLSO.GenerarArchivo}`,
       payload,
       {
         'Content-Type': CONTENT_TYPE.json

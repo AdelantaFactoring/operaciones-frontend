@@ -98,7 +98,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" ngbAutofocus tabindex="0">
+        <div class="modal-body" ngbAutofocus tabindex="0" [perfectScrollbar]>
           <form [formGroup]="pagadorForm">
             <div class="row spaced">
               <div class="col-12">
@@ -170,7 +170,7 @@
               <div class="col-12 col-md-6">
                 <div class="form-group">
                   <label>Limite Gasto Negociacion</label>
-                  <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.limiteGastoNegociacion.errors }" 
+                  <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.limiteGastoNegociacion.errors }"
                     class="form-control" formControlName="limiteGastoNegociacion" type="number"/>
                   <div *ngIf="ReactiveIUForm.limiteGastoNegociacion.errors" class="invalid-feedback">
                     <div *ngIf="ReactiveIUForm.limiteGastoNegociacion.errors.required">* Campo obligatorio</div>

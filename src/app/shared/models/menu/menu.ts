@@ -74,18 +74,18 @@ export const menu: CoreMenu[] = [
     }]
   },
   {
-    id: 'desembolso',
+    id: 'aprobacion',
     title: 'Desembolsos',
     // translate: 'MENU.DASHBOARD.COLLAPSIBLE',
     type: 'section',
     icon: 'credit-card',
     children: [{
-      id: 'aprobacionDesembolso',
+      id: 'aprobacion',
       title: 'Aprobación',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'check',
-      url: 'desembolso/desembolso'
+      url: 'desembolso/aprobacion'
     }]
   },
   {

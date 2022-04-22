@@ -13,6 +13,7 @@ import { ConsultaFactrackComponent } from './consulta-factrack/consulta-factrack
 import { RespuestaPagadorComponent } from './respuesta-pagador/respuesta-pagador.component';
 import { LiquidacionesComponent } from './liquidaciones/liquidaciones.component';
 import {FileUploadModule} from "ng2-file-upload";
+import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 
 const routes: Routes = [
   {
@@ -62,6 +63,7 @@ const routes: Routes = [
         NgxMaskModule.forRoot(),
         NgxDatatableModule,
         FileUploadModule,
+        PerfectScrollbarModule,
     ]
 })
 export class OperacionesModule { }

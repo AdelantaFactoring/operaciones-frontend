@@ -1,12 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {LoginComponent} from 'app/auth/login/login.component';
 import {ClientesService} from 'app/main/comercial/clientes/clientes.service';
 import {DESEMBOLSO} from 'app/shared/helpers/url/desembolso';
 import {Archivo} from 'app/shared/models/comercial/archivo';
 import {ClienteCuenta} from 'app/shared/models/comercial/cliente-cuenta';
-import {SolicitudCab} from 'app/shared/models/comercial/solicitudCab';
 import {LiquidacionCab} from 'app/shared/models/operaciones/liquidacion-cab';
 import {LiquidacionDet} from 'app/shared/models/operaciones/liquidacion-det';
 import {LiquidacionCabSustento} from 'app/shared/models/operaciones/LiquidacionCab-Sustento';
@@ -16,16 +14,16 @@ import {TablaMaestraService} from 'app/shared/services/tabla-maestra.service';
 import {UtilsService} from 'app/shared/services/utils.service';
 import {environment} from 'environments/environment';
 import {FileUploader} from 'ng2-file-upload';
-import {DesembolsoService} from './desembolso.service';
+import {AprobacionService} from './aprobacion.service';
 import * as fileSaver from 'file-saver';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-desembolso',
-  templateUrl: './desembolso.component.html',
-  styleUrls: ['./desembolso.component.scss']
+  selector: 'app-aprobacion',
+  templateUrl: './aprobacion.component.html',
+  styleUrls: ['./aprobacion.component.scss']
 })
-export class DesembolsoComponent implements OnInit {
+export class AprobacionComponent implements OnInit {
   public contentHeader: object;
 
   public solicitudForm: FormGroup;
@@ -70,7 +68,7 @@ export class DesembolsoComponent implements OnInit {
 
   constructor(
     private utilsService: UtilsService,
-    private desembolsoService: DesembolsoService,
+    private desembolsoService: AprobacionService,
     private formBuilder: FormBuilder,
     private modalService: NgbModal,
     private clienteService: ClientesService,
