@@ -450,14 +450,14 @@ export class LiquidacionesComponent implements OnInit {
 
     this.utilsService.blockUIStart('Aprobando...');
     this.liquidacionesService.cambiarEstado(liquidaciones).subscribe(response => {
-      if (response.tipo == 1) {
+      if (response.comun.tipo == 1) {
         this.utilsService.showNotification('Aprobación Satisfactoria', 'Confirmación', 1);
         this.utilsService.blockUIStop();
         this.onListarLiquidaciones();
-      } else if (response.tipo == 2) {
+      } else if (response.comun.tipo == 2) {
         this.utilsService.showNotification(response.mensaje, 'Validación', 2);
         this.utilsService.blockUIStop();
-      } else if (response.tipo == 0) {
+      } else if (response.comun.tipo == 0) {
         this.utilsService.showNotification(response.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
       }

@@ -460,6 +460,18 @@ export class AprobacionComponent implements OnInit {
     }
   }
 
+  onFilas(liquidaciones: any): string {
+    let filas = "";
+    for (const item of liquidaciones) {
+      filas += `<tr><td>${item.codigo}</td>
+                  <td>${item.correoEnviado === 1 ? '<i class="text-success fa fa-check"></i>' :
+        (item.correoEnviado === 0 ? '<i class="text-danger cursor-pointer fa fa-ban"></i>' :
+          '<i class="text-secondary cursor-pointer fa fa-minus-circle"></i>')}</td>
+                </tr>`
+    }
+    return filas;
+  }
+
   onAprobar(idEstado: number): void {
     // @ts-ignore
     let liquidaciones = [...this.desembolso.filter(f => f.seleccionado)];
@@ -470,20 +482,50 @@ export class AprobacionComponent implements OnInit {
     }
 
     liquidaciones.forEach(el => {
+      el.idEmpresa = 1;
       el.idEstado = idEstado;
       el.idUsuarioAud = 1;
     });
 
-    this.utilsService.blockUIStart('Aprobando...');
+    this.utilsService.blockUIStart('Confirmando...');
     this.desembolsoService.cambiarEstado(liquidaciones).subscribe(response => {
-      if (response.tipo == 1) {
-        this.utilsService.showNotification('Aprobación Satisfactoria', 'Confirmación', 1);
+      if (response.comun.tipo == 1) {
+        this.utilsService.showNotification('Confirmación Satisfactoria', 'Confirmación', 1);
         this.utilsService.blockUIStop();
+        Swal.fire({
+          title: 'Información',
+          html: `
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>N° Liquidación</th>
+                  <th>Correo Enviado</th>
+                </tr>
+                </thead>
+                <tbody>
+                ${this.onFilas(response.liquidacionCabValidacion)}
+                </tbody>
+              </table>
+            </div>
+            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Enviado &nbsp;&nbsp;
+            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Enviado</p>`,
+          icon: 'info',
+          width: '750px',
+          showCancelButton: false,
+          confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
+          customClass: {
+            confirmButton: 'btn btn-info',
+          },
+        }).then(result => {
+          if (result.value) {
+          }
+        });
         this.onListarDesembolso();
-      } else if (response.tipo == 2) {
+      } else if (response.comun.tipo == 2) {
         this.utilsService.showNotification(response.mensaje, 'Validación', 2);
         this.utilsService.blockUIStop();
-      } else if (response.tipo == 0) {
+      } else if (response.comun.tipo == 0) {
         this.utilsService.showNotification(response.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
       }
