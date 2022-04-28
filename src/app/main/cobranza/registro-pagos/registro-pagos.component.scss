@@ -1,0 +1,8 @@
+.detail-th-color {
+  background-color: rgba(252, 120, 120, 0.12) !important;
+}
+
+::ng-deep .my-class .modal-dialog {
+  min-width: 75%;
+  //width: 60%;
+}

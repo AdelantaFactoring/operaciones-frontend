@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { RequestMethod } from 'app/shared/helpers/request-method';
-import { Observable } from 'rxjs';
-import { DESEMBOLSO } from 'app/shared/helpers/url/desembolso';
-import { environment } from 'environments/environment';
-import { CONTENT_TYPE } from 'app/shared/helpers/headers';
-import { HttpClient } from '@angular/common/http';
-import { InjectorInstance } from 'app/app.module';
+import {Injectable} from '@angular/core';
+import {RequestMethod} from 'app/shared/helpers/request-method';
+import {Observable} from 'rxjs';
+import {DESEMBOLSO} from 'app/shared/helpers/url/desembolso';
+import {environment} from 'environments/environment';
+import {CONTENT_TYPE} from 'app/shared/helpers/headers';
+import {HttpClient} from '@angular/common/http';
+import {InjectorInstance} from 'app/app.module';
 
 
 @Injectable({
@@ -14,9 +14,10 @@ import { InjectorInstance } from 'app/app.module';
 export class AprobacionService {
   private requestMethod = new RequestMethod();
   private http: HttpClient;
+
   constructor() {
     this.http = InjectorInstance.get<HttpClient>(HttpClient);
-   }
+  }
 
   listar(payload): Observable<any> {
     return this.requestMethod.get(
@@ -27,6 +28,7 @@ export class AprobacionService {
       }
     );
   }
+
   actualizar(payload): Observable<any> {
     return this.requestMethod.put(
       `${environment.apiUrl}${DESEMBOLSO.actualizar}`,
@@ -36,6 +38,7 @@ export class AprobacionService {
       }
     );
   }
+
   cambiarEstado(payload): Observable<any> {
     return this.requestMethod.put(
       `${environment.apiUrl}${DESEMBOLSO.cambiarEstado}`,
@@ -65,6 +68,6 @@ export class AprobacionService {
   }
 
   export(payload: any): Observable<Blob> {
-    return this.http.post(environment.apiUrl + DESEMBOLSO.GenerarArchivo, payload, { responseType: 'blob'});
+    return this.http.post(environment.apiUrl + DESEMBOLSO.GenerarArchivo, payload, {responseType: 'blob'});
   }
 }

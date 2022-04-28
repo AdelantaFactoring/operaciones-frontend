@@ -37,6 +37,10 @@ export class LiquidacionCab {
   seleccionado: boolean = false;
   tipoCambioMoneda: number;
   montoTotalConversion: number;
+  netoConfirmadoTotal: number;
+  pagoTotal: number;
+  saldoTotal: number;
+  porcentajePagoTotal: number;
   idUsuarioAud: number;
   edicion: boolean = false;
   idDestino: number;

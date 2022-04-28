@@ -86,7 +86,7 @@ export class AprobacionComponent implements OnInit {
             link: '/'
           },
           {
-            name: 'desembolsos',
+            name: 'Desembolsos',
             isLink: false
           },
           {

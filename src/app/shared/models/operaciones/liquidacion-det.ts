@@ -33,6 +33,10 @@ export class LiquidacionDet {
   montoTotalFacturado: number;
   montoNotaCreditoDevolucion: number;
   montoDesembolso: number;
+  diasMora: number;
+  pago: number;
+  saldo: number;
+  porcentajePago: number;
   idUsuarioAud: number;
 
   edicion: boolean = false;

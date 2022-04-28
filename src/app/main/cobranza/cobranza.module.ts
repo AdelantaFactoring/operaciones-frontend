@@ -11,6 +11,7 @@ import {NgxMaskModule} from "ngx-mask";
 import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 import {RegistroPagosComponent} from './registro-pagos/registro-pagos.component';
 import {MiscellaneousModule} from "../pages/miscellaneous/miscellaneous.module";
+import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 
 const routes: Routes = [
   {
@@ -28,19 +29,20 @@ const routes: Routes = [
   declarations: [
     RegistroPagosComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    NgbModule,
-    CoreCommonModule,
-    BlockUIModule.forRoot(),
-    ContentHeaderModule,
-    CoreTouchspinModule,
-    NgSelectModule,
-    NgxMaskModule.forRoot(),
-    NgxDatatableModule,
-    MiscellaneousModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        NgbModule,
+        CoreCommonModule,
+        BlockUIModule.forRoot(),
+        ContentHeaderModule,
+        CoreTouchspinModule,
+        NgSelectModule,
+        NgxMaskModule.forRoot(),
+        NgxDatatableModule,
+        MiscellaneousModule,
+        PerfectScrollbarModule
+    ]
 })
 export class CobranzaModule {
 }

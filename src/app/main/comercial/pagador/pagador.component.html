@@ -158,17 +158,24 @@
                 <input class="form-control" formControlName="grupoEconomico" type="text"/>
               </div>
             </div>
-
             <div class="col-12 col-md-6">
               <div class="form-group">
                 <label>Contacto</label>
-                <input class="form-control" formControlName="contacto" type="text"/>
+                <input class="form-control" formControlName="contacto" type="text"
+                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.contacto.errors }"/>
+                <div *ngIf="ReactiveIUForm.contacto.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.contacto.errors?.required">* Campo obligatorio</div>
+                </div>
               </div>
             </div>
             <div class="col-12 col-md-6">
               <div class="form-group">
                 <label>Telefono</label>
-                <input class="form-control" formControlName="telefono" type="text"/>
+                <input class="form-control" formControlName="telefono" type="text"
+                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.correo.errors }"/>
+                <div *ngIf="ReactiveIUForm.correo.errors" class="invalid-feedback">
+                  <div *ngIf="ReactiveIUForm.correo.errors?.required">* Campo obligatorio</div>
+                </div>
               </div>
             </div>
             <div class="col-12 col-md-6">

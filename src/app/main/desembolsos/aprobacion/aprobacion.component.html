@@ -114,7 +114,7 @@
                         <input type="checkbox" class="custom-control-input"
                                id="{{'customCheck' + cab.idLiquidacionCab}}"
                                [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"
-                               [disabled]="!cab.checkList || cab.idEstado == 5"/>
+                               [disabled]="!cab.checkList || cab.idEstado >= 5"/>
                         <label class="custom-control-label" for="{{'customCheck' + cab.idLiquidacionCab}}"></label>
                       </div>
                     </td>

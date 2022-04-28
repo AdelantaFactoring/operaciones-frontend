@@ -1,5 +1,424 @@
 <div class="content-wrapper">
   <div class="content-body">
+    <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="d-flex flex-wrap mb-0">
+            <div class="p-1">
+              <button type="submit" rippleEffect class="btn btn-secondary" (click)="onListarCobranza()">
+                <i class="mr-0 mr-sm-1" data-feather="refresh-cw"></i>
+                <span class="d-none d-sm-inline-block">Refrescar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label class="d-flex align-items-center"
+              >Mostrar
+                <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
+                        (change)="onListarCobranza()">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                filas</label
+              >
+            </div>
+          </div>
+          <div class="col-md-6 col-12 d-flex justify-content-md-end">
+            <div class="d-flex align-items-center justify-content-end mb-1">
+              <label class="d-flex align-items-center"
+              >Buscar<input
+                type="search"
+                placeholder="Buscar"
+                class="form-control ml-25"
+                [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" (change)="onListarCobranza()"
+              /></label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>
+                    <div class="d-flex align-items-center">
+                      <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                         (click)="onCambiarVisibilidadDetalleTodo()">
+                        <div *ngIf="!cambiarIcono">
+                          <i class="text-primary cursor-pointer" data-feather="chevron-right"></i>
+                        </div>
+                        <div *ngIf="cambiarIcono"><i class="text-primary cursor-pointer"
+                                                     data-feather="chevron-down"></i>
+                        </div>
+                      </a>
+                    </div>
+                  </th>
+                  <th>N° Liquidación</th>
+                  <th>Cliente</th>
+                  <th>Cliente RUC</th>
+                  <th>Pagador / Proveedor</th>
+                  <th>Pagador / Proveedor RUC</th>
+                  <th>Moneda</th>
+                  <th>Neto Confirmado Total</th>
+                  <th>Pago Total</th>
+                  <th>Saldo Total</th>
+                  <th>Progreso Pago Total</th>
+                  <th>Tipo Operación</th>
+                  <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-template let-cab ngFor [ngForOf]="cobranza">
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                           (click)="onCambiarVisibilidadDetalle(cab)">
+                          <div *ngIf="!cab.cambiarIcono">
+                            <i class="text-primary cursor-pointer" data-feather="chevron-right"></i>
+                          </div>
+                          <div *ngIf="cab.cambiarIcono"><i class="text-primary cursor-pointer"
+                                                           data-feather="chevron-down"></i>
+                          </div>
+                        </a>
+                      </div>
+                    </td>
+                    <td>{{cab.codigo}}</td>
+                    <td>{{cab.razonSocialCliente}}</td>
+                    <td>{{cab.rucCliente}}</td>
+                    <td>{{cab.razonSocialPagProv}}</td>
+                    <td>{{cab.rucPagProv}}</td>
+                    <td>{{cab.moneda}}</td>
+                    <td>{{cab.netoConfirmadoTotal | number: '1.2-2'}}</td>
+                    <td>{{cab.pagoTotal | number: '1.2-2'}}</td>
+                    <td>{{cab.saldoTotal | number: '1.2-2'}}</td>
+                    <td>
+                      <div class="progress-wrapper">
+                        <div class="mb-25 text-center">{{cab.porcentajePagoTotal | number: '1.2-2'}}%</div>
+                        <ngb-progressbar [striped]="true" [animated]="true" type="primary"
+                                         [value]="cab.porcentajePagoTotal"></ngb-progressbar>
+                      </div>
+                    </td>
+                    <td>{{cab.tipoOperacion}}</td>
+                    <td>{{cab.estado}}</td>
+                  </tr>
+                  <tr id="{{ 'trL' + cab.idLiquidacionCab }}" style="visibility: collapse">
+                    <td [colSpan]="13">
+                      <div class="row">
+                        <div class="table-responsive" style="padding-left: 20px; display: none;"
+                             id="{{ 'detailL' + cab.idLiquidacionCab }}">
+                          <table class="table table-hover">
+                            <thead>
+                            <tr>
+                              <th class="detail-th-color">Acción</th>
+                              <th class="detail-th-color">N° Documento</th>
+                              <th class="detail-th-color">Fecha Confirmada</th>
+                              <th class="detail-th-color">Neto Confirmado</th>
+                              <th class="detail-th-color">Día(s) Mora</th>
+                              <th class="detail-th-color">Interés Total</th>
+                              <th class="detail-th-color">Pago</th>
+                              <th class="detail-th-color">Saldo</th>
+                              <th class="detail-th-color">Progreso Pago</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let item of cab.liquidacionDet">
+                              <td>
+                                <div class="d-flex align-items-center">
+                                  <a href="javascript:void(0)" title="Pagar" (click)="onPagar(modalINFO, cab, item)"
+                                     class="btn btn-raised btn-outline-success btn-sm">
+                                    <!--                                    <i class="text-success cursor-pointer" data-feather="edit"></i>-->
+                                    <i class="fa fa-money"></i>
+                                  </a>
+                                </div>
+                              </td>
+                              <td>{{item.nroDocumento}}</td>
+                              <td>{{item.fechaConfirmado}}</td>
+                              <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                              <td>{{item.diasMora}}</td>
+                              <td>{{item.interesConIGV | number: '1.2-2'}}</td>
+                              <td>{{item.pago | number: '1.2-2'}}</td>
+                              <td>{{item.saldo | number: '1.2-2'}}</td>
+                              <td>
+                                <div class="progress-wrapper">
+                                  <div class="mb-25 text-center">{{item.porcentajePago | number: '1.2-2'}}%</div>
+                                  <ngb-progressbar [striped]="true" [animated]="true" type="primary"
+                                                   [value]="item.porcentajePago"></ngb-progressbar>
+                                </div>
+                              </td>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
+            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
+                            (pageChange)="onListarCobranza()" [pageSize]="pageSize"></ngb-pagination>
+          </div>
+        </div>
 
+        <ng-template #modalINFO let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Liquidación: [{{codigo}}] => N° Documento: [{{nroDocumento}}]</h4>
+            <button aria-label="Close" class="close" type="button" (click)="onCancelarPago()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" ngbAutofocus tabindex="0" [perfectScrollbar]>
+            <form [formGroup]="liquidacionForm">
+              <div class="row spaced">
+                <div class="col-12">
+                  <div class="divider divider-info">
+                    <div class="divider-text">Información General</div>
+                  </div>
+                </div>
+                <div class="col-md-12 col-12" hidden>
+                  <div class="form-group">
+                    <label>Id</label>
+                    <input class="form-control" formControlName="idLiquidacionCab" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-12 col-12" hidden>
+                  <div class="form-group">
+                    <label>Id</label>
+                    <input class="form-control" formControlName="idLiquidacionDet" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>RUC (Cliente)</label>
+                    <input class="form-control" formControlName="rucCliente" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Razón Social (Cliente)</label>
+                    <input class="form-control" formControlName="razonSocialCliente" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>N° Documento</label>
+                    <input class="form-control" formControlName="nroDocumento" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Fecha Confirmada</label>
+                    <input class="form-control" formControlName="fechaConfirmada" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Neto Confirmado</label>
+                    <input class="form-control" formControlName="netoConfirmado" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Fondo Resguardo</label>
+                    <input class="form-control" formControlName="fondoResguardo" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <form [formGroup]="pagoInfoForm">
+              <div class="row spaced">
+                <div class="col-12">
+                  <div class="divider divider-success">
+                    <div class="divider-text">Información de Pago</div>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Fecha Confirmada</label>
+                    <input class="form-control" formControlName="nuevaFechaConfirmada" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Día(s) Mora</label>
+                    <input class="form-control" formControlName="diasMora" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Interés</label>
+                    <input class="form-control" formControlName="interes" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Gastos</label>
+                    <input class="form-control" formControlName="gastos" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Saldo Deuda</label>
+                    <input class="form-control" formControlName="saldoDeuda" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Fondo Resguardo</label>
+                    <input class="form-control" formControlName="fondoResguardo" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Saldo Deuda Restante</label>
+                    <input class="form-control" formControlName="saldoDeudaRestante" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Defecto</label>
+                    <input class="form-control" formControlName="defecto" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="form-group">
+                    <label>Tipo de Pago</label>
+                    <div class="form-control custom-control custom-switch custom-control-inline" style="border: 0px; background-color: transparent">
+                      <label style="padding-right: 0.5rem; line-height: 1.7rem">Parcial</label>
+                      <input type="checkbox" class="custom-control-input"
+                             id="tipoPago" formControlName="tipoPago" (ngModelChange)="onCambioTipoPago($event)"
+                      />
+                      <label class="custom-control-label"
+                             for="tipoPago">Total</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="divider divider-success">
+                    <div class="divider-text"><span [data-feather]="'chevrons-down'"></span></div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Fecha Pago</label>
+                    <div class="input-group">
+                      <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaPago"
+                             [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.fechaPago.errors }"
+                             container="body" ngbDatepicker #basicDP="ngbDatepicker">
+                      <div class="input-group-append">
+                        <button class="btn btn-outline-secondary feather icon-calendar"
+                                (click)="basicDP.toggle()"
+                                type="button" rippleEffect></button>
+                      </div>
+                      <div *ngIf="ReactiveIUForm.fechaPago.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.fechaPago.errors?.required">* Campo obligatorio</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Monto Pago</label>
+                    <input class="form-control" formControlName="montoPago" type="text"
+                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.montoPago.errors }"
+                           mask="separator" thousandSeparator=","/>
+                    <div *ngIf="ReactiveIUForm.montoPago.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.montoPago.errors?.required">* Campo obligatorio</div>
+                      <div *ngIf="ReactiveIUForm.montoPago.errors?.min">* El valor debe ser mayor a 0</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="d-flex flex-wrap mb-0">
+                    <div>
+                      <button type="submit" rippleEffect class="btn btn-success" (click)="onGuardarPago()">
+                        <i class="mr-0 mr-sm-1" data-feather="save"></i>
+                        <span class="d-none d-sm-inline-block">Guardar</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="row">
+              <div class="col-12">
+                <div class="divider divider-warning">
+                  <div class="divider-text">Pagos</div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                    <tr>
+                      <th>Fecha Confirmada</th>
+                      <th>Fecha Pago</th>
+                      <th>Día(s) Mora</th>
+                      <th>Monto a Financiar</th>
+                      <th>Monto Pago</th>
+                      <th>Interés</th>
+                      <th>Gastos</th>
+                      <th>Saldo Deuda</th>
+                      <th>Fondo Resguardo</th>
+                      <th>Defecto</th>
+                      <th>Tipo de Pago</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of pagos">
+                      <td>{{item.fechaConfirmada}}</td>
+                      <td>{{item.fechaPago}}</td>
+                      <td>{{item.diasMora | number: '1.0'}}</td>
+                      <td>{{item.montoCobrar | number: '1.2-2'}}</td>
+                      <td>{{item.montoPago | number: '1.2-2'}}</td>
+                      <td>{{item.interes | number: '1.2-2'}}</td>
+                      <td>{{item.gastos | number: '1.2-2'}}</td>
+                      <td>{{item.saldoDeuda | number: '1.2-2'}}</td>
+                      <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                      <td>{{item.defecto | number: '1.2-2'}}</td>
+                      <td>{{item.tipoPago}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" style="display: block !important;">
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div style="float: right">
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelarPago()">
+                    <span [data-feather]="'x-circle'"></span> Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
   </div>
 </div>

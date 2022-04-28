@@ -100,8 +100,7 @@ export const menu: CoreMenu[] = [
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'file-plus',
-      //url: 'cobranza/registroPagos'
-      url: 'pages/miscellaneous/coming-soon'
+      url: 'cobranza/registroPagos'
     },{
       id: 'devoluciones',
       title: 'Devoluciones',

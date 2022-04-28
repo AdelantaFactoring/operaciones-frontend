@@ -57,9 +57,9 @@ export class PagadorComponent implements OnInit {
         ruc: ['', Validators.required],
         razonSocial: ['', Validators.required],
         grupoEconomico: [''],
-        contacto: [''],
+        contacto: ['', Validators.required],
         telefono: [''],
-        correo: [''],
+        correo: ['', Validators.required],
         sector: [''],
         limiteGastoNegociacion: [0, Validators.required]
       });
@@ -101,7 +101,7 @@ export class PagadorComponent implements OnInit {
       correo: this.pagadorForm.controls.correo.value,
       idUsuarioAud: 1,
     }).subscribe(response => {
-      
+
       if (response.tipo == 1) {
         this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();
@@ -120,7 +120,7 @@ export class PagadorComponent implements OnInit {
     });
   }
   onNuevo(modal: any): void {
-    
+
     setTimeout(() => {
       this.modalService.open(modal, {
         scrollable: true,
@@ -177,7 +177,7 @@ export class PagadorComponent implements OnInit {
   }
 
   onEditar(item: Pagador, modal: any): void {
-    
+
     this.pagadorForm.controls.idPagador.setValue(item.idPagador);
     this.pagadorForm.controls.ruc.setValue(item.ruc);
     this.pagadorForm.controls.razonSocial.setValue(item.razonSocial);
