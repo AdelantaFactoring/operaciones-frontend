@@ -1,13 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
 import {UtilsService} from "../../../shared/services/utils.service";
 import {CheckListService} from "./check-list.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {FormBuilder, FormGroup, ValidatorFn, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SolicitudDet} from "../../../shared/models/comercial/solicitudDet";
 import {FileUploader} from "ng2-file-upload";
-import {environment} from "../../../../environments/environment";
-import {SOLICITUD} from "../../../shared/helpers/url/comercial";
 import {ClientesService} from "../clientes/clientes.service";
 import {ClienteContacto} from "../../../shared/models/comercial/cliente-contacto";
 import {ClienteCuenta} from "../../../shared/models/comercial/cliente-cuenta";

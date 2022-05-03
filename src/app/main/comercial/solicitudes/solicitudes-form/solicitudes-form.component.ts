@@ -254,7 +254,7 @@ export class SolicitudesFormComponent implements OnInit {
         "RazonSocialPagProv": this.idTipoOperacion == 1 ? item.razonSocialDet : item.razonSocialCab,
         "moneda": item.tipoMoneda,
         "nroDocumento": item.codFactura,
-        "fechaConfirmado": item.fechaVencimiento,
+        "fechaConfirmadoFormat": item.fechaVencimiento,
         "netoConfirmado": item.netoPendiente,
         "montoSinIGV": item.subTotal,
         "montoConIGV": item.total,

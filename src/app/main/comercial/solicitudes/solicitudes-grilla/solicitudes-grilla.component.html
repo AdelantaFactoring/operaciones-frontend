@@ -97,7 +97,7 @@
           </tr>
           <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse">
             <td [colSpan]="10">
-              <div class="table-responsive" style="padding-left: 20px; display: none;"
+              <div class="table-responsive" style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
                    id="{{ 'detail' + cab.idSolicitudCab }}">
                 <table class="table table-hover">
                   <thead>
@@ -434,18 +434,18 @@
             <div class="divider-text">Monto calculado</div>
           </div>
         </div>
-        <div class="col-md-6 col-12"  [hidden]="idTipoOperacion != 2">
+        <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
           <div class="form-group">
             <label>Fondo Resguardo</label>
             <input class="form-control" formControlName="fondoResguardo" type="text" placeholder="0.00"
-                  mask="separator" thousandSeparator=","/>
+                   mask="separator" thousandSeparator=","/>
           </div>
         </div>
         <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
           <div class="form-group">
             <label>Monto a financiar</label>
-            <input class="form-control"  formControlName="netoSolicitado" type="text" placeholder="0.00"
-                    mask="separator" thousandSeparator=","/>
+            <input class="form-control" formControlName="netoSolicitado" type="text" placeholder="0.00"
+                   mask="separator" thousandSeparator=","/>
           </div>
         </div>
         <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
@@ -467,7 +467,7 @@
           <div class="form-group">
             <label>Total a Facturar</label>
             <input class="form-control" formControlName="totalFacturarIGV" type="text" placeholder="0.00"
-                  mask="separator" thousandSeparator=","/>
+                   mask="separator" thousandSeparator=","/>
           </div>
         </div>
         <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
@@ -478,10 +478,10 @@
           </div>
         </div>
         <div class="col-12" [hidden]="idTipoOperacion === 2">
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-              <tr>
+          <div class="table-responsive" style="max-height: 300px;">
+            <table class="table table-hover" >
+              <thead class="thead">
+              <tr class="tr">
                 <th class="detail-th-color">N° Documento</th>
                 <th class="detail-th-color">Forma Pago</th>
                 <th class="detail-th-color">Monto sin IGV</th>
@@ -494,8 +494,8 @@
                 <th class="detail-th-color">ARchivo XML</th>
               </tr>
               </thead>
-              <tbody>
-              <tr *ngFor="let item of detalleSolicitud">
+              <tbody class="tbody">
+              <tr *ngFor="let item of detalleSolicitud" class="tr">
                 <td>{{item.nroDocumento}}</td>
                 <td>{{item.formaPago}}</td>
                 <td>{{item.montoSinIGV | number: '1.2-2'}}</td>

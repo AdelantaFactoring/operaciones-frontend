@@ -167,48 +167,50 @@
                       </div>
                       <label>*Los nombres de los archivos PDF deben coincidir con los nombres de los archivos
                         XML</label>
-                      <table class="table">
-                        <thead>
-                        <tr>
-                          <th width="40%">Nombre</th>
-                          <th>Tamaño</th>
-                          <th>Progreso</th>
-                          <th>Estado</th>
-                          <th>
-                            <button type="button" class="btn btn-raised btn-outline-danger btn-sm"
-                                    (click)="uploader.clearQueue()" rippleEffect>
-                              <i data-feather="trash"></i>
-                            </button>
-                          </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr *ngFor="let item of uploader.queue">
-                          <!-- <td [ngClass]="{color: item?.file?.name.includes(.XML)}"> -->
-                          <td>
-                            <strong>{{ item?.file?.name }}</strong>
-                          </td>
-                          <td *ngIf="uploader.options.isHTML5" nowrap>
-                            {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
-                          </td>
-                          <td *ngIf="uploader.options.isHTML5">
-                            <ngb-progressbar type="primary" [value]="item.progress">
-                            </ngb-progressbar>
-                          </td>
-                          <td class="text-center">
-                            <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
-                            <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
-                            <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
-                          </td>
-                          <td nowrap>
-                            <button type="button" class="btn btn-raised btn-outline-danger btn-sm"
-                                    (click)="onEliminarFactura(item)" rippleEffect>
-                              <i data-feather="trash"></i>
-                            </button>
-                          </td>
-                        </tr>
-                        </tbody>
-                      </table>
+                      <div class="table-responsive" style="height: 250px">
+                        <table class="table">
+                          <thead>
+                          <tr>
+                            <th width="40%">Nombre</th>
+                            <th>Tamaño</th>
+                            <th>Progreso</th>
+                            <th>Estado</th>
+                            <th>
+                              <button type="button" class="btn btn-raised btn-outline-danger btn-sm"
+                                      (click)="uploader.clearQueue()" rippleEffect>
+                                <i data-feather="trash"></i>
+                              </button>
+                            </th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of uploader.queue">
+                            <!-- <td [ngClass]="{color: item?.file?.name.includes(.XML)}"> -->
+                            <td>
+                              <strong>{{ item?.file?.name }}</strong>
+                            </td>
+                            <td *ngIf="uploader.options.isHTML5" nowrap>
+                              {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
+                            </td>
+                            <td *ngIf="uploader.options.isHTML5">
+                              <ngb-progressbar type="primary" [value]="item.progress">
+                              </ngb-progressbar>
+                            </td>
+                            <td class="text-center">
+                              <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
+                              <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
+                              <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
+                            </td>
+                            <td nowrap>
+                              <button type="button" class="btn btn-raised btn-outline-danger btn-sm"
+                                      (click)="onEliminarFactura(item)" rippleEffect>
+                                <i data-feather="trash"></i>
+                              </button>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
 
@@ -239,7 +241,7 @@
 
                   <div class="row">
                     <div class="col-md-12 col-12">
-                      <div class="table-responsive">
+                      <div class="table-responsive" style="height: 350px">
                         <table class="table table-hover">
                           <thead>
                           <tr>
@@ -447,7 +449,7 @@
                   </div>
                   <div class="row">
                     <div class="col-md-12 col-12">
-                      <div class="table-responsive">
+                      <div class="table-responsive" style="height: 350px">
                         <table class="table table-hover">
                           <thead>
                           <tr>
@@ -540,7 +542,7 @@
 
                   <div class="row">
                     <div class="col-md-12 col-12">
-                      <div class="table-responsive">
+                      <div class="table-responsive" style="height: 350px">
                         <table class="table table-hover">
                           <thead>
                           <tr>
@@ -663,7 +665,7 @@
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
-                <label>Seleccione Tipo</label>
+                <label>Tipo</label>
                 <ng-select appendTo="body" [clearable]="false" [items]="optTipo" bindLabel="descripcion"
                            placeholder="Tipo" [(ngModel)]="idTipo" bindValue="idColumna" formControlName="tipo"
                            (change)="onCalcularCT()">
@@ -672,7 +674,7 @@
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
-                <label>Seleccione Moneda</label>
+                <label>Moneda</label>
                 <ng-select appendTo="body" [clearable]="false" [items]="optMoneda" bindLabel="descripcion"
                            [(ngModel)]="idMoneda" (change)="onChangeMoneda()" bindValue="idColumna"
                            formControlName="moneda">
