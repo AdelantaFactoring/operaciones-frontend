@@ -12,6 +12,7 @@ import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 import {RegistroPagosComponent} from './registro-pagos/registro-pagos.component';
 import {MiscellaneousModule} from "../pages/miscellaneous/miscellaneous.module";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import { DevolucionesComponent } from './devoluciones/devoluciones.component';
 
 const routes: Routes = [
   {
@@ -23,11 +24,21 @@ const routes: Routes = [
       }
     ]
   },
+  {
+    path: '',
+    children: [
+      {
+        path: 'devoluciones',
+        component: DevolucionesComponent
+      }
+    ]
+  }
 ]
 
 @NgModule({
   declarations: [
-    RegistroPagosComponent
+    RegistroPagosComponent,
+    DevolucionesComponent
   ],
     imports: [
         CommonModule,

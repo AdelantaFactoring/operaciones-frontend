@@ -107,7 +107,7 @@ export const menu: CoreMenu[] = [
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'rotate-ccw',
-      url: 'pages/miscellaneous/coming-soon'
+      url: 'cobranza/devoluciones'
     }]
   },
   {

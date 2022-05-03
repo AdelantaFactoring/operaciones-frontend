@@ -3,3 +3,7 @@ export const REGISTROPAGOS = {
   listarPago: '/liquidacion/listarPago',
   infoPago: '/liquidacion/infoPago',
 }
+
+export const DEVOLUCIONES = {
+  listar: '/liquidacion/listarDevolucion',
+}
