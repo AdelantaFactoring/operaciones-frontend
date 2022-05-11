@@ -41,7 +41,17 @@ export class RegistroPagosService {
   infoPago(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${REGISTROPAGOS.infoPago}`,
-      `?idLiquidacionDet=${payload.idLiquidacionDet}&tipoPago=${payload.tipoPago}`,
+      `?idLiquidacionDet=${payload.idLiquidacionDet}&fecha=${payload.fecha}&tipoPago=${payload.tipoPago}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  insertarPago(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${REGISTROPAGOS.insertarPago}`,
+      payload,
       {
         'Content-Type': CONTENT_TYPE.json
       }

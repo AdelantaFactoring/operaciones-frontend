@@ -56,11 +56,11 @@
                   <th>Acción</th>
                   <th>RUC</th>
                   <th>Razón Social</th>
-                  <th>Limite Negociacion</th>
+                  <th>Límite Negociación</th>
                   <th>Sector</th>
-                  <th>Grupo Economico</th>
-                  <th>Contactos</th>
-                  <th>Telefono</th>
+                  <th>Grupo Económico</th>
+                  <th>Contacto</th>
+                  <th>Teléfono</th>
                   <th>Correo</th>
                 </tr>
                 </thead>
@@ -154,7 +154,7 @@
             </div>
             <div class="col-12 col-md-6">
               <div class="form-group">
-                <label>Grupo Economico</label>
+                <label>Grupo Económico</label>
                 <input class="form-control" formControlName="grupoEconomico" type="text"/>
               </div>
             </div>
@@ -170,8 +170,14 @@
             </div>
             <div class="col-12 col-md-6">
               <div class="form-group">
-                <label>Telefono</label>
-                <input class="form-control" formControlName="telefono" type="text"
+                <label>Teléfono</label>
+                <input class="form-control" formControlName="telefono" type="text" />
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label>Correo</label>
+                <input class="form-control" formControlName="correo" type="text"
                        [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.correo.errors }"/>
                 <div *ngIf="ReactiveIUForm.correo.errors" class="invalid-feedback">
                   <div *ngIf="ReactiveIUForm.correo.errors?.required">* Campo obligatorio</div>
@@ -180,13 +186,7 @@
             </div>
             <div class="col-12 col-md-6">
               <div class="form-group">
-                <label>Correo</label>
-                <input class="form-control" formControlName="correo" type="text"/>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="form-group">
-                <label>Limite Gasto Negociacion</label>
+                <label>Límite Negociación</label>
                 <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.limiteGastoNegociacion.errors }"
                        class="form-control" formControlName="limiteGastoNegociacion" type="number"/>
                 <div *ngIf="ReactiveIUForm.limiteGastoNegociacion.errors" class="invalid-feedback">

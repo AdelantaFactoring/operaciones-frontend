@@ -64,6 +64,7 @@ export class LiquidacionesComponent implements OnInit {
   public observacion: string = '';
   public ver: boolean = false;
   public montoTotalFacturadoMinimoTM: TablaMaestra[] = [];
+
   get ReactiveIUForm(): any {
     return this.liquidacionForm.controls;
   }
@@ -537,12 +538,12 @@ export class LiquidacionesComponent implements OnInit {
       filas += `<tr><td>${item.codigo}</td>
                   ${!ocultar2 ? `
                   <td>${item.montoSuperado ? '<i class="text-success cursor-pointer fa fa-check"></i>' :
-                        '<i class="text-danger fa fa-ban"></i>'}</td>`
-                  : ''}
+          '<i class="text-danger fa fa-ban"></i>'}</td>`
+        : ''}
                   ${!ocultar ? `
-                  <td>${item.correoEnviado === 1  ? '<i class="text-success fa fa-check"></i>' :
-                  (item.correoEnviado === 0 ? '<i class="text-danger cursor-pointer fa fa-ban"></i>' :
-                    '<i class="text-secondary cursor-pointer fa fa-minus-circle"></i>')}</td>` : '' }
+                  <td>${item.correoEnviado === 1 ? '<i class="text-success fa fa-check"></i>' :
+        (item.correoEnviado === 0 ? '<i class="text-danger cursor-pointer fa fa-ban"></i>' :
+          '<i class="text-secondary cursor-pointer fa fa-minus-circle"></i>')}</td>` : ''}
                 </tr>`
     }
     return filas;
@@ -566,7 +567,7 @@ export class LiquidacionesComponent implements OnInit {
   }
 
   onEditar(cab: LiquidacionCab, item: LiquidacionDet): void {
-    if (cab.liquidacionDet.filter(f => f.edicion || f.editado).length > 0){
+    if (cab.liquidacionDet.filter(f => f.edicion || f.editado).length > 0) {
       this.utilsService.showNotification("Guarda o cancela los cambios primero", "Advertencia", 2);
       return;
     }
@@ -670,7 +671,7 @@ export class LiquidacionesComponent implements OnInit {
   }
 
   onEditarCab(cab: LiquidacionCab, modal): void {
-    if (cab.liquidacionDet.filter(f => f.edicion || f.editado).length > 0){
+    if (cab.liquidacionDet.filter(f => f.edicion || f.editado).length > 0) {
       this.utilsService.showNotification("Guarda o cancela los cambios primero", "Advertencia", 2);
       return;
     }
@@ -874,7 +875,7 @@ export class LiquidacionesComponent implements OnInit {
     this.modalService.dismissAll();
   }
 
-  onEnviar(idTipo: number, cab: LiquidacionCab): void{
+  onEnviar(idTipo: number, cab: LiquidacionCab): void {
     let liquidaciones = idTipo == 1 ? [...this.liquidaciones.filter(f => f.seleccionado)] : [{...cab}];
 
     if (idTipo == 1) {
@@ -884,14 +885,14 @@ export class LiquidacionesComponent implements OnInit {
       }
     }
 
-    if (liquidaciones.filter(f => f.liquidacionDet.filter(f => f.edicion || f.editado).length > 0).length > 0){
+    if (liquidaciones.filter(f => f.liquidacionDet.filter(f => f.edicion || f.editado).length > 0).length > 0) {
       this.utilsService.showNotification("Guarda o cancela los cambios primero", "Advertencia", 2);
       return;
     }
 
     if (liquidaciones.filter(f =>
-                  f.liquidacionDet.filter(f1 =>
-                      f1.montoTotalFacturado < Number(this.montoTotalFacturadoMinimoTM[0].valor)).length > 0).length > 0) {
+      f.liquidacionDet.filter(f1 =>
+        f1.montoTotalFacturado < Number(this.montoTotalFacturadoMinimoTM[0].valor)).length > 0).length > 0) {
       Swal.fire({
         title: 'Advertencia',
         html: `
@@ -926,7 +927,7 @@ export class LiquidacionesComponent implements OnInit {
       this._OnEnviar(liquidaciones);
   }
 
-   private _OnEnviar(liquidaciones: any): void {
+  private _OnEnviar(liquidaciones: any): void {
     liquidaciones.forEach(el => {
       el.idEmpresa = 1;
       el.idUsuarioAud = 1;

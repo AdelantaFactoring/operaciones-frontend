@@ -255,6 +255,21 @@
                 </div>
                 <div class="col-md-4 col-12">
                   <div class="form-group">
+                    <label>Fecha Pago Cálculo (Actual por defecto)</label>
+                    <div class="input-group">
+                      <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fecha"
+                             (ngModelChange)="onCambioFecha($event)"
+                             container="body" ngbDatepicker #basicDP="ngbDatepicker">
+                      <div class="input-group-append">
+                        <button class="btn btn-outline-secondary feather icon-calendar"
+                                (click)="basicDP.toggle()"
+                                type="button" rippleEffect></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
                     <label>Día(s) Mora</label>
                     <input class="form-control" formControlName="diasMora" type="text"
                            mask="separator" thousandSeparator=","/>
@@ -276,29 +291,8 @@
                 </div>
                 <div class="col-md-4 col-12">
                   <div class="form-group">
-                    <label>Saldo Deuda</label>
+                    <label>Saldo (Deuda)</label>
                     <input class="form-control" formControlName="saldoDeuda" type="text"
-                           mask="separator" thousandSeparator=","/>
-                  </div>
-                </div>
-                <div class="col-md-4 col-12">
-                  <div class="form-group">
-                    <label>Fondo Resguardo</label>
-                    <input class="form-control" formControlName="fondoResguardo" type="text"
-                           mask="separator" thousandSeparator=","/>
-                  </div>
-                </div>
-                <div class="col-md-4 col-12">
-                  <div class="form-group">
-                    <label>Saldo Deuda Restante</label>
-                    <input class="form-control" formControlName="saldoDeudaRestante" type="text"
-                           mask="separator" thousandSeparator=","/>
-                  </div>
-                </div>
-                <div class="col-md-4 col-12">
-                  <div class="form-group">
-                    <label>Defecto</label>
-                    <input class="form-control" formControlName="defecto" type="text"
                            mask="separator" thousandSeparator=","/>
                   </div>
                 </div>
@@ -326,10 +320,10 @@
                     <div class="input-group">
                       <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaPago"
                              [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.fechaPago.errors }"
-                             container="body" ngbDatepicker #basicDP="ngbDatepicker">
+                             container="body" ngbDatepicker #basicDP1="ngbDatepicker">
                       <div class="input-group-append">
                         <button class="btn btn-outline-secondary feather icon-calendar"
-                                (click)="basicDP.toggle()"
+                                (click)="basicDP1.toggle()"
                                 type="button" rippleEffect></button>
                       </div>
                       <div *ngIf="ReactiveIUForm.fechaPago.errors" class="invalid-feedback">
@@ -348,6 +342,12 @@
                       <div *ngIf="ReactiveIUForm.montoPago.errors?.required">* Campo obligatorio</div>
                       <div *ngIf="ReactiveIUForm.montoPago.errors?.min">* El valor debe ser mayor a 0</div>
                     </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label>Observación</label>
+                    <textarea class="form-control" type="text" formControlName="observacion" maxlength="200"></textarea>
                   </div>
                 </div>
                 <div class="col-12">
@@ -380,10 +380,9 @@
                       <th>Monto Pago</th>
                       <th>Interés</th>
                       <th>Gastos</th>
-                      <th>Saldo Deuda</th>
-                      <th>Fondo Resguardo</th>
-                      <th>Defecto</th>
+                      <th>Saldo (Deuda)</th>
                       <th>Tipo de Pago</th>
+                      <th>Observación</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -396,9 +395,8 @@
                       <td>{{item.interes | number: '1.2-2'}}</td>
                       <td>{{item.gastos | number: '1.2-2'}}</td>
                       <td>{{item.saldoDeuda | number: '1.2-2'}}</td>
-                      <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
-                      <td>{{item.defecto | number: '1.2-2'}}</td>
                       <td>{{item.tipoPago}}</td>
+                      <td>{{item.observacion}}</td>
                     </tr>
                     </tbody>
                   </table>
@@ -420,5 +418,6 @@
         </ng-template>
       </div>
     </div>
+    <block-ui></block-ui>
   </div>
 </div>

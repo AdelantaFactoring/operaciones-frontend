@@ -31,7 +31,7 @@ export class AprobacionComponent implements OnInit {
   public page: number = 1;
   public pageSize: number = 10;
   public collectionSize: number;
-  public desembolso: LiquidacionCab[] = [];
+  public desembolsos: LiquidacionCab[] = [];
   public desembolsoDet: LiquidacionDet[] = [];
   public totalMontoDescembolso: number;
   public cuentas: ClienteCuenta[] = [];
@@ -180,7 +180,7 @@ export class AprobacionComponent implements OnInit {
       pageIndex: this.page,
       pageSize: this.pageSize
     }).subscribe((response: LiquidacionCab[]) => {
-      this.desembolso = response;
+      this.desembolsos = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
       this.utilsService.blockUIStop();
     }, error => {
@@ -300,13 +300,9 @@ export class AprobacionComponent implements OnInit {
     }
   }
 
-  onConfirmar(): void {
-
-  }
-
   onSeleccionarTodo(): void {
-    this.desembolso.forEach(el => {
-      if (el.checkList && el.idEstado !== 5)
+    this.desembolsos.forEach(el => {
+      if (el.checkList && el.idEstado <= 5)
         el.seleccionado = this.seleccionarTodo;
     });
   }
@@ -319,7 +315,7 @@ export class AprobacionComponent implements OnInit {
 
   onCambiarVisibilidadDetalleTodo(): void {
     this.cambiarIcono = !this.cambiarIcono;
-    this.desembolso.forEach(el => {
+    this.desembolsos.forEach(el => {
       el.cambiarIcono = this.cambiarIcono;
       document.getElementById('tr' + el.idLiquidacionCab).style.visibility = (el.cambiarIcono) ? "visible" : "collapse";
       document.getElementById('detail' + el.idLiquidacionCab).style.display = (el.cambiarIcono) ? "block" : "none";
@@ -474,10 +470,23 @@ export class AprobacionComponent implements OnInit {
 
   onAprobar(idEstado: number): void {
     // @ts-ignore
-    let liquidaciones = [...this.desembolso.filter(f => f.seleccionado)];
+    let liquidaciones = [...this.desembolsos.filter(f => f.seleccionado)];
 
     if (liquidaciones.length === 0) {
       this.utilsService.showNotification("Seleccione una o varias liquidaciones", "", 2);
+      return;
+    }
+
+    let valid = true;
+    for (let item of liquidaciones) {
+      if (item.idEstado != 4) {
+        valid = false;
+        break;
+      }
+    }
+
+    if (!valid) {
+      this.utilsService.showNotification('Seleccione solo liquidaciones con estado "Desembolso Pendiente"', "", 2);
       return;
     }
 
@@ -536,7 +545,7 @@ export class AprobacionComponent implements OnInit {
   }
 
   onGenerarArchivo(): void {
-    let liquidaciones = [...this.desembolso.filter(f => f.seleccionado)];
+    let liquidaciones = [...this.desembolsos.filter(f => f.seleccionado)];
 
     if (liquidaciones.length === 0) {
       this.utilsService.showNotification("Seleccione una o varias liquidaciones", "", 2);
@@ -544,24 +553,26 @@ export class AprobacionComponent implements OnInit {
     }
 
     for (const item of liquidaciones) {
-      if (item.idEstado !== 4) {
-        this.utilsService.showNotification('Una o varias liquidaciones seleccionas no contiene un Estado de desembolsos Pendiente', 'Alerta', 2);
+      if (item.idEstado !== 3 && item.idEstado > 4) {
+        this.utilsService.showNotification('Seleccione solo liquidaciones con estados "Aprobado"', 'Alerta', 2);
         return;
-      }
-      if (item.liquidacionCabSustento.filter(x => x.idTipoSustento === 2 && x.idTipo === 2).length === 0) {
-        this.utilsService.showNotification('La liquidación con código ' + item.codigo + ' no contiene archivo(s) de sustento con tipo Confirmación de desembolsos', 'Alerta', 2);
-        return;
+      } else {
+        if (item.liquidacionCabSustento.filter(x => x.idTipoSustento === 2 && x.idTipo === 2).length === 0) {
+          this.utilsService.showNotification('La liquidación con código ' + item.codigo + ' no contiene archivo(s) de sustento con tipo Confirmación de desembolsos', 'Alerta', 2);
+          return;
+        }
       }
     }
 
     liquidaciones.forEach(el => {
+      el.idEmpresa = 1;
       el.idEstado = 4;
       el.idUsuarioAud = 1;
     });
 
     this.utilsService.blockUIStart('Generando archivo...');
     this.desembolsoService.cambiarEstado(liquidaciones).subscribe(response => {
-      if (response.tipo == 1) {
+      if (response.comun.tipo == 1) {
         this.utilsService.blockUIStop();
         this.utilsService.blockUIStart('Exportando archivo...');
         this.desembolsoService.export(liquidaciones).subscribe(s => {
@@ -579,10 +590,10 @@ export class AprobacionComponent implements OnInit {
           this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
           this.utilsService.blockUIStop();
         });
-      } else if (response.tipo == 2) {
+      } else if (response.comun.tipo == 2) {
         this.utilsService.showNotification(response.mensaje, 'Validación', 2);
         this.utilsService.blockUIStop();
-      } else if (response.tipo == 0) {
+      } else if (response.comun.tipo == 0) {
         this.utilsService.showNotification(response.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
       }
@@ -631,4 +642,55 @@ export class AprobacionComponent implements OnInit {
     });
   }
 
+  onEnviar(idTipo: number, cab: LiquidacionCab): void {
+    let liquidaciones = idTipo == 1 ? [...this.desembolsos.filter(f => f.seleccionado)] : [{...cab}];
+
+    if (idTipo == 1) {
+      if (liquidaciones.length === 0) {
+        this.utilsService.showNotification("Seleccione una o varias liquidaciones", "", 2);
+        return;
+      }
+    }
+
+    if (liquidaciones.filter(f => f.liquidacionDet.filter(f => f.edicion || f.editado).length > 0).length > 0) {
+      this.utilsService.showNotification("Guarda o cancela los cambios primero", "Advertencia", 2);
+      return;
+    }
+
+    // if (liquidaciones.filter(f =>
+    //   f.liquidacionDet.filter(f1 =>
+    //     f1.montoTotalFacturado < Number(this.montoTotalFacturadoMinimoTM[0].valor)).length > 0).length > 0) {
+    //   Swal.fire({
+    //     title: 'Advertencia',
+    //     html: `
+    //         <p style="text-align: justify">La(s) siguiente(s) liquidacion(es) no supera(n) el monto total facturado mínimo de ${this.montoTotalFacturadoMinimoTM[0].valor}. ¿Desea continuar?</p>
+    //         <div class="table-responsive">
+    //           <table class="table table-hover">
+    //             <thead>
+    //             <tr>
+    //               <th>N° Liquidación</th>
+    //             </tr>
+    //             </thead>
+    //             <tbody>
+    //             ${this.onFilas2(liquidaciones)}
+    //             </tbody>
+    //           </table>
+    //         </div>`,
+    //     icon: 'warning',
+    //     width: '500px',
+    //     showCancelButton: true,
+    //     confirmButtonText: '<i class="fa fa-check"></i> Sí',
+    //     cancelButtonText: '<i class="fa fa-times"></i> No',
+    //     customClass: {
+    //       confirmButton: 'btn btn-warning',
+    //       cancelButton: 'btn btn-secondary'
+    //     },
+    //   }).then(result => {
+    //     if (result.value) {
+    //       this._OnEnviar(liquidaciones);
+    //     }
+    //   });
+    // } else
+    //   this._OnEnviar(liquidaciones);
+  }
 }

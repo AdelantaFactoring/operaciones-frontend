@@ -74,16 +74,15 @@ export class RegistroPagosComponent implements OnInit {
     });
     this.pagoInfoForm = this.formBuilder.group({
       nuevaFechaConfirmada: [{value: '', disabled: true}],
+      fecha: [{ year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() }],
       diasMora: [{value: 0, disabled: true}],
       interes: [{value: 0, disabled: true}],
       gastos: [{value: 0, disabled: true}],
       saldoDeuda: [{value: 0, disabled: true}],
-      fondoResguardo: [{value: 0, disabled: true}],
-      saldoDeudaRestante: [{value: 0, disabled: true}],
-      defecto: [{value: 0, disabled: true}],
       tipoPago: [true],
       fechaPago: ['', Validators.required],
-      montoPago: [0, [Validators.required, Validators.min(1)]]
+      montoPago: [0, [Validators.required, Validators.min(1)]],
+      observacion: ['']
     });
     this.oldPagoInfoForm = this.pagoInfoForm.value;
   }
@@ -124,21 +123,18 @@ export class RegistroPagosComponent implements OnInit {
     document.getElementById('detailL' + item.idLiquidacionCab).style.display = (item.cambiarIcono) ? "block" : "none";
   }
 
-  onInfoPago(idLiquidacionDet: number, tipoPago: boolean): void {
+  onInfoPago(idLiquidacionDet: number, fecha: string, tipoPago: boolean): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.registroPagosService.infoPago({
-      idLiquidacionDet,
-      tipoPago
+      idLiquidacionDet: idLiquidacionDet,
+      fecha: fecha,
+      tipoPago: tipoPago
     }).subscribe((response: LiquidacionPago) => {
       this.pagoInfoForm.controls.nuevaFechaConfirmada.setValue(response.fechaConfirmada);
       this.pagoInfoForm.controls.diasMora.setValue(response.diasMora);
       this.pagoInfoForm.controls.interes.setValue(response.interes);
       this.pagoInfoForm.controls.gastos.setValue(response.gastos);
       this.pagoInfoForm.controls.saldoDeuda.setValue(response.saldoDeuda);
-      this.pagoInfoForm.controls.fondoResguardo.setValue(response.fondoResguardo);
-      this.pagoInfoForm.controls.saldoDeudaRestante.setValue(response.saldoDeudaRestante);
-      this.pagoInfoForm.controls.defecto.setValue(response.defecto);
-
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -171,7 +167,7 @@ export class RegistroPagosComponent implements OnInit {
     this.liquidacionForm.controls.fondoResguardo.setValue(det.fondoResguardo);
 
     this.idLiquidacionDet = det.idLiquidacionDet;
-    this.onInfoPago(det.idLiquidacionDet, this.pagoInfoForm.controls.tipoPago.value);
+    this.onInfoPago(det.idLiquidacionDet, '', this.pagoInfoForm.controls.tipoPago.value);
     this.onListarPago(det.idLiquidacionDet);
 
     setTimeout(() => {
@@ -198,9 +194,47 @@ export class RegistroPagosComponent implements OnInit {
     this.submitted = true;
     if (this.pagoInfoForm.invalid)
       return;
+
+    this.utilsService.blockUIStart('Guardando...');
+    this.registroPagosService.insertarPago({
+      idLiquidacionPago: 0,
+      idLiquidacionDet: this.idLiquidacionDet,
+      fechaPago: this.utilsService.formatoFecha_YYYYMMDD(this.pagoInfoForm.controls.fechaPago.value),
+      montoPago: this.pagoInfoForm.controls.montoPago.value,
+      _TipoPago: this.pagoInfoForm.controls.tipoPago.value,
+      observacion: this.pagoInfoForm.controls.observacion.value,
+      idUsuarioAud: 1
+    }).subscribe((response) => {
+      switch (response.tipo) {
+        case 1:
+          this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+          this.utilsService.blockUIStop();
+          this.pagoInfoForm.reset(this.oldPagoInfoForm);
+          this.pagoInfoForm.controls.fecha.setValue({ year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() });
+          this.onInfoPago(this.idLiquidacionDet, '', true);
+          this.onListarPago(this.idLiquidacionDet);
+          this.submitted = false;
+          break;
+        case 2:
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          this.utilsService.blockUIStop();
+          break;
+        default:
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          this.utilsService.blockUIStop();
+          break;
+      }
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
   }
 
   onCambioTipoPago($event: boolean): void {
-    this.onInfoPago(this.idLiquidacionDet, $event);
+    this.onInfoPago(this.idLiquidacionDet, this.utilsService.formatoFecha_YYYYMMDD(this.pagoInfoForm.controls.fecha.value), $event);
+  }
+
+  onCambioFecha($event: any) {
+    this.onInfoPago(this.idLiquidacionDet, this.utilsService.formatoFecha_YYYYMMDD($event), this.pagoInfoForm.controls.tipoPago.value);
   }
 }

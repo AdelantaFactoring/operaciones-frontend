@@ -10,7 +10,5 @@ export class LiquidacionPago {
   interes: number;
   gastos: number;
   saldoDeuda: number;
-  fondoResguardo: number;
-  saldoDeudaRestante: number;
-  defecto: number;
+  observacion: string;
 }

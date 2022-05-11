@@ -114,5 +114,8 @@ export class UtilsService {
     }
     return 1;
   }
-  
+
+  formatoFecha_YYYYMMDD($event: any): string {
+    return `${$event.year}${String($event.month).padStart(2, "0")}${String($event.day).padStart(2, "0")}`;
+  }
 }

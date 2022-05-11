@@ -17,10 +17,17 @@
                 <span class="d-none d-sm-inline-block">Generar Archivo(s)</span>
               </button>
             </div>
-            <div class="pt-1 pb-1">
+            <div class="pt-1 pb-1 pr-1">
               <button type="submit" rippleEffect class="btn btn-primary" (click)="onAprobar(5)">
                 <i class="mr-0 mr-sm-1" data-feather="check"></i>
                 <span class="d-none d-sm-inline-block">Confirmar</span>
+              </button>
+            </div>
+            <div class="pt-1 pb-1">
+              <button type="submit" rippleEffect class="btn btn-warning"
+                      (click)="onEnviar(1, null)">
+                <i class="mr-0 mr-sm-1" data-feather="mail"></i>
+                <span class="d-none d-sm-inline-block">Enviar Correo(s)</span>
               </button>
             </div>
           </div>
@@ -94,7 +101,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <ng-template let-cab ngFor [ngForOf]="desembolso">
+                <ng-template let-cab ngFor [ngForOf]="desembolsos">
                   <tr>
                     <td>
                       <div class="d-flex align-items-center">
@@ -114,12 +121,18 @@
                         <input type="checkbox" class="custom-control-input"
                                id="{{'customCheck' + cab.idLiquidacionCab}}"
                                [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"
-                               [disabled]="!cab.checkList || cab.idEstado >= 5"/>
+                               [disabled]="!cab.checkList || cab.idEstado > 5"/>
                         <label class="custom-control-label" for="{{'customCheck' + cab.idLiquidacionCab}}"></label>
                       </div>
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Enviar Correo" [class.disabled]="cab.idEstado != 5 ? true: null"
+                           (click)="onEnviar(2, cab)"
+                           class="btn btn-raised btn-outline-warning btn-sm">
+                          <i class="text-warning cursor-pointer" data-feather="mail"></i>
+                        </a>
+                        &nbsp;
                         <a href="javascript:void(0)" *ngIf="cab.idEstado !== 5" title="Editar"
                            (click)="onEditar(cab,  modalINFO)"
                            class="btn btn-raised btn-outline-success btn-sm">
@@ -355,7 +368,8 @@
                       </tr>
                       </tbody>
                       <tfoot>
-                      <td colspan="7">Total Monto a Desembolsar: {{totalMontoDescembolso | number: '1.2-2'}}</td>
+                        <td class="detail-td-color" colspan="6" style="text-align: right">Total Monto a Desembolsar: </td>
+                        <td class="detail-td-color">{{totalMontoDescembolso | number: '1.2-2'}}</td>
                       </tfoot>
                     </table>
                   </div>
