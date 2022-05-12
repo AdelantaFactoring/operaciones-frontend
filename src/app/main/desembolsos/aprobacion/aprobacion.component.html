@@ -88,6 +88,7 @@
                   </th>
                   <th>Acción</th>
                   <th>N° Liquidación</th>
+                  <th>N° Solicitud</th>
                   <th>Cliente</th>
                   <th>Cliente RUC</th>
                   <th>Pagador / Proveedor</th>
@@ -146,6 +147,7 @@
                       </div>
                     </td>
                     <td>{{cab.codigo}}</td>
+                    <td>{{cab.codigoSolicitud}}</td>
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
                     <td>{{cab.razonSocialPagProv}}</td>
@@ -158,7 +160,7 @@
                     <td>{{cab.estado}}</td>
                   </tr>
                   <tr id="{{ 'tr' + cab.idLiquidacionCab }}" style="visibility: collapse">
-                    <td [colSpan]="14">
+                    <td [colSpan]="15">
                       <div class="table-responsive" style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
                            id="{{ 'detail' + cab.idLiquidacionCab }}">
                         <table class="table table-hover">

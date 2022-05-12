@@ -6,7 +6,7 @@ import {environment} from 'environments/environment';
 import {CONTENT_TYPE} from 'app/shared/helpers/headers';
 import {HttpClient} from '@angular/common/http';
 import {InjectorInstance} from 'app/app.module';
-
+import {LIQUIDACIONES} from "../../../shared/helpers/url/operaciones";
 
 @Injectable({
   providedIn: 'root'
@@ -58,6 +58,7 @@ export class AprobacionService {
   //     }
   //   );
   // }
+
   generarArchivo(payload): any {
     return this.requestMethod.getNewTab(
       `${environment.apiUrl}${DESEMBOLSO.GenerarArchivo}`,
@@ -69,5 +70,15 @@ export class AprobacionService {
 
   export(payload: any): Observable<Blob> {
     return this.http.post(environment.apiUrl + DESEMBOLSO.GenerarArchivo, payload, {responseType: 'blob'});
+  }
+
+  pdf(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${LIQUIDACIONES.pdf}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
   }
 }

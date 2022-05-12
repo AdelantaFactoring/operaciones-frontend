@@ -7,6 +7,7 @@ export class LiquidacionCab {
   idLiquidacionCab: number;
   idSolicitudCab: number;
   codigo: string;
+  codigoSolicitud: string;
   idCliente: number;
   rucCliente: string;
   razonSocialCliente: string;
@@ -44,4 +45,6 @@ export class LiquidacionCab {
   idUsuarioAud: number;
   edicion: boolean = false;
   idDestino: number;
+
+  tipoNotificacion: number;
 }

@@ -37,6 +37,8 @@ export class LiquidacionDet {
   pago: number;
   saldo: number;
   porcentajePago: number;
+  interesPago: number;
+  gastosPago: number;
   idUsuarioAud: number;
 
   edicion: boolean = false;

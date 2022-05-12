@@ -477,17 +477,11 @@ export class AprobacionComponent implements OnInit {
       return;
     }
 
-    let valid = true;
     for (let item of liquidaciones) {
       if (item.idEstado != 4) {
-        valid = false;
-        break;
+        this.utilsService.showNotification('Seleccione solo liquidaciones con estado "Desembolso Pendiente"', "", 2);
+        return;
       }
-    }
-
-    if (!valid) {
-      this.utilsService.showNotification('Seleccione solo liquidaciones con estado "Desembolso Pendiente"', "", 2);
-      return;
     }
 
     liquidaciones.forEach(el => {
@@ -652,45 +646,64 @@ export class AprobacionComponent implements OnInit {
       }
     }
 
-    if (liquidaciones.filter(f => f.liquidacionDet.filter(f => f.edicion || f.editado).length > 0).length > 0) {
-      this.utilsService.showNotification("Guarda o cancela los cambios primero", "Advertencia", 2);
-      return;
+    for (let item of liquidaciones) {
+      if (item.idEstado != 5) {
+        this.utilsService.showNotification('Seleccione solo liquidaciones con estado "Desembolsado"', "", 2);
+        return;
+      }
     }
 
-    // if (liquidaciones.filter(f =>
-    //   f.liquidacionDet.filter(f1 =>
-    //     f1.montoTotalFacturado < Number(this.montoTotalFacturadoMinimoTM[0].valor)).length > 0).length > 0) {
-    //   Swal.fire({
-    //     title: 'Advertencia',
-    //     html: `
-    //         <p style="text-align: justify">La(s) siguiente(s) liquidacion(es) no supera(n) el monto total facturado mínimo de ${this.montoTotalFacturadoMinimoTM[0].valor}. ¿Desea continuar?</p>
-    //         <div class="table-responsive">
-    //           <table class="table table-hover">
-    //             <thead>
-    //             <tr>
-    //               <th>N° Liquidación</th>
-    //             </tr>
-    //             </thead>
-    //             <tbody>
-    //             ${this.onFilas2(liquidaciones)}
-    //             </tbody>
-    //           </table>
-    //         </div>`,
-    //     icon: 'warning',
-    //     width: '500px',
-    //     showCancelButton: true,
-    //     confirmButtonText: '<i class="fa fa-check"></i> Sí',
-    //     cancelButtonText: '<i class="fa fa-times"></i> No',
-    //     customClass: {
-    //       confirmButton: 'btn btn-warning',
-    //       cancelButton: 'btn btn-secondary'
-    //     },
-    //   }).then(result => {
-    //     if (result.value) {
-    //       this._OnEnviar(liquidaciones);
-    //     }
-    //   });
-    // } else
-    //   this._OnEnviar(liquidaciones);
+    liquidaciones.forEach(el => {
+      el.idEmpresa = 1;
+      el.idUsuarioAud = 1;
+      el.tipoNotificacion = 2;
+    });
+
+    this.utilsService.blockUIStart('Enviando...');
+    this.desembolsoService.pdf(liquidaciones).subscribe(response => {
+      if (response.comun.tipo == 1) {
+        //this.utilsService.showNotification('Enviado correctamente', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+
+        Swal.fire({
+          title: 'Información',
+          html: `
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>N° Liquidación</th>
+                  <th>Correo Enviado</th>
+                </tr>
+                </thead>
+                <tbody>
+                ${this.onFilas(response.liquidacionCabValidacion)}
+                </tbody>
+              </table>
+            </div>
+            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Enviado &nbsp;&nbsp;
+            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Enviado</p>`,
+          icon: 'info',
+          width: '750px',
+          showCancelButton: false,
+          confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
+          customClass: {
+            confirmButton: 'btn btn-info',
+          },
+        }).then(result => {
+          if (result.value) {
+          }
+        });
+        this.onListarDesembolso();
+      } else if (response.comun.tipo == 0) {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
+      }
+
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
   }
 }

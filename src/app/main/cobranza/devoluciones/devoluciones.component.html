@@ -48,6 +48,7 @@
                 <thead>
                 <tr>
                   <th>N° Liquidación</th>
+                  <th>N° Solicitud</th>
                   <th>Cliente</th>
                   <th>Cliente RUC</th>
                   <th>Moneda</th>
@@ -61,6 +62,7 @@
                 <ng-template let-cab ngFor [ngForOf]="devoluciones">
                   <tr>
                     <td>{{cab.codigo}}</td>
+                    <td>{{cab.codigoSolicitud}}</td>
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
                     <td>{{cab.moneda}}</td>

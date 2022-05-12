@@ -61,6 +61,7 @@
                     </div>
                   </th>
                   <th>N° Liquidación</th>
+                  <th>N° Solicitud</th>
                   <th>Cliente</th>
                   <th>Cliente RUC</th>
                   <th>Pagador / Proveedor</th>
@@ -91,6 +92,7 @@
                       </div>
                     </td>
                     <td>{{cab.codigo}}</td>
+                    <td>{{cab.codigoSolicitud}}</td>
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
                     <td>{{cab.razonSocialPagProv}}</td>
@@ -98,19 +100,19 @@
                     <td>{{cab.moneda}}</td>
                     <td>{{cab.netoConfirmadoTotal | number: '1.2-2'}}</td>
                     <td>{{cab.pagoTotal | number: '1.2-2'}}</td>
-                    <td>{{cab.saldoTotal | number: '1.2-2'}}</td>
+                    <td>{{saldo(cab.saldoTotal) | number: '1.2-2'}}</td>
                     <td>
                       <div class="progress-wrapper">
-                        <div class="mb-25 text-center">{{cab.porcentajePagoTotal | number: '1.2-2'}}%</div>
+                        <div class="mb-25 text-center">{{porcentajePagoTotal(cab.porcentajePagoTotal)}}%</div>
                         <ngb-progressbar [striped]="true" [animated]="true" type="primary"
-                                         [value]="cab.porcentajePagoTotal"></ngb-progressbar>
+                                         [value]="porcentajePagoTotal(cab.porcentajePagoTotal)"></ngb-progressbar>
                       </div>
                     </td>
                     <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.estado}}</td>
                   </tr>
                   <tr id="{{ 'trL' + cab.idLiquidacionCab }}" style="visibility: collapse">
-                    <td [colSpan]="13">
+                    <td [colSpan]="14">
                       <div class="row">
                         <div class="table-responsive" style="padding-left: 20px; display: none;"
                              id="{{ 'detailL' + cab.idLiquidacionCab }}">
@@ -122,8 +124,9 @@
                               <th class="detail-th-color">Fecha Confirmada</th>
                               <th class="detail-th-color">Neto Confirmado</th>
                               <th class="detail-th-color">Día(s) Mora</th>
-                              <th class="detail-th-color">Interés Total</th>
                               <th class="detail-th-color">Pago</th>
+                              <th class="detail-th-color">Interés</th>
+                              <th class="detail-th-color">Gastos</th>
                               <th class="detail-th-color">Saldo</th>
                               <th class="detail-th-color">Progreso Pago</th>
                             </tr>
@@ -134,8 +137,7 @@
                                 <div class="d-flex align-items-center">
                                   <a href="javascript:void(0)" title="Pagar" (click)="onPagar(modalINFO, cab, item)"
                                      class="btn btn-raised btn-outline-success btn-sm">
-                                    <!--                                    <i class="text-success cursor-pointer" data-feather="edit"></i>-->
-                                    <i class="fa fa-money"></i>
+                                    <i class="text-success cursor-pointer" data-feather="edit"></i>
                                   </a>
                                 </div>
                               </td>
@@ -143,14 +145,15 @@
                               <td>{{item.fechaConfirmado}}</td>
                               <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
                               <td>{{item.diasMora}}</td>
-                              <td>{{item.interesConIGV | number: '1.2-2'}}</td>
                               <td>{{item.pago | number: '1.2-2'}}</td>
-                              <td>{{item.saldo | number: '1.2-2'}}</td>
+                              <td>{{item.interesPago | number: '1.2-2'}}</td>
+                              <td>{{item.gastosPago | number: '1.2-2'}}</td>
+                              <td>{{saldo(item.saldo) | number: '1.2-2'}}</td>
                               <td>
                                 <div class="progress-wrapper">
-                                  <div class="mb-25 text-center">{{item.porcentajePago | number: '1.2-2'}}%</div>
+                                  <div class="mb-25 text-center">{{porcentajePagoTotal(item.porcentajePago)}}%</div>
                                   <ngb-progressbar [striped]="true" [animated]="true" type="primary"
-                                                   [value]="item.porcentajePago"></ngb-progressbar>
+                                                   [value]="porcentajePagoTotal(item.porcentajePago)"></ngb-progressbar>
                                 </div>
                               </td>
                             </tr>
@@ -241,7 +244,7 @@
               </div>
             </form>
             <form [formGroup]="pagoInfoForm">
-              <div class="row spaced">
+              <div class="row spaced" [hidden]="ocultarPagoForm">
                 <div class="col-12">
                   <div class="divider divider-success">
                     <div class="divider-text">Información de Pago</div>
@@ -255,7 +258,7 @@
                 </div>
                 <div class="col-md-4 col-12">
                   <div class="form-group">
-                    <label>Fecha Pago Cálculo (Actual por defecto)</label>
+                    <label>Fecha Pago Cálculo</label>
                     <div class="input-group">
                       <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fecha"
                              (ngModelChange)="onCambioFecha($event)"
@@ -299,7 +302,8 @@
                 <div class="col-12 col-md-4">
                   <div class="form-group">
                     <label>Tipo de Pago</label>
-                    <div class="form-control custom-control custom-switch custom-control-inline" style="border: 0px; background-color: transparent">
+                    <div class="form-control custom-control custom-switch custom-control-inline"
+                         style="border: 0px; background-color: transparent">
                       <label style="padding-right: 0.5rem; line-height: 1.7rem">Parcial</label>
                       <input type="checkbox" class="custom-control-input"
                              id="tipoPago" formControlName="tipoPago" (ngModelChange)="onCambioTipoPago($event)"

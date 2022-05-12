@@ -2,6 +2,7 @@ export class Devolucion {
   idLiquidacionDevolucion: number;
   idLiquidacionDet: number;
   codigo: string;
+  codigoSolicitud: string;
   rucCliente: string;
   razonSocialCliente: string;
   moneda: string;

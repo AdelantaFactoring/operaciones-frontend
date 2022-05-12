@@ -22,6 +22,7 @@ export class RegistroPagosComponent implements OnInit {
   public pagoInfoForm: FormGroup;
   public oldPagoInfoForm: FormGroup;
   public submitted: boolean = false;
+  public ocultarPagoForm: boolean = false;
 
   public idLiquidacionDet: number = 0;
   public codigo: string = '';
@@ -148,6 +149,7 @@ export class RegistroPagosComponent implements OnInit {
       idLiquidacionDet: idLiquidacionDet,
     }).subscribe((response: LiquidacionPago[]) => {
       this.pagos = response;
+      this.ocultarPagoForm = response.filter(f => f.tipoPago == "Total").length > 0;
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -236,5 +238,13 @@ export class RegistroPagosComponent implements OnInit {
 
   onCambioFecha($event: any) {
     this.onInfoPago(this.idLiquidacionDet, this.utilsService.formatoFecha_YYYYMMDD($event), this.pagoInfoForm.controls.tipoPago.value);
+  }
+
+  porcentajePagoTotal(value: number): number {
+    return value > 100 ? 100 : value;
+  }
+
+  saldo(value: number): number {
+    return value < 0 ? 0 : value;
   }
 }

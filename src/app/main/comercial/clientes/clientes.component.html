@@ -360,7 +360,7 @@
                       <th>Banco</th>
                       <th>Moneda</th>
                       <th>N° Cuenta</th>
-                      <th>CCI</th>
+                      <th style="min-width: 150px">CCI</th>
                       <th>Tipo Cuenta</th>
                       <th>Activo</th>
                     </tr>
@@ -388,7 +388,7 @@
                                  [ngClass]="{ 'is-invalid': submittedCuenta && ReactiveIUFormCuenta.nroCuenta.errors }"
                                  formControlName="nroCuenta"/>
                       </td>
-                      <td><input class="form-control" type="text" placeholder="CCI"
+                      <td style="min-width: 150px"><input class="form-control" type="text" placeholder="CCI"
                                  formControlName="cci"/></td>
                       <td><input class="form-control" type="text" placeholder="Tipo Cuenta"
                                  formControlName="tipoCuenta"/></td>

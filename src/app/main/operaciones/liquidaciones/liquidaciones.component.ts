@@ -931,6 +931,7 @@ export class LiquidacionesComponent implements OnInit {
     liquidaciones.forEach(el => {
       el.idEmpresa = 1;
       el.idUsuarioAud = 1;
+      el.tipoNotificacion = 1;
     });
 
     this.utilsService.blockUIStart('Enviando...');
