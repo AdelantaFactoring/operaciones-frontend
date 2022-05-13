@@ -47,10 +47,20 @@
               <table class="table table-hover">
                 <thead>
                 <tr>
+                  <th>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="customCheck" unchecked
+                             [(ngModel)]="seleccionarTodo" (ngModelChange)="onSeleccionarTodo()"/>
+                      <label class="custom-control-label" for="customCheck"></label>
+                    </div>
+                  </th>
+                  <th>Acción</th>
                   <th>N° Liquidación</th>
                   <th>N° Solicitud</th>
                   <th>Cliente</th>
                   <th>Cliente RUC</th>
+                  <th>Pagador / Proveedor</th>
+                  <th>Pagador / Proveedor RUC</th>
                   <th>Moneda</th>
                   <th>Tipo Operación</th>
                   <th>N° Documento</th>
@@ -61,10 +71,30 @@
                 <tbody>
                 <ng-template let-cab ngFor [ngForOf]="devoluciones">
                   <tr>
+                    <td>
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input"
+                               id="{{'customCheck' + cab.idLiquidacionDevolucion}}"
+                               [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"
+                               [disabled]="!cab.checkList || cab.idEstado > 5"/>
+                        <label class="custom-control-label"
+                               for="{{'customCheck' + cab.idLiquidacionDevolucion}}"></label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Editar" (click)="onEditar(modalINFO, cab)"
+                           class="btn btn-raised btn-outline-success btn-sm">
+                          <i class="text-success cursor-pointer" data-feather="edit"></i>
+                        </a>
+                      </div>
+                    </td>
                     <td>{{cab.codigo}}</td>
                     <td>{{cab.codigoSolicitud}}</td>
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
+                    <td>{{cab.razonSocialPagProv}}</td>
+                    <td>{{cab.rucPagProv}}</td>
                     <td>{{cab.moneda}}</td>
                     <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.nroDocumento}}</td>
@@ -83,6 +113,355 @@
                             (pageChange)="onListarDevolucion()" [pageSize]="pageSize"></ngb-pagination>
           </div>
         </div>
+
+        <ng-template #modalINFO let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel1">Devolución - [{{codigo}}]</h4>
+            <button aria-label="Close" class="close" type="button" (click)="onCancelar()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" ngbAutofocus tabindex="0" [perfectScrollbar]>
+            <form [formGroup]="devolucionForm">
+              <div class="row spaced">
+                <div class="col-12">
+                  <div class="divider divider-info">
+                    <div class="divider-text">Información General</div>
+                  </div>
+                </div>
+                <div class="col-md-12 col-12" hidden>
+                  <div class="form-group">
+                    <label>Id</label>
+                    <input class="form-control" formControlName="idLiquidacionDevolucion" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>RUC (Cliente)</label>
+                    <input class="form-control" formControlName="rucCliente" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Razón Social (Cliente)</label>
+                    <input class="form-control" formControlName="razonSocialCliente" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>RUC (Pagador / Proveedor)</label>
+                    <input class="form-control" formControlName="rucPagProv" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Razón Social (Pagador / Proveedor)</label>
+                    <input class="form-control" formControlName="razonSocialPagProv" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Moneda</label>
+                    <input class="form-control" formControlName="moneda" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Tipo Operación</label>
+                    <input class="form-control" formControlName="tipoOperacion" type="text"/>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="divider divider-success">
+                    <div class="divider-text">Información de la Devolución</div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>N° Documento</label>
+                    <input class="form-control" formControlName="nroDocumento" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Monto</label>
+                    <input class="form-control" formControlName="monto" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+<!--                <div class="col-md-6 col-12" *ngIf="codigoMonedaCab !== codigoMonedaDet">-->
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Tipo de Cambio</label>
+<!--                    <input class="form-control" formControlName="tipoCambioMoneda" type="number"-->
+<!--                           [ngClass]="{ 'is-invalid': submitted && tipoCambioMoneda == 0}"-->
+<!--                           [(ngModel)]="tipoCambioMoneda" (change)="onConvertirMontoTotal()"/>-->
+<!--                    <div *ngIf="ReactiveIUForm.tipoCambioMoneda.errors" class="invalid-feedback">-->
+<!--                      <div *ngIf="ReactiveIUForm.tipoCambioMoneda.errors.required">* Campo obligatorio</div>-->
+<!--                    </div>-->
+                    <input class="form-control" formControlName="tipoCambioMoneda" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+<!--                <div class="col-md-6 col-12" *ngIf="codigoMonedaCab != codigoMonedaDet">-->
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+<!--                    <label>Nuevo Monto en {{moneda}}</label>-->
+                    <label>Nuevo Monto</label>
+<!--                    <input class="form-control" formControlName="montoConversion" type="text" readonly-->
+<!--                           [ngClass]="{ 'is-invalid': submitted && tipoCambioMoneda == 0 }"/>-->
+<!--                    <div *ngIf="ReactiveIUForm.montoConvertido.errors" class="invalid-feedback">-->
+<!--                      <div *ngIf="ReactiveIUForm.montoConvertido.errors.required">* Campo obligatorio</div>-->
+<!--                    </div>-->
+                    <input class="form-control" formControlName="montoConversion" type="text" readonly
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="divider divider-warning">
+                    <div class="divider-text">Información de Cuenta Bancaria</div>
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="!ver">
+                  <div class="d-flex flex-wrap mb-0">
+                    <div class="pb-1">
+                      <button type="submit" rippleEffect class="btn btn-warning"
+                              (click)="onSeleccioneCuenta(modalCUENTA)">
+                        <i class="mr-0 mr-sm-1" data-feather="arrow-right-circle"></i>
+                        <span class="d-none d-sm-inline-block">Seleccione...</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Titular</label>
+                    <input class="form-control" formControlName="titularCuentaBancariaDestino" type="text" readonly
+                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.titularCuentaBancariaDestino.errors }"/>
+                    <div *ngIf="ReactiveIUForm.titularCuentaBancariaDestino.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.titularCuentaBancariaDestino.errors.required">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Moneda</label>
+                    <input class="form-control" formControlName="monedaCuentaBancariaDestino" type="text" readonly
+                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.monedaCuentaBancariaDestino.errors }"/>
+                    <div *ngIf="ReactiveIUForm.monedaCuentaBancariaDestino.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.monedaCuentaBancariaDestino.errors.required">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Banco</label>
+                    <input class="form-control" formControlName="bancoDestino" type="text" readonly
+                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.bancoDestino.errors }"/>
+                    <div *ngIf="ReactiveIUForm.bancoDestino.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.bancoDestino.errors.required">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>N° Cuenta</label>
+                    <input class="form-control" type="text" readonly
+                           [ngClass]="{ 'is-invalid': submitted && nroCuentaBancariaDestino === '' }"
+                           [(ngModel)]="nroCuentaBancariaDestino" [ngModelOptions]="{standalone: true}"/>
+                    <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''" class="invalid-feedback">
+                      <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''">* Campo obligatorio solo si no
+                        existe un valor en CCI
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>CCI</label>
+                    <input class="form-control" type="text" readonly
+                           [ngClass]="{ 'is-invalid': submitted && nroCuentaBancariaDestino === '' }"
+                           [(ngModel)]="cciDestino" [ngModelOptions]="{standalone: true}"/>
+                    <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''" class="invalid-feedback">
+                      <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''">* Campo obligatorio solo si no
+                        existe un valor en N° Cuenta
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Tipo de Cuenta</label>
+                    <input class="form-control" formControlName="tipoCuentaBancariaDestino" type="text" readonly
+                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.tipoCuentaBancariaDestino.errors }"/>
+                    <div *ngIf="ReactiveIUForm.tipoCuentaBancariaDestino.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.tipoCuentaBancariaDestino.errors.required">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="divider divider-secondary">
+                    <div class="divider-text">Documento(s) de Sustento</div>
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="!ver">
+                  <div
+                    ng2FileDrop
+                    [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
+                    (fileOver)="fileOverBase($event)"
+                    [uploader]="archivosSustento"
+
+                    class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
+                  >
+                    Arrastre aquí los archivos
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="!ver">
+                  <div class="d-flex justify-content-between mb-1">
+                    <h4>Archivo(s) a subir</h4>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                      <tr>
+                        <th [width]="250">Tipo</th>
+                        <th>Nombre</th>
+                        <th>Tamaño</th>
+                        <th>Acción</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let item of archivos">
+                        <td [width]="250">
+                          <ng-select appendTo="body" [clearable]="false" [items]="tiposArchivos"
+                                     style="width: 250px"
+                                     bindLabel="descripcion" placeholder="Tipo Archivo"
+                                     bindValue="idColumna" [(ngModel)]="item.idTipo"
+                                     [ngModelOptions]="{standalone: true}">
+                          </ng-select>
+                        </td>
+                        <td>
+                          <strong>{{ item.nombre }}</strong>
+                        </td>
+                        <td>
+                          {{item.tamanio}}
+                        </td>
+                        <td nowrap>
+                          <button
+                            (click)="onEliminarArchivo(item)"
+                            type="button"
+                            class="btn btn-raised btn-outline-danger btn-sm"
+                            rippleEffect>
+                            <i data-feather="trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="!ver">
+                  <div class="divider divider-secondary">
+                    <div class="divider-text"><span [data-feather]="'chevrons-down'"></span></div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="d-flex justify-content-between mb-1">
+                    <h4>Archivo(s) adjuntos</h4>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                      <tr>
+                        <th>Tipo</th>
+                        <th>Nombre</th>
+                        <th *ngIf="!ver">Acción</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let item of sustentos">
+                        <td [ngClass]="{'row-edicion': item.editado}"><p
+                          [ngClass]="{ 'eliminado': !item.estado }">{{item.tipo}}</p></td>
+                        <td [ngClass]="{'row-edicion': item.editado}">
+                          <a href="{{item.rutaArchivo}}" target="_blank"><strong
+                            [ngClass]="{ 'eliminado': !item.estado }">{{ item.archivo }}</strong></a>
+                        </td>
+                        <td nowrap *ngIf="!ver">
+                          <button *ngIf="item.estado"
+                                  type="button"
+                                  class="btn btn-raised btn-outline-danger btn-sm"
+                                  rippleEffect (click)="onEliminarArchivoAdjunto(item)">
+                            <i data-feather="trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer" style="display: block !important;">
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div style="float: right">
+                  <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()" *ngIf="!ver">
+                    <span [data-feather]="'save'"></span> Guardar
+                  </button>
+                  &nbsp;
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()" *ngIf="!ver">
+                    <span [data-feather]="'x-circle'"></span> Cancelar
+                  </button>
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()" *ngIf="ver">
+                    <span [data-feather]="'x-circle'"></span> Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template #modalCUENTA let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Seleccione una Cuenta</h4>
+            <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" ngbAutofocus tabindex="0" [perfectScrollbar]>
+            <div class="row spaced">
+              <div class="col-md-12 col-12">
+                <div class="form-group">
+                  <label>Datos de Cuenta de Banco</label>
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                      <tr>
+                        <th>Titular</th>
+                        <th>Banco</th>
+                        <th>Moneda</th>
+                        <th>N° Cuenta</th>
+                        <th>CCI</th>
+                        <th>Activo</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let item of cuentas" (click)="onSeleccionarCuenta(item, modal)">
+                        <td>{{item.titular}}</td>
+                        <td>{{item.banco}}</td>
+                        <td>{{item.moneda}}</td>
+                        <td>{{item.nroCuenta}}</td>
+                        <td>{{item.cci}}</td>
+                        <td>{{(item.predeterminado ? 'Sí' : 'No')}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
       </div>
     </div>
     <block-ui></block-ui>

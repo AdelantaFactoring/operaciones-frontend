@@ -17,7 +17,7 @@ import { SolicitudesService } from '../solicitudes.service';
 })
 export class SolicitudesGrillaComponent implements OnInit {
 
-  @Input() paramsURL: any;
+  @Input() paramsURL: any = 1;
 
   public submitted: boolean;
   public cambiarIcono: boolean = false;
@@ -98,8 +98,10 @@ export class SolicitudesGrillaComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.onListarSolicitudes(this.paramsURL);
+    this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.tipoCT = await this.onListarMaestros(5, 0);
+    this.utilsService.blockUIStop();
+    this.onListarSolicitudes(this.paramsURL);
   }
 
   async onListarMaestros(idTabla: number, idColumna: number): Promise<TablaMaestra[]> {

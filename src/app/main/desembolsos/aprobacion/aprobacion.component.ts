@@ -37,7 +37,7 @@ export class AprobacionComponent implements OnInit {
   public cuentas: ClienteCuenta[] = [];
   public cambiarIcono: boolean = false;
   public seleccionarTodo: boolean = false;
-  public seleccionado: LiquidacionCabSeleccionados[] = [];
+  //public seleccionado: LiquidacionCabSeleccionados[] = [];
 
   public codigo: string = '';
   public nroCuentaBancariaDestino: string;
@@ -56,7 +56,6 @@ export class AprobacionComponent implements OnInit {
   public ver: boolean = false;
   public hasBaseDropZoneOver: boolean = false;
   public archivosSustento: FileUploader = new FileUploader({
-    //url: `${environment.apiUrl}${SOLICITUD.subirSustento}`,
     isHTML5: true
   });
 
@@ -415,7 +414,6 @@ export class AprobacionComponent implements OnInit {
   }
 
   onSeleccioneCuenta(modal): void {
-
     setTimeout(() => {
       this.modalService.open(modal, {
         scrollable: true,
@@ -437,7 +435,7 @@ export class AprobacionComponent implements OnInit {
     this.solicitudForm.controls.bancoDestino.setValue(item.banco);
     this.nroCuentaBancariaDestino = item.nroCuenta;
     this.cciDestino = item.cci;
-    this.solicitudForm.controls.tipoCuentaBancariaDestino.setValue("-");
+    this.solicitudForm.controls.tipoCuentaBancariaDestino.setValue(item.tipoCuenta);
     this.codigoMonedaDet = item.codigoMoneda;
     this.moneda = item.moneda;
     this.tipoCambioMoneda = 0;
