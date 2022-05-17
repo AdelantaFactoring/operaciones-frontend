@@ -499,6 +499,7 @@ export class AprobacionComponent implements OnInit {
         this.utilsService.blockUIStop();
         Swal.fire({
           title: 'Información',
+          icon: 'info',
           html: `
             <div class="table-responsive">
               <table class="table table-hover">
@@ -514,8 +515,7 @@ export class AprobacionComponent implements OnInit {
               </table>
             </div>
             <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Enviado &nbsp;&nbsp;
-            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Enviado</p>`,
-          icon: 'info',
+            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Enviado &nbsp; <i class="text-secondary cursor-pointer fa fa-minus-circle"></i> : Sin Acción</p>`,
           width: '750px',
           showCancelButton: false,
           confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
@@ -640,6 +640,9 @@ export class AprobacionComponent implements OnInit {
       if (liquidaciones.length === 0) {
         this.utilsService.showNotification("Seleccione una o varias liquidaciones", "", 2);
         return;
+      } else if (liquidaciones.filter(f => f.idTipoOperacion != 1).length > 0) {
+        this.utilsService.showNotification('Seleccione solo liquidaciones de tipo operación "Factoring"', "", 2);
+        return;
       }
     }
 
@@ -679,7 +682,7 @@ export class AprobacionComponent implements OnInit {
               </table>
             </div>
             <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Enviado &nbsp;&nbsp;
-            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Enviado</p>`,
+            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Enviado &nbsp; <i class="text-secondary cursor-pointer fa fa-minus-circle"></i> : Sin Acción</p>`,
           icon: 'info',
           width: '750px',
           showCancelButton: false,

@@ -707,5 +707,16 @@ export class ClientePagadorComponent implements OnInit {
     }
   }
 
+  onCambioTNM($event): void {
+    this.clientePagadorGastosForm.controls.tasaNominalAnual.setValue(Math.round(((Number($event) * 12) + Number.EPSILON) * 100) / 100);
+    this.clientePagadorGastosForm.controls.tasaNominalMensualMora.setValue(Math.round(((Number($event) * 2) + Number.EPSILON) * 100) / 100);
+    this.clientePagadorGastosForm.controls.tasaNominalAnualMora.setValue(Math.round(((Number($event) * 2 * 12) + Number.EPSILON) * 100) / 100);
+  }
+
+  onCambioTNM_Fila(fila: ClientePagadorGastos): void {
+    fila.tasaNominalAnual = Math.round(((fila.tasaNominalMensual * 12) + Number.EPSILON) * 100) / 100;
+    fila.tasaNominalMensualMora = Math.round(((fila.tasaNominalMensual * 2) + Number.EPSILON) * 100) / 100;
+    fila.tasaNominalAnualMora = Math.round(((fila.tasaNominalMensual * 2 * 12) + Number.EPSILON) * 100) / 100;
+  }
   //#endregion
 }

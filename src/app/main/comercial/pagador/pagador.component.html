@@ -50,13 +50,13 @@
         <div class="row">
           <div class="col-12">
             <div class="table-responsive">
-              <table class="table table-hover">
+              <table class="table table-hover min-width-table">
                 <thead>
                 <tr>
                   <th>Acción</th>
                   <th>RUC</th>
                   <th>Razón Social</th>
-                  <th>Límite Negociación</th>
+                  <th>Línea Asignada</th>
                   <th>Sector</th>
                   <th>Grupo Económico</th>
                   <th>Contacto</th>
@@ -81,7 +81,7 @@
                   </td>
                   <td>{{item.ruc}}</td>
                   <td>{{item.razonSocial}}</td>
-                  <td>{{item.limiteGastoNegociacion}}</td>
+                  <td>{{item.limiteGastoNegociacion | number: '1.0-0'}}</td>
                   <td>{{item.sector}}</td>
                   <td>{{item.grupoEconomico}}</td>
                   <td>{{item.contacto}}</td>
@@ -186,7 +186,7 @@
             </div>
             <div class="col-12 col-md-6">
               <div class="form-group">
-                <label>Límite Negociación</label>
+                <label>Línea Asignada</label>
                 <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.limiteGastoNegociacion.errors }"
                        class="form-control" formControlName="limiteGastoNegociacion" type="number"/>
                 <div *ngIf="ReactiveIUForm.limiteGastoNegociacion.errors" class="invalid-feedback">

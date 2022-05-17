@@ -128,7 +128,7 @@
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Enviar Correo" [class.disabled]="cab.idEstado != 5 ? true: null"
+                        <a href="javascript:void(0)" title="Enviar Correo" [class.disabled]="cab.idEstado != 5 || cab.idTipoOperacion != 1 ? true: null"
                            (click)="onEnviar(2, cab)"
                            class="btn btn-raised btn-outline-warning btn-sm">
                           <i class="text-warning cursor-pointer" data-feather="mail"></i>
