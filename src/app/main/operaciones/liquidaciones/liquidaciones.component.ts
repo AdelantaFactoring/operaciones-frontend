@@ -456,10 +456,10 @@ export class LiquidacionesComponent implements OnInit {
         this.utilsService.blockUIStop();
         this.onListarLiquidaciones();
       } else if (response.comun.tipo == 2) {
-        this.utilsService.showNotification(response.mensaje, 'Validación', 2);
+        this.utilsService.showNotification(response.comun.mensaje, 'Validación', 2);
         this.utilsService.blockUIStop();
       } else if (response.comun.tipo == 0) {
-        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.showNotification(response.comun.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
       }
     }, error => {

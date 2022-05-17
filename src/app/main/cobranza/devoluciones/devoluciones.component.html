@@ -11,6 +11,25 @@
                 <span class="d-none d-sm-inline-block">Refrescar</span>
               </button>
             </div>
+            <div class="pt-1 pb-1 pr-1">
+              <button type="submit" rippleEffect class="btn btn-success" (click)="onGenerarArchivo()">
+                <i class="mr-0 mr-sm-1" data-feather="layers"></i>
+                <span class="d-none d-sm-inline-block">Generar Archivo(s)</span>
+              </button>
+            </div>
+            <div class="pt-1 pb-1 pr-1">
+              <button type="submit" rippleEffect class="btn btn-primary" (click)="onAprobar(2)">
+                <i class="mr-0 mr-sm-1" data-feather="check"></i>
+                <span class="d-none d-sm-inline-block">Confirmar</span>
+              </button>
+            </div>
+            <div class="pt-1 pb-1">
+              <button type="submit" rippleEffect class="btn btn-warning"
+                      (click)="onEnviar(1, null)">
+                <i class="mr-0 mr-sm-1" data-feather="mail"></i>
+                <span class="d-none d-sm-inline-block">Enviar Correo(s)</span>
+              </button>
+            </div>
           </div>
         </div>
         <div class="row">
@@ -76,16 +95,27 @@
                         <input type="checkbox" class="custom-control-input"
                                id="{{'customCheck' + cab.idLiquidacionDevolucion}}"
                                [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"
-                               [disabled]="!cab.checkList || cab.idEstado > 5"/>
+                               [disabled]="!cab.checkList"/>
                         <label class="custom-control-label"
                                for="{{'customCheck' + cab.idLiquidacionDevolucion}}"></label>
                       </div>
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Editar" (click)="onEditar(modalINFO, cab)"
+                        <a href="javascript:void(0)" title="Enviar Correo" [class.disabled]="cab.idEstado != 2 ? true: null"
+                           (click)="onEnviar(2, cab)"
+                           class="btn btn-raised btn-outline-warning btn-sm">
+                          <i class="text-warning cursor-pointer" data-feather="mail"></i>
+                        </a>
+                        &nbsp;
+                        <a href="javascript:void(0)" title="Editar" *ngIf="cab.idEstado != 2" (click)="onEditar(modalINFO, cab)"
                            class="btn btn-raised btn-outline-success btn-sm">
                           <i class="text-success cursor-pointer" data-feather="edit"></i>
+                        </a>
+                        <a href="javascript:void(0)" *ngIf="cab.idEstado == 2" title="Ver"
+                           (click)="onEditar(modalINFO, cab)"
+                           class="btn btn-raised btn-outline-info btn-sm">
+                          <i class="text-info cursor-pointer" data-feather="eye"></i>
                         </a>
                       </div>
                     </td>
@@ -133,6 +163,12 @@
                   <div class="form-group">
                     <label>Id</label>
                     <input class="form-control" formControlName="idLiquidacionDevolucion" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-12 col-12" hidden>
+                  <div class="form-group">
+                    <label>Id</label>
+                    <input class="form-control" formControlName="idLiquidacionDet" type="text"/>
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
@@ -189,32 +225,41 @@
                            mask="separator" thousandSeparator=","/>
                   </div>
                 </div>
-<!--                <div class="col-md-6 col-12" *ngIf="codigoMonedaCab !== codigoMonedaDet">-->
-                <div class="col-md-6 col-12">
+                <div class="col-md-6 col-12" *ngIf="codigoMonedaCab !== codigoMonedaDet">
                   <div class="form-group">
                     <label>Tipo de Cambio</label>
-<!--                    <input class="form-control" formControlName="tipoCambioMoneda" type="number"-->
-<!--                           [ngClass]="{ 'is-invalid': submitted && tipoCambioMoneda == 0}"-->
-<!--                           [(ngModel)]="tipoCambioMoneda" (change)="onConvertirMontoTotal()"/>-->
-<!--                    <div *ngIf="ReactiveIUForm.tipoCambioMoneda.errors" class="invalid-feedback">-->
-<!--                      <div *ngIf="ReactiveIUForm.tipoCambioMoneda.errors.required">* Campo obligatorio</div>-->
-<!--                    </div>-->
-                    <input class="form-control" formControlName="tipoCambioMoneda" type="text"
+                    <input class="form-control" formControlName="tipoCambioMoneda" type="number" [readOnly]="!ver ? null : true"
+                           [ngClass]="{ 'is-invalid': submitted && tipoCambioMoneda == 0}"
+                           [(ngModel)]="tipoCambioMoneda" (change)="onConvertirMontoTotal()"/>
+                    <div *ngIf="ReactiveIUForm.tipoCambioMoneda.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.tipoCambioMoneda.errors?.required">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="codigoMonedaCab != codigoMonedaDet">
+                  <div class="form-group">
+                    <label>Nuevo Monto</label>
+                    <input class="form-control" formControlName="montoConversion" type="text" readonly
+                           [ngClass]="{ 'is-invalid': submitted && tipoCambioMoneda == 0 }"/>
+                    <div *ngIf="ReactiveIUForm.montoConvertido.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.montoConvertido.errors?.required">* Campo obligatorio</div>
+                    </div>
+                    <input class="form-control" formControlName="montoConversion" type="text" readonly
                            mask="separator" thousandSeparator=","/>
                   </div>
                 </div>
-<!--                <div class="col-md-6 col-12" *ngIf="codigoMonedaCab != codigoMonedaDet">-->
                 <div class="col-md-6 col-12">
                   <div class="form-group">
-<!--                    <label>Nuevo Monto en {{moneda}}</label>-->
-                    <label>Nuevo Monto</label>
-<!--                    <input class="form-control" formControlName="montoConversion" type="text" readonly-->
-<!--                           [ngClass]="{ 'is-invalid': submitted && tipoCambioMoneda == 0 }"/>-->
-<!--                    <div *ngIf="ReactiveIUForm.montoConvertido.errors" class="invalid-feedback">-->
-<!--                      <div *ngIf="ReactiveIUForm.montoConvertido.errors.required">* Campo obligatorio</div>-->
-<!--                    </div>-->
-                    <input class="form-control" formControlName="montoConversion" type="text" readonly
-                           mask="separator" thousandSeparator=","/>
+                    <label>Fecha Desembolso</label>
+                    <div class="input-group">
+                      <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaDesembolso" [disabled]="!ver ? null : true"
+                             container="body" ngbDatepicker #basicDP1="ngbDatepicker">
+                      <div class="input-group-append">
+                        <button class="btn btn-outline-secondary feather icon-calendar"
+                                (click)="basicDP1.toggle()"
+                                type="button" rippleEffect></button>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="col-12">
@@ -236,57 +281,31 @@
                 <div class="col-md-6 col-12">
                   <div class="form-group">
                     <label>Titular</label>
-                    <input class="form-control" formControlName="titularCuentaBancariaDestino" type="text" readonly
-                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.titularCuentaBancariaDestino.errors }"/>
-                    <div *ngIf="ReactiveIUForm.titularCuentaBancariaDestino.errors" class="invalid-feedback">
-                      <div *ngIf="ReactiveIUForm.titularCuentaBancariaDestino.errors.required">* Campo obligatorio</div>
-                    </div>
+                    <input class="form-control" formControlName="titularCuentaBancariaDestino" type="text" readonly/>
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
                     <label>Moneda</label>
-                    <input class="form-control" formControlName="monedaCuentaBancariaDestino" type="text" readonly
-                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.monedaCuentaBancariaDestino.errors }"/>
-                    <div *ngIf="ReactiveIUForm.monedaCuentaBancariaDestino.errors" class="invalid-feedback">
-                      <div *ngIf="ReactiveIUForm.monedaCuentaBancariaDestino.errors.required">* Campo obligatorio</div>
-                    </div>
+                    <input class="form-control" formControlName="monedaCuentaBancariaDestino" type="text" readonly/>
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
                     <label>Banco</label>
-                    <input class="form-control" formControlName="bancoDestino" type="text" readonly
-                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.bancoDestino.errors }"/>
-                    <div *ngIf="ReactiveIUForm.bancoDestino.errors" class="invalid-feedback">
-                      <div *ngIf="ReactiveIUForm.bancoDestino.errors.required">* Campo obligatorio</div>
-                    </div>
+                    <input class="form-control" formControlName="bancoDestino" type="text" readonly/>
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
                     <label>N° Cuenta</label>
-                    <input class="form-control" type="text" readonly
-                           [ngClass]="{ 'is-invalid': submitted && nroCuentaBancariaDestino === '' }"
-                           [(ngModel)]="nroCuentaBancariaDestino" [ngModelOptions]="{standalone: true}"/>
-                    <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''" class="invalid-feedback">
-                      <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''">* Campo obligatorio solo si no
-                        existe un valor en CCI
-                      </div>
-                    </div>
+                    <input class="form-control" type="text" formControlName="nroCuentaBancariaDestino" readonly/>
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
                     <label>CCI</label>
-                    <input class="form-control" type="text" readonly
-                           [ngClass]="{ 'is-invalid': submitted && nroCuentaBancariaDestino === '' }"
-                           [(ngModel)]="cciDestino" [ngModelOptions]="{standalone: true}"/>
-                    <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''" class="invalid-feedback">
-                      <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''">* Campo obligatorio solo si no
-                        existe un valor en N° Cuenta
-                      </div>
-                    </div>
+                    <input class="form-control" type="text" formControlName="cciDestino" readonly/>
                   </div>
                 </div>
                 <div class="col-md-6 col-12">

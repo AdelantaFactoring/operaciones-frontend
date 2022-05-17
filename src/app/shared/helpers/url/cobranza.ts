@@ -7,4 +7,8 @@ export const REGISTROPAGOS = {
 
 export const DEVOLUCIONES = {
   listar: '/liquidacion/listarDevolucion',
+  actualizar: '/liquidacion/actualizarDevolucion',
+  cambiarEstado: '/liquidacion/cambiarEstadoDevolucion',
+  generarArchivo: '/liquidacion/generarArchivoDevolucion',
+  enviarCorreo: '/liquidacion/enviarCorreoDevolucion'
 }

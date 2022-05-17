@@ -193,7 +193,7 @@ export class AprobacionComponent implements OnInit {
     if (this.solicitudForm.invalid)
       return;
     if (this.tipoCambioMoneda === 0 && this.codigoMonedaCab !== this.codigoMonedaDet) {
-      this.utilsService.showNotification('El monto en Tipo de Cambio no puede se 0', 'Alerta', 2);
+      this.utilsService.showNotification('El Tipo de Cambio no puede se 0', 'Alerta', 2);
       return;
     }
 
@@ -238,7 +238,6 @@ export class AprobacionComponent implements OnInit {
         case 1:
           this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
           this.utilsService.blockUIStop();
-          this.onListarDesembolso();
           this.onCancelar();
           break;
         case 2:
@@ -479,6 +478,11 @@ export class AprobacionComponent implements OnInit {
       if (item.idEstado != 4) {
         this.utilsService.showNotification('Seleccione solo liquidaciones con estado "Desembolso Pendiente"', "", 2);
         return;
+      } else {
+        if (item.liquidacionCabSustento.filter(x => x.idTipoSustento === 2 && x.idTipo === 2).length === 0) {
+          this.utilsService.showNotification('La liquidación con código ' + item.codigo + ' no contiene archivo(s) de sustento con tipo "Confirmación de Desembolsos"', 'Alerta', 2);
+          return;
+        }
       }
     }
 
@@ -524,10 +528,10 @@ export class AprobacionComponent implements OnInit {
         });
         this.onListarDesembolso();
       } else if (response.comun.tipo == 2) {
-        this.utilsService.showNotification(response.mensaje, 'Validación', 2);
+        this.utilsService.showNotification(response.comun.mensaje, 'Validación', 2);
         this.utilsService.blockUIStop();
       } else if (response.comun.tipo == 0) {
-        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.showNotification(response.comun.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
       }
     }, error => {
@@ -546,13 +550,8 @@ export class AprobacionComponent implements OnInit {
 
     for (const item of liquidaciones) {
       if (item.idEstado !== 3 && item.idEstado > 4) {
-        this.utilsService.showNotification('Seleccione solo liquidaciones con estados "Aprobado"', 'Alerta', 2);
+        this.utilsService.showNotification('Seleccione solo liquidaciones con estado "Aprobado"', 'Alerta', 2);
         return;
-      } else {
-        if (item.liquidacionCabSustento.filter(x => x.idTipoSustento === 2 && x.idTipo === 2).length === 0) {
-          this.utilsService.showNotification('La liquidación con código ' + item.codigo + ' no contiene archivo(s) de sustento con tipo Confirmación de desembolsos', 'Alerta', 2);
-          return;
-        }
       }
     }
 
@@ -583,10 +582,10 @@ export class AprobacionComponent implements OnInit {
           this.utilsService.blockUIStop();
         });
       } else if (response.comun.tipo == 2) {
-        this.utilsService.showNotification(response.mensaje, 'Validación', 2);
+        this.utilsService.showNotification(response.comun.mensaje, 'Validación', 2);
         this.utilsService.blockUIStop();
       } else if (response.comun.tipo == 0) {
-        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.showNotification(response.comun.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
       }
     }, error => {
@@ -694,7 +693,7 @@ export class AprobacionComponent implements OnInit {
         });
         this.onListarDesembolso();
       } else if (response.comun.tipo == 0) {
-        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.showNotification(response.comun.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
       }
 

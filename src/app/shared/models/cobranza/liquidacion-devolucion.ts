@@ -1,6 +1,7 @@
 import {LiquidacionDevolucionSustento} from "./liquidacionDevolucion-Sustento";
 
 export class LiquidacionDevolucion {
+  idEmpresa: number;
   idLiquidacionDevolucion: number;
   idLiquidacionDet: number;
   codigo: string;
@@ -23,6 +24,7 @@ export class LiquidacionDevolucion {
   checkList: boolean;
   tipoCambioMoneda: number;
   montoConversion: number;
+  fechaDesembolso: string;
   idEstado: number;
   estado: string;
   idUsuarioAud: number;

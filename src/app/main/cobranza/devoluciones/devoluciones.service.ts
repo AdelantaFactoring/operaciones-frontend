@@ -27,4 +27,38 @@ export class DevolucionesService {
       }
     );
   }
+
+  actualizar(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${DEVOLUCIONES.actualizar}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  cambiarEstado(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${DEVOLUCIONES.cambiarEstado}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  export(payload: any): Observable<Blob> {
+    return this.http.post(environment.apiUrl + DEVOLUCIONES.generarArchivo, payload, {responseType: 'blob'});
+  }
+
+  enviarCorreo(payload): Observable<any> {
+    return this.requestMethod.post(
+      `${environment.apiUrl}${DEVOLUCIONES.enviarCorreo}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }
