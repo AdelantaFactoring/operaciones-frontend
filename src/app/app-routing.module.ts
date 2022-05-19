@@ -24,6 +24,11 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'facturacion',
+    loadChildren: () => import('app/main/facturacion/facturacion.module').then(m => m.FacturacionModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'pages',
     loadChildren: () => import('app/main/pages/pages.module').then(m => m.PagesModule)
   },

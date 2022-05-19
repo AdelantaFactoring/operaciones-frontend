@@ -122,7 +122,7 @@ export const menu: CoreMenu[] = [
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'file-text',
-      url: 'pages/miscellaneous/coming-soon'
+      url: 'facturacion/documentos'
     }]
   },
   {
