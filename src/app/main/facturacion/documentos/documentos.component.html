@@ -100,6 +100,41 @@
                         </a>
                       </div>
                     </td>
+<!--                    <td>-->
+<!--                      <div class="d-flex align-items-center">-->
+<!--                        <a href="javascript:void(0)" title="Editar" (click)="onEditar(modalINFO, cab)"-->
+<!--                           class="btn btn-raised btn-outline-success btn-sm">-->
+<!--                          <i class="text-success cursor-pointer" data-feather="edit"></i>-->
+<!--                        </a>-->
+<!--                        &nbsp;-->
+<!--                        <a href="javascript:void(0)" title="Firmar y Publicar" (click)="onFirmarPublicar(cab)"-->
+<!--                           [class.disabled]="cab.idEstado > 1 ? true : null"-->
+<!--                           class="btn btn-raised btn-outline-warning btn-sm">-->
+<!--                          <i class="text-warning cursor-pointer" data-feather="send"></i>-->
+<!--                        </a>-->
+<!--                        &nbsp;-->
+<!--                        <a href="javascript:void(0)" title="Declarar" (click)="onDeclarar(cab)"-->
+<!--                           [class.disabled]="cab.idEstado > 3 || cab.idEstado < 3 ? true : null"-->
+<!--                           class="btn btn-raised btn-outline-warning btn-sm">-->
+<!--                          <i class="text-success fa fa-bullhorn"></i>-->
+<!--                        </a>-->
+<!--                        &nbsp;-->
+<!--                        <a href="javascript:void(0)" title="Anular" (click)="onAnular(cab)"-->
+<!--                           class="btn btn-raised btn-outline-warning btn-sm">-->
+<!--                          <i class="text-danger fa fa-ban"></i>-->
+<!--                        </a>-->
+<!--                        &nbsp;-->
+<!--                        <a href="javascript:void(0)" title="Consultar Estado" (click)="onConsultarEstado(cab)"-->
+<!--                           class="btn btn-raised btn-outline-warning btn-sm">-->
+<!--                          <i class="text-info fa fa-search"></i>-->
+<!--                        </a>-->
+<!--                        &nbsp;-->
+<!--                        <a href="javascript:void(0)" title="Eliminar"-->
+<!--                           class="btn btn-raised btn-outline-danger btn-sm">-->
+<!--                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>-->
+<!--                        </a>-->
+<!--                      </div>-->
+<!--                    </td>-->
                     <td>
                       <div class="d-flex align-items-center">
                         <a href="javascript:void(0)" title="Editar" (click)="onEditar(modalINFO, cab)"
@@ -107,15 +142,39 @@
                           <i class="text-success cursor-pointer" data-feather="edit"></i>
                         </a>
                         &nbsp;
-                        <a href="javascript:void(0)" title="Firmar y Publicar" (click)="onFirmarPublicar(cab)"
-                           class="btn btn-raised btn-outline-warning btn-sm">
-                          <i class="text-warning cursor-pointer" data-feather="send"></i>
-                        </a>
-                        &nbsp;
                         <a href="javascript:void(0)" title="Eliminar"
                            class="btn btn-raised btn-outline-danger btn-sm">
                           <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
                         </a>
+                        &nbsp;
+                        <div ngbDropdown container="body">
+                          <a ngbDropdownToggle href="javascript:void(0);" class="btn btn-raised btn-outline-secondary btn-sm" id="dropdownBrowserState"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Opciones de Comprobante">
+<!--                            <i data-feather="more-vertical"></i>-->
+                          </a>
+                          <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="dropdownBrowserState">
+                            <a ngbDropdownItem href="javascript:void(0)" title="Firmar y Publicar" (click)="onFirmarPublicar(cab)"
+                               [class.disabled]="cab.idEstado != 1 ? true : null"
+                               class="d-flex align-items-center">
+                              <i class="text-warning cursor-pointer mr-50" data-feather="send"></i>Firmar y Publicar
+                            </a>
+                            <a ngbDropdownItem href="javascript:void(0)" title="Declarar" (click)="onDeclarar(cab)"
+                               [class.disabled]="cab.idEstado != 3 ? true : null"
+                               class="d-flex align-items-center">
+                              <i class="text-success fa fa-bullhorn mr-50"></i> Declarar
+                            </a>
+                            <a ngbDropdownItem href="javascript:void(0)" title="Anular" (click)="onAnular(cab)"
+                               [class.disabled]="cab.idEstado > 3 || cab.idEstado < 2 ? true : null"
+                               class="d-flex align-items-center">
+                              <i class="text-danger fa fa-ban mr-50"></i> Anular
+                            </a>
+                            <a ngbDropdownItem href="javascript:void(0)" title="Consultar Estado" (click)="onConsultarEstado(cab)"
+                               [class.disabled]="cab.idEstado === 1 || cab.ide ? true : null"
+                               class="d-flex align-items-center">
+                              <i class="text-info fa fa-search mr-50"></i> Consultar y Actualizar Estado
+                            </a>
+                          </div>
+                        </div>
                       </div>
                     </td>
                     <td>{{cab.tipoDocumento}}</td>

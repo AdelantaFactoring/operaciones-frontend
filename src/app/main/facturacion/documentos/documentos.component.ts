@@ -421,7 +421,82 @@ export class DocumentosComponent implements OnInit {
     this.documentosService.firmaPublicacion(cab).subscribe((response: any) => {
       switch (response.tipo) {
         case 1:
-          this.utilsService.showNotification('Información evniada correctamente', 'Confirmación', 1);
+          this.utilsService.showNotification('Información enviada correctamente', 'Confirmación', 1);
+          this.utilsService.blockUIStop();
+          this.onCancelar();
+          break;
+        case 2:
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          this.utilsService.blockUIStop();
+          break;
+        default:
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          this.utilsService.blockUIStop();
+          break;
+      }
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+  }
+
+  onDeclarar(cab: LiquidacionDocumentoCab): void {
+    this.utilsService.blockUIStart("Enviando a declarar...");
+    cab.idEmpresa = 1;
+    this.documentosService.declarar(cab).subscribe((response: any) => {
+      switch (response.tipo) {
+        case 1:
+          this.utilsService.showNotification('Información enviada a declarar correctamente', 'Confirmación', 1);
+          this.utilsService.blockUIStop();
+          this.onCancelar();
+          break;
+        case 2:
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          this.utilsService.blockUIStop();
+          break;
+        default:
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          this.utilsService.blockUIStop();
+          break;
+      }
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+  }
+
+  onAnular(cab: LiquidacionDocumentoCab): void {
+    this.utilsService.blockUIStart("Enviando para anulación...");
+    cab.idEmpresa = 1;
+    this.documentosService.anular(cab).subscribe((response: any) => {
+      switch (response.tipo) {
+        case 1:
+          this.utilsService.showNotification('Información enviada para anulación', 'Confirmación', 1);
+          this.utilsService.blockUIStop();
+          this.onCancelar();
+          break;
+        case 2:
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          this.utilsService.blockUIStop();
+          break;
+        default:
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          this.utilsService.blockUIStop();
+          break;
+      }
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+  }
+
+  onConsultarEstado(cab: LiquidacionDocumentoCab): void {
+    this.utilsService.blockUIStart("Consultando Estado...");
+    cab.idEmpresa = 1;
+    this.documentosService.consultarEstado(cab).subscribe((response: any) => {
+      switch (response.tipo) {
+        case 1:
+          this.utilsService.showNotification('Información actualizada', 'Confirmación', 1);
           this.utilsService.blockUIStop();
           this.onCancelar();
           break;

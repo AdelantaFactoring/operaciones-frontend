@@ -47,4 +47,34 @@ export class DocumentosService {
       }
     );
   }
+
+  consultarEstado(payload): Observable<any> {
+    return this.requestMethod.post(
+      `${environment.apiUrl}${DOCUMENTOS.consultarEstado}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  declarar(payload): Observable<any> {
+    return this.requestMethod.post(
+      `${environment.apiUrl}${DOCUMENTOS.declarar}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  anular(payload): Observable<any> {
+    return this.requestMethod.post(
+      `${environment.apiUrl}${DOCUMENTOS.anular}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }
