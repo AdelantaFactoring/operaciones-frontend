@@ -50,6 +50,11 @@ export class GastosComponent implements OnInit {
   }
 
   onAgregarGastos(): void {
+    if (this.gastos.filter(a => a.edicion).length > 0) {
+      this.utilsService.showNotification("Primero debe finalizar la edición del registro actual (gastos)", 'Alerta', 2);
+      return;
+    }
+
     this.submittedGastos = true;
     if (this.gastosForm.invalid)
       return;
@@ -132,8 +137,8 @@ export class GastosComponent implements OnInit {
     item.servicioCobranza = this.oldGastos.servicioCobranza;
     item.servicioCustodia = this.oldGastos.servicioCustodia;
     item.idFila = this.oldGastos.idFila;
-    item.edicion = false;
-    item.editado = false;
+    item.edicion = this.oldGastos.edicion;
+    item.editado = this.oldGastos.editado;
   }
 
   onConfirmarCambioGastos(item: ClienteGastos): void {

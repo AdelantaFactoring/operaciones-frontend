@@ -294,6 +294,11 @@ export class ClientesComponent implements OnInit {
   }
 
   onAgregarCuenta(): void {
+    if (this.cuentas.filter(a => a.edicion).length > 0) {
+      this.utilsService.showNotification("Primero debe finalizar la edición del registro actual", 'Alerta', 2);
+      return;
+    }
+
     this.submittedCuenta = true;
     if (this.cuentaForm.invalid)
       return;
@@ -368,8 +373,8 @@ export class ClientesComponent implements OnInit {
     item.cci = this.oldCuenta.cci;
     item.predeterminado = this.oldCuenta.predeterminado;
     item.idFila = this.oldCuenta.idFila;
-    item.edicion = false;
-    item.editado = false;
+    item.edicion = this.oldCuenta.edicion;
+    item.editado = this.oldCuenta.editado;
   }
 
   onConfirmarCambioCuenta(item: ClienteCuenta): void {
@@ -432,6 +437,11 @@ export class ClientesComponent implements OnInit {
   }
 
   onAgregarContacto(): void {
+    if (this.contactos.filter(a => a.edicion).length > 0) {
+      this.utilsService.showNotification("Primero debe finalizar la edición del registro actual", 'Alerta', 2);
+      return;
+    }
+
     this.submittedContacto = true;
     if (this.contactoForm.invalid)
       return;
@@ -496,8 +506,8 @@ export class ClientesComponent implements OnInit {
     item.correo = this.oldContacto.correo;
     item.predeterminado = this.oldContacto.predeterminado;
     item.idFila = this.oldContacto.idFila;
-    item.edicion = false;
-    item.editado = false;
+    item.edicion = this.oldContacto.edicion;
+    item.editado = this.oldContacto.editado;
   }
 
   onConfirmarCambioContacto(item: ClienteContacto): void {

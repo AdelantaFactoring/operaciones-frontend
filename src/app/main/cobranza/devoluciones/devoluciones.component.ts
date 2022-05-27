@@ -281,7 +281,21 @@ export class DevolucionesComponent implements OnInit {
   }
 
   onEliminarArchivo(item: Archivo): void {
+    let archivo = item.nombre;
+    let id = 0;
+    for (const arch of this.archivosSustento.queue) {
+      if (arch?.file?.name == archivo) {
+        arch.remove();
+        break;
+      }
+    }
 
+    for (const row of this.archivos) {
+      if (row.nombre === archivo) {
+        this.archivos.splice(id, 1)
+      }
+      id = id + 1;
+    }
   }
 
   onEliminarArchivoAdjunto(item: LiquidacionDevolucionSustento): void {

@@ -258,6 +258,7 @@ export class SolicitudesGrillaComponent implements OnInit {
     this.solicitudForm.controls.nombreContacto.setValue(item.nombreContacto);
     this.solicitudForm.controls.telefonoContacto.setValue(item.telefonoContacto);
     this.solicitudForm.controls.correoContacto.setValue(item.correoContacto);
+    this.solicitudForm.controls.conCopiaContacto.setValue(item.conCopiaContacto);
     this.solicitudForm.controls.titularCuentaBancariaDestino.setValue(item.titularCuentaBancariaDestino);
     this.solicitudForm.controls.monedaCuentaBancariaDestino.setValue(item.monedaCuentaBancariaDestino);
     this.solicitudForm.controls.bancoDestino.setValue(item.bancoDestino);

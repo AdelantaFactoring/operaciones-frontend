@@ -443,11 +443,12 @@ export class SolicitudesFormComponent implements OnInit {
   onClientePagadorList(modal, value): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesFormService.listarCliente({
-      idTipo: this.idTipoOperacion,
+      idTipoOperacion: this.idTipoOperacion,
       search: this.searchCli,
       pageIndex: this.pageCli,
       pageSize: this.pageSizeCli
     }).subscribe(response => {
+      response
       this.optClienteP = response;
 
       this.collectionSizeCli = response.length > 0 ? response[0].totalRows : 0;
@@ -618,7 +619,6 @@ export class SolicitudesFormComponent implements OnInit {
       else {
         if (rs.tipo == 1) {
           this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
-
           this.utilsService.blockUIStop();
         } else if (rs.tipo == 2) {
           this.utilsService.showNotification(res.mensaje, 'Alerta', 2);

@@ -1,0 +1,41 @@
+import {LiquidacionDocumentoDet} from "./liquidaciondocumento-det";
+
+export class LiquidacionDocumentoCab {
+  idEmpresa: number;
+  idLiquidacionDocumentoCab: number;
+  idLiquidacionCab: number;
+  idTipoDocumento: number;
+  codigoTipoDocumento: string;
+  tipoDocumento: string;
+  prefijo: string;
+  serie: number;
+  correlativo: number;
+  nroDocumento: string;
+  codigo: string;
+  codigoSolicitud: string;
+  idCliente: number;
+  rucCliente: string;
+  razonSocialCliente: string;
+  direccionCliente: string;
+  fechaEmision: any;
+  fechaEmisionFormat: string;
+  idMoneda: number;
+  moneda: string;
+  formaPago: string;
+  fechaVencimiento: any;
+  fechaVencimientoFormat: string;
+  igv: number;
+  monto: number;
+  montoIGV: number;
+  montoTotal: number;
+  montoLetra: string;
+  idEstado: number;
+  estado: string;
+  archivoPDF: string;
+  archivoXML: string;
+  totalRows: number;
+  idUsuarioAud: number;
+  liquidacionDocumentoDet: LiquidacionDocumentoDet[] = [];
+  seleccionado: boolean = false;
+  cambiarIcono: boolean = false;
+}

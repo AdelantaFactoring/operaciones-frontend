@@ -1,3 +1,29 @@
 .min-width-table {
-  min-width: 2000px;
+  min-width: 2300px;
 }
+
+.row-edicion {
+  background-color: lightgreen !important;
+  p {
+    color: white;
+  }
+}
+
+.eliminado {
+  text-decoration: line-through;
+}
+
+.min-width-table2 {
+  min-width: 1000px;
+}
+
+.detail-th-color {
+  background-color: rgba(252, 120, 120, 0.12) !important;
+}
+
+::ng-deep .my-class .modal-dialog {
+  min-width: 60%;
+  //width: 60%;
+}
+
+@import '@core/scss/angular/libs/select.component.scss';

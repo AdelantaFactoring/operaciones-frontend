@@ -21,13 +21,13 @@ export class SolicitudesFormService {
   listarCliente(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${CLIENTE.listar}`,
-      `?idTipo=${payload.idTipo}&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
+      `?idTipoOperacion=${payload.idTipoOperacion}&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }
     );
   }
-  
+
   guardar(payload): Observable<any> {
     return this.requestMethod.post(
       `${environment.apiUrl}${SOLICITUD.guardar}`,
