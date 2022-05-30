@@ -1,4 +1,4 @@
-import { CoreMenu } from '@core/types';
+import {CoreMenu} from '@core/types';
 
 export const menu: CoreMenu[] = [
   {
@@ -14,28 +14,28 @@ export const menu: CoreMenu[] = [
       type: 'item',
       icon: 'users',
       url: 'comercial/clientes'
-    },{
+    }, {
       id: 'pagador',
       title: 'Pagadores',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'user-check',
       url: 'comercial/pagador'
-    },{
+    }, {
       id: 'clienteapagador',
       title: 'Cliente-Pagador',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'refresh-cw',
       url: 'comercial/clientepagador'
-    },{
+    }, {
       id: 'checklist',
       title: 'Check list',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'check-square',
       url: 'comercial/checklist'
-    },{
+    }, {
       id: 'solicitudes',
       title: 'Solicitudes',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
@@ -57,16 +57,23 @@ export const menu: CoreMenu[] = [
       type: 'item',
       icon: 'navigation',
       url: 'operaciones/respuestaPagador'
-    },{
+    }, {
       id: 'consultaFactrack',
       title: 'Consulta Factrack',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'search',
       url: 'operaciones/consultaFactrack'
-    },{
+    }, {
+      id: 'generarLiquidacion',
+      title: 'Generar Liquidación',
+      // translate: 'MENU.DASHBOARD.ANALYTICS',
+      type: 'item',
+      icon: 'dollar-sign',
+      url: 'operaciones/generarLiquidacion'
+    }, {
       id: 'liquidaciones',
-      title: 'Liquidaciones',
+      title: 'Aprobación de Liquidación',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'dollar-sign',
@@ -101,7 +108,7 @@ export const menu: CoreMenu[] = [
       type: 'item',
       icon: 'file-plus',
       url: 'cobranza/registroPagos'
-    },{
+    }, {
       id: 'devoluciones',
       title: 'Devoluciones',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
@@ -138,7 +145,7 @@ export const menu: CoreMenu[] = [
       type: 'item',
       icon: 'user',
       url: 'pages/miscellaneous/coming-soon'
-    },{
+    }, {
       id: 'perfil',
       title: 'Perfil',
       // translate: 'MENU.DASHBOARD.ANALYTICS',

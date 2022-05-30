@@ -14,6 +14,7 @@ import { RespuestaPagadorComponent } from './respuesta-pagador/respuesta-pagador
 import { LiquidacionesComponent } from './liquidaciones/liquidaciones.component';
 import {FileUploadModule} from "ng2-file-upload";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import { GenerarLiquidacionComponent } from './generar-liquidacion/generar-liquidacion.component';
 
 const routes: Routes = [
   {
@@ -38,6 +39,15 @@ const routes: Routes = [
     path: '',
     children: [
       {
+        path: 'generarLiquidacion',
+        component: GenerarLiquidacionComponent
+      }
+    ]
+  },
+  {
+    path: '',
+    children: [
+      {
         path: 'liquidaciones',
         component: LiquidacionesComponent
       }
@@ -49,7 +59,8 @@ const routes: Routes = [
   declarations: [
     RespuestaPagadorComponent,
     ConsultaFactrackComponent,
-    LiquidacionesComponent
+    LiquidacionesComponent,
+    GenerarLiquidacionComponent
   ],
     imports: [
         CommonModule,
