@@ -57,10 +57,10 @@ export class CoreMenuComponent implements OnInit {
   }
 
   onAcceso(menu: Menu[], idMenuL: number): boolean{
-    return menu.find(x => x.idMenu == idMenuL && x.acceso) != null; 
+    return menu.find(x => x.idMenu == idMenuL && x.acceso) != null;
   }
 
   onAccesoSeccion(menu: Menu[], nombreSeccion: string): boolean{
-    return menu.find(x => x.grupo == nombreSeccion && x.acceso) != null; 
+    return menu.filter(x => x.grupo == nombreSeccion.toUpperCase() && x.acceso).length > 0;
   }
 }

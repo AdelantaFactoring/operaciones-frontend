@@ -41,7 +41,7 @@ export class GenerarLiquidacionComponent implements OnInit {
               private tablaMaestraService: TablaMaestraService,
               private formBuilder: FormBuilder,) {
     this.contentHeader = {
-      headerTitle: 'Generar Liquidación',
+      headerTitle: 'Generar',
       actionButton: true,
       breadcrumb: {
         type: '',
@@ -52,11 +52,11 @@ export class GenerarLiquidacionComponent implements OnInit {
             link: '/'
           },
           {
-            name: 'Operaciones',
+            name: 'Liquidación',
             isLink: false
           },
           {
-            name: 'Generar Liquidación',
+            name: 'Generar',
             isLink: false
           }
         ]

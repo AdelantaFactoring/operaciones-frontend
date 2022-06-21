@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnChanges, OnInit, ViewEncapsulation} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import {FileUploader} from "ng2-file-upload";
 import {Archivo} from "../../../shared/models/comercial/archivo";
 import {LiquidacionCabSustento} from "../../../shared/models/operaciones/LiquidacionCab-Sustento";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-liquidaciones',
@@ -23,6 +24,8 @@ import {LiquidacionCabSustento} from "../../../shared/models/operaciones/Liquida
   //encapsulation: ViewEncapsulation.None
 })
 export class LiquidacionesComponent implements OnInit {
+  public mostrar: string = 'false';
+
   public contentHeader: object;
   public submitted: boolean = false;
   public seleccionarTodoSolicitud: boolean = false;
@@ -65,6 +68,7 @@ export class LiquidacionesComponent implements OnInit {
   }
 
   constructor(
+    private route: ActivatedRoute,
     private modalService: NgbModal,
     private utilsService: UtilsService,
     private solicitudesService: SolicitudesService,
@@ -72,7 +76,7 @@ export class LiquidacionesComponent implements OnInit {
     private tablaMaestraService: TablaMaestraService,
     private formBuilder: FormBuilder,) {
     this.contentHeader = {
-      headerTitle: 'Liquidaciones',
+      headerTitle: 'Aprobación',
       actionButton: true,
       breadcrumb: {
         type: '',
@@ -83,11 +87,11 @@ export class LiquidacionesComponent implements OnInit {
             link: '/'
           },
           {
-            name: 'Operaciones',
+            name: 'Liquidación',
             isLink: false
           },
           {
-            name: 'Liquidaciones',
+            name: 'Aprobación',
             isLink: false
           }
         ]
@@ -111,6 +115,8 @@ export class LiquidacionesComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.route.params.subscribe(s => this.mostrar = s.mostrar);
+
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.tipoCT = await this.onListarMaestros(5, 0);
     this.tiposArchivos = await this.onListarMaestros(8, 0);

@@ -51,33 +51,47 @@ export const menu: CoreMenu[] = [
     type: 'section',
     icon: 'settings',
     children: [{
-      id: 'respuestaPagador',
+      id: '6',
       title: 'Respuesta Pagador',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'navigation',
       url: 'operaciones/respuestaPagador'
     }, {
-      id: 'consultaFactrack',
+      id: '7',
       title: 'Consulta Factrack',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'search',
       url: 'operaciones/consultaFactrack'
-    }, {
-      id: 'generarLiquidacion',
-      title: 'Generar Liquidación',
+    }]
+  },
+  {
+    id:'liquidacion',
+    title: 'Liquidación',
+    type: 'section',
+    icon: 'dollar-sign',
+    children: [{
+      id: '8',
+      title: 'Generar',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
-      icon: 'dollar-sign',
+      icon: 'layers',
       url: 'operaciones/generarLiquidacion'
     }, {
-      id: 'liquidaciones',
-      title: 'Aprobación de Liquidación',
+      id: '9',
+      title: 'Aprobación',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
-      icon: 'dollar-sign',
-      url: 'operaciones/liquidaciones'
+      icon: 'check',
+      url: 'operaciones/liquidaciones/true'
+    }, {
+      id: '16',
+      title: 'Historial',
+      // translate: 'MENU.DASHBOARD.ANALYTICS',
+      type: 'item',
+      icon: 'book',
+      url: 'operaciones/liquidaciones/false'
     }]
   },
   {
@@ -87,7 +101,7 @@ export const menu: CoreMenu[] = [
     type: 'section',
     icon: 'credit-card',
     children: [{
-      id: 'aprobacion',
+      id: '10',
       title: 'Aprobación',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
@@ -102,14 +116,14 @@ export const menu: CoreMenu[] = [
     type: 'section',
     icon: 'dollar-sign',
     children: [{
-      id: 'registroPagos',
+      id: '11',
       title: 'Registro de Pagos',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'file-plus',
       url: 'cobranza/registroPagos'
     }, {
-      id: 'devoluciones',
+      id: '12',
       title: 'Devoluciones',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
@@ -124,7 +138,7 @@ export const menu: CoreMenu[] = [
     type: 'section',
     icon: 'file-text',
     children: [{
-      id: 'documentos',
+      id: '13',
       title: 'Documentos',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
@@ -146,7 +160,7 @@ export const menu: CoreMenu[] = [
       icon: 'user',
       url: 'seguridad/usuario'
     }, {
-      id: 'perfil',
+      id: '15',
       title: 'Perfil',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
