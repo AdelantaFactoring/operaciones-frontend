@@ -11,4 +11,6 @@ export class LiquidacionPago {
   gastos: number;
   saldoDeuda: number;
   observacion: string;
+  comprobanteGenerado1: number;
+  comprobanteGenerado2: number;
 }

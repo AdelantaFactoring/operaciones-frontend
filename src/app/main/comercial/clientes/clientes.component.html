@@ -132,6 +132,9 @@
                        class="form-control" formControlName="razonSocial" type="text"/>
                 <div *ngIf="ReactiveIUForm.razonSocial.errors" class="invalid-feedback">
                   <div *ngIf="ReactiveIUForm.razonSocial.errors.required">* Campo obligatorio</div>
+                  <div *ngIf="clienteForm.controls['razonSocial'].hasError('invalidName')">* No se permite caracteres
+                    especiales
+                  </div>
                 </div>
               </div>
             </div>
@@ -142,13 +145,22 @@
                        class="form-control" formControlName="direccionPrincipal" type="text"/>
                 <div *ngIf="ReactiveIUForm.direccionPrincipal.errors" class="invalid-feedback">
                   <div *ngIf="ReactiveIUForm.direccionPrincipal.errors.required">* Campo obligatorio</div>
+                  <div *ngIf="clienteForm.controls['direccionPrincipal'].hasError('invalidName')">* No se permite
+                    caracteres especiales
+                  </div>
                 </div>
               </div>
             </div>
             <div class="col-12 col-md-6">
               <div class="form-group">
                 <label>Dirección Facturación</label>
-                <input class="form-control" formControlName="direccionFacturacion" type="text"/>
+                <input class="form-control" formControlName="direccionFacturacion" type="text"
+                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.direccionFacturacion.errors }"/>
+                <div *ngIf="ReactiveIUForm.direccionFacturacion.errors" class="invalid-feedback">
+                  <div *ngIf="clienteForm.controls['direccionFacturacion'].hasError('invalidName')">* No se permite
+                    caracteres especiales
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-12 col-md-4">
@@ -194,12 +206,12 @@
               <div class="divider-text">Gastos</div>
             </div>
           </div>
-<!--          <div class="col-md-12 col-12">-->
-<!--            <div class="form-group">-->
-<!--              <label>Gastos Factoring</label>-->
-<!--              <app-gastos [gastos]="gastos" [monedas]="monedas" [idTipoOperacion]="1"></app-gastos>-->
-<!--            </div>-->
-<!--          </div>-->
+          <!--          <div class="col-md-12 col-12">-->
+          <!--            <div class="form-group">-->
+          <!--              <label>Gastos Factoring</label>-->
+          <!--              <app-gastos [gastos]="gastos" [monedas]="monedas" [idTipoOperacion]="1"></app-gastos>-->
+          <!--            </div>-->
+          <!--          </div>-->
           <div class="col-md-12 col-12">
             <div class="form-group">
               <label>Gastos Confirming</label>
@@ -389,7 +401,7 @@
                                  formControlName="nroCuenta"/>
                       </td>
                       <td style="min-width: 150px"><input class="form-control" type="text" placeholder="CCI"
-                                 formControlName="cci"/></td>
+                                                          formControlName="cci"/></td>
                       <td><input class="form-control" type="text" placeholder="Tipo Cuenta"
                                  formControlName="tipoCuenta"/></td>
                       <td>

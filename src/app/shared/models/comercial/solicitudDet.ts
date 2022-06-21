@@ -1,6 +1,14 @@
 export class SolicitudDet {
   idSolicitudDet: number;
   idSolicitudCab: number;
+  razonSocialPagProv: string;
+  rucPagProv: string;
+  titularCuentaBancariaDestino: string;
+  monedaCuentaBancariaDestino: string;
+  bancoDestino: string;
+  nroCuentaBancariaDestino: string;
+  cciDestino: string;
+  tipoCuentaBancariaDestino: string;
   nroDocumento: string;
   fechaConfirmado: any;
   fechaConfirmadoFormat: string;

@@ -1,7 +1,7 @@
 @import '~@core/scss/angular/libs/file-uploader.component.scss';
 
 ::ng-deep .my-class .modal-dialog {
-  min-width: 60%;
+  min-width: 70%;
   //width: 60%;
 }
 
@@ -11,6 +11,10 @@
 
 .detail-td-color {
   background-color: rgba(120, 153, 252, 0.12) !important;
+}
+
+.detail-th-color2 {
+  background-color: rgba(120, 162, 252, 0.12) !important;
 }
 
 .row-edicion {

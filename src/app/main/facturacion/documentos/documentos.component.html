@@ -71,11 +71,11 @@
                   <th>N° Documento</th>
                   <th>Cliente</th>
                   <th>Cliente RUC</th>
-                  <th>Dirección</th>
+                  <!--                  <th>Dirección</th>-->
                   <th>Fecha Emisión</th>
                   <th>Moneda</th>
                   <th>Forma Pago</th>
-                  <th>Fecha Vencimiento</th>
+                  <!--                  <th>Fecha Vencimiento</th>-->
                   <th>Monto</th>
                   <th>Monto (IGV)</th>
                   <th>Monto Total</th>
@@ -100,77 +100,43 @@
                         </a>
                       </div>
                     </td>
-<!--                    <td>-->
-<!--                      <div class="d-flex align-items-center">-->
-<!--                        <a href="javascript:void(0)" title="Editar" (click)="onEditar(modalINFO, cab)"-->
-<!--                           class="btn btn-raised btn-outline-success btn-sm">-->
-<!--                          <i class="text-success cursor-pointer" data-feather="edit"></i>-->
-<!--                        </a>-->
-<!--                        &nbsp;-->
-<!--                        <a href="javascript:void(0)" title="Firmar y Publicar" (click)="onFirmarPublicar(cab)"-->
-<!--                           [class.disabled]="cab.idEstado > 1 ? true : null"-->
-<!--                           class="btn btn-raised btn-outline-warning btn-sm">-->
-<!--                          <i class="text-warning cursor-pointer" data-feather="send"></i>-->
-<!--                        </a>-->
-<!--                        &nbsp;-->
-<!--                        <a href="javascript:void(0)" title="Declarar" (click)="onDeclarar(cab)"-->
-<!--                           [class.disabled]="cab.idEstado > 3 || cab.idEstado < 3 ? true : null"-->
-<!--                           class="btn btn-raised btn-outline-warning btn-sm">-->
-<!--                          <i class="text-success fa fa-bullhorn"></i>-->
-<!--                        </a>-->
-<!--                        &nbsp;-->
-<!--                        <a href="javascript:void(0)" title="Anular" (click)="onAnular(cab)"-->
-<!--                           class="btn btn-raised btn-outline-warning btn-sm">-->
-<!--                          <i class="text-danger fa fa-ban"></i>-->
-<!--                        </a>-->
-<!--                        &nbsp;-->
-<!--                        <a href="javascript:void(0)" title="Consultar Estado" (click)="onConsultarEstado(cab)"-->
-<!--                           class="btn btn-raised btn-outline-warning btn-sm">-->
-<!--                          <i class="text-info fa fa-search"></i>-->
-<!--                        </a>-->
-<!--                        &nbsp;-->
-<!--                        <a href="javascript:void(0)" title="Eliminar"-->
-<!--                           class="btn btn-raised btn-outline-danger btn-sm">-->
-<!--                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>-->
-<!--                        </a>-->
-<!--                      </div>-->
-<!--                    </td>-->
                     <td>
                       <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Editar" (click)="onEditar(modalINFO, cab)"
+                        <a *ngIf="cab.idEstado === 1" href="javascript:void(0)" title="Editar"
+                           (click)="onEditar(modalINFO, cab)"
                            class="btn btn-raised btn-outline-success btn-sm">
                           <i class="text-success cursor-pointer" data-feather="edit"></i>
                         </a>
+                        <a *ngIf="cab.idEstado != 1" href="javascript:void(0)" title="Ver"
+                           (click)="onEditar(modalINFO, cab)"
+                           class="btn btn-raised btn-outline-info btn-sm">
+                          <i class="text-info cursor-pointer" data-feather="eye"></i>
+                        </a>
                         &nbsp;
-                        <a href="javascript:void(0)" title="Eliminar"
+                        <a href="javascript:void(0)" title="Eliminar" (click)="onEliminar(cab)"
+                           [class.disabled]="cab.idEstado != 1 ? true : null"
                            class="btn btn-raised btn-outline-danger btn-sm">
                           <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
                         </a>
                         &nbsp;
                         <div ngbDropdown container="body">
-                          <a ngbDropdownToggle href="javascript:void(0);" class="btn btn-raised btn-outline-secondary btn-sm" id="dropdownBrowserState"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Opciones de Comprobante">
-<!--                            <i data-feather="more-vertical"></i>-->
+                          <a ngbDropdownToggle href="javascript:void(0);"
+                             class="btn btn-raised btn-outline-secondary btn-sm" id="dropdownBrowserState"
+                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                             title="Opciones de Comprobante">
+                            <!--                            <i data-feather="more-vertical"></i>-->
                           </a>
                           <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="dropdownBrowserState">
-                            <a ngbDropdownItem href="javascript:void(0)" title="Firmar y Publicar" (click)="onFirmarPublicar(cab)"
+                            <a ngbDropdownItem href="javascript:void(0)" title="Firmar, Publicar Y Declarar"
+                               (click)="onFirmarPublicarDeclarar(cab)"
                                [class.disabled]="cab.idEstado != 1 ? true : null"
                                class="d-flex align-items-center">
-                              <i class="text-warning cursor-pointer mr-50" data-feather="send"></i>Firmar y Publicar
+                              <i class="text-warning cursor-pointer mr-50" data-feather="send"></i>Declarar
                             </a>
-                            <a ngbDropdownItem href="javascript:void(0)" title="Declarar" (click)="onDeclarar(cab)"
-                               [class.disabled]="cab.idEstado != 3 ? true : null"
+                            <a ngbDropdownItem href="javascript:void(0)" title="Consultar y Actualizar el estado"
+                               (click)="onConsultarEstado(cab)" [class.disabled]="cab.idEstado === 1 ? true : null"
                                class="d-flex align-items-center">
-                              <i class="text-success fa fa-bullhorn mr-50"></i> Declarar
-                            </a>
-                            <a ngbDropdownItem href="javascript:void(0)" title="Anular" (click)="onAnular(cab)"
-                               [class.disabled]="cab.idEstado > 3 || cab.idEstado < 2 ? true : null"
-                               class="d-flex align-items-center">
-                              <i class="text-danger fa fa-ban mr-50"></i> Anular
-                            </a>
-                            <a ngbDropdownItem href="javascript:void(0)" title="Consultar Estado" (click)="onConsultarEstado(cab)"
-                               class="d-flex align-items-center">
-                              <i class="text-info fa fa-search mr-50"></i> Consultar y Actualizar Estado
+                              <i class="text-info fa fa-search mr-50"></i> Actualizar Estado
                             </a>
                           </div>
                         </div>
@@ -180,11 +146,11 @@
                     <td>{{cab.nroDocumento === "" ? "[Pendiente a Generar]" : cab.nroDocumento }}</td>
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
-                    <td>{{cab.direccionCliente}}</td>
+                    <!--                    <td>{{cab.direccionCliente}}</td>-->
                     <td>{{cab.fechaEmisionFormat}}</td>
                     <td>{{cab.moneda}}</td>
                     <td>{{cab.formaPago}}</td>
-                    <td>{{cab.fechaVencimientoFormat}}</td>
+                    <!--                    <td>{{cab.fechaVencimientoFormat}}</td>-->
                     <td>{{cab.monto | number: '1.2-2'}}</td>
                     <td>{{cab.montoIGV | number: '1.2-2'}}</td>
                     <td>{{cab.montoTotal | number: '1.2-2'}}</td>
@@ -213,13 +179,14 @@
                       *ngIf="cab.liquidacionDocumentoDet.length > 0">
                     <td [colSpan]="17">
                       <div class="table-responsive"
-                           style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
+                           style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden; max-width: 1000px"
                            id="{{ 'detail' + cab.idLiquidacionDocumentoCab }}">
-                        <table class="table table-hover" style="width: auto">
+                        <table class="table table-hover">
                           <thead>
                           <tr>
                             <th class="detail-th-color">Código</th>
                             <th class="detail-th-color">Concepto</th>
+                            <th class="detail-th-color" *ngIf="cab.idLiquidacionCab > 0">N° Documento Ref.</th>
                             <th class="detail-th-color">U.M.</th>
                             <th class="detail-th-color">Cantidad</th>
                             <th class="detail-th-color">Precio Unitario</th>
@@ -229,7 +196,8 @@
                           <tr *ngFor="let item of cab.liquidacionDocumentoDet">
                             <td>{{item.codigo}}</td>
                             <td>{{item.concepto}}</td>
-                            <td>{{item.um}}</td>
+                            <td *ngIf="cab.idLiquidacionCab > 0">{{item.nroDocumentoReferencia}}</td>
+                            <td>{{item.uM_Desc}}</td>
                             <td>{{item.cantidad | number: '1.0-0'}}</td>
                             <td>{{item.precioUnitario | number: '1.2-2'}}</td>
                           </tr>
@@ -277,26 +245,54 @@
                     <label>Tipo Documento</label>
                     <ng-select appendTo="body" [clearable]="false" [items]="tipoDocumento" bindLabel="descripcion"
                                [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.tipoDocumento.errors }"
-                               placeholder="Tipo Documento" bindValue="idColumna" formControlName="tipoDocumento">
+                               placeholder="Tipo Documento" bindValue="idColumna" formControlName="tipoDocumento"
+                               (ngModelChange)="onTipoDocumento($event)">
                     </ng-select>
                     <div *ngIf="ReactiveIUForm.tipoDocumento.errors" class="invalid-feedback">
                       <div *ngIf="ReactiveIUForm.tipoDocumento.errors?.required">* Campo obligatorio</div>
                     </div>
                   </div>
                 </div>
-                <!--                <div class="col-md-6 col-12">-->
-                <!--                  <label>N° Liquidación</label>-->
-                <!--                  <div class="input-group">-->
-                <!--                    <input class="form-control" formControlName="codigo" type="text" />-->
-                <!--                    <div class="input-group-append">-->
-                <!--                      <button class="btn btn-outline-secondary feather"-->
-                <!--                              rippleEffect type="button">-->
-                <!--                        <span ngbTooltip="Buscar Liquidación" placement="left"-->
-                <!--                              container="body" [data-feather]="'search'"></span>-->
-                <!--                      </button>-->
-                <!--                    </div>-->
-                <!--                  </div>-->
-                <!--                </div>-->
+                <div class="col-md-6 col-12" *ngIf="idTipoDocumento === 1">
+                  <div class="form-group">
+                    <label>Tipo de Operación</label>
+                    <ng-select appendTo="body" [clearable]="false" [items]="tipoOperacion" bindLabel="descripcion"
+                               [(ngModel)]="idTipoOperacion" [ngModelOptions]="{ standalone: true }"
+                               [readonly]="idEstado != 1 ? true : null"
+                               [ngClass]="{ 'is-invalid': submitted && idTipoDocumento === 1 && idTipoOperacion === 0 }"
+                               (ngModelChange)="onCambioTipoOperacion($event)" placeholder="Tipo de Operación"
+                               bindValue="idColumna">
+                    </ng-select>
+                    <div *ngIf="submitted && idTipoDocumento === 1 && idTipoOperacion === 0" class="invalid-feedback">
+                      <div *ngIf="idTipoOperacion === 0">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="idTipoDocumento != 1">
+                  <div class="form-group">
+                    <label>Tipo de Nota</label>
+                    <ng-select appendTo="body" [clearable]="false" [items]="tipoNota" bindLabel="descripcion"
+                               [(ngModel)]="idTipoNota" [readonly]="idEstado != 1 ? true : null"
+                               [ngClass]="{ 'is-invalid': submitted && idTipoDocumento != 1 && idTipoNota === 0 }"
+                               placeholder="Tipo de Nota" bindValue="idColumna" [ngModelOptions]="{ standalone: true }"
+                               (ngModelChange)="onTipoNota($event)">
+                    </ng-select>
+                    <div *ngIf="submitted && idTipoDocumento != 1 && idTipoNota === 0" class="invalid-feedback">
+                      <div *ngIf="idTipoNota === 0">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="idTipoDocumento != 1">
+                  <div class="form-group">
+                    <label>Motivo</label>
+                    <input class="form-control" type="text" [ngModelOptions]="{ standalone: true }"
+                           [(ngModel)]="motivo" [readonly]="idEstado != 1 ? true : null"
+                           [ngClass]="{ 'is-invalid': submitted && idTipoDocumento != 1 && motivo === '' }"/>
+                    <div *ngIf="submitted && idTipoDocumento != 1 && motivo === ''" class="invalid-feedback">
+                      <div *ngIf="motivo === ''">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
                 <div class="col-md-12 col-12" hidden>
                   <div class="form-group">
                     <label>Id</label>
@@ -311,45 +307,6 @@
                 </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
-                    <label>Razón Social (Cliente)</label>
-                    <input class="form-control" formControlName="razonSocialCliente" type="text"
-                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.razonSocialCliente.errors }"/>
-                    <div *ngIf="ReactiveIUForm.razonSocialCliente.errors" class="invalid-feedback">
-                      <div *ngIf="ReactiveIUForm.razonSocialCliente.errors?.required">* Campo obligatorio</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12">
-                  <div class="form-group">
-                    <label>RUC (Cliente)</label>
-                    <div class="input-group">
-                      <input class="form-control" formControlName="rucCliente" type="text"
-                             [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.rucCliente.errors }"/>
-                      <div class="input-group-append">
-                        <button class="btn btn-outline-secondary feather"
-                                rippleEffect type="button">
-                        <span ngbTooltip="Buscar Liquidación" placement="left"
-                              container="body" [data-feather]="'search'"></span>
-                        </button>
-                      </div>
-                      <div *ngIf="ReactiveIUForm.rucCliente.errors" class="invalid-feedback">
-                        <div *ngIf="ReactiveIUForm.rucCliente.errors?.required">* Campo obligatorio</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12">
-                  <div class="form-group">
-                    <label>Dirección (Cliente)</label>
-                    <input class="form-control" formControlName="direccionCliente" type="text"
-                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.direccionCliente.errors }"/>
-                    <div *ngIf="ReactiveIUForm.direccionCliente.errors" class="invalid-feedback">
-                      <div *ngIf="ReactiveIUForm.direccionCliente.errors?.required">* Campo obligatorio</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12">
-                  <div class="form-group">
                     <label>Serie</label>
                     <input class="form-control" formControlName="serieFormat" type="text"/>
                   </div>
@@ -358,12 +315,14 @@
                   <div class="form-group">
                     <label>Correlativo</label>
                     <div class="input-group">
-                      <input class="form-control" formControlName="correlativo" type="number" (ngModelChange)="onCambioCorrelativo($event)"
+                      <input class="form-control" formControlName="correlativo" type="number"
+                             (ngModelChange)="onCambioCorrelativo($event)"
                              [readOnly]="ReactiveIUForm.idLiquidacionDocumentoCab.value > 0 ? true : null"
                              [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.correlativo.errors }"/>
-                      <div class="input-group-append">
-                        <button class="btn btn-outline-secondary feather icon-refresh-cw" [disabled]="ReactiveIUForm.idLiquidacionDocumentoCab.value > 0 ? true : null"
-                                type="button" rippleEffect (click)="onRefrescarCorrelativo()">
+                      <div *ngIf="ver" class="input-group-append">
+                        <button class="btn btn-outline-secondary feather icon-refresh-cw" *ngIf="idTipoDocumento != 0"
+                                [disabled]="ReactiveIUForm.idLiquidacionDocumentoCab.value > 0 ? true : null"
+                                type="button" rippleEffect (click)="onRefrescarCorrelativo(idTipoDocumento)">
                         </button>
                       </div>
                       <div *ngIf="ReactiveIUForm.correlativo.errors" class="invalid-feedback">
@@ -376,12 +335,54 @@
                 </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
+                    <label>RUC (Cliente)</label>
+                    <div class="input-group">
+                      <input class="form-control" formControlName="rucCliente" type="text"
+                             [readonly]="this.ReactiveIUForm.idCliente.value != 0 ? true: null"
+                             [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.rucCliente.errors }"/>
+                      <div *ngIf="ver" class="input-group-append">
+                        <button class="btn btn-outline-secondary feather"
+                                rippleEffect type="button" (click)="onBuscarCliente(modalCLIENTE)">
+                        <span ngbTooltip="Buscar Liquidación" placement="left"
+                              container="body" [data-feather]="'search'"></span>
+                        </button>
+                      </div>
+                      <div *ngIf="ReactiveIUForm.rucCliente.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.rucCliente.errors?.required">* Campo obligatorio</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Razón Social (Cliente)</label>
+                    <input class="form-control" formControlName="razonSocialCliente" type="text"
+                           [readonly]="this.ReactiveIUForm.idCliente.value != 0 ? true: null"
+                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.razonSocialCliente.errors }"/>
+                    <div *ngIf="ReactiveIUForm.razonSocialCliente.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.razonSocialCliente.errors?.required">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Dirección (Cliente)</label>
+                    <input class="form-control" formControlName="direccionCliente" type="text"
+                           [readonly]="this.ReactiveIUForm.idCliente.value != 0 ? true: null"
+                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.direccionCliente.errors }"/>
+                    <div *ngIf="ReactiveIUForm.direccionCliente.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.direccionCliente.errors?.required">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
                     <label>Fecha Emisión</label>
                     <div class="input-group">
                       <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaEmision"
                              container="body" ngbDatepicker #basicDP="ngbDatepicker"
                              [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.fechaEmision.errors }"/>
-                      <div class="input-group-append">
+                      <div *ngIf="ver" class="input-group-append">
                         <button class="btn btn-outline-secondary feather icon-calendar"
                                 (click)="basicDP.toggle()"
                                 type="button" rippleEffect>
@@ -393,35 +394,13 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6 col-12">
-                  <div class="form-group">
-                    <label>Moneda</label>
-                    <ng-select appendTo="body" [clearable]="false" [items]="moneda" bindLabel="descripcion"
-                               [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.moneda.errors }"
-                               placeholder="Moneda" bindValue="idColumna" formControlName="moneda">
-                    </ng-select>
-                    <div *ngIf="ReactiveIUForm.moneda.errors" class="invalid-feedback">
-                      <div *ngIf="ReactiveIUForm.moneda.errors?.required">* Campo obligatorio</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12">
-                  <div class="form-group">
-                    <label>Forma de Pago</label>
-                    <input class="form-control" formControlName="formaPago" type="text"
-                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.formaPago.errors }"/>
-                    <div *ngIf="ReactiveIUForm.formaPago.errors" class="invalid-feedback">
-                      <div *ngIf="ReactiveIUForm.formaPago.errors?.required">* Campo obligatorio</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12">
+                <div class="col-md-6 col-12" *ngIf="idTipoDocumento === 1">
                   <div class="form-group">
                     <label>Fecha Vencimiento</label>
                     <div class="input-group">
                       <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaVencimiento"
                              container="body" ngbDatepicker #basicDP1="ngbDatepicker">
-                      <div class="input-group-append">
+                      <div *ngIf="ver" class="input-group-append">
                         <button class="btn btn-outline-secondary feather icon-calendar"
                                 (click)="basicDP1.toggle()"
                                 type="button" rippleEffect>
@@ -432,9 +411,47 @@
                 </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
+                    <label>Moneda</label>
+                    <ng-select appendTo="body" [clearable]="false" [items]="moneda" bindLabel="descripcion"
+                               [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.moneda.errors }"
+                               placeholder="Moneda" bindValue="idColumna" formControlName="moneda"
+                              (ngModelChange)="onCambioMoneda($event)">
+                    </ng-select>
+                    <div *ngIf="ReactiveIUForm.moneda.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.moneda.errors?.required">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Forma de Pago</label>
+                    <ng-select appendTo="body" [clearable]="false" [items]="formaPago" bindLabel="descripcion"
+                               [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.formaPago.errors }"
+                               placeholder="Forma de Pago" bindValue="idColumna" formControlName="formaPago">
+                    </ng-select>
+                    <div *ngIf="ReactiveIUForm.formaPago.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.formaPago.errors?.required">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="idTipoDocumento === 1">
+                  <div class="form-group">
+                    <label>Medio de Pago</label>
+                    <ng-select appendTo="body" [clearable]="false" [items]="medioPago" bindLabel="descripcion"
+                               [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.medioPago.errors }"
+                               placeholder="Medio de Pago" bindValue="idColumna" formControlName="medioPago">
+                    </ng-select>
+                    <div *ngIf="ReactiveIUForm.medioPago.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.medioPago.errors?.required">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
                     <label>Monto</label>
                     <input class="form-control" formControlName="monto" type="text"
-                           mask="separator" thousandSeparator="," (ngModelChange)="onCambioMonto($event)"/>
+                           mask="separator" thousandSeparator=","/>
+                    <!--                           mask="separator" thousandSeparator="," (ngModelChange)="onCambioMonto($event)"/>-->
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
@@ -451,6 +468,131 @@
                            mask="separator" thousandSeparator=","/>
                   </div>
                 </div>
+                <div class="col-12" *ngIf="idTipoDocumento != 1">
+                  <div class="divider divider-warning">
+                    <div class="divider-text">Documento de Referencia</div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="idTipoDocumento != 1">
+                  <div class="form-group">
+                    <label>Tipo Documento</label>
+                    <ng-select appendTo="body" [clearable]="false" [items]="tipoDocumento" bindLabel="descripcion"
+                               [ngModelOptions]="{ standalone: true }"
+                               [(ngModel)]="idTipoDocumentoReferencia" placeholder="Tipo de Documento"
+                               bindValue="idColumna" [readonly]="idEstado != 1 ? true : null"
+                               [ngClass]="{ 'is-invalid': submitted && idTipoDocumento != 1 && idTipoDocumentoReferencia === 0 }">
+                    </ng-select>
+                    <div *ngIf="submitted && idTipoDocumento != 1 && idTipoDocumentoReferencia === 0"
+                         class="invalid-feedback">
+                      <div *ngIf="idTipoDocumentoReferencia === 0">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="idTipoDocumento != 1">
+                  <div class="form-group">
+                    <label>N° Documento</label>
+                    <input class="form-control" type="text" [ngModelOptions]="{ standalone: true }"
+                           [(ngModel)]="nroDocumentoReferencia" placeholder="X###-########"
+                           [readonly]="idEstado != 1 ? true : null"
+                           [ngClass]="{ 'is-invalid': submitted && idTipoDocumento != 1 && nroDocumentoReferencia === '' }"/>
+                    <div *ngIf="submitted && idTipoDocumento != 1 && nroDocumentoReferencia === ''"
+                         class="invalid-feedback">
+                      <div *ngIf="nroDocumentoReferencia === ''">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="onDetracciones(idTipoOperacion)">
+                  <div class="divider divider-danger">
+                    <div class="divider-text">Información de Detracción</div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="onDetracciones(idTipoOperacion)">
+                  <div class="form-group">
+                    <label>Bien o Servicio</label>
+                    <ng-select appendTo="body" [clearable]="false" [items]="bienesServicios" bindLabel="descripcion"
+                               [ngModelOptions]="{ standalone: true }"
+                               [(ngModel)]="idBienServicioDetraccion" placeholder="Bienes o Servicios"
+                               bindValue="idColumna" [readonly]="idEstado != 1 ? true : null"
+                               [ngClass]="{ 'is-invalid': submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && idBienServicioDetraccion === 0 }">
+                    </ng-select>
+                    <div
+                      *ngIf="submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && idBienServicioDetraccion === 0"
+                      class="invalid-feedback">
+                      <div *ngIf="idBienServicioDetraccion === 0">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="onDetracciones(idTipoOperacion)">
+                  <div class="form-group">
+                    <label>Tasa (%)</label>
+                    <input class="form-control" type="text" [ngModelOptions]="{ standalone: true }"
+                           [(ngModel)]="tasaDetraccion" (ngModelChange)="onCalcularMonto()"
+                           [readonly]="idEstado != 1 ? true : null" mask="separator" thousandSeparator=","
+                           [ngClass]="{ 'is-invalid': submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && tasaDetraccion <= 0 }"/>
+                    <div
+                      *ngIf="submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && tasaDetraccion <= 0"
+                      class="invalid-feedback">
+                      <div *ngIf="tasaDetraccion <= 0">* El valor debe ser mayor a cero</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="onDetracciones(idTipoOperacion)">
+                  <div class="form-group">
+                    <label>Monto</label>
+                    <input class="form-control" type="text" [ngModelOptions]="{ standalone: true }"
+                           [(ngModel)]="montoDetraccion"
+                           [disabled]="true" mask="separator" thousandSeparator=","
+                           [ngClass]="{ 'is-invalid': submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && montoDetraccion <= 0 }"
+                          (ngModelChange)="onCalcularMonto()"/>
+                    <div
+                      *ngIf="submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && montoDetraccion <= 0"
+                      class="invalid-feedback">
+                      <div *ngIf="montoDetraccion <= 0">* El valor debe ser mayor a cero</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="onDetracciones(idTipoOperacion)">
+                  <div class="form-group">
+                    <label>N° Cuenta (Banco de la Nación)</label>
+                    <input class="form-control" type="text" [ngModelOptions]="{ standalone: true }"
+                           [(ngModel)]="nroCuentaBcoNacion" [readonly]="idEstado != 1 ? true : null"
+                           [ngClass]="{ 'is-invalid': submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && nroCuentaBcoNacion === '' }"/>
+                    <div
+                      *ngIf="submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && nroCuentaBcoNacion === ''"
+                      class="invalid-feedback">
+                      <div *ngIf="nroCuentaBcoNacion === ''">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="onDetracciones(idTipoOperacion)">
+                  <div class="form-group">
+                    <label>Medio de Pago</label>
+                    <div [ngClass]="{ 'is-invalid': submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && idMedioPagoDetraccion === 0 }">
+                    <ng-select appendTo="body" [clearable]="false" [items]="medioPagoSunat" bindLabel="descripcion"
+                               bindValue="idColumna" placeholder="Bien o Servicio" [readonly]="idEstado != 1 ? true : null"
+                               [ngModelOptions]="{ standalone: true }"  [(ngModel)]="idMedioPagoDetraccion">
+                    </ng-select>
+                    </div>
+                    <div *ngIf="submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && idMedioPagoDetraccion === 0"
+                         class="invalid-feedback">
+                      <div *ngIf="idMedioPagoDetraccion === 0">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="onDetracciones(idTipoOperacion) && this.ReactiveIUForm.moneda.value > 1">
+                  <div class="form-group">
+                    <label>Tipo de Cambio (SOLES)</label>
+                    <input class="form-control" type="text" [ngModelOptions]="{ standalone: true }"
+                           [(ngModel)]="tipoCambioMoneda"
+                           [readonly]="idEstado != 1 ? true : null" mask="separator" thousandSeparator=","
+                           [ngClass]="{ 'is-invalid': submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion)
+                            && this.ReactiveIUForm.moneda.value > 1 && tipoCambioMoneda <= 0 }" (ngModelChange)="onCalcularMonto()"/>
+                    <div *ngIf="submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion)
+                      && this.ReactiveIUForm.moneda.value > 1 && tipoCambioMoneda <= 0" class="invalid-feedback">
+                      <div *ngIf="tipoCambioMoneda <= 0">* El valor debe ser mayor a cero</div>
+                    </div>
+                  </div>
+                </div>
                 <div class="col-12">
                   <div class="divider divider-success">
                     <div class="divider-text">Detalle del Documento</div>
@@ -459,10 +601,11 @@
                 <div class="col-12">
                   <form [formGroup]="detalleForm">
                     <div class="table-responsive" style="max-height: 300px;">
-                      <table class="table table-hover min-width-table2">
+                      <table class="table table-hover" style="min-width: 1700px">
                         <thead>
                         <tr>
-                          <th class="detail-th-color">Acción</th>
+                          <th *ngIf="ver" class="detail-th-color">Acción</th>
+                          <th class="detail-th-color">Tipo de Afectación</th>
                           <th class="detail-th-color">Código</th>
                           <th class="detail-th-color">Concepto</th>
                           <th class="detail-th-color">UM</th>
@@ -470,46 +613,67 @@
                           <th class="detail-th-color">Precio Unitario</th>
                           <th class="detail-th-color">P.U. IGV</th>
                           <th class="detail-th-color">Importe Total (sin IGV)</th>
+                          <th class="detail-th-color" *ngIf="this.ReactiveIUForm.idLiquidacionCab.value > 0">N°
+                            Documento Ref.
+                          </th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        <tr *ngIf="ver">
                           <td>
                             <a href="javascript:void(0)" title="Nuevo" (click)="onAgregarDetalle()"
                                class="btn btn-raised btn-outline-info btn-sm">
                               <i class="text-info cursor-pointer" data-feather="plus-circle"></i>
                             </a>
                           </td>
-                          <td>
-                            <input class="form-control" type="text" placeholder="Código"
-                                   [ngClass]="{ 'is-invalid': submitted_Detalle && ReactiveIUForm_Detalle.codigo.errors }"
-                                   formControlName="codigo"/>
+                          <td style="min-width: 350px">
+                            <ng-select appendTo="body" [clearable]="false" [items]="tipoAfectacion"
+                                       bindLabel="descripcion" (ngModelChange)="onCambioMontoTotal(null)"
+                                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm_Detalle.tipoAfectacion.errors }"
+                                       placeholder="Tipo de Afectación" bindValue="idColumna"
+                                       formControlName="tipoAfectacion">
+                            </ng-select>
                           </td>
-                          <td>
+                          <td style="min-width: 180px">
+                            <div class="input-group">
+                              <input class="form-control" type="text" placeholder="Código"
+                                     [ngClass]="{ 'is-invalid': submitted_Detalle && ReactiveIUForm_Detalle.codigo.errors }"
+                                     formControlName="codigo"/>
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-secondary feather icon-search"
+                                        (click)="onBuscarConcepto(modalCONCEPTO, null)"
+                                        type="button" rippleEffect>
+                                </button>
+                              </div>
+                            </div>
+                          </td>
+                          <td style="min-width: 350px">
                             <input class="form-control" type="text" placeholder="Concepto"
                                    [ngClass]="{ 'is-invalid': submitted_Detalle && ReactiveIUForm_Detalle.concepto.errors }"
                                    formControlName="concepto"/>
                           </td>
-                          <td>
-                            <input class="form-control" type="text" placeholder="U.M."
-                                   [ngClass]="{ 'is-invalid': submitted_Detalle && ReactiveIUForm_Detalle.um.errors }"
-                                   formControlName="um"/>
+                          <td style="min-width: 150px">
+                            <ng-select appendTo="body" [clearable]="false" [items]="unidadMedida"
+                                       bindLabel="descripcion"
+                                       [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm_Detalle.um.errors }"
+                                       placeholder="U.M." bindValue="valor" formControlName="um">
+                            </ng-select>
                           </td>
                           <td>
                             <input class="form-control" type="text" placeholder="Cantidad"
                                    formControlName="cantidad" mask="separator" thousandSeparator=","
                                    [ngClass]="{ 'is-invalid': submitted_Detalle && ReactiveIUForm_Detalle.cantidad.errors }"
-                                   (ngModelChange)="onCambioMontoTotal(null)" />
+                                   (ngModelChange)="onCambioMontoTotal(null)"/>
                           </td>
                           <td>
                             <input class="form-control" type="text" placeholder="Precio Unitario"
                                    formControlName="precioUnitario" mask="separator" thousandSeparator=","
                                    [ngClass]="{ 'is-invalid': submitted_Detalle && ReactiveIUForm_Detalle.precioUnitario.errors }"
-                                   (ngModelChange)="onCambioMontoTotal(null)" />
+                                   (ngModelChange)="onCambioMontoTotal(null)"/>
                           </td>
-                          <td>
+                          <td style="min-width: 120px">
                             <input class="form-control" type="text" placeholder="P.U. IGV"
-                                   formControlName="precioUnitarioIGV" mask="separator" thousandSeparator="," />
+                                   formControlName="precioUnitarioIGV" mask="separator" thousandSeparator=","/>
                           </td>
                           <td>
                             <input class="form-control" type="text" placeholder="Monto Total"
@@ -517,70 +681,104 @@
                           </td>
                         </tr>
                         <tr *ngFor="let item of detalle">
-                          <td>
+                          <td *ngIf="ver">
                             <div class="d-flex align-items-center">
-                              <a *ngIf="!item.edicion && item.estado" href="javascript:void(0)" title="Editar" (click)="onEditarDetalle(item)"
+                              <a *ngIf="!item.edicion && item.estado" href="javascript:void(0)" title="Editar"
+                                 (click)="onEditarDetalle(item)"
                                  class="btn btn-raised btn-outline-success btn-sm">
                                 <i class="text-success cursor-pointer" data-feather="edit"></i>
                               </a>
-                              <a *ngIf="item.edicion" href="javascript:void(0)" title="Cancelar" (click)="onCancelarDetalle(item)"
+                              <a *ngIf="item.edicion" href="javascript:void(0)" title="Cancelar"
+                                 (click)="onCancelarDetalle(item)"
                                  class="btn btn-raised btn-outline-secondary btn-sm">
                                 <i class="text-secondary cursor-pointer" data-feather="corner-up-left"></i>
                               </a>
                               &nbsp;
-                              <a *ngIf="!item.edicion && item.estado" href="javascript:void(0)" title="Eliminar" (click)="onEliminarDetalle(item)"
+                              <a *ngIf="!item.edicion && item.estado" href="javascript:void(0)" title="Eliminar"
+                                 (click)="onEliminarDetalle(item)"
                                  class="btn btn-raised btn-outline-danger btn-sm">
                                 <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
                               </a>
-                              <a *ngIf="item.edicion" href="javascript:void(0)" title="Confirmar cambios" (click)="onConfirmarCambioDetalle(item)"
+                              <a *ngIf="item.edicion" href="javascript:void(0)" title="Confirmar cambios"
+                                 (click)="onConfirmarCambioDetalle(item)"
                                  class="btn btn-raised btn-outline-success btn-sm">
                                 <i class="text-success cursor-pointer" data-feather="save"></i>
                               </a>
                             </div>
                           </td>
                           <td [ngClass]="{'row-edicion': item.editado}">
-                            <p [ngClass]="{ 'eliminado': !item.estado }" *ngIf="!item.edicion">{{item.codigo}}</p>
-                            <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Código"
-                                   [(ngModel)]="item.codigo"
-                                   [ngModelOptions]="{standalone: true}"/>
+                            <p [ngClass]="{ 'eliminado': !item.estado }"
+                               *ngIf="!item.edicion">{{item.tipoAfectacion}}</p>
+                            <ng-select *ngIf="item.edicion" appendTo="body" [clearable]="false" [items]="tipoAfectacion"
+                                       bindLabel="descripcion" placeholder="Tipo de Afectación" bindValue="idColumna"
+                                       [(ngModel)]="item.idTipoAfectacion"
+                                       [ngModelOptions]="{standalone: true}" (ngModelChange)="onCambioMontoTotal(item)">
+                            </ng-select>
                           </td>
                           <td [ngClass]="{'row-edicion': item.editado}">
+                            <p [ngClass]="{ 'eliminado': !item.estado }" *ngIf="!item.edicion">{{item.codigo}}</p>
+                            <div *ngIf="item.edicion" class="input-group">
+                              <input class="form-control" type="text" placeholder="Código"
+                                     [(ngModel)]="item.codigo"
+                                     [ngModelOptions]="{standalone: true}"/>
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-secondary feather icon-search"
+                                        (click)="onBuscarConcepto(modalCONCEPTO, item)"
+                                        type="button" rippleEffect>
+                                </button>
+                              </div>
+                            </div>
+                          </td>
+                          <td style="min-width: 350px" [ngClass]="{'row-edicion': item.editado}">
                             <p [ngClass]="{ 'eliminado': !item.estado }" *ngIf="!item.edicion">{{item.concepto}}</p>
                             <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Concepto"
                                    [(ngModel)]="item.concepto"
                                    [ngModelOptions]="{standalone: true}"/>
                           </td>
                           <td [ngClass]="{'row-edicion': item.editado}">
-                            <p [ngClass]="{ 'eliminado': !item.estado }" *ngIf="!item.edicion">{{item.um}}</p>
-                            <input *ngIf="item.edicion" class="form-control" type="text" placeholder="U.M."
-                                   [(ngModel)]="item.um"
-                                   [ngModelOptions]="{standalone: true}"/>
+                            <p [ngClass]="{ 'eliminado': !item.estado }" *ngIf="!item.edicion">{{item.uM_Desc}}</p>
+                            <!--                            <input *ngIf="item.edicion" class="form-control" type="text" placeholder="U.M."-->
+                            <!--                                   [(ngModel)]="item.um"-->
+                            <!--                                   [ngModelOptions]="{standalone: true}"/>-->
+                            <ng-select *ngIf="item.edicion" appendTo="body" [clearable]="false" [items]="unidadMedida"
+                                       bindLabel="descripcion"
+                                       placeholder="U.M." bindValue="valor" [(ngModel)]="item.um"
+                                       [ngModelOptions]="{standalone: true}">
+                            </ng-select>
                           </td>
                           <td [ngClass]="{'row-edicion': item.editado}">
-                            <p [ngClass]="{ 'eliminado': !item.estado }" *ngIf="!item.edicion">{{item.cantidad | number: '1.0-0'}}</p>
+                            <p [ngClass]="{ 'eliminado': !item.estado }"
+                               *ngIf="!item.edicion">{{item.cantidad | number: '1.0-0'}}</p>
                             <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Cantidad"
                                    [(ngModel)]="item.cantidad" mask="separator" thousandSeparator=","
                                    (ngModelChange)="onCambioMontoTotal(item)"
                                    [ngModelOptions]="{standalone: true}"/>
                           </td>
                           <td [ngClass]="{'row-edicion': item.editado}">
-                            <p [ngClass]="{ 'eliminado': !item.estado }" *ngIf="!item.edicion">{{item.precioUnitario | number: '1.2-2'}}</p>
+                            <p [ngClass]="{ 'eliminado': !item.estado }"
+                               *ngIf="!item.edicion">{{item.precioUnitario | number: '1.2-2'}}</p>
                             <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Precio Unitario"
                                    [(ngModel)]="item.precioUnitario" mask="separator" thousandSeparator=","
                                    (ngModelChange)="onCambioMontoTotal(item)"
                                    [ngModelOptions]="{standalone: true}"/>
                           </td>
                           <td [ngClass]="{'row-edicion': item.editado}">
-                            <p [ngClass]="{ 'eliminado': !item.estado }" *ngIf="!item.edicion">{{item.precioUnitarioIGV | number: '1.2-2'}}</p>
-                            <input *ngIf="item.edicion" class="form-control" type="text" placeholder="P.U. IGV"
+                            <p [ngClass]="{ 'eliminado': !item.estado }"
+                               *ngIf="!item.edicion">{{item.precioUnitarioIGV | number: '1.2-2'}}</p>
+                            <input *ngIf="item.edicion" class="form-control" disabled type="text" placeholder="P.U. IGV"
                                    [(ngModel)]="item.precioUnitarioIGV" mask="separator" thousandSeparator=","
                                    [ngModelOptions]="{standalone: true}"/>
                           </td>
                           <td [ngClass]="{'row-edicion': item.editado}">
-                            <p [ngClass]="{ 'eliminado': !item.estado }" *ngIf="!item.edicion">{{item.montoTotal | number: '1.2-2'}}</p>
+                            <p [ngClass]="{ 'eliminado': !item.estado }"
+                               *ngIf="!item.edicion">{{item.montoTotal | number: '1.2-2'}}</p>
                             <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Monto Total"
-                                   [(ngModel)]="item.montoTotal" mask="separator" thousandSeparator="," [disabled]="true"
+                                   [(ngModel)]="item.montoTotal" mask="separator" thousandSeparator=","
+                                   [disabled]="true"
                                    [ngModelOptions]="{standalone: true}"/>
+                          </td>
+                          <td *ngIf="this.ReactiveIUForm.idLiquidacionCab.value > 0">
+                            {{item.nroDocumentoReferencia}}
                           </td>
                         </tr>
                         </tbody>
@@ -595,14 +793,14 @@
             <div class="row">
               <div class="col-md-12 col-12">
                 <div style="float: right">
-                  <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()" *ngIf="!ver">
+                  <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar()" *ngIf="ver">
                     <span [data-feather]="'save'"></span> Guardar
                   </button>
                   &nbsp;
-                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()" *ngIf="!ver">
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()" *ngIf="ver">
                     <span [data-feather]="'x-circle'"></span> Cancelar
                   </button>
-                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()" *ngIf="ver">
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()" *ngIf="!ver">
                     <span [data-feather]="'x-circle'"></span> Cerrar
                   </button>
                 </div>
@@ -611,6 +809,107 @@
           </div>
         </ng-template>
 
+        <ng-template #modalCONCEPTO let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Conceptos</h4>
+            <button aria-label="Close" class="close" type="button" (click)="onCerrarConceptos(modal)">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" ngbAutofocus tabindex="0" [perfectScrollbar]>
+            <div class="table-responsive" style="max-height: 300px;">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th class="detail-th-color">Código</th>
+                  <th class="detail-th-color">Concepto</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let tm of conceptosComprobante" (click)="onSeleccionarConcepto(tm, modal)">
+                  <td>{{tm.valor}}</td>
+                  <td>{{tm.descripcion}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer" style="display: block !important;">
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div style="float: right">
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCerrarConceptos(modal)">
+                    <span [data-feather]="'x-circle'"></span> Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template #modalCLIENTE let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel1">Clientes</h4>
+            <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" ngbAutofocus tabindex="0" [perfectScrollbar]>
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div class="form-group">
+                  <div class="d-flex justify-content-between align-items-center m-0">
+                    <label class="d-flex align-items-center">Buscar
+                      <input type="search" placeholder="Buscar" class="form-control ml-25"
+                             [(ngModel)]="searchCli"
+                             [ngModelOptions]="{ standalone: true }"
+                             (change)="onListarClientePagador()"/>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                    <tr>
+                      <th>Razón Social</th>
+                      <th>Ruc</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of clientes" class="cursor-pointer"
+                        (click)="onSeleccionarCliente(modal, item)">
+                      <td>{{item.razonSocial}}</td>
+                      <td>{{item.ruc}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 col-md-12 d-flex justify-content-end">
+                <ngb-pagination [collectionSize]="collectionSizeCli" [(page)]="pageCli"
+                                (pageChange)="onListarClientePagador()"
+                                [pageSize]="pageSizeCli"></ngb-pagination>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" style="display: block !important;">
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div style="float: right">
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="modal.dismiss('Cross click')">
+                    <span [data-feather]="'x-circle'"></span> Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
         <block-ui></block-ui>
       </div>
     </div>

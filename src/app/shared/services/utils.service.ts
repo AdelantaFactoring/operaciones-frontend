@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import {BlockUI, NgBlockUI} from 'ng-block-ui';
 import {ToastrService} from 'ngx-toastr';
 import { Menu } from '../models/auth/user';
+import {FormControl} from "@angular/forms";
 
 class Mes {
   idMes: number;
@@ -153,4 +154,17 @@ export class UtilsService {
   setMenus(data: any) {
     sessionStorage.setItem('menus', JSON.stringify(data));
   }
+  nameValidator(control: FormControl): { [key: string]: boolean } {
+    const nameRegexp: RegExp = /[!@#$%^&*()_+\=\[\]{};:"\\|,<>\/?]/;
+    if (control.value && nameRegexp.test(control.value)) {
+      return { invalidName: true };
+    }
+  }
+
+  // nameValidator(control: FormControl): { [key: string]: boolean } {
+  //   const nameRegexp: RegExp = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+  //   if (control.value && nameRegexp.test(control.value)) {
+  //     return { invalidName: true };
+  //   }
+  // }
 }

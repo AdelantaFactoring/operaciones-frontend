@@ -40,6 +40,7 @@ export class AprobacionComponent implements OnInit {
   //public seleccionado: LiquidacionCabSeleccionados[] = [];
 
   public codigo: string = '';
+  public idTipoOperacion: number = 0;
   public nroCuentaBancariaDestino: string;
   public cciDestino: string;
   public codigoMonedaCab: string = '';
@@ -331,6 +332,7 @@ export class AprobacionComponent implements OnInit {
     this.solicitudForm.controls.idLiquidacionCab.setValue(item.idLiquidacionCab);
     //this.idCliente = item.idCliente;
     this.solicitudForm.controls.idTipoOperacion.setValue(item.idTipoOperacion);
+    this.idTipoOperacion = item.idTipoOperacion;
     this.solicitudForm.controls.codigo.setValue(item.codigo);
     this.codigo = item.codigo;
     this.solicitudForm.controls.rucCliente.setValue(item.rucCliente);
@@ -453,13 +455,18 @@ export class AprobacionComponent implements OnInit {
     }
   }
 
-  onFilas(liquidaciones: any): string {
+  onFilas(liquidaciones: any, ver: boolean): string {
     let filas = "";
     for (const item of liquidaciones) {
       filas += `<tr><td>${item.codigo}</td>
                   <td>${item.correoEnviado === 1 ? '<i class="text-success fa fa-check"></i>' :
-        (item.correoEnviado === 0 ? '<i class="text-danger cursor-pointer fa fa-ban"></i>' :
-          '<i class="text-secondary cursor-pointer fa fa-minus-circle"></i>')}</td>
+                          (item.correoEnviado === 0 ? '<i class="text-danger cursor-pointer fa fa-ban"></i>' :
+                            '<i class="text-secondary cursor-pointer fa fa-minus-circle"></i>')}
+                  </td>
+                  ${ ver ? `<td>${item.comprobanteGenerado === 1 ? '<i class="text-success fa fa-check"></i>' :
+                        (item.comprobanteGenerado === 0 ? '<i class="text-danger cursor-pointer fa fa-ban"></i>' :
+                          '<i class="text-secondary cursor-pointer fa fa-minus-circle"></i>') }` : ''}
+                  </td>
                 </tr>`
     }
     return filas;
@@ -507,15 +514,16 @@ export class AprobacionComponent implements OnInit {
                 <tr>
                   <th>N° Liquidación</th>
                   <th>Correo Enviado</th>
+                  <th>Comprobante Generado</th>
                 </tr>
                 </thead>
                 <tbody>
-                ${this.onFilas(response.liquidacionCabValidacion)}
+                ${this.onFilas(response.liquidacionCabValidacion, true)}
                 </tbody>
               </table>
             </div>
-            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Enviado &nbsp;&nbsp;
-            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Enviado &nbsp; <i class="text-secondary cursor-pointer fa fa-minus-circle"></i> : Sin Acción</p>`,
+            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Enviado / Generado &nbsp;
+            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Enviado / No Generado &nbsp; <i class="text-secondary cursor-pointer fa fa-minus-circle"></i> : Sin Acción</p>`,
           width: '750px',
           showCancelButton: false,
           confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
@@ -677,7 +685,7 @@ export class AprobacionComponent implements OnInit {
                 </tr>
                 </thead>
                 <tbody>
-                ${this.onFilas(response.liquidacionCabValidacion)}
+                ${this.onFilas(response.liquidacionCabValidacion, false)}
                 </tbody>
               </table>
             </div>
@@ -705,5 +713,18 @@ export class AprobacionComponent implements OnInit {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();
     });
+  }
+
+  onProveedorDet(det: LiquidacionDet[]): any[] {
+    // @ts-ignore
+    return [ ...new Map(det.map(x => [x["rucPagProv"], x])).values()];
+  }
+
+  onDesembolsoDet(det: LiquidacionDet[], ruc: string): LiquidacionDet[] {
+    return det.filter(f => f.rucPagProv === ruc);
+  }
+
+  onDesembolsoDet_Total(det: LiquidacionDet[]): number {
+    return det.reduce((sum, current) => sum + current.montoDesembolso, 0);
   }
 }

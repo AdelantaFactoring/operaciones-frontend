@@ -83,9 +83,9 @@ export class ClientesComponent implements OnInit {
     this.clienteForm = this.formBuilder.group({
       idCliente: [0],
       ruc: ['', Validators.required],
-      razonSocial: ['', Validators.required],
-      direccionPrincipal: ['', Validators.required],
-      direccionFacturacion: [''],
+      razonSocial: ['', Validators.compose([Validators.required, this.utilsService.nameValidator])],
+      direccionPrincipal: ['', Validators.compose([Validators.required, this.utilsService.nameValidator])],
+      direccionFacturacion: ['', Validators.compose([this.utilsService.nameValidator])],
       factoring: [false],
       confirming: [false],
       capitalTrabajo: [false]

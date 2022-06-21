@@ -23,6 +23,7 @@ export class RegistroPagosComponent implements OnInit {
   public oldPagoInfoForm: FormGroup;
   public submitted: boolean = false;
   public ocultarPagoForm: boolean = false;
+  public fechaMaxima: any;
 
   public idLiquidacionDet: number = 0;
   public codigo: string = '';
@@ -68,6 +69,8 @@ export class RegistroPagosComponent implements OnInit {
       idLiquidacionDet: [0],
       rucCliente: [{value: '', disabled: true}],
       razonSocialCliente: [{value: '', disabled: true}],
+      rucPagProv: [{value: '', disabled: true}],
+      razonSocialPagProv: [{value: '', disabled: true}],
       nroDocumento: [{value: '', disabled: true}],
       fechaConfirmada: [{value: '', disabled: true}],
       netoConfirmado: [{value: 0, disabled: true}],
@@ -158,11 +161,14 @@ export class RegistroPagosComponent implements OnInit {
   }
 
   onPagar(modal: any, cab: LiquidacionCab, det: LiquidacionDet): void {
+    this.fechaMaxima = { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() };
     this.liquidacionForm.controls.idLiquidacionCab.setValue(cab.idLiquidacionCab);
     this.codigo = cab.codigo;
     this.nroDocumento = det.nroDocumento;
     this.liquidacionForm.controls.rucCliente.setValue(cab.rucCliente);
     this.liquidacionForm.controls.razonSocialCliente.setValue(cab.razonSocialCliente);
+    this.liquidacionForm.controls.rucPagProv.setValue(cab.idTipoOperacion != 3 ? cab.rucPagProv : det.rucPagProv);
+    this.liquidacionForm.controls.razonSocialPagProv.setValue(cab.idTipoOperacion != 3 ? cab.razonSocialPagProv : det.razonSocialPagProv);
     this.liquidacionForm.controls.nroDocumento.setValue(det.nroDocumento);
     this.liquidacionForm.controls.fechaConfirmada.setValue(det.fechaConfirmado);
     this.liquidacionForm.controls.netoConfirmado.setValue(det.netoConfirmado);
@@ -188,6 +194,7 @@ export class RegistroPagosComponent implements OnInit {
   }
 
   onCancelarPago(): void {
+    this.onListarCobranza();
     this.pagoInfoForm.reset(this.oldPagoInfoForm);
     this.modalService.dismissAll();
   }

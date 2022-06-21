@@ -120,6 +120,8 @@
                             <thead>
                             <tr>
                               <th class="detail-th-color">Acción</th>
+                              <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
+                              <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
                               <th class="detail-th-color">N° Documento</th>
                               <th class="detail-th-color">Fecha Confirmada</th>
                               <th class="detail-th-color">Neto Confirmado</th>
@@ -135,12 +137,18 @@
                             <tr *ngFor="let item of cab.liquidacionDet">
                               <td>
                                 <div class="d-flex align-items-center">
-                                  <a href="javascript:void(0)" title="Pagar" (click)="onPagar(modalINFO, cab, item)"
+                                  <a *ngIf="cab.idEstado != 7" href="javascript:void(0)" title="Pagar" (click)="onPagar(modalINFO, cab, item)"
                                      class="btn btn-raised btn-outline-success btn-sm">
                                     <i class="text-success cursor-pointer" data-feather="edit"></i>
                                   </a>
+                                  <a *ngIf="cab.idEstado === 7" href="javascript:void(0)" title="Ver Pagos" (click)="onPagar(modalINFO, cab, item)"
+                                     class="btn btn-raised btn-outline-info btn-sm">
+                                    <i class="text-info cursor-pointer" data-feather="eye"></i>
+                                  </a>
                                 </div>
                               </td>
+                              <td *ngIf="cab.idTipoOperacion === 3">{{item.rucPagProv}}</td>
+                              <td *ngIf="cab.idTipoOperacion === 3">{{item.razonSocialPagProv}}</td>
                               <td>{{item.nroDocumento}}</td>
                               <td>{{item.fechaConfirmado}}</td>
                               <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
@@ -213,6 +221,18 @@
                   <div class="form-group">
                     <label>Razón Social (Cliente)</label>
                     <input class="form-control" formControlName="razonSocialCliente" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>RUC (Proveedor / Pagador)</label>
+                    <input class="form-control" formControlName="rucPagProv" type="text"/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>Razón Social (Proveedor / Pagador)</label>
+                    <input class="form-control" formControlName="razonSocialPagProv" type="text"/>
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
@@ -323,6 +343,7 @@
                     <label>Fecha Pago</label>
                     <div class="input-group">
                       <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaPago"
+                             [maxDate]="fechaMaxima"
                              [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.fechaPago.errors }"
                              container="body" ngbDatepicker #basicDP1="ngbDatepicker">
                       <div class="input-group-append">
@@ -373,6 +394,9 @@
                 </div>
               </div>
               <div class="col-12">
+                <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Generado &nbsp;&nbsp;
+                  <i class="text-danger cursor-pointer fa fa-ban"></i> : No Generado &nbsp;&nbsp;
+                  <i class="text-secondary cursor-pointer fa fa-minus-circle"></i> : No Requerido</p>
                 <div class="table-responsive">
                   <table class="table table-hover">
                     <thead>
@@ -387,6 +411,8 @@
                       <th>Saldo (Deuda)</th>
                       <th>Tipo de Pago</th>
                       <th>Observación</th>
+                      <th>Factura Generada</th>
+                      <th>Nota Débito Generada</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -401,6 +427,16 @@
                       <td>{{item.saldoDeuda | number: '1.2-2'}}</td>
                       <td>{{item.tipoPago}}</td>
                       <td>{{item.observacion}}</td>
+                      <td>
+                        <i *ngIf="item.comprobanteGenerado1 === 1" class="text-success cursor-pointer fa fa-check"></i>
+                        <i *ngIf="item.comprobanteGenerado1 === 0" class="text-danger cursor-pointer fa fa-ban"></i>
+                        <i *ngIf="item.comprobanteGenerado1 === 2" class="text-secondary cursor-pointer fa fa-minus-circle"></i>
+                      </td>
+                      <td>
+                        <i *ngIf="item.comprobanteGenerado2 === 1" class="text-success cursor-pointer fa fa-check"></i>
+                        <i *ngIf="item.comprobanteGenerado2 === 0" class="text-danger cursor-pointer fa fa-ban"></i>
+                        <i *ngIf="item.comprobanteGenerado2 === 2" class="text-secondary cursor-pointer fa fa-minus-circle"></i>
+                      </td>
                     </tr>
                     </tbody>
                   </table>

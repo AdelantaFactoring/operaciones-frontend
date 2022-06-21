@@ -1,6 +1,14 @@
 export class LiquidacionDet {
   idLiquidacionDet: number;
   idLiquidacionCab: number;
+  rucPagProv: string;
+  razonSocialPagProv: string;
+  titularCuentaBancariaDestino: string;
+  monedaCuentaBancariaDestino: string;
+  bancoDestino: string;
+  nroCuentaBancariaDestino: string;
+  cciDestino: string;
+  tipoCuentaBancariaDestino: string;
   tasaNominalMensual: number;
   tasaNominalAnual: number;
   tasaNominalMensualMora: number;

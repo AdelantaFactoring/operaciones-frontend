@@ -163,6 +163,149 @@
     </div>
   </div>
 </div>
+
+<div class="row" *ngIf="paramsURL == 3">
+  <div class="col-12">
+    <div class="table-responsive">
+      <table class="table table-hover min-width-table">
+        <thead>
+        <tr>
+          <th>
+            <div class="d-flex align-items-center">
+              <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                 (click)="onCambiarVisibilidadDetalleTodo()">
+                <div *ngIf="!cambiarIcono">
+                  <i class="text-primary cursor-pointer" data-feather="chevron-right"></i>
+                </div>
+                <div *ngIf="cambiarIcono"><i class="text-primary cursor-pointer"
+                                             data-feather="chevron-down"></i>
+                </div>
+              </a>
+            </div>
+          </th>
+          <th>Acción</th>
+          <th>N° Solicitud</th>
+          <th>Cliente</th>
+          <th>Cliente RUC</th>
+          <th>Pagador</th>
+          <th>Pagador RUC</th>
+          <th>Moneda</th>
+          <th>Tipo Operación</th>
+          <th>Estado</th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-template let-cab ngFor [ngForOf]="solicitudes">
+          <tr>
+            <td>
+              <div class="d-flex align-items-center">
+                <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                   (click)="onCambiarVisibilidadDetalle(cab)">
+                  <div *ngIf="!cab.cambiarIcono">
+                    <i class="text-primary cursor-pointer" data-feather="chevron-right"></i>
+                  </div>
+                  <div *ngIf="cab.cambiarIcono"><i class="text-primary cursor-pointer"
+                                                   data-feather="chevron-down"></i>
+                  </div>
+                </a>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                <a href="javascript:void(0)" title="Ver" (click)="onVerDetalleSolicitud(cab, modalINFOSOLICITUD)"
+                   class="btn btn-raised btn-outline-info btn-sm">
+                  <i class="text-info cursor-pointer" data-feather="eye"></i>
+                </a>
+                &nbsp;
+                <a href="javascript:void(0)" title="Eliminar" [class.disabled]="cab.idEstado === 6 ? true: null"
+                   (click)="onEliminar(cab.idSolicitudCab, cab.codigo)"
+                   class="btn btn-raised btn-outline-danger btn-sm">
+                  <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                </a>
+              </div>
+            </td>
+            <td>{{cab.codigo}}</td>
+            <td>{{cab.razonSocialCliente}}</td>
+            <td>{{cab.rucCliente}}</td>
+            <td>{{cab.razonSocialPagProv}}</td>
+            <td>{{cab.rucPagProv}}</td>
+            <td>{{cab.moneda}}</td>
+            <td>{{cab.tipoOperacion}}</td>
+            <td>{{cab.estado}}</td>
+          </tr>
+          <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse">
+            <td [colSpan]="10">
+              <div class="table-responsive" style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
+                   id="{{ 'detail' + cab.idSolicitudCab }}">
+                <table class="table table-hover">
+                  <thead>
+                  <tr>
+                    <th class="detail-th-color">Acción</th>
+                    <th class="detail-th-color">Proveedor</th>
+                    <th class="detail-th-color">Proveedor RUC</th>
+                    <th class="detail-th-color">N° Documento</th>
+                    <th class="detail-th-color">Forma Pago</th>
+                    <th class="detail-th-color">Monto sin IGV</th>
+                    <th class="detail-th-color">Monto con IGV</th>
+                    <th class="detail-th-color">Fecha Pago</th>
+                    <th class="detail-th-color">Monto Pago Confirmado</th>
+                    <th class="detail-th-color">Fondo Resguardo</th>
+                    <th class="detail-th-color">Estado</th>
+                    <th class="detail-th-color">Archivo PDF</th>
+                    <th class="detail-th-color">Archivo XML</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of cab.solicitudDet">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Eliminar"
+                           (click)="onEliminarDet(cab, item)"
+                           class="btn btn-raised btn-outline-danger btn-sm">
+                          <i class="text-danger cursor-pointer"
+                             data-feather="trash-2"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>{{item.razonSocialPagProv}}</td>
+                    <td>{{item.rucPagProv}}</td>
+                    <td>{{item.nroDocumento}}</td>
+                    <td>{{item.formaPago}}</td>
+                    <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
+                    <td>{{item.montoConIGV | number: '1.2-2'}}</td>
+                    <td>{{item.fechaConfirmadoFormat}}</td>
+                    <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                    <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                    <td>{{item.estado}}</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="{{item.rutaArchivoPDF}}" title="{{ item.archivoPDF }}" target="_blank"
+                           class="btn btn-raised btn-outline-info btn-sm">
+                          <i class="fa fa-file-pdf-o"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="{{item.rutaArchivoXML}}" title="{{ item.archivoXML }}" target="_blank"
+                           class="btn btn-raised btn-outline-secondary btn-sm">
+                          <i class="fa fa-file-code-o"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <div class="row" *ngIf="paramsURL == 2">
   <div class="col-12">
     <div class="table-responsive">
@@ -479,9 +622,15 @@
         </div>
         <div class="col-12" [hidden]="idTipoOperacion === 2">
           <div class="table-responsive" style="max-height: 300px;">
-            <table class="table table-hover" >
+            <table class="table table-hover" [ngStyle]="{ 'min-width.px': idTipoOperacion === 3 ? 3200 : 'auto' }">
               <thead class="thead">
+              <tr *ngIf="idTipoOperacion === 3">
+                <th colspan="12" class="detail-th-color">Información del Comprobante</th>
+                <th colspan="5" class="detail-th-color2">Información Bancaria</th>
+              </tr>
               <tr class="tr">
+                <th *ngIf="idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
+                <th *ngIf="idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
                 <th class="detail-th-color">N° Documento</th>
                 <th class="detail-th-color">Forma Pago</th>
                 <th class="detail-th-color">Monto sin IGV</th>
@@ -492,10 +641,17 @@
                 <th class="detail-th-color">Estado</th>
                 <th class="detail-th-color">Archivo PDF</th>
                 <th class="detail-th-color">ARchivo XML</th>
+                <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">Moneda</th>
+                <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">Banco</th>
+                <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">N° Cuenta</th>
+                <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">CCI</th>
+                <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">Tipo Cuenta</th>
               </tr>
               </thead>
               <tbody class="tbody">
               <tr *ngFor="let item of detalleSolicitud" class="tr">
+                <td *ngIf="idTipoOperacion === 3">{{item.razonSocialPagProv}}</td>
+                <td *ngIf="idTipoOperacion === 3">{{item.rucPagProv}}</td>
                 <td>{{item.nroDocumento}}</td>
                 <td>{{item.formaPago}}</td>
                 <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
@@ -520,6 +676,11 @@
                     </a>
                   </div>
                 </td>
+                <td *ngIf="idTipoOperacion === 3">{{item.monedaCuentaBancariaDestino}}</td>
+                <td *ngIf="idTipoOperacion === 3">{{item.bancoDestino}}</td>
+                <td *ngIf="idTipoOperacion === 3">{{item.nroCuentaBancariaDestino}}</td>
+                <td *ngIf="idTipoOperacion === 3">{{item.cciDestino}}</td>
+                <td *ngIf="idTipoOperacion === 3">{{item.tipoCuentaBancariaDestino}}</td>
               </tr>
               </tbody>
             </table>
@@ -554,42 +715,42 @@
             <input class="form-control" formControlName="conCopiaContacto" type="text"/>
           </div>
         </div>
-        <div class="col-12">
+        <div class="col-12" *ngIf="idTipoOperacion != 3">
           <div class="divider divider-warning">
             <div class="divider-text">Información de Cuenta Bancaria</div>
           </div>
         </div>
-        <div class="col-md-6 col-12">
+        <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">
           <div class="form-group">
             <label>Titular</label>
             <input class="form-control" formControlName="titularCuentaBancariaDestino" type="text" readonly/>
           </div>
         </div>
-        <div class="col-md-6 col-12">
+        <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">
           <div class="form-group">
             <label>Moneda</label>
             <input class="form-control" formControlName="monedaCuentaBancariaDestino" type="text" readonly/>
           </div>
         </div>
-        <div class="col-md-6 col-12">
+        <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">
           <div class="form-group">
             <label>Banco</label>
             <input class="form-control" formControlName="bancoDestino" type="text" readonly/>
           </div>
         </div>
-        <div class="col-md-6 col-12">
+        <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">
           <div class="form-group">
             <label>N° Cuenta</label>
             <input class="form-control" type="text" readonly formControlName="nroCuentaBancariaDestino"/>
           </div>
         </div>
-        <div class="col-md-6 col-12">
+        <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">
           <div class="form-group">
             <label>CCI</label>
             <input class="form-control" type="text" readonly formControlName="cciDestino"/>
           </div>
         </div>
-        <div class="col-md-6 col-12">
+        <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">
           <div class="form-group">
             <label>Tipo de Cuenta</label>
             <input class="form-control" formControlName="tipoCuentaBancariaDestino" type="text" readonly/>

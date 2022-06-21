@@ -589,52 +589,52 @@
         </button>
       </div>
       <div class="modal-body" ngbAutofocus tabindex="0" [perfectScrollbar]>
-        <form [formGroup]="solicitudForm">
-          <div class="row">
-            <div class="col-md-12 col-12">
-              <div class="form-group">
-                <div class="d-flex justify-content-between align-items-center m-1">
-                  <label class="d-flex align-items-center">Buscar
-                    <input formControlName="buscarCliente" type="search"
-                           placeholder="Buscar" class="form-control ml-25"
-                           [(ngModel)]="searchCli"
-                           [ngModelOptions]="{ standalone: true }"
-                           (change)="onClientePagadorList('', 0)"/>
-                  </label>
-                </div>
+        <!--        <form [formGroup]="solicitudForm">-->
+        <div class="row">
+          <div class="col-md-12 col-12">
+            <div class="form-group">
+              <div class="d-flex justify-content-between align-items-center m-0">
+                <label class="d-flex align-items-center">Buscar
+                  <input type="search"
+                         placeholder="Buscar" class="form-control ml-25"
+                         [(ngModel)]="searchCli"
+                         [ngModelOptions]="{ standalone: true }"
+                         (change)="onClientePagadorList('', 0)"/>
+                </label>
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-12">
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead>
-                  <tr>
-                    <th>Razón Social</th>
-                    <th>Ruc</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let item of optClienteP" class="cursor-pointer"
-                      [class.selectedRow]="rowIsSelected(item.idCliente)"
-                      (click)="onRowClick(item.razonSocial,item.ruc, item.idCliente, modal)">
-                    <td>{{item.razonSocial}}</td>
-                    <td>{{item.ruc}}</td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>Razón Social</th>
+                  <th>Ruc</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of optClienteP" class="cursor-pointer"
+                    [class.selectedRow]="rowIsSelected(item.idCliente)"
+                    (click)="onRowClick(item.razonSocial,item.ruc, item.idCliente, modal)">
+                  <td>{{item.razonSocial}}</td>
+                  <td>{{item.ruc}}</td>
+                </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-          <div class="row">
-            <div class="col-12 col-md-12 d-flex justify-content-end">
-              <ngb-pagination [collectionSize]="collectionSizeCli" [(page)]="pageCli"
-                              (pageChange)="onClientePagadorList(modalCliente, 0)"
-                              [pageSize]="pageSizeCli"></ngb-pagination>
-            </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-12 d-flex justify-content-end">
+            <ngb-pagination [collectionSize]="collectionSizeCli" [(page)]="pageCli"
+                            (pageChange)="onClientePagadorList(modalCliente, 0)"
+                            [pageSize]="pageSizeCli"></ngb-pagination>
           </div>
-        </form>
+        </div>
+        <!--        </form>-->
       </div>
       <div class="modal-footer" style="display: block !important;">
         <div class="row">
