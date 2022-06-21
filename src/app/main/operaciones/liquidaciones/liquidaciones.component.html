@@ -11,14 +11,14 @@
                 <span class="d-none d-sm-inline-block">Refrescar</span>
               </button>
             </div>
-            <div class="pt-1 pb-1 pr-1">
+            <div class="pt-1 pb-1 pr-1" *ngIf="mostrar === 'true'">
               <button type="submit" rippleEffect class="btn btn-primary"
                       (click)="onAprobar(3)">
                 <i class="mr-0 mr-sm-1" data-feather="check"></i>
                 <span class="d-none d-sm-inline-block">Aprobar</span>
               </button>
             </div>
-            <div class="pt-1 pb-1">
+            <div class="pt-1 pb-1" *ngIf="mostrar === 'true'">
               <button type="submit" rippleEffect class="btn btn-warning"
                       (click)="onEnviar(1, null)">
                 <i class="mr-0 mr-sm-1" data-feather="mail"></i>
@@ -74,14 +74,14 @@
                       </a>
                     </div>
                   </th>
-                  <th>
+                  <th *ngIf="mostrar === 'true'">
                     <div class="custom-control custom-checkbox">
                       <input type="checkbox" class="custom-control-input" id="customCheckL" unchecked
                              [(ngModel)]="seleccionarTodo" (ngModelChange)="onSeleccionarTodo()"/>
                       <label class="custom-control-label" for="customCheckL"></label>
                     </div>
                   </th>
-                  <th>Acción</th>
+                  <th *ngIf="mostrar === 'true'">Acción</th>
                   <th>N° Liquidación</th>
                   <th>N° Solicitud</th>
                   <th>Cliente</th>
@@ -113,7 +113,7 @@
                         </a>
                       </div>
                     </td>
-                    <td>
+                    <td *ngIf="mostrar === 'true'">
                       <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" [disabled]="cab.idEstado != 1"
                                id="{{'customCheckL' + cab.idLiquidacionCab}}"
@@ -121,7 +121,7 @@
                         <label class="custom-control-label" for="{{'customCheckL' + cab.idLiquidacionCab}}"></label>
                       </div>
                     </td>
-                    <td>
+                    <td *ngIf="mostrar === 'true'">
                       <div class="d-flex align-items-center">
                         <a href="javascript:void(0)" title="Enviar Correo" [class.disabled]="cab.idEstado != 1 ? true: null"
                            (click)="onEnviar(2, cab)"
@@ -163,7 +163,7 @@
                   </tr>
                   <tr id="{{ 'trL' + cab.idLiquidacionCab }}" style="visibility: collapse">
                     <td [colSpan]="16">
-                      <div class="row">
+                      <div class="row" *ngIf="mostrar === 'true'">
                         <div class="d-flex flex-wrap mb-0">
                           <div class="pl-1 pt-1 pb-1">
                             <button type="submit" rippleEffect class="btn btn-success" (click)="onGuardarCambios(cab)"
@@ -187,7 +187,7 @@
                           <table class="table table-hover">
                             <thead>
                             <tr>
-                              <th class="detail-th-color">Acción</th>
+                              <th class="detail-th-color" *ngIf="mostrar === 'true'">Acción</th>
                               <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
                               <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
                               <th class="detail-th-color">N° Documento</th>
@@ -222,7 +222,7 @@
                             </thead>
                             <tbody>
                             <tr *ngFor="let item of cab.liquidacionDet">
-                              <td>
+                              <td *ngIf="mostrar === 'true'">
                                 <div class="d-flex align-items-center">
                                   <a *ngIf="!item.edicion" href="javascript:void(0)" title="Editar"
                                      [class.disabled]="cab.idEstado != 1 ? true: null"

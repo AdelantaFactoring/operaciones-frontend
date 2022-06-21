@@ -48,7 +48,7 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: 'liquidaciones',
+        path: 'liquidaciones/:mostrar',
         component: LiquidacionesComponent
       }
     ]
