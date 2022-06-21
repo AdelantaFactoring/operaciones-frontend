@@ -9,6 +9,8 @@ import {BlockUIModule} from "ng-block-ui";
 import {CoreTouchspinModule} from "@core/components/core-touchspin/core-touchspin.module";
 import {ContentHeaderModule} from "../../layout/components/content-header/content-header.module";
 import {NgxDatatableModule} from "@swimlane/ngx-datatable";
+import { ListaPermisoComponent } from './lista-permiso/lista-permiso.component';
+import {NgSelectModule} from "@ng-select/ng-select";
 
 const routes: Routes = [
   {
@@ -34,7 +36,8 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     UsuarioComponent,
-    PerfilComponent
+    PerfilComponent,
+    ListaPermisoComponent
   ],
   imports: [
     CommonModule,
@@ -44,7 +47,8 @@ const routes: Routes = [
     BlockUIModule,
     ContentHeaderModule,
     CoreTouchspinModule,
-    NgxDatatableModule
+    NgxDatatableModule,
+    NgSelectModule
   ]
 })
 export class SeguridadModule { }

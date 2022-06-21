@@ -22,4 +22,24 @@ export class UsuarioService {
       }
     );
   }
+
+  eliminar(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${USUARIO.eliminar}`,
+      `?idEmpresa=${payload.idEmpresa}&idUsuario=${payload.idUsuario}&idUsuarioAud=${payload.idUsuarioAud}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  guardar(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${USUARIO.guardar}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }
