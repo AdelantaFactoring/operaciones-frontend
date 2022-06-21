@@ -144,14 +144,14 @@ export const menu: CoreMenu[] = [
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'user',
-      url: 'pages/miscellaneous/coming-soon'
+      url: 'seguridad/usuario'
     }, {
       id: 'perfil',
       title: 'Perfil',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'tag',
-      url: 'pages/miscellaneous/coming-soon'
+      url: 'seguridad/perfil'
     }]
   }
 ];

@@ -1,0 +1,306 @@
+<div class="content-wrapper">
+    <div class="content-body">
+      <app-content-header [contentHeader]="contentHeader"></app-content-header>
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="d-flex flex-wrap mb-0">
+              <div class="p-1">
+                <button type="submit" rippleEffect class="btn btn-secondary" (click)="onRefrescar()">
+                  <i class="mr-0 mr-sm-1" data-feather="refresh-cw"></i>
+                  <span class="d-none d-sm-inline-block">Refrescar</span>
+                </button>
+              </div>
+              <div class="pt-1 pb-1 pr-1">
+                <button type="submit" rippleEffect class="btn btn-primary" (click)="onNuevo(modalUSUARIO)">
+                  <i class="mr-0 mr-sm-1" data-feather="plus"></i>
+                  <span class="d-none d-sm-inline-block">Nuevo</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-12">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <label class="d-flex align-items-center"
+                >Mostrar
+                  <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
+                          >
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                  filas</label
+                >
+              </div>
+            </div>
+            <div class="col-md-6 col-12 d-flex justify-content-md-end">
+              <div class="d-flex align-items-center justify-content-end mb-1">
+                <label class="d-flex align-items-center"
+                >Buscar<input
+                  type="search"
+                  placeholder="Buscar"
+                  class="form-control ml-25"
+                  [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" 
+                /></label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="table-responsive">
+                <table class="table table-hover min-width-table">
+                  <thead>
+                  <tr>
+                    <th>Acción</th>
+                    <th>Nombre</th>
+                    <th>Apellido Paterno</th>
+                    <th>Apellido Materno</th>
+                    <th>Usuario</th>
+                    <th>Perfil</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <ng-template let-row ngFor [ngForOf]="usuario">
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <a href="javascript:void(0)" title="Editar" (click)="onEditar(modalUSUARIO, row)"
+                             class="btn btn-raised btn-outline-success btn-sm">
+                            <i class="text-success cursor-pointer" data-feather="edit"></i>
+                          </a>
+                          &nbsp;
+                          <a href="javascript:void(0)" title="Eliminar" (click)="onEliminar(row)"
+                             class="btn btn-raised btn-outline-danger btn-sm">
+                            <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                          </a>
+                        </div>
+                      </td>
+                      <td>{{row.nombre}}</td>
+                      <td>{{row.apellidoPaterno}}</td>
+                      <td>{{row.apellidoMaterno}}</td>
+                      <td>{{row.usuarioLogin}}</td>
+                      <td>{{row.perfil}}</td>
+                    </tr>
+                  </ng-template>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="row">
+            <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
+              <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
+                              (pageChange)="onListarDevolucion()" [pageSize]="pageSize"></ngb-pagination>
+            </div>
+          </div> -->
+  
+          <ng-template #modalUSUARIO let-modal>
+            <div class="modal-header">
+              <h4 class="modal-title">Gestión de Usuario</h4>
+              <button aria-label="Close" class="close" type="button" (click)="onCancelar()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" ngbAutofocus tabindex="0" [perfectScrollbar]>
+              <form [formGroup]="usuarioForm">
+                <div class="row spaced">
+                  <div class="col-4">
+                    <div class="divider divider-info">
+                      <div class="divider-text">Información General</div>
+                    </div>
+                  </div>
+                  <div class="col-8">
+                    <div class="divider divider-warning">
+                      <div class="divider-text">Permisos</div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 col-12">
+                    <div class="col-md-12 col-12" hidden>
+                      <div class="form-group">
+                        <label>Id</label>
+                        <input class="form-control" formControlName="idUsuario" type="text"/>
+                      </div>
+                    </div>
+                    <div class="col-md-12 col-12">
+                      <div class="form-group">
+                        <label>Nombre</label>
+                        <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.nombre.errors }"
+                               class="form-control" formControlName="nombre" type="text"/>
+                        <div *ngIf="ReactiveIUForm.nombre.errors" class="invalid-feedback">
+                          <div *ngIf="ReactiveIUForm.nombre.errors.required">* Campo obligatorio</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12 col-12">
+                      <div class="form-group">
+                        <label>Apellido Paterno</label>
+                        <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.apellidoPaterno.errors }"
+                               class="form-control" formControlName="apellidoPaterno" type="text"/>
+                        <div *ngIf="ReactiveIUForm.apellidoPaterno.errors" class="invalid-feedback">
+                          <div *ngIf="ReactiveIUForm.apellidoPaterno.errors.required">* Campo obligatorio</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12 col-12">
+                      <div class="form-group">
+                        <label>Apellido Materno</label>
+                        <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.apellidoMaterno.errors }"
+                               class="form-control" formControlName="apellidoMaterno" type="text"/>
+                        <div *ngIf="ReactiveIUForm.apellidoMaterno.errors" class="invalid-feedback">
+                          <div *ngIf="ReactiveIUForm.apellidoMaterno.errors.required">* Campo obligatorio</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12 col-12">
+                      <div class="form-group">
+                        <label>Usuario</label>
+                        <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.usuario.errors }"
+                               class="form-control" formControlName="usuario" type="text"/>
+                        <div *ngIf="ReactiveIUForm.usuario.errors" class="invalid-feedback">
+                          <div *ngIf="ReactiveIUForm.usuario.errors.required">* Campo obligatorio</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12 col-12">
+                      <div class="form-group">
+                        <label>Clave</label>
+                        <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.clave.errors }"
+                               class="form-control" formControlName="clave" type="text"/>
+                        <div *ngIf="ReactiveIUForm.clave.errors" class="invalid-feedback">
+                          <div *ngIf="ReactiveIUForm.clave.errors.required">* Campo obligatorio</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Perfil</label>
+                        <ng-select appendTo="body" [clearable]="false" [items]="optPerfil" bindLabel="perfil"
+                                   bindValue="idPerfil" formControlName="idPerfil"
+                                   (change)="onCambioPerfil()">
+                        </ng-select>
+                      </div>
+                    </div>
+                    <div class="col-md-12 col-12">
+                      <div class="form-group">
+                        <label>Google</label>
+                        <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.google.errors }"
+                               class="form-control" formControlName="google" type="checkbox" id="googleCheck" />
+                        <div *ngIf="ReactiveIUForm.google.errors" class="invalid-feedback">
+                          <div *ngIf="ReactiveIUForm.google.errors.required">* Campo obligatorio</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-8 col-12">
+                    <app-lista-permiso #listaPermiso [urlMenuList]="menuList"></app-lista-permiso>
+                  </div>
+                  <!-- <div class="col-md-6 col-12">
+                    <div class="form-group">
+                      <label>Nombre</label>
+                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.nombre.errors }"
+                             class="form-control" formControlName="nombre" type="text"/>
+                      <div *ngIf="ReactiveIUForm.nombre.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.nombre.errors.required">* Campo obligatorio</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-12">
+                    <div class="form-group">
+                      <label>Apellido Paterno</label>
+                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.apellidoPaterno.errors }"
+                             class="form-control" formControlName="apellidoPaterno" type="text"/>
+                      <div *ngIf="ReactiveIUForm.apellidoPaterno.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.apellidoPaterno.errors.required">* Campo obligatorio</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-12">
+                    <div class="form-group">
+                      <label>Apellido Materno</label>
+                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.apellidoMaterno.errors }"
+                             class="form-control" formControlName="apellidoMaterno" type="text"/>
+                      <div *ngIf="ReactiveIUForm.apellidoMaterno.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.apellidoMaterno.errors.required">* Campo obligatorio</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-12">
+                    <div class="form-group">
+                      <label>Usuario</label>
+                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.usuario.errors }"
+                             class="form-control" formControlName="usuario" type="text"/>
+                      <div *ngIf="ReactiveIUForm.usuario.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.usuario.errors.required">* Campo obligatorio</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-12">
+                    <div class="form-group">
+                      <label>Clave</label>
+                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.clave.errors }"
+                             class="form-control" formControlName="clave" type="text"/>
+                      <div *ngIf="ReactiveIUForm.clave.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.clave.errors.required">* Campo obligatorio</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-12">
+                    <div class="form-group">
+                      <label>Perfil</label>
+                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.perfil.errors }"
+                             class="form-control" formControlName="perfil" type="text"/>
+                      <div *ngIf="ReactiveIUForm.perfil.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.perfil.errors.required">* Campo obligatorio</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-12">
+                    <div class="form-group">
+                      <label>Google</label>
+                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.google.errors }"
+                             class="form-control" formControlName="google" type="checkbox"/>
+                      <div *ngIf="ReactiveIUForm.google.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.google.errors.required">* Campo obligatorio</div>
+                      </div>
+                    </div>
+                  </div> -->
+                </div>
+              </form>
+              <!-- <div class="row spaced">
+                <div class="col-md-12 col-12">
+                  <div class="form-group">
+                    
+                  <div class="col-12">
+                    <div class="divider divider-warning">
+                      <div class="divider-text">Permisos</div>
+                    </div>
+                  </div>
+                  <app-lista-permiso #listaPermiso [urlMenuList]="menuList"></app-lista-permiso>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+            <div class="modal-footer" style="display: block !important;">
+              <div class="row">
+                <div class="col-md-12 col-12">
+                  <div style="float: right">
+                    <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardar(listaPermiso)">
+                      <span [data-feather]="'save'"></span> Guardar
+                    </button>
+                    &nbsp;
+                    <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()">
+                      <span [data-feather]="'x-circle'"></span> Cancelar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+      <!-- <block-ui></block-ui> -->
+    </div>
+  </div>
+  
