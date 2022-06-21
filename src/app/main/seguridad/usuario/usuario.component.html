@@ -165,9 +165,19 @@
                     </div>
                     <div class="col-md-12 col-12">
                       <div class="form-group">
-                        <label>Clave</label>
-                        <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.clave.errors }"
-                               class="form-control" formControlName="clave" type="text"/>
+                        <label for="account-new-password">Clave</label>
+                        <div class="input-group form-password-toggle input-group-merge">
+                          <input [type]="claveView ? 'text' : 'password'" id="account-new-password"
+                            name="new-password" class="form-control"
+                            [ngClass]="{ 'is-invalid': IDSubmitted && ReactiveIUForm.clave.errors }"
+                            formControlName="clave" placeholder="Nueva Contraseña" />
+                          <div class="input-group-append">
+                            <span class="input-group-text cursor-pointer"><i class="feather font-small-4" [ngClass]="{
+                                        'icon-eye-off': claveView,
+                                        'icon-eye': !claveView
+                                      }" (click)="mostrarClave()"></i></span>
+                          </div>
+                        </div>
                         <div *ngIf="ReactiveIUForm.clave.errors" class="invalid-feedback">
                           <div *ngIf="ReactiveIUForm.clave.errors.required">* Campo obligatorio</div>
                         </div>

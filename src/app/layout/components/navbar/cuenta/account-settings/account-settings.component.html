@@ -1,0 +1,288 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+      <app-content-header [contentHeader]="contentHeader"></app-content-header>
+  
+      <section id="page-account-settings">
+        <div class="row nav-vertical d-flex">
+          <div class="col-md-3 mb-2 mb-md-0">
+            <ul ngbNav #navVertical="ngbNav" class="nav nav-pills flex-column nav-left">
+              <li class="nav-item" ngbNavItem>
+                <a
+                  (click)="start()"
+                  ngbNavLink
+                  class="nav-link d-flex py-75"                  
+                  data-toggle="pill"                  
+                  aria-expanded="true"
+                >
+                  <i data-feather="user" class="font-medium-3 mr-1"></i>
+                  <span class="font-weight-bold">General</span>
+                </a>
+                <ng-template ngbNavContent>
+                  <div class="card" *ngIf="this.value != 0">
+                    <div class="card-body">
+                      <div class="media">
+                        <a *ngIf="this.currentUser.foto" href="javascript:void(0);" class="mr-25">
+                          <img [src]="currentUser.foto" class="rounded mr-50" alt="profile image" height="76" width="80">                          
+                        </a>
+                        <a *ngIf="foto" class="mr-25">
+                          <img  [src]="foto" class="rounded mr-50" alt="profile image" height="76" width="80">
+                        </a>
+                        <div class="media-body mt-75 ml-1">
+                          <button
+                            (click)="file.click()"
+                            for="account-upload"
+                            class="btn btn-sm btn-primary mb-75 mr-75"
+                            rippleEffect
+                          >
+                            Subir
+                          </button>
+                          <input
+                            type="file"
+                            #file
+                            id="account-upload"
+                            hidden
+                            accept="image/*"
+                            (change)="imageView($event)"
+                          />                       
+                          <button class="btn btn-sm btn-outline-secondary mb-75" rippleEffect>Cambiar</button>
+                        </div>
+                      </div>
+                      <form [formGroup]="InsertUpdateForm">
+                        <div class="row">
+                          <div class="col-12 col-sm-6">
+                            <div class="form-group">
+                              <label for="account-username">Usuario</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                id="account-username"
+                                name="username"
+                                [ngClass]="{ 'is-invalid': IDSubmitted && ReactiveIUForm.usuario.errors }"
+                                formControlName="usuario"
+                                placeholder="Usuario"
+                                [(ngModel)]= "usuario"
+                              />
+                              <div *ngIf="ReactiveIUForm.usuario.errors" class="invalid-feedback">
+                                <div *ngIf="ReactiveIUForm.usuario.errors.required">* Campo obligatorio</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-12 col-sm-6">
+                            <div class="form-group">
+                              <label for="account-name">Nombre</label>
+                              <input
+                                type="text"
+                                [ngClass]="{ 'is-invalid': IDSubmitted && ReactiveIUForm.nombre.errors }"
+                                formControlName="nombre"
+                                class="form-control"
+                                id="account-name"
+                                name="name"
+                                placeholder="Nombre"
+                                [(ngModel)]= "nombre"
+                              />
+                              <div *ngIf="ReactiveIUForm.nombre.errors" class="invalid-feedback">
+                                <div *ngIf="ReactiveIUForm.nombre.errors.required">* Campo obligatorio</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-12 col-sm-6">
+                            <div class="form-group">
+                              <label for="account-username">Apellido Paterno</label>
+                              <input
+                                type="text"
+                                [ngClass]="{ 'is-invalid': IDSubmitted && ReactiveIUForm.apellidoPaterno.errors }"
+                                formControlName="apellidoPaterno"
+                                class="form-control"
+                                placeholder="Apellido Paterno"
+                                [(ngModel)]= "apPaterno"
+                                id="account-name"
+                                name="apPaterno"
+                              />
+                              <div *ngIf="ReactiveIUForm.apellidoPaterno.errors" class="invalid-feedback">
+                                <div *ngIf="ReactiveIUForm.apellidoPaterno.errors.required">* Campo obligatorio</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-12 col-sm-6">
+                            <div class="form-group">
+                              <label for="account-username">Apellido Materno</label>
+                              <input
+                                type="text"
+                                [ngClass]="{ 'is-invalid': IDSubmitted && ReactiveIUForm.apellidoMaterno.errors }"
+                                formControlName="apellidoMaterno"
+                                class="form-control"
+                                placeholder="Apellido Materno"
+                                [(ngModel)]= "apMaterno"
+                                id="account-name"
+                                name="apMaterno"
+                              />
+                              <div *ngIf="ReactiveIUForm.apellidoMaterno.errors" class="invalid-feedback">
+                                <div *ngIf="ReactiveIUForm.apellidoMaterno.errors.required">* Campo obligatorio</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-12 col-sm-6">
+                            <div class="form-group">
+                              <label for="account-e-mail">E-mail</label>
+                              <input
+                                type="email"
+                                [ngClass]="{ 'is-invalid': IDSubmitted && ReactiveIUForm.email.errors }"
+                                formControlName="email"
+                                class="form-control"
+                                id="account-e-mail"
+                                name="email"
+                                placeholder="Email"
+                                [(ngModel)]= "email"
+                              />
+                              <div *ngIf="ReactiveIUForm.email.errors" class="invalid-feedback">
+                                <div *ngIf="ReactiveIUForm.email.errors.required">* Campo obligatorio</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-12">
+                            <button (click)="onUpdateCuenta()" class="btn btn-primary mt-2 mr-1" rippleEffect>Actualizar Cambios</button>
+                            <a type="reset" class="btn btn-outline-secondary mt-1" [routerLink]="['/dashboard/principal']" skipLocationChange 
+                            [queryParams]="{}"
+                            queryParamsHandling="merge" rippleEffect>Cancelar</a>
+                          </div>                          
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </ng-template>
+              </li>
+              <li class="nav-item" ngbNavItem>
+                <a
+                  (click)="left()"
+                  ngbNavLink
+                  class="nav-link d-flex py-75"                  
+                  data-toggle="pill"                  
+                  aria-expanded="false"
+                >
+                  <i data-feather="lock" class="font-medium-3 mr-1"></i>
+                  <span class="font-weight-bold">Cambiar Contraseña</span>
+                </a>
+                <ng-template ngbNavContent>                  
+                  <div class="card" *ngIf="this.value != 1">
+                    <div class="card-body">
+                      <form [formGroup]="CambiarContraseniaForm">                        
+                        <div class="row">
+                          <div class="col-12 col-sm-6">
+                            <div class="form-group">
+                              <label for="account-old-password">Contraseña Actual</label>
+                              <div class="input-group form-password-toggle input-group-merge">
+                                <input disabled
+                                  [type]="passwordTextTypeOld ? 'text' : 'password'"
+                                  [ngClass]="{ 'is-invalid': DetailSubmitted && ReactiveContraseniaForm.actualcontrasenia.errors }"
+                                  formControlName="actualcontrasenia"
+                                  class="form-control"
+                                  id="account-old-password"                                
+                                  name="password"
+                                  placeholder="Contraseña Actual"
+                                  [(ngModel)]="claveActual"
+                                />
+                                <div class="input-group-append">
+                                  <span class="input-group-text cursor-pointer"
+                                    ><i
+                                      class="feather font-small-4"
+                                      [ngClass]="{
+                                        'icon-eye-off': passwordTextTypeOld,
+                                        'icon-eye': !passwordTextTypeOld
+                                      }"
+                                      (click)="mostrarClave(1)"
+                                    ></i
+                                  ></span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-12 col-sm-6">
+                            <div class="form-group">
+                              <label for="account-new-password">Nueva Contraseña</label>
+                              <div class="input-group form-password-toggle input-group-merge">
+                                <input
+                                  [type]="passwordTextTypeNew ? 'text' : 'password'"
+                                  id="account-new-password"
+                                  name="new-password"
+                                  class="form-control"
+                                  [ngClass]="{ 'is-invalid': DetailSubmitted && ReactiveContraseniaForm.nuevacontrasenia.errors }"
+                                  formControlName="nuevacontrasenia"
+                                  placeholder="Nueva Contraseña"
+                                  [(ngModel)]="claveNueva"
+                                  (change)="onChangeValidar()"
+                                />                                
+                                <div class="input-group-append">
+                                  <span class="input-group-text cursor-pointer"
+                                    ><i
+                                      class="feather font-small-4"
+                                      [ngClass]="{
+                                        'icon-eye-off': passwordTextTypeNew,
+                                        'icon-eye': !passwordTextTypeNew
+                                      }"
+                                      (click)="mostrarClave(2)"
+                                    ></i
+                                  ></span>
+                                </div>
+                                <div *ngIf="ReactiveContraseniaForm.nuevacontrasenia.errors" class="invalid-feedback">
+                                  <div *ngIf="ReactiveContraseniaForm.nuevacontrasenia.errors.required">* Campo obligatorio</div>
+                                </div>
+                              </div>                              
+                            </div>
+                          </div>
+                          <div class="col-12 col-sm-6">
+                            <div class="form-group">
+                              <label for="account-retype-new-password">Repite Nueva Contraseña</label>
+                              <div class="input-group form-password-toggle input-group-merge">
+                                <input
+                                  [type]="passwordTextTypeEqual ? 'text' : 'password'"
+                                  class="form-control"
+                                  [ngClass]="{ 'is-invalid': DetailSubmitted && ReactiveContraseniaForm.repitecontrasenia.errors }"
+                                  formControlName="repitecontrasenia"
+                                  id="account-retype-new-password"
+                                  name="confirm-new-password"
+                                  placeholder="Nueva Contraseña"
+                                  [(ngModel)]="claveReNueva"
+                                  (change)="onChangeValidar()"
+                                />                                
+                                <div class="input-group-append">
+                                  <span class="input-group-text cursor-pointer"
+                                    ><i
+                                      class="feather font-small-4"
+                                      [ngClass]="{
+                                        'icon-eye-off': passwordTextTypeEqual,
+                                        'icon-eye': !passwordTextTypeEqual                                      
+                                      }"
+                                      (click)="mostrarClave(3)"
+                                    ></i
+                                  ></span>
+                                </div>
+                                <div *ngIf="ReactiveContraseniaForm.repitecontrasenia.errors" class="invalid-feedback">
+                                  <div *ngIf="ReactiveContraseniaForm.repitecontrasenia.errors.required">* Campo obligatorio</div>
+                                </div>
+                              </div>
+                              <div *ngIf="diferente" style="color: red;">* clave no coincide</div>
+                            </div>
+                          </div>
+                          <div class="col-12">
+                            <button (click)="onCambiarClave()" class="btn btn-primary mt-2 mr-1" rippleEffect>Actualizar Cambios</button>
+                            <a type="reset" class="btn btn-outline-secondary mt-1" [routerLink]="['/dashboard/principal']" skipLocationChange 
+                            [queryParams]="{}"
+                            queryParamsHandling="merge" rippleEffect>Cancelar</a>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </ng-template>
+              </li>
+
+            </ul>
+          </div>
+          <div [ngbNavOutlet]="navVertical" class="col-12 col-md-9"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+  

@@ -4,9 +4,7 @@
     <!-- section -->
     <li
       core-menu-vertical-section
-      *ngIf="
-        item.type == 'section' && (item.role ? item.role.includes(currentUser.role) : false || item.role == undefined)
-      "
+      *ngIf="item.type == 'section' && onAccesoSeccion(currentUser.menu, item.title)"
       [item]="item"
       class="navigation-header"
     ></li>
@@ -14,11 +12,11 @@
     <!-- sub-menu item/collapsible of sections  -->
     <ng-container *ngIf="item.type == 'section'">
       <ng-container *ngFor="let item of item.children">
-        <!-- item | if openInNewTab set routerLink & routerLinkActive blank -->
+        <!-- item | if openInNewTab set routerLink & routerLinkActive blank Mane-->
         <li
           core-menu-vertical-item
           *ngIf="
-            item.type == 'item' && (item.role ? item.role.includes(currentUser.role) : false || item.role == undefined)
+            item.type == 'item' && onAcceso(currentUser.menu, item.id)
           "
           [item]="item"
           [ngClass]="{ disabled: item.disabled === true }"
@@ -31,10 +29,7 @@
         <!-- collapsible -->
         <li
           core-menu-vertical-collapsible
-          *ngIf="
-            item.type == 'collapsible' &&
-            (item.role ? item.role.includes(currentUser.role) : false || item.role == undefined)
-          "
+          *ngIf="item.type == 'collapsible'"
           [item]="item"
           class="nav-item has-sub"
         ></li>

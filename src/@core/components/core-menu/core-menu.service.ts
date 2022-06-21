@@ -27,9 +27,9 @@ export class CoreMenuService {
    * @param {Router} _router
    * @param {AuthenticationService} _authenticationService
    */
-  constructor() {
-    this.currentUser = new User();
-
+  constructor(
+  ) {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     // Set defaults
     this.onItemCollapsed = new Subject();
     this.onItemCollapseToggled = new Subject();

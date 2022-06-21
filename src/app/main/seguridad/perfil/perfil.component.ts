@@ -154,8 +154,6 @@ export class PerfilComponent implements OnInit {
   }
 
   onGuardar(listaPermiso): void{
-
-    console.log('men', listaPermiso);
     
     //return
     this.submitted = true;

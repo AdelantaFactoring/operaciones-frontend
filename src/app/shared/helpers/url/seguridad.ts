@@ -1,7 +1,9 @@
 export const USUARIO = {
     listar: '/usuario/listar',
     eliminar: '/usuario/eliminar',
-    guardar: '/usuario/InsertarActualizar'
+    guardar: '/usuario/InsertarActualizar',
+    login: '/usuario/Login',
+
 }
 
 export const PERFIL = {

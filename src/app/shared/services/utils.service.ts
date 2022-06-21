@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
+import { Router } from '@angular/router';
 import {BlockUI, NgBlockUI} from 'ng-block-ui';
 import {ToastrService} from 'ngx-toastr';
+import { Menu } from '../models/auth/user';
 
 class Mes {
   idMes: number;
@@ -120,5 +122,35 @@ export class UtilsService {
       return null;
 
     return `${$event.year}${String($event.month).padStart(2, "0")}${String($event.day).padStart(2, "0")}`;
+  }
+
+  getAccess(idMenu): Menu {// '/module/component/'
+    //const url = router.routerState.snapshot.url;
+    let router: Router;
+    const _menus = this.getUserMenus();
+    const _menu = _menus.find(x => x.idMenu == idMenu);
+    //console.log('menu', _menus);
+    
+    if (_menu.acceso == false) {
+      //console.log('access not found');
+      router.navigate(['miscellaneous/not-authorized']);
+    }
+
+    return _menu;
+  }
+
+  getUserMenus(): Menu[] {
+    if (this.isAuth())
+      return JSON.parse(sessionStorage.getItem('currentUserPermission'));
+    else return null;
+    //  JSON.parse(sessionStorage.getItem('currentUser'));
+  }
+
+  isAuth(): boolean {
+    return sessionStorage.getItem('currentUser') ? true : false;
+  }
+
+  setMenus(data: any) {
+    sessionStorage.setItem('menus', JSON.stringify(data));
   }
 }

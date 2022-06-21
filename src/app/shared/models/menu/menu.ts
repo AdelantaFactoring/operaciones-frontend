@@ -8,35 +8,35 @@ export const menu: CoreMenu[] = [
     type: 'section',
     icon: 'dollar-sign',
     children: [{
-      id: 'clientes',
+      id: '1',
       title: 'Clientes',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'users',
       url: 'comercial/clientes'
     }, {
-      id: 'pagador',
+      id: '2',
       title: 'Pagadores',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'user-check',
       url: 'comercial/pagador'
     }, {
-      id: 'clienteapagador',
+      id: '3',
       title: 'Cliente-Pagador',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'refresh-cw',
       url: 'comercial/clientepagador'
     }, {
-      id: 'checklist',
+      id: '4',
       title: 'Check list',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'check-square',
       url: 'comercial/checklist'
     }, {
-      id: 'solicitudes',
+      id: '5',
       title: 'Solicitudes',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
@@ -139,7 +139,7 @@ export const menu: CoreMenu[] = [
     type: 'section',
     icon: 'lock',
     children: [{
-      id: 'usuario',
+      id: '14',
       title: 'Usuario',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',

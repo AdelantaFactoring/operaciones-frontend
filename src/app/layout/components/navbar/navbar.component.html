@@ -77,8 +77,8 @@
         <ng-container *ngIf="this.currentUser">
           <div class="user-nav d-sm-flex d-none">
             <span class="user-name font-weight-bolder"
-              >Administrador</span
-            ><span class="user-status">Superadmin</span>
+              >{{ this.currentUser.usuarioLogin }}</span
+            ><span class="user-status">{{ this.currentUser.perfil }}</span>
           </div>
           <span class="avatar" *ngIf="1==0"
             ><img
@@ -89,7 +89,7 @@
               width="40" /><span class="avatar-status-online"></span
           ></span>
           <div class="avatar">
-            <div class="avatar-content">{{ "User" | initials }}</div>
+            <div class="avatar-content">{{ this.currentUser.usuarioLogin | initials }}</div>
             <span class="avatar-status-online"></span>
           </div>
         </ng-container>
@@ -111,6 +111,9 @@
 <!--          ><span [data-feather]="'credit-card'" [class]="'mr-50'"></span> Pricing</a-->
 <!--        ><a ngbDropdownItem [routerLink]="['/pages/faq']"-->
 <!--          ><span [data-feather]="'help-circle'" [class]="'mr-50'"></span> FAQ</a>-->
+        <a ngbDropdownItem [routerLink]="['/navbar/cuenta/account-settings']" skipLocationChange 
+                [queryParams]="{}"
+                queryParamsHandling="merge"><span [data-feather]="'edit-2'" [class]="'mr-50'"></span> Cuenta </a>   
         <a ngbDropdownItem (click)="logout()"><span [data-feather]="'power'" [class]="'mr-50'"></span> Cerrar sesión</a>
       </div>
     </li>

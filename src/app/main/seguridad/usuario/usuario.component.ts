@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { User } from 'app/shared/models/auth/user';
 import { Menu } from 'app/shared/models/seguridad/menu';
 import { Perfil } from 'app/shared/models/seguridad/perfil';
 import { Usuario } from 'app/shared/models/seguridad/Usuario';
@@ -20,6 +21,8 @@ export class UsuarioComponent implements OnInit {
   public contentHeader: object;
   public usuario: Usuario[] = [];
   public menuList: Menu[] = [];
+  public currentUser: User;
+  public currentUserPermiso: User;
   
   public search: string = '';
   public collectionSize: number = 0;
@@ -30,6 +33,8 @@ export class UsuarioComponent implements OnInit {
   public optPerfil: Perfil[] = [];
 
   public submitted: boolean;
+  public claveView: boolean;
+  public access: Menu;
   get ReactiveIUForm(): any {
     return this.usuarioForm.controls;
   }
@@ -42,6 +47,8 @@ export class UsuarioComponent implements OnInit {
     private listaPermiso: ListaPermisoService
   ) 
   {
+    
+    //this.access = utilsService.getAccess(14);
     this.contentHeader = {
       headerTitle: 'Usuario',
       actionButton: true,
@@ -80,6 +87,10 @@ export class UsuarioComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+    this.currentUserPermiso = JSON.parse(sessionStorage.getItem("currentUserPermission"));
+    
     this.onListarUsuario();
     this.onComboPerfil();
   }
@@ -297,4 +308,8 @@ export class UsuarioComponent implements OnInit {
     this.menuList = [];
     this.onMenuListarPorPerfil();
   }
+
+  mostrarClave() {
+    this.claveView = !this.claveView;
+}
 }
