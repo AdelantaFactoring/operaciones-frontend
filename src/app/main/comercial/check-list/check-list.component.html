@@ -132,6 +132,8 @@
                         <table class="table table-hover">
                           <thead>
                           <tr>
+                            <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
+                            <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
                             <th class="detail-th-color">N° Documento</th>
                             <th class="detail-th-color">Forma Pago</th>
                             <th class="detail-th-color">Monto sin IGV</th>
@@ -144,6 +146,8 @@
                           </thead>
                           <tbody>
                           <tr *ngFor="let item of cab.solicitudDet">
+                            <td *ngIf="cab.idTipoOperacion === 3">{{item.razonSocialPagProv}}</td>
+                            <td *ngIf="cab.idTipoOperacion === 3">{{item.rucPagProv}}</td>
                             <td>{{item.nroDocumento}}</td>
                             <td>{{item.formaPago}}</td>
                             <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
@@ -433,9 +437,15 @@
             </div>
             <div class="col-12" [hidden]="idTipoOperacion === 2">
               <div class="table-responsive" style="max-height: 300px;">
-                <table class="table table-hover">
+                <table class="table table-hover" [ngStyle]="{ 'min-width.px': idTipoOperacion === 3 ? 3200 : 'auto' }">
                   <thead>
+                  <tr *ngIf="idTipoOperacion === 3">
+                    <th colspan="12" class="detail-th-color">Información del Comprobante</th>
+                    <th colspan="5" class="detail-th-color2">Información Bancaria</th>
+                  </tr>
                   <tr>
+                    <th *ngIf="idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
+                    <th *ngIf="idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
                     <th class="detail-th-color">N° Documento</th>
                     <th class="detail-th-color">Forma Pago</th>
                     <th class="detail-th-color">Monto sin IGV</th>
@@ -446,10 +456,17 @@
                     <th class="detail-th-color">Estado</th>
                     <th class="detail-th-color">Archivo PDF</th>
                     <th class="detail-th-color">Archivo XML</th>
+                    <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">Moneda</th>
+                    <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">Banco</th>
+                    <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">N° Cuenta</th>
+                    <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">CCI</th>
+                    <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">Tipo Cuenta</th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr *ngFor="let item of detalle">
+                    <td *ngIf="idTipoOperacion === 3">{{item.razonSocialPagProv}}</td>
+                    <td *ngIf="idTipoOperacion === 3">{{item.rucPagProv}}</td>
                     <td>{{item.nroDocumento}}</td>
                     <td>{{item.formaPago}}</td>
                     <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
@@ -474,6 +491,11 @@
                         </a>
                       </div>
                     </td>
+                    <td *ngIf="idTipoOperacion === 3">{{item.monedaCuentaBancariaDestino}}</td>
+                    <td *ngIf="idTipoOperacion === 3">{{item.bancoDestino}}</td>
+                    <td *ngIf="idTipoOperacion === 3">{{item.nroCuentaBancariaDestino}}</td>
+                    <td *ngIf="idTipoOperacion === 3">{{item.cciDestino}}</td>
+                    <td *ngIf="idTipoOperacion === 3">{{item.tipoCuentaBancariaDestino}}</td>
                   </tr>
                   </tbody>
                 </table>
@@ -531,12 +553,12 @@
                 <input class="form-control" formControlName="conCopiaContacto" type="text"/>
               </div>
             </div>
-            <div class="col-12">
+            <div class="col-12" *ngIf="idTipoOperacion != 3">
               <div class="divider divider-warning">
                 <div class="divider-text">Información de Cuenta Bancaria</div>
               </div>
             </div>
-            <div class="col-12">
+            <div class="col-12" *ngIf="idTipoOperacion != 3">
               <div class="d-flex flex-wrap mb-0">
                 <div class="pb-1">
                   <button type="submit" rippleEffect class="btn btn-warning" (click)="onSeleccioneCuenta(modalCUENTA)" [disabled]="idTipoOperacion === 3">
@@ -546,7 +568,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-12">
+            <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">
               <div class="form-group">
                 <label>Titular</label>
                 <input class="form-control" formControlName="titularCuentaBancariaDestino" type="text" readonly
@@ -556,7 +578,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-12">
+            <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">
               <div class="form-group">
                 <label>Moneda</label>
                 <input class="form-control" formControlName="monedaCuentaBancariaDestino" type="text" readonly
@@ -566,7 +588,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-12">
+            <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">
               <div class="form-group">
                 <label>Banco</label>
                 <input class="form-control" formControlName="bancoDestino" type="text" readonly
@@ -576,7 +598,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-12">
+            <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">
               <div class="form-group">
                 <label>N° Cuenta</label>
                 <input class="form-control" type="text" readonly
@@ -589,7 +611,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-12">
+            <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">
               <div class="form-group">
                 <label>CCI</label>
                 <input class="form-control" type="text" readonly
@@ -602,7 +624,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-12">
+            <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">
               <div class="form-group">
                 <label>Tipo de Cuenta</label>
                 <input class="form-control" formControlName="tipoCuentaBancariaDestino" type="text" readonly

@@ -38,9 +38,9 @@ export class DocumentosService {
     );
   }
 
-  firmaPublicacion(payload): Observable<any> {
+  firmaPublicacionDeclaracion(payload): Observable<any> {
     return this.requestMethod.post(
-      `${environment.apiUrl}${DOCUMENTOS.firmaPublicacion}`,
+      `${environment.apiUrl}${DOCUMENTOS.firmaPublicacionDeclaracion}`,
       payload,
       {
         'Content-Type': CONTENT_TYPE.json
@@ -58,20 +58,10 @@ export class DocumentosService {
     );
   }
 
-  declarar(payload): Observable<any> {
-    return this.requestMethod.post(
-      `${environment.apiUrl}${DOCUMENTOS.declarar}`,
-      payload,
-      {
-        'Content-Type': CONTENT_TYPE.json
-      }
-    );
-  }
-
-  anular(payload): Observable<any> {
-    return this.requestMethod.post(
-      `${environment.apiUrl}${DOCUMENTOS.anular}`,
-      payload,
+  eliminar(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${DOCUMENTOS.eliminar}`,
+      `?idLiquidacionDocumentoCab=${payload.idLiquidacionDocumentoCab}&idUsuarioAud=${payload.idUsuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

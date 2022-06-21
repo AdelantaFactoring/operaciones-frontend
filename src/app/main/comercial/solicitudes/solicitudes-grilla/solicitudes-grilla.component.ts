@@ -115,6 +115,7 @@ export class SolicitudesGrillaComponent implements OnInit {
   onRefrescar(): void {
     this.onListarSolicitudes(this.paramsURL);
   }
+
   onListarSolicitudes(idSubConsulta): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesService.listar({

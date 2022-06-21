@@ -188,6 +188,8 @@
                             <thead>
                             <tr>
                               <th class="detail-th-color">Acción</th>
+                              <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
+                              <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
                               <th class="detail-th-color">N° Documento</th>
                               <th class="detail-th-color">T.N.M (%)</th>
                               <th class="detail-th-color">T.N.A (%)</th>
@@ -241,6 +243,8 @@
                                   </a>
                                 </div>
                               </td>
+                              <td *ngIf="cab.idTipoOperacion === 3" [ngClass]="{'row-edicion': item.editado}"><p>{{item.razonSocialPagProv}}</p></td>
+                              <td *ngIf="cab.idTipoOperacion === 3" [ngClass]="{'row-edicion': item.editado}"><p>{{item.rucPagProv}}</p></td>
                               <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.nroDocumento}}</p></td>
                               <td [ngClass]="{'row-edicion': item.editado}">
                                 <p>{{item.tasaNominalMensual | number: '1.2-2'}}</p></td>

@@ -130,6 +130,8 @@
                           <thead>
                           <tr>
                             <th class="detail-th-color">Acción</th>
+                            <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
+                            <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
                             <th class="detail-th-color">N° Documento</th>
                             <th class="detail-th-color">Forma Pago</th>
                             <th class="detail-th-color">Monto sin IGV</th>
@@ -152,6 +154,8 @@
                                 </a>
                               </div>
                             </td>
+                            <td *ngIf="cab.idTipoOperacion === 3">{{item.razonSocialPagProv}}</td>
+                            <td *ngIf="cab.idTipoOperacion === 3">{{item.rucPagProv}}</td>
                             <td>{{item.nroDocumento}}</td>
                             <td>{{item.formaPago}}</td>
                             <td>{{item.montoSinIGV | number: '1.2-2'}}</td>

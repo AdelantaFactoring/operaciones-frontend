@@ -23,6 +23,7 @@ export class SolicitudesComponent implements OnInit {
   public solicitudForm: FormGroup;
   public solicitudDetForm: FormGroup;
   public cambiarIcono: boolean = false;
+  public activeId: number = 1;
 
   name = "Elija el archivo";
   cantXml = 0;
@@ -141,24 +142,24 @@ export class SolicitudesComponent implements OnInit {
     this.hasBaseDropZoneOver = false;
   }
 
-  onListarSolicitudes(): void {
-    this.utilsService.blockUIStart('Obteniendo información...');
-    this.solicitudesService.listar({
-      idConsulta: 1,
-      idSubConsulta: 1,
-      search: this.search,
-      pageIndex: this.page,
-      pageSize: this.pageSize
-    }).subscribe((response: SolicitudCab[]) => {
-      this.solicitudes = response;
-      this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
-
-      this.utilsService.blockUIStop();
-    }, error => {
-      this.utilsService.blockUIStop();
-      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
-    });
-  }
+  // onListarSolicitudes(): void {
+  //   this.utilsService.blockUIStart('Obteniendo información...');
+  //   this.solicitudesService.listar({
+  //     idConsulta: 1,
+  //     idSubConsulta: 1,
+  //     search: this.search,
+  //     pageIndex: this.page,
+  //     pageSize: this.pageSize
+  //   }).subscribe((response: SolicitudCab[]) => {
+  //     this.solicitudes = response;
+  //     this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
+  //
+  //     this.utilsService.blockUIStop();
+  //   }, error => {
+  //     this.utilsService.blockUIStop();
+  //     this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+  //   });
+  // }
 
   onCancelar(): void {
     this.submitted = false;
@@ -166,7 +167,8 @@ export class SolicitudesComponent implements OnInit {
   }
 
   onRefrescar(): void {
-    this.onListarSolicitudes();
+    this.activeId = 1;
+    //this.onListarSolicitudes();
   }
 
   onClienteList(modal, value): void {

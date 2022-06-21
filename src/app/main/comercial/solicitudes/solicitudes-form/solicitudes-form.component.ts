@@ -448,7 +448,6 @@ export class SolicitudesFormComponent implements OnInit {
       pageIndex: this.pageCli,
       pageSize: this.pageSizeCli
     }).subscribe(response => {
-      response
       this.optClienteP = response;
 
       this.collectionSizeCli = response.length > 0 ? response[0].totalRows : 0;

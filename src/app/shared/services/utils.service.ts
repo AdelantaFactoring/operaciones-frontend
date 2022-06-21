@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BlockUI, NgBlockUI} from 'ng-block-ui';
 import {ToastrService} from 'ngx-toastr';
+import {FormControl} from "@angular/forms";
 
 class Mes {
   idMes: number;
@@ -121,4 +122,18 @@ export class UtilsService {
 
     return `${$event.year}${String($event.month).padStart(2, "0")}${String($event.day).padStart(2, "0")}`;
   }
+
+  nameValidator(control: FormControl): { [key: string]: boolean } {
+    const nameRegexp: RegExp = /[!@#$%^&*()_+\=\[\]{};:"\\|,<>\/?]/;
+    if (control.value && nameRegexp.test(control.value)) {
+      return { invalidName: true };
+    }
+  }
+
+  // nameValidator(control: FormControl): { [key: string]: boolean } {
+  //   const nameRegexp: RegExp = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+  //   if (control.value && nameRegexp.test(control.value)) {
+  //     return { invalidName: true };
+  //   }
+  // }
 }
