@@ -45,7 +45,9 @@ const routes: Routes = [
     CoreCommonModule, 
     PerfectScrollbarModule, 
     CoreTouchspinModule,
-    ContentHeaderModule],
+    ContentHeaderModule,
+    RouterModule.forChild(routes),
+  ],
   providers: [
     {
       provide: PERFECT_SCROLLBAR_CONFIG,

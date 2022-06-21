@@ -42,6 +42,11 @@ const routes: Routes = [
     loadChildren: () => import('app/auth/auth.module').then(m => m.AuthModule)
   },
   {
+    path: 'navbar',
+    loadChildren: () => import('app/layout/components/navbar/navbar.module').then(m => m.NavbarModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: '',
     redirectTo: '/auth/login',
     pathMatch: 'full'

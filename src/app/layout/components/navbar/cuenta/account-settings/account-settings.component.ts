@@ -107,7 +107,7 @@ export class AccountSettingsComponent implements OnInit {
       nombre: ['', Validators.required],
       apellidoPaterno: ['', Validators.required],
       apellidoMaterno: ['', Validators.required],
-      email: ['', Validators.required],
+      // email: ['', Validators.required],
     });
 
     this.CambiarContraseniaForm = this.formBuilder.group({
@@ -139,6 +139,8 @@ export class AccountSettingsComponent implements OnInit {
     this.refresh = false;
 
     this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    
+    
     // if (this.currentUser.foto == null) {
     //   this.currentUser.foto = null;
     // }
@@ -160,12 +162,25 @@ export class AccountSettingsComponent implements OnInit {
     }
   }
 
-  imageView(event): any {    
+  async onArchivoABase64(file): Promise<any> {
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+
+  imageView(event): any {  
+    console.log('eve', event);
+     
     const filecaptured = event.target.files[0];
     this.base64(filecaptured).then((image: any) => {
       this.foto = image.base;      
-      this.fotoriginal =this.foto.substr(23,99999999999999999);
-    })        
+      //this.fotoriginal =this.foto.substr(23,99999999999999999);
+    }) 
+    let base64 = this.onArchivoABase64(event.target.files[0]);
+    this.fotoriginal = base64;    
   }
 
   base64 = async ($event: any) => new Promise((resolve, reject) => {
@@ -204,51 +219,44 @@ export class AccountSettingsComponent implements OnInit {
   }
 
   onGetCuenta(): void {
-    // this.accountSettingsService.getCuenta({
-    //   idAsociacion: this.currentUser.idAsociacion,
-    //   idUsuario: this.currentUser.idUsuario
-    // }).subscribe(response => {
-    //   this.usuario = response[0].usuario;
-    //   this.nombre = response[0].nombres;
-    //   this.email = response[0].email;
-    //   this.apPaterno = response[0].apellidoPaterno;
-    //   this.apMaterno = response[0].apellidoMaterno;
-    //   this.claveActual = response[0].clave;
-    //   this.idPersona = response[0].idPersona;
-    // });
+    this.usuario = this.currentUser.usuarioLogin;
+    this.nombre = this.currentUser.nombre;
+    this.apPaterno = this.currentUser.apellidoPaterno;
+    this.apMaterno = this.currentUser.apellidoMaterno;
+    //this.email = this.currentUser.
   }
 
   onCambiarClave(): void {    
-    // this.DetailSubmitted = true;      
-    // if (this.CambiarContraseniaForm.invalid) {
-    //   return;
-    // }
-    // this.utilsService.blockUIStart("Guardando nueva contraseña...");
-    // setTimeout(() => {
-    //   this.utilsService.blockUIStop();     
-    //   if (this.claveActual == "" || this.claveNueva == "") {
-    //     this.utilsService.showNotification('No se guardo la información', 'Dejaste un campo vacío.', 2)
-    //   }     
-    //   this.accountSettingsService.updateClave({
-    //     idAsociacion: this.currentUser.idAsociacion,
-    //     idUsuario: this.currentUser.idUsuario,
-    //     claveAntigua: this.claveActual,
-    //     claveNueva: this.claveNueva
-    //   }).subscribe(response => {
-    //     if (response.tipo == 1) {
-    //       this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
-    //       //this.listarFoda();
-    //       this.claveNueva = '';
-    //       this.claveReNueva = '';
-    //     } else if (response.tipo == 2) {
-    //       this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
-    //     } else {
-    //       this.utilsService.showNotification(response.mensaje, 'Error', 3);
-    //     }
-    //   }, error => {
-    //     this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
-    //   });
-    // }, 2500);
+    this.DetailSubmitted = true;      
+    if (this.CambiarContraseniaForm.invalid) {
+      return;
+    }
+    this.utilsService.blockUIStart("Guardando nueva contraseña...");
+    setTimeout(() => {
+      this.utilsService.blockUIStop();     
+      if (this.claveActual == "" || this.claveNueva == "") {
+        this.utilsService.showNotification('No se guardo la información', 'Dejaste un campo vacío.', 2)
+      }     
+      this.accountSettingsService.cambioClave({
+        idEmpresa: this.currentUser.idEmpresa,
+        idUsuario: this.currentUser.idUsuario,
+        clave: this.claveActual,
+        claveNueva: this.claveNueva
+      }).subscribe(response => {
+        if (response.tipo == 1) {
+          this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+          //this.listarFoda();
+          this.claveNueva = '';
+          this.claveReNueva = '';
+        } else if (response.tipo == 2) {
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+        } else {
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        }
+      }, error => {
+        this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      });
+    }, 2500);
   }
 
   onUpdateCuenta(): void {
@@ -257,33 +265,26 @@ export class AccountSettingsComponent implements OnInit {
       return;
     }    
     this.utilsService.blockUIStart("Actualizando usuario...");
-    // setTimeout(() => {      
-    //   this.utilsService.blockUIStop();      
-    //   if (this.nombre == "" || this.apPaterno == "" || this.apMaterno == "" || this.email == "" || this.usuario == "") {
-    //     this.utilsService.showNotification('No se guardo la información', 'Dejaste un campo vacío.', 2)
-    //   }      
-    //   this.accountSettingsService.updateCuenta({
-    //     idAsociacion: this.currentUser.idAsociacion,
-    //     usuario: this.usuario,
-    //     idPersona: this.idPersona,
-    //     nombres: this.nombre,
-    //     apellidoPaterno: this.apPaterno,
-    //     apellidoMaterno: this.apMaterno,
-    //     email: this.email,
-    //     foto: this.fotoriginal,
-    //     idUsuario: this.currentUser.idUsuario
-    //   }).subscribe(response => {
-    //     if (response.tipo == 1) {
-    //       this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
-    //       this.onGetCuenta();
-    //     } else if (response.tipo == 2) {
-    //       this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
-    //     } else {
-    //       this.utilsService.showNotification(response.mensaje, 'Error', 3);
-    //     }
-    //   }, error => {
-    //     this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
-    //   });
+     
+      this.accountSettingsService.ActualizarDatos({
+        idEmpresa: this.currentUser.idEmpresa,
+        idUsuario: this.currentUser.idUsuario,
+        nombre: this.nombre,
+        apellidoPaterno: this.apPaterno,
+        apellidoMaterno: this.apMaterno,
+        archivoFoto: this.fotoriginal ?? ''
+      }).subscribe(response => {
+        if (response.tipo == 1) {
+          this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+          //this.onGetCuenta();
+        } else if (response.tipo == 2) {
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+        } else {
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        }
+      }, error => {
+        this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      });
     // }, 2000);
   }
 
@@ -306,8 +307,5 @@ export class AccountSettingsComponent implements OnInit {
     else {
       this.diferente = false;
     }
-    // if (this.loginForm.invalid) {
-    //   return;
-    // }
   }
 }

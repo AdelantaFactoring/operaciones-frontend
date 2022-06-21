@@ -7,6 +7,7 @@ import {CONTENT_TYPE} from '../../../../../shared/helpers/headers';
 // import { USUARIOS } from '../../../../../shared/helpers/url';
 
 import { BehaviorSubject, Observable } from 'rxjs';
+import { USUARIO } from 'app/shared/helpers/url/seguridad';
 
 
 @Injectable({
@@ -27,23 +28,23 @@ export class AccountSettingsService {
   //   );
   // }
 
-  // updateClave(payload): Observable<any> {
-  //   return this.requestMethod.post(
-  //     `${environment.apiUrl}${USUARIOS.updateClave}`,
-  //     payload,
-  //     {
-  //       'Content-Type': CONTENT_TYPE.json
-  //     }
-  //   );
-  // }
+  cambioClave(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${USUARIO.cambioClave}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 
-  // updateCuenta(payload): Observable<any> {
-  //   return this.requestMethod.post(
-  //     `${environment.apiUrl}${USUARIOS.updateCuenta}`,
-  //     payload,
-  //     {
-  //       'Content-Type': CONTENT_TYPE.json
-  //     }
-  //   );
-  // }
+  ActualizarDatos(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${USUARIO.actualizarDatos}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }

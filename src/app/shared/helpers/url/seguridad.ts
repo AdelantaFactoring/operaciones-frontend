@@ -3,7 +3,8 @@ export const USUARIO = {
     eliminar: '/usuario/eliminar',
     guardar: '/usuario/InsertarActualizar',
     login: '/usuario/Login',
-
+    cambioClave: '/usuario/CambioClave',
+    actualizarDatos: '/usuario/ActualizarDatos'
 }
 
 export const PERFIL = {
