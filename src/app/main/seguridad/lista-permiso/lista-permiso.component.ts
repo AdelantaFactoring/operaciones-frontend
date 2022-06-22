@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Menu } from 'app/shared/models/seguridad/menu';
 import { ListaPermisoService } from './lista-permiso.service';
 
@@ -10,26 +10,23 @@ import { ListaPermisoService } from './lista-permiso.service';
 export class ListaPermisoComponent implements OnInit {
 
   @Input() urlMenuList: any;
+  @ViewChild('menu') menu;
   public menuList: Menu[] = [];
   constructor(
     private listaPermiso: ListaPermisoService
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    //this._initNode();
+    this._initNode();
     this.updateSelectedNodes();
   }
 
-  // ngAfterViewInit(): void {
-  //   this.updateSelectedNodes();
-  // }
   private updateSelectedNodes() {
     if (this.urlMenuList) {
       if (this.urlMenuList.length > 0) {
         this.menuList.forEach(node => {
           this.urlMenuList.forEach(_node => {
             if (node.idMenu == _node.idMenu) {
-              // console.log(_node, __node);
               node.idPerfilMenu = _node.idPerfilMenu;
               node.idUsuarioMenu = _node.idUsuarioMenu;
               node.acceso = _node.acceso;
@@ -37,7 +34,6 @@ export class ListaPermisoComponent implements OnInit {
             }
           });
         });
-        //console.log('updateSelectedNodes:after', this.nodeMenus);
       }
     }
   }
@@ -60,5 +56,10 @@ export class ListaPermisoComponent implements OnInit {
     });
   }
 
+  private _initNode() {
+    this.menuList.forEach(_node => {
+      _node.acceso = false;
+    });
+  }
   
 }

@@ -42,6 +42,7 @@
                   type="search"
                   placeholder="Buscar"
                   class="form-control ml-25"
+                  (change)="onRefrescar()"
                   [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" 
                 /></label>
               </div>
@@ -188,7 +189,7 @@
                         <label>Perfil</label>
                         <ng-select appendTo="body" [clearable]="false" [items]="optPerfil" bindLabel="perfil"
                                    bindValue="idPerfil" formControlName="idPerfil"
-                                   (change)="onCambioPerfil()">
+                                   (change)="onMenuListarPorPerfil()">
                         </ng-select>
                       </div>
                     </div>

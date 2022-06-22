@@ -7,7 +7,7 @@ import { ColumnMode } from '@swimlane/ngx-datatable';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UtilsService } from '../../../../../shared/services/utils.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { User } from 'app/shared/models/auth/user';
 import { AccountSettingsService } from './account-settings.service';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -63,6 +63,7 @@ export class AccountSettingsComponent implements OnInit {
   value = 0;
   archivo :any;
   fotoriginal: any;
+  nombreFoto: string;
   //@ViewChild(DatatableComponent) table: DatatableComponent;
 
   public InsertUpdateForm: FormGroup;
@@ -76,7 +77,8 @@ export class AccountSettingsComponent implements OnInit {
     private utilsService: UtilsService,
     private modalService: NgbModal,
     private formBuilder: FormBuilder,
-    private accountSettingsService: AccountSettingsService
+    private accountSettingsService: AccountSettingsService,
+    private _router: Router
   ) {
 
     this.contentHeader = {
@@ -140,13 +142,6 @@ export class AccountSettingsComponent implements OnInit {
 
     this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     
-    
-    // if (this.currentUser.foto == null) {
-    //   this.currentUser.foto = null;
-    // }
-    // else{
-    //   this.currentUser.foto = this.currentUser.foto.changingThisBreaksApplicationSecurity;
-    // }
     this.onGetCuenta();
   }
 
@@ -171,16 +166,18 @@ export class AccountSettingsComponent implements OnInit {
     });
   }
 
-  imageView(event): any {  
-    console.log('eve', event);
-     
+  async imageView(event): Promise<void> {
     const filecaptured = event.target.files[0];
-    this.base64(filecaptured).then((image: any) => {
-      this.foto = image.base;      
-      //this.fotoriginal =this.foto.substr(23,99999999999999999);
-    }) 
-    let base64 = this.onArchivoABase64(event.target.files[0]);
-    this.fotoriginal = base64;    
+    if (filecaptured != undefined) {
+      this.nombreFoto = event.target.files[0].name;  
+    
+      this.base64(filecaptured).then((image: any) => {
+        this.foto = image.base; 
+        //this.fotoriginal =this.foto.substr(23,99999999999999999);
+      }) 
+      let base64 = await this.onArchivoABase64(event.target.files[0]);
+      this.fotoriginal = base64;   
+    }
   }
 
   base64 = async ($event: any) => new Promise((resolve, reject) => {
@@ -210,8 +207,7 @@ export class AccountSettingsComponent implements OnInit {
       return null;
     }
   })
-
-
+  
   onCancelModal(): void {
     this.IDSubmitted = false;
     this.DetailSubmitted = false;
@@ -219,10 +215,12 @@ export class AccountSettingsComponent implements OnInit {
   }
 
   onGetCuenta(): void {
+    this.claveActual = this.currentUser.clave;
     this.usuario = this.currentUser.usuarioLogin;
     this.nombre = this.currentUser.nombre;
     this.apPaterno = this.currentUser.apellidoPaterno;
     this.apMaterno = this.currentUser.apellidoMaterno;
+    this.foto = this.currentUser.base64;
     //this.email = this.currentUser.
   }
 
@@ -265,14 +263,14 @@ export class AccountSettingsComponent implements OnInit {
       return;
     }    
     this.utilsService.blockUIStart("Actualizando usuario...");
-     
       this.accountSettingsService.ActualizarDatos({
         idEmpresa: this.currentUser.idEmpresa,
         idUsuario: this.currentUser.idUsuario,
         nombre: this.nombre,
         apellidoPaterno: this.apPaterno,
         apellidoMaterno: this.apMaterno,
-        archivoFoto: this.fotoriginal ?? ''
+        base64: this.fotoriginal ?? '',
+        archivoFoto: this.nombreFoto ?? ''
       }).subscribe(response => {
         if (response.tipo == 1) {
           this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
@@ -307,5 +305,14 @@ export class AccountSettingsComponent implements OnInit {
     else {
       this.diferente = false;
     }
+  }
+
+  logout() {
+    sessionStorage.removeItem("currentUser");
+    this._router.navigate(['/auth/login']);
+  }
+
+  onQuitarFoto(): void{
+    this.foto = '';
   }
 }

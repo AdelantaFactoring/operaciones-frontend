@@ -21,9 +21,10 @@ export class UsuarioComponent implements OnInit {
   public contentHeader: object;
   public usuario: Usuario[] = [];
   public menuList: Menu[] = [];
+  public menuL: Menu[] = [];
   public currentUser: User;
   public currentUserPermiso: User;
-  
+
   public search: string = '';
   public collectionSize: number = 0;
   public pageSize: number = 10;
@@ -45,9 +46,8 @@ export class UsuarioComponent implements OnInit {
     private formBuilder: FormBuilder,
     private modalService: NgbModal,
     private listaPermiso: ListaPermisoService
-  ) 
-  {
-    
+  ) {
+
     //this.access = utilsService.getAccess(14);
     this.contentHeader = {
       headerTitle: 'Usuario',
@@ -87,10 +87,10 @@ export class UsuarioComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+
     this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.currentUserPermiso = JSON.parse(sessionStorage.getItem("currentUserPermission"));
-    
+
     this.onListarUsuario();
     this.onComboPerfil();
   }
@@ -103,7 +103,7 @@ export class UsuarioComponent implements OnInit {
       pageIndex: this.page,
       pageSize: this.pageSize
     }).subscribe((response: Usuario[]) => {
-      
+
       this.usuario = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
       this.utilsService.blockUIStop();
@@ -114,7 +114,7 @@ export class UsuarioComponent implements OnInit {
 
   }
 
-  onRefrescar(): void{
+  onRefrescar(): void {
     this.onListarUsuario();
   }
 
@@ -137,11 +137,11 @@ export class UsuarioComponent implements OnInit {
     }, 0);
   }
 
-  onGuardar(listaPermiso): void{
+  onGuardar(listaPermiso): void {
     this.submitted = true;
     if (this.usuarioForm.invalid)
       return;
-    
+
     this.utilsService.blockUIStart('Guardando...');
     this.usuarioService.guardar({
       idEmpresa: 1,
@@ -173,10 +173,12 @@ export class UsuarioComponent implements OnInit {
     }, error => {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();
-    });    
+    });
   }
 
-  onEditar(modal: any, row): void{
+  onEditar(modal: any, row): void {
+
+    this.menuList = [];
     this.utilsService.blockUIStart('Obteniendo información...');
     this.listaPermiso.listarPorUsuario({
       idEmpresa: 1,
@@ -191,6 +193,7 @@ export class UsuarioComponent implements OnInit {
       this.usuarioForm.controls.clave.setValue(row.clave);
       this.usuarioForm.controls.idPerfil.setValue(row.idPerfil);
       this.usuarioForm.controls.google.setValue(row.google);
+
       response.forEach(item => {
         this.menuList.push({
           idMenu: item.idMenu,
@@ -260,7 +263,7 @@ export class UsuarioComponent implements OnInit {
     });
   }
 
-  onComboPerfil(): void{
+  onComboPerfil(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.perfilService.combo({
       idEmpresa: 1
@@ -279,15 +282,15 @@ export class UsuarioComponent implements OnInit {
     this.modalService.dismissAll();
   }
 
-  onMenuListarPorPerfil(): void{
+  onMenuListarPorPerfil(): void {
+    this.menuList = [];
     if (this.usuarioForm.controls.idPerfil.value != 0 && this.usuarioForm.controls.idPerfil.value != null) {
       this.listaPermiso.listarPorPerfil({
         idEmpresa: 1,
         idPerfil: this.usuarioForm.controls.idPerfil.value
       }).subscribe((response: Menu[]) => {
-        
         response.forEach(item => {
-          this.menuList.push({
+          this.menuL.push({
             idMenu: item.idMenu,
             menu: item.menu,
             grupo: item.grupo,
@@ -296,6 +299,8 @@ export class UsuarioComponent implements OnInit {
             idUsuarioMenu: item.idUsuarioMenu
           });
         });
+
+        this.menuList = this.menuL;
         this.utilsService.blockUIStop();
       }, error => {
         this.utilsService.blockUIStop();
@@ -304,12 +309,12 @@ export class UsuarioComponent implements OnInit {
     }
   }
 
-  onCambioPerfil(): void{
-    this.menuList = [];
-    this.onMenuListarPorPerfil();
-  }
+  // onCambioPerfil(): void{
+  //   this.menuList = [];
+  //   this.onMenuListarPorPerfil();
+  // }
 
   mostrarClave() {
     this.claveView = !this.claveView;
-}
+  }
 }

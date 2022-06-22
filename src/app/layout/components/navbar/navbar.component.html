@@ -80,15 +80,15 @@
               >{{ this.currentUser.usuarioLogin }}</span
             ><span class="user-status">{{ this.currentUser.perfil }}</span>
           </div>
-          <span class="avatar" *ngIf="1==0"
+          <span class="avatar" *ngIf="this.currentUser.base64!==''"
             ><img
               class="round"
-              src="assets/images/portrait/small/{{ this.currentUser.avatar }}"
+              src="{{ this.currentUser.base64 }}"
               alt="avatar"
               height="40"
               width="40" /><span class="avatar-status-online"></span
           ></span>
-          <div class="avatar">
+          <div class="avatar" *ngIf="this.currentUser.base64==''">
             <div class="avatar-content">{{ this.currentUser.usuarioLogin | initials }}</div>
             <span class="avatar-status-online"></span>
           </div>

@@ -115,6 +115,7 @@ export class PerfilComponent implements OnInit {
 
   onEditar(modal: any, row): void{
     this.utilsService.blockUIStart('Obteniendo información...');
+    this.menuList = [];
     this.listaPermiso.listarPorPerfil({
       idEmpresa: 1,
       idPerfil: row.idPerfil

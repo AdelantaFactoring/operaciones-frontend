@@ -9,6 +9,7 @@ export class User {
   idPerfil: number;
   perfil: string;
   archivoFoto: string;
+  base64: string;
   google: boolean;
   totalRows: number;
   menu: Menu[];
