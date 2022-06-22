@@ -12,6 +12,7 @@ import { User } from 'app/shared/models/auth/user';
 import { AccountSettingsService } from './account-settings.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Byte } from '@angular/compiler/src/util';
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-account-settings',
   templateUrl: './account-settings.component.html',
@@ -78,7 +79,8 @@ export class AccountSettingsComponent implements OnInit {
     private modalService: NgbModal,
     private formBuilder: FormBuilder,
     private accountSettingsService: AccountSettingsService,
-    private _router: Router
+    private _router: Router,
+    private location: Location,
   ) {
 
     this.contentHeader = {
@@ -173,7 +175,6 @@ export class AccountSettingsComponent implements OnInit {
     
       this.base64(filecaptured).then((image: any) => {
         this.foto = image.base; 
-        //this.fotoriginal =this.foto.substr(23,99999999999999999);
       }) 
       let base64 = await this.onArchivoABase64(event.target.files[0]);
       this.fotoriginal = base64;   
@@ -231,10 +232,7 @@ export class AccountSettingsComponent implements OnInit {
     }
     this.utilsService.blockUIStart("Guardando nueva contraseña...");
     setTimeout(() => {
-      this.utilsService.blockUIStop();     
-      if (this.claveActual == "" || this.claveNueva == "") {
-        this.utilsService.showNotification('No se guardo la información', 'Dejaste un campo vacío.', 2)
-      }     
+      this.utilsService.blockUIStop();        
       this.accountSettingsService.cambioClave({
         idEmpresa: this.currentUser.idEmpresa,
         idUsuario: this.currentUser.idUsuario,
@@ -246,6 +244,7 @@ export class AccountSettingsComponent implements OnInit {
           //this.listarFoda();
           this.claveNueva = '';
           this.claveReNueva = '';
+          this.DetailSubmitted = false;
         } else if (response.tipo == 2) {
           this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
         } else {
@@ -314,5 +313,8 @@ export class AccountSettingsComponent implements OnInit {
 
   onQuitarFoto(): void{
     this.foto = '';
+  }
+  onCancelar(): void{
+    this.location.back();
   }
 }
