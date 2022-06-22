@@ -51,7 +51,6 @@ export class ListaPermisoComponent implements OnInit {
           idUsuarioMenu: 0
         })
       });
-      //this.menuList = response;
       this.updateSelectedNodes();
     });
   }

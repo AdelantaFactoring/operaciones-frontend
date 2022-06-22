@@ -89,7 +89,6 @@ export class UsuarioComponent implements OnInit {
   ngOnInit(): void {
 
     this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-    this.currentUserPermiso = JSON.parse(sessionStorage.getItem("currentUserPermission"));
 
     this.onListarUsuario();
     this.onComboPerfil();
@@ -98,7 +97,7 @@ export class UsuarioComponent implements OnInit {
   onListarUsuario(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.usuarioService.listar({
-      idEmpresa: 1,
+      idEmpresa: this.currentUser.idEmpresa,
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
@@ -144,7 +143,7 @@ export class UsuarioComponent implements OnInit {
 
     this.utilsService.blockUIStart('Guardando...');
     this.usuarioService.guardar({
-      idEmpresa: 1,
+      idEmpresa: this.currentUser.idEmpresa,
       idUsuario: this.usuarioForm.controls.idUsuario.value,
       nombre: this.usuarioForm.controls.nombre.value,
       apellidoPaterno: this.usuarioForm.controls.apellidoPaterno.value,
@@ -154,7 +153,7 @@ export class UsuarioComponent implements OnInit {
       idPerfil: this.usuarioForm.controls.idPerfil.value,
       archivoFoto: '',
       google: this.usuarioForm.controls.google.value,
-      idUsuarioAud: 1,
+      idUsuarioAud: this.currentUser.idUsuario,
       menu: listaPermiso.menuList
     }).subscribe(response => {
 
@@ -181,7 +180,7 @@ export class UsuarioComponent implements OnInit {
     this.menuList = [];
     this.utilsService.blockUIStart('Obteniendo información...');
     this.listaPermiso.listarPorUsuario({
-      idEmpresa: 1,
+      idEmpresa: this.currentUser.idEmpresa,
       idUsuario: row.idUsuario
     }).subscribe((response: Menu[]) => {
 
@@ -240,9 +239,9 @@ export class UsuarioComponent implements OnInit {
       if (result.value) {
         this.utilsService.blockUIStart('Eliminando...');
         this.usuarioService.eliminar({
-          idEmpresa: 1,
+          idEmpresa: this.currentUser.idEmpresa,
           idUsuario: item.idUsuario,
-          idUsuarioAud: 1
+          idUsuarioAud: this.currentUser.idUsuario
         }).subscribe(response => {
           if (response.tipo === 1) {
             this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
@@ -266,7 +265,7 @@ export class UsuarioComponent implements OnInit {
   onComboPerfil(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.perfilService.combo({
-      idEmpresa: 1
+      idEmpresa: this.currentUser.idEmpresa
     }).subscribe((response: Usuario[]) => {
       this.optPerfil = response;
       this.utilsService.blockUIStop();
@@ -286,7 +285,7 @@ export class UsuarioComponent implements OnInit {
     this.menuList = [];
     if (this.usuarioForm.controls.idPerfil.value != 0 && this.usuarioForm.controls.idPerfil.value != null) {
       this.listaPermiso.listarPorPerfil({
-        idEmpresa: 1,
+        idEmpresa: this.currentUser.idEmpresa,
         idPerfil: this.usuarioForm.controls.idPerfil.value
       }).subscribe((response: Menu[]) => {
         response.forEach(item => {

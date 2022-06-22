@@ -25,7 +25,8 @@
                 <label class="d-flex align-items-center"
                 >Mostrar
                   <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
-                          >
+                  (change)="onRefrescar()"  >
+                    <option value="1">1</option>
                     <option value="10">10</option>
                     <option value="25">25</option>
                     <option value="50">50</option>
@@ -82,12 +83,12 @@
               </div>
             </div>
           </div>
-          <!-- <div class="row">
+          <div class="row">
             <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
               <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
-                              (pageChange)="onListarDevolucion()" [pageSize]="pageSize"></ngb-pagination>
+                              (pageChange)="onListarPerfil()" [pageSize]="pageSize"></ngb-pagination>
             </div>
-          </div> -->
+          </div>
   
           <ng-template #modalPERFIL let-modal>
             <div class="modal-header">
@@ -154,7 +155,7 @@
           </ng-template>
         </div>
       </div>
-      <!-- <block-ui></block-ui> -->
+      <block-ui></block-ui>
     </div>
   </div>
   

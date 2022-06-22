@@ -44,7 +44,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     NgbModule,
     CoreCommonModule,
-    BlockUIModule,
+    BlockUIModule.forRoot(),
     ContentHeaderModule,
     CoreTouchspinModule,
     NgxDatatableModule,

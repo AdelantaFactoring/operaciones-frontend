@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import {UtilsService} from "../../../shared/services/utils.service";
+import { PerfilService } from './perfil.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Menu } from 'app/shared/models/seguridad/menu';
-import { Perfil } from 'app/shared/models/seguridad/perfil';
-import { UtilsService } from 'app/shared/services/utils.service';
+import { User } from '../../../shared/models/auth/user';
+import { Menu } from '../../../shared/models/seguridad/menu';
+import { Perfil } from '../../../shared/models/seguridad/perfil';
 import Swal from 'sweetalert2';
 import { ListaPermisoService } from '../lista-permiso/lista-permiso.service';
-import { PerfilService } from './perfil.service';
 
 @Component({
   selector: 'app-perfil',
@@ -22,6 +23,7 @@ export class PerfilComponent implements OnInit {
   public page: number = 1;
   public perfilForm: FormGroup;
   public oldPerfilForm: FormGroup;
+  public currentUser: User;
 
   public perfil: Perfil[] = [];
 
@@ -70,13 +72,14 @@ export class PerfilComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.onListarPerfil();
   }
 
   onListarPerfil(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.perfilService.listar({
-      idEmpresa: 1,
+      idEmpresa: this.currentUser.idEmpresa,
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
@@ -84,6 +87,7 @@ export class PerfilComponent implements OnInit {
       
       this.perfil = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
+      
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -117,7 +121,7 @@ export class PerfilComponent implements OnInit {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.menuList = [];
     this.listaPermiso.listarPorPerfil({
-      idEmpresa: 1,
+      idEmpresa: this.currentUser.idEmpresa,
       idPerfil: row.idPerfil
     }).subscribe((response: Menu[]) => {
       
@@ -162,10 +166,10 @@ export class PerfilComponent implements OnInit {
       return;
     this.utilsService.blockUIStart('Guardando...');
     this.perfilService.guardar({
-      idEmpresa: 1,
+      idEmpresa: this.currentUser.idEmpresa,
       idPerfil: this.perfilForm.controls.idPerfil.value,
       perfil: this.perfilForm.controls.perfil.value,
-      idUsuarioAud: 1,
+      idUsuarioAud: this.currentUser.idUsuario,
       menu: listaPermiso.menuList
     }).subscribe(response => {
 
@@ -203,9 +207,9 @@ export class PerfilComponent implements OnInit {
       if (result.value) {
         this.utilsService.blockUIStart('Eliminando...');
         this.perfilService.eliminar({
-          idEmpresa: 1,
+          idEmpresa: this.currentUser.idEmpresa,
           idPerfil: item.idPerfil,
-          idUsuarioAud: 1
+          idUsuarioAud: this.currentUser.idUsuario
         }).subscribe(response => {
           if (response.tipo === 1) {
             this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);

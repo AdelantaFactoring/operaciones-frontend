@@ -25,7 +25,7 @@
                 <label class="d-flex align-items-center"
                 >Mostrar
                   <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
-                          >
+                  (change)="onRefrescar()"  >
                     <option value="10">10</option>
                     <option value="25">25</option>
                     <option value="50">50</option>
@@ -90,12 +90,12 @@
               </div>
             </div>
           </div>
-          <!-- <div class="row">
+          <div class="row">
             <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
               <ngb-pagination [collectionSize]="collectionSize" [(page)]="page"
-                              (pageChange)="onListarDevolucion()" [pageSize]="pageSize"></ngb-pagination>
+                              (pageChange)="onListarUsuario()" [pageSize]="pageSize"></ngb-pagination>
             </div>
-          </div> -->
+          </div>
   
           <ng-template #modalUSUARIO let-modal>
             <div class="modal-header">
@@ -207,91 +207,8 @@
                   <div class="col-md-8 col-12">
                     <app-lista-permiso #listaPermiso [urlMenuList]="menuList"></app-lista-permiso>
                   </div>
-                  <!-- <div class="col-md-6 col-12">
-                    <div class="form-group">
-                      <label>Nombre</label>
-                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.nombre.errors }"
-                             class="form-control" formControlName="nombre" type="text"/>
-                      <div *ngIf="ReactiveIUForm.nombre.errors" class="invalid-feedback">
-                        <div *ngIf="ReactiveIUForm.nombre.errors.required">* Campo obligatorio</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-12">
-                    <div class="form-group">
-                      <label>Apellido Paterno</label>
-                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.apellidoPaterno.errors }"
-                             class="form-control" formControlName="apellidoPaterno" type="text"/>
-                      <div *ngIf="ReactiveIUForm.apellidoPaterno.errors" class="invalid-feedback">
-                        <div *ngIf="ReactiveIUForm.apellidoPaterno.errors.required">* Campo obligatorio</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-12">
-                    <div class="form-group">
-                      <label>Apellido Materno</label>
-                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.apellidoMaterno.errors }"
-                             class="form-control" formControlName="apellidoMaterno" type="text"/>
-                      <div *ngIf="ReactiveIUForm.apellidoMaterno.errors" class="invalid-feedback">
-                        <div *ngIf="ReactiveIUForm.apellidoMaterno.errors.required">* Campo obligatorio</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-12">
-                    <div class="form-group">
-                      <label>Usuario</label>
-                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.usuario.errors }"
-                             class="form-control" formControlName="usuario" type="text"/>
-                      <div *ngIf="ReactiveIUForm.usuario.errors" class="invalid-feedback">
-                        <div *ngIf="ReactiveIUForm.usuario.errors.required">* Campo obligatorio</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-12">
-                    <div class="form-group">
-                      <label>Clave</label>
-                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.clave.errors }"
-                             class="form-control" formControlName="clave" type="text"/>
-                      <div *ngIf="ReactiveIUForm.clave.errors" class="invalid-feedback">
-                        <div *ngIf="ReactiveIUForm.clave.errors.required">* Campo obligatorio</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-12">
-                    <div class="form-group">
-                      <label>Perfil</label>
-                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.perfil.errors }"
-                             class="form-control" formControlName="perfil" type="text"/>
-                      <div *ngIf="ReactiveIUForm.perfil.errors" class="invalid-feedback">
-                        <div *ngIf="ReactiveIUForm.perfil.errors.required">* Campo obligatorio</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-12">
-                    <div class="form-group">
-                      <label>Google</label>
-                      <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.google.errors }"
-                             class="form-control" formControlName="google" type="checkbox"/>
-                      <div *ngIf="ReactiveIUForm.google.errors" class="invalid-feedback">
-                        <div *ngIf="ReactiveIUForm.google.errors.required">* Campo obligatorio</div>
-                      </div>
-                    </div>
-                  </div> -->
                 </div>
               </form>
-              <!-- <div class="row spaced">
-                <div class="col-md-12 col-12">
-                  <div class="form-group">
-                    
-                  <div class="col-12">
-                    <div class="divider divider-warning">
-                      <div class="divider-text">Permisos</div>
-                    </div>
-                  </div>
-                  <app-lista-permiso #listaPermiso [urlMenuList]="menuList"></app-lista-permiso>
-                  </div>
-                </div>
-              </div> -->
             </div>
             <div class="modal-footer" style="display: block !important;">
               <div class="row">
@@ -311,7 +228,7 @@
           </ng-template>
         </div>
       </div>
-      <!-- <block-ui></block-ui> -->
+      <block-ui></block-ui>
     </div>
   </div>
   

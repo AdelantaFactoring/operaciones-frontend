@@ -47,12 +47,12 @@ export class CoreMenuComponent implements OnInit {
 
     // Subscribe to the current menu changes
     this._coreMenuService.onMenuChanged.pipe(takeUntil(this._unsubscribeAll)).subscribe(() => {
-      this.currentUser = this._coreMenuService.currentUser;
+      //this.currentUser = this._coreMenuService.currentUser;
+      this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 
       // Load menu
-      this.menu = this._coreMenuService.getCurrentMenu();
-
       this._changeDetectorRef.markForCheck();
+      this.onChangeMenu();
     });
   }
 
@@ -62,5 +62,18 @@ export class CoreMenuComponent implements OnInit {
 
   onAccesoSeccion(menu: Menu[], nombreSeccion: string): boolean{
     return menu.filter(x => x.grupo == nombreSeccion.toUpperCase() && x.acceso).length > 0;
+  }
+
+  onChangeMenu(): void{
+   if (this.currentUser != null) {
+    for (const item of this.menu) {
+      if (!this.onAccesoSeccion(this.currentUser.menu, item.title)) {
+        item.type = '';
+      }
+      else{
+        item.type = 'section';
+      }
+    }
+   }
   }
 }
