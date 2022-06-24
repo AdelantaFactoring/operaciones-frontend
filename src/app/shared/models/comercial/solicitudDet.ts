@@ -25,8 +25,10 @@ export class SolicitudDet {
   rutaArchivoPDF: string;
   idProcesoRespuestaCavali: number;
   codigoRespuestaCavali: string;
+  estadoRespuestaCavali: string;
   idProcesoRespuestaAnotacion: number;
   codigoRespuestaAnotacion: string;
+  estadoRespuestaAnotacion: string;
 
   editado: boolean = true;
 }

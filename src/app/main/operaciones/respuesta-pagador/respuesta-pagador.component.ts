@@ -20,9 +20,13 @@ export class RespuestaPagadorComponent implements OnInit {
   public cambiarIcono: boolean = false;
 
   public idTipoRegistro: number = 0;
+  public idProcesoRespuestaCavali: number = 0;
   public codigoRespuestaCavali: string = '';
+  public estadoRespuestaCavali: string = '';
+  public idProcesoRespuestaAnotacion: number = 0;
   public codigoRespuestaAnotacion: string = '';
-  //Paginación
+  public estadoRespuestaAnotacion: string = '';
+
   public collectionSize: number = 0;
   public pageSize: number = 10;
   public page: number = 1;
@@ -97,8 +101,12 @@ export class RespuestaPagadorComponent implements OnInit {
 
   onVerRespuesta(cab: SolicitudCab, item: SolicitudDet, manualOpen: any): void {
     this.idTipoRegistro = cab.idTipoRegistro;
+    this.idProcesoRespuestaCavali = item.idProcesoRespuestaCavali;
     this.codigoRespuestaCavali = item.codigoRespuestaCavali;
+    this.estadoRespuestaCavali = item.estadoRespuestaCavali;
+    this.idProcesoRespuestaAnotacion = item.idProcesoRespuestaAnotacion;
     this.codigoRespuestaAnotacion = item.codigoRespuestaAnotacion;
+    this.estadoRespuestaAnotacion = item.estadoRespuestaAnotacion;
     manualOpen.open();
   }
 
