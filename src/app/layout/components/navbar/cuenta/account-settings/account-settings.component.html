@@ -20,57 +20,37 @@
                 <ng-template ngbNavContent>
                   <div class="card" *ngIf="this.value != 0">
                     <div class="card-body">
-                      <div class="media">
-                        <a *ngIf="foto != ''" href="javascript:void(0);" class="mr-25">
-                          <img [src]="foto" class="rounded mr-50" alt="profile image" height="76" width="80">                          
-                        </a>
-                        <div class="avatar" *ngIf="foto==''">
-                          <div class="avatar-content">{{ this.currentUser.usuarioLogin | initials }}</div>
-                          <span class="avatar-status-online"></span>
-                        </div>
-                        <!-- <a *ngIf="foto" class="mr-25">
-                          <img  [src]="foto" class="rounded mr-50" alt="profile image" height="76" width="80">
-                        </a> -->
-                        <div class="media-body mt-75 ml-1">
-                          <button
-                            (click)="file.click()"
-                            for="account-upload"
-                            class="btn btn-sm btn-primary mb-75 mr-75"
-                            rippleEffect
-                          >
-                            Subir
-                          </button>
-                          <input
-                            type="file"
-                            #file
-                            id="account-upload"
-                            hidden
-                            accept="image/*"
-                            (change)="imageView($event)"
-                          />                       
-                          <button class="btn btn-sm btn-outline-secondary mb-75" rippleEffect (click)="onQuitarFoto()">Quitar</button>
-                        </div>
-                      </div>
                       <form [formGroup]="InsertUpdateForm">
                         <div class="row">
-                          <div class="col-12 col-sm-6">
+                          <div class="col-12">
+                            <label >Foto</label>
                             <div class="form-group">
-                              <label for="account-username">Usuario</label>
-                              <input
-                                type="text"
-                                class="form-control"
-                                id="account-username"
-                                name="username"
-                                [ngClass]="{ 'is-invalid': IDSubmitted && ReactiveIUForm.usuario.errors }"
-                                formControlName="usuario"
-                                placeholder="Usuario"
-                                [(ngModel)]= "usuario"
-                              />
-                              <div *ngIf="ReactiveIUForm.usuario.errors" class="invalid-feedback">
-                                <div *ngIf="ReactiveIUForm.usuario.errors.required">* Campo obligatorio</div>
-                              </div>
+                              <a *ngIf="foto != ''" href="javascript:void(0);" class="mr-25">
+                                <img [src]="foto" class="rounded mr-50" alt="profile image" height="76" width="80">                          
+                              </a>
+                              <a *ngIf="foto == ''" href="javascript:void(0);" class="mr-25">
+                                <img src="assets/images/pages/Foto_Perfil.png" class="rounded mr-50" alt="profile image" height="76" width="80">                          
+                              </a>
+                              <button
+                                  (click)="file.click()"
+                                  for="account-upload"
+                                  class="btn btn-sm btn-primary mb-75 mr-75"
+                                  rippleEffect
+                                >
+                                  Subir
+                                </button>
+                                <input
+                                  type="file"
+                                  #file
+                                  id="account-upload"
+                                  hidden
+                                  accept="image/*"
+                                  (change)="imageView($event)"
+                                />                       
+                                <button class="btn btn-sm btn-outline-secondary mb-75" rippleEffect (click)="onQuitarFoto()">Quitar</button>
                             </div>
                           </div>
+                          
                           <div class="col-12 col-sm-6">
                             <div class="form-group">
                               <label for="account-name">Nombre</label>
@@ -124,25 +104,7 @@
                                 <div *ngIf="ReactiveIUForm.apellidoMaterno.errors.required">* Campo obligatorio</div>
                               </div>
                             </div>
-                          </div>
-                          <!-- <div class="col-12 col-sm-6">
-                            <div class="form-group">
-                              <label for="account-e-mail">E-mail</label>
-                              <input
-                                type="email"
-                                [ngClass]="{ 'is-invalid': IDSubmitted && ReactiveIUForm.email.errors }"
-                                formControlName="email"
-                                class="form-control"
-                                id="account-e-mail"
-                                name="email"
-                                placeholder="Email"
-                                [(ngModel)]= "email"
-                              />
-                              <div *ngIf="ReactiveIUForm.email.errors" class="invalid-feedback">
-                                <div *ngIf="ReactiveIUForm.email.errors.required">* Campo obligatorio</div>
-                              </div>
-                            </div>
-                          </div> -->                        
+                          </div>                      
                         </div>
                         <div class="row">
                           <div class="d-flex flex-wrap mb-0">
@@ -178,13 +140,13 @@
                 <ng-template ngbNavContent>                  
                   <div class="card" *ngIf="this.value != 1">
                     <div class="card-body">
-                      <form [formGroup]="CambiarContraseniaForm">                        
-                        <div class="row">
-                          <div class="col-12 col-sm-6">
+                      <form [formGroup]="CambiarContraseniaForm">     
+                        <div class="row spaced">
+                          <div class="col-md-6 col-12">
                             <div class="form-group">
                               <label for="account-old-password">Contraseña Actual</label>
                               <div class="input-group form-password-toggle input-group-merge">
-                                <input disabled
+                                <input
                                   [type]="passwordTextTypeOld ? 'text' : 'password'"
                                   [ngClass]="{ 'is-invalid': DetailSubmitted && ReactiveContraseniaForm.actualcontrasenia.errors }"
                                   formControlName="actualcontrasenia"
@@ -207,25 +169,25 @@
                                   ></span>
                                 </div>
                               </div>
+                              <div *ngIf="ReactiveContraseniaForm.actualcontrasenia.errors" class="invalid-feedback">
+                                <div *ngIf="ReactiveContraseniaForm.actualcontrasenia.errors.required">* Campo obligatorio</div>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-12 col-sm-6">
+                          <div class="col-md-6 col-12">
                             <div class="form-group">
                               <label for="account-new-password">Nueva Contraseña</label>
                               <div class="input-group form-password-toggle input-group-merge">
                                 <input
                                   [type]="passwordTextTypeNew ? 'text' : 'password'"
-                                  id="account-new-password"
-                                  name="new-password"
-                                  class="form-control"
                                   [ngClass]="{ 'is-invalid': DetailSubmitted && ReactiveContraseniaForm.nuevacontrasenia.errors }"
                                   formControlName="nuevacontrasenia"
-                                  placeholder="Nueva Contraseña"
+                                  class="form-control"
+                                  id="account-new-password"                                
+                                  name="new-password"
+                                  placeholder="Contraseña Actual"
                                   [(ngModel)]="claveNueva"
-                                  (change)="onChangeValidar()"
-                                />                                
+                                />
                                 <div class="input-group-append">
                                   <span class="input-group-text cursor-pointer"
                                     ><i
@@ -238,47 +200,46 @@
                                     ></i
                                   ></span>
                                 </div>
-                                <div *ngIf="ReactiveContraseniaForm.nuevacontrasenia.errors" class="invalid-feedback">
-                                  <div *ngIf="ReactiveContraseniaForm.nuevacontrasenia.errors.required">* Campo obligatorio</div>
-                                </div>
-                              </div>                              
+                              </div>
+                              <div *ngIf="ReactiveContraseniaForm.actualcontrasenia.errors" class="invalid-feedback">
+                                <div *ngIf="ReactiveContraseniaForm.actualcontrasenia.errors.required">* Campo obligatorio</div>
+                              </div>
                             </div>
                           </div>
-                          <div class="col-12 col-sm-6">
+                          <div class="col-md-6 col-12">
                             <div class="form-group">
-                              <label for="account-retype-new-password">Repite Nueva Contraseña</label>
+                              <label for="account-retype-new-password">Repita Nueva Contraseña</label>
                               <div class="input-group form-password-toggle input-group-merge">
                                 <input
                                   [type]="passwordTextTypeEqual ? 'text' : 'password'"
-                                  class="form-control"
                                   [ngClass]="{ 'is-invalid': DetailSubmitted && ReactiveContraseniaForm.repitecontrasenia.errors }"
                                   formControlName="repitecontrasenia"
-                                  id="account-retype-new-password"
-                                  name="confirm-new-password"
-                                  placeholder="Nueva Contraseña"
+                                  class="form-control"
+                                  id="account-retype-new-password"                                
+                                  name="new-password"
+                                  placeholder="Contraseña Actual"
                                   [(ngModel)]="claveReNueva"
-                                  (change)="onChangeValidar()"
-                                />                                
+                                />
                                 <div class="input-group-append">
                                   <span class="input-group-text cursor-pointer"
                                     ><i
                                       class="feather font-small-4"
                                       [ngClass]="{
                                         'icon-eye-off': passwordTextTypeEqual,
-                                        'icon-eye': !passwordTextTypeEqual                                      
+                                        'icon-eye': !passwordTextTypeEqual
                                       }"
                                       (click)="mostrarClave(3)"
                                     ></i
                                   ></span>
                                 </div>
-                                <div *ngIf="ReactiveContraseniaForm.repitecontrasenia.errors" class="invalid-feedback">
-                                  <div *ngIf="ReactiveContraseniaForm.repitecontrasenia.errors.required">* Campo obligatorio</div>
-                                </div>
                               </div>
-                              <div *ngIf="diferente" style="color: red;">* clave no coincide</div>
+                              <div *ngIf="ReactiveContraseniaForm.actualcontrasenia.errors" class="invalid-feedback">
+                                <div *ngIf="ReactiveContraseniaForm.actualcontrasenia.errors.required">* Campo obligatorio</div>
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        </div>                   
+                        
                         <div class="row">
                           <div class="d-flex flex-wrap mb-0">
                             <div class="p-1">

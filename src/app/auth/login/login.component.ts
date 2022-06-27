@@ -89,25 +89,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
-
-    // // Login
-    // //this.loading = true;
-    // sessionStorage.setItem('currentUser', JSON.stringify(new User()))
-    // this._router.navigate(['/comercial/solicitudes/']);
-    // // this._authenticationService
-    // //   .login(this.f.email.value, this.f.password.value)
-    // //   .pipe(first())
-    // //   .subscribe(
-    // //     data => {
-    // //       this._router.navigate([this.returnUrl]);
-    // //     },
-    // //     error => {
-    // //       this.error = error;
-    // //       this.loading = false;
-    // //     }
-    // //   );
     this.iniciarSesion(false);
-
   }
 
   iniciarSesion(gmail: boolean): void {
@@ -123,68 +105,10 @@ export class LoginComponent implements OnInit {
     }).subscribe((response: User[]) => {
       
       if (response.length > 0) {
-        // if (response.idUsuario != 0 && response.usuarioAsociacion.length > 0) {
-        //   if (response.foto) {
-        //     response.foto = this.domSanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64,' + response.foto);
-        //   }
-
           sessionStorage.setItem('currentUser', JSON.stringify(response[0]));
           sessionStorage.setItem('currentUserPermission', JSON.stringify(response[0].menu));
-          //console.log('ingrese');
-          //sessionStorage.setItem('currentUser', JSON.stringify(new User()))
-          // let menuUusario = JSON.parse(JSON.stringify(response[0].menu));
-          // let _menus = menu;
-          // let _menusCurrent = [];
-          // for (let i = 0; i < _menus.length; i++) {
-              
-          //   const _menu = Object.create(_menus[i]);
-          //   // if (_menu.id == "dashboard") {
-          //   //   _menusCurrent.push(_menu);
-          //   //   continue;
-          //   // }
-          //   _menu.children = [];
-          //   let _menuHasChildren = false;
-          //   for (let j = 0; j < _menus[i].children.length; j++) {
-          //     const __menu = Object.create(_menus[i].children[j]);
-          //     // const __menuUser = _userMenus.find(x => x.idMenu == Number(__menu.id));
-              
-          //     for (const item of menuUusario) {
-          //       if (item.idMenu == Number(__menu.id) && item.acceso == true) {
-                  
-          //         _menu.children.push(__menu);
-          //         _menuHasChildren = true;
-          //         break;
-          //       }
-          //     }
-          //     const __menuUser = null;
-          //     // if (__menuUser != null) {
-          //     //   _menu.children.push(__menu);
-          //     //   _menuHasChildren = true;
-          //     // } else {
-          //     //   // _menus[i].children.splice(j, 1);
-          //     //   // j--;
-          //     // }
-          //   }
-          //   if (_menuHasChildren) {
-          //     _menusCurrent.push(_menu);
-          //   } else {
-          //     // _menus.splice(i, 1);
-          //     // i--;
-          //   }
-          // }
-          // this.utilsService.setMenus(_menusCurrent);
-          // this._coreMenuService.unregister('main');
-          // this._coreMenuService.register('main', _menusCurrent);
-          // this._coreMenuService.setCurrentMenu('main');
 
           this._router.navigate(['/comercial/solicitudes/']);
-
-        //   this.guardarInformacionExtra(response);
-
-        //   this._router.navigate(['/dashboard/principal']);
-        // } else {
-        //   this.error = "Inicio de sesión incorrecto";
-        // }
       } else {
         this.error = "Inicio de sesión incorrecto";
       }

@@ -107,7 +107,6 @@ export class AccountSettingsComponent implements OnInit {
       }
     };
     this.InsertUpdateForm = this.formBuilder.group({
-      usuario: ['', Validators.required],
       nombre: ['', Validators.required],
       apellidoPaterno: ['', Validators.required],
       apellidoMaterno: ['', Validators.required],
@@ -216,7 +215,6 @@ export class AccountSettingsComponent implements OnInit {
   }
 
   onGetCuenta(): void {
-    this.claveActual = this.currentUser.clave;
     this.usuario = this.currentUser.usuarioLogin;
     this.nombre = this.currentUser.nombre;
     this.apPaterno = this.currentUser.apellidoPaterno;
@@ -315,6 +313,6 @@ export class AccountSettingsComponent implements OnInit {
     this.foto = '';
   }
   onCancelar(): void{
-    this.location.back();
+    this._router.navigate(['/comercial/solicitudes/']);
   }
 }
