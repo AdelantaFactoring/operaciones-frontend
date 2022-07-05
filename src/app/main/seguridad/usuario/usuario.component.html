@@ -43,7 +43,7 @@
                   placeholder="Buscar"
                   class="form-control ml-25"
                   (change)="onRefrescar()"
-                  [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" 
+                  [(ngModel)]="search" [ngModelOptions]="{ standalone: true }"
                 /></label>
               </div>
             </div>
@@ -96,7 +96,7 @@
                               (pageChange)="onListarUsuario()" [pageSize]="pageSize"></ngb-pagination>
             </div>
           </div>
-  
+
           <ng-template #modalUSUARIO let-modal>
             <div class="modal-header">
               <h4 class="modal-title">Gestión de Usuario</h4>
@@ -164,23 +164,23 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-12 col-12">
+                    <div class="col-12">
                       <div class="form-group">
-                        <label for="account-new-password">Clave</label>
-                        <div class="input-group form-password-toggle input-group-merge">
-                          <input [type]="claveView ? 'text' : 'password'" id="account-new-password"
-                            name="new-password" class="form-control"
-                            [ngClass]="{ 'is-invalid': IDSubmitted && ReactiveIUForm.clave.errors }"
-                            formControlName="clave" placeholder="Nueva Contraseña" />
+                        <label>Clave</label>
+                        <div class="input-group">
+                          <input [type]="claveView ? 'text' : 'password'" class="form-control" autocomplete="new-password"
+                            [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.clave.errors }"
+                            formControlName="clave" />
                           <div class="input-group-append">
-                            <span class="input-group-text cursor-pointer"><i class="feather font-small-4" [ngClass]="{
-                                        'icon-eye-off': claveView,
-                                        'icon-eye': !claveView
-                                      }" (click)="mostrarClave()"></i></span>
+<!--                            <span class="input-group-text cursor-pointer">-->
+                              <button class="btn btn-outline-secondary feather"
+                                      [ngClass]="{'icon-eye-off': claveView, 'icon-eye': !claveView}"
+                                      rippleEffect type="button" (click)="mostrarClave()"></button>
+<!--                            </span>-->
                           </div>
-                        </div>
-                        <div *ngIf="ReactiveIUForm.clave.errors" class="invalid-feedback">
-                          <div *ngIf="ReactiveIUForm.clave.errors.required">* Campo obligatorio</div>
+                          <div *ngIf="ReactiveIUForm.clave.errors" class="invalid-feedback">
+                            <div *ngIf="ReactiveIUForm.clave.errors.required">* Campo obligatorio</div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -196,11 +196,7 @@
                     <div class="col-md-12 col-12">
                       <div class="form-group">
                         <label>Google</label>
-                        <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.google.errors }"
-                               class="form-control" formControlName="google" type="checkbox" id="googleCheck" />
-                        <div *ngIf="ReactiveIUForm.google.errors" class="invalid-feedback">
-                          <div *ngIf="ReactiveIUForm.google.errors.required">* Campo obligatorio</div>
-                        </div>
+                        <input class="form-control" formControlName="google" type="checkbox" id="googleCheck" />
                       </div>
                     </div>
                   </div>
@@ -231,4 +227,3 @@
       <block-ui></block-ui>
     </div>
   </div>
-  

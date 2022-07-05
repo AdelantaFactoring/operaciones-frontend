@@ -44,7 +44,7 @@
                   placeholder="Buscar"
                   class="form-control ml-25"
                   (change)="onRefrescar()"
-                  [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" 
+                  [(ngModel)]="search" [ngModelOptions]="{ standalone: true }"
                 /></label>
               </div>
             </div>
@@ -89,7 +89,7 @@
                               (pageChange)="onListarPerfil()" [pageSize]="pageSize"></ngb-pagination>
             </div>
           </div>
-  
+
           <ng-template #modalPERFIL let-modal>
             <div class="modal-header">
               <h4 class="modal-title">Gestión de Perfil</h4>
@@ -111,7 +111,7 @@
                       <input class="form-control" formControlName="idPerfil" type="text"/>
                     </div>
                   </div>
-                  <div class="col-md-6 col-12">
+                  <div class="col-12">
                     <div class="form-group">
                       <label>Perfil</label>
                       <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.perfil.errors }"
@@ -126,7 +126,7 @@
               <div class="row spaced">
                 <div class="col-md-12 col-12">
                   <div class="form-group">
-                    
+
                   <div class="col-12">
                     <div class="divider divider-warning">
                       <div class="divider-text">Permisos</div>
@@ -158,4 +158,4 @@
       <block-ui></block-ui>
     </div>
   </div>
-  
+

@@ -38,7 +38,7 @@ export class PerfilComponent implements OnInit {
     private modalService: NgbModal,
     private formBuilder: FormBuilder,
     private listaPermiso: ListaPermisoService
-  ) 
+  )
   {
     this.contentHeader = {
       headerTitle: 'Perfil',
@@ -84,10 +84,10 @@ export class PerfilComponent implements OnInit {
       pageIndex: this.page,
       pageSize: this.pageSize
     }).subscribe((response: Perfil[]) => {
-      
+
       this.perfil = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
-      
+
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -124,7 +124,7 @@ export class PerfilComponent implements OnInit {
       idEmpresa: this.currentUser.idEmpresa,
       idPerfil: row.idPerfil
     }).subscribe((response: Menu[]) => {
-      
+
       this.perfilForm.controls.idPerfil.setValue(row.idPerfil);
       this.perfilForm.controls.perfil.setValue(row.perfil);
       response.forEach(item => {
@@ -155,11 +155,11 @@ export class PerfilComponent implements OnInit {
       this.utilsService.blockUIStop();
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
-    
+
   }
 
   onGuardar(listaPermiso): void{
-    
+
     //return
     this.submitted = true;
     if (this.perfilForm.invalid)
@@ -188,7 +188,7 @@ export class PerfilComponent implements OnInit {
     }, error => {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();
-    });    
+    });
   }
 
   onEliminar(item): void {

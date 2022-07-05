@@ -3,6 +3,10 @@ export class SolicitudDet {
   idSolicitudCab: number;
   razonSocialPagProv: string;
   rucPagProv: string;
+  codigoUbigeoCliente: string;
+  direccionCliente: string;
+  codigoUbigeoPagProv: string;
+  direccionPagProv: string;
   titularCuentaBancariaDestino: string;
   monedaCuentaBancariaDestino: string;
   bancoDestino: string;
@@ -23,12 +27,11 @@ export class SolicitudDet {
   archivoPDF: string;
   rutaArchivoXML: string;
   rutaArchivoPDF: string;
-  idProcesoRespuestaCavali: number;
-  codigoRespuestaCavali: string;
-  estadoRespuestaCavali: string;
-  idProcesoRespuestaAnotacion: number;
-  codigoRespuestaAnotacion: string;
-  estadoRespuestaAnotacion: string;
+  registroCavali: boolean;
+  informacionAdicionalCavali: boolean;
+  anotacionCavali: boolean;
+  transferenciaContableCavali: boolean;
+  retiroCavali: boolean;
 
   editado: boolean = true;
 }

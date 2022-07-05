@@ -4,7 +4,6 @@ import {Observable} from "rxjs";
 import {environment} from "../../../../environments/environment";
 import {SOLICITUD} from "../../../shared/helpers/url/comercial";
 import {CONTENT_TYPE} from "../../../shared/helpers/headers";
-import {helpers} from "chart.js";
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +23,9 @@ export class ConsultaFactrackService {
   }
 
   eliminarFactura(payload): Observable<any> {
-    return this.requestMethod.delete(
+    return this.requestMethod.put(
       `${environment.apiUrl}${SOLICITUD.eliminarFactura}`,
-      `?idSolicitudCab=${payload.idSolicitudCab}&idSolicitudDet=${payload.idSolicitudDet}&idUsuarioAud=${payload.idUsuarioAud}`,
+      payload,
       {
         'Content-Type': CONTENT_TYPE.json
       }

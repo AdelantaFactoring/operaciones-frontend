@@ -11,6 +11,7 @@ import {ContentHeaderModule} from "../../layout/components/content-header/conten
 import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 import { ListaPermisoComponent } from './lista-permiso/lista-permiso.component';
 import {NgSelectModule} from "@ng-select/ng-select";
+import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 
 const routes: Routes = [
   {
@@ -39,16 +40,17 @@ const routes: Routes = [
     PerfilComponent,
     ListaPermisoComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    NgbModule,
-    CoreCommonModule,
-    BlockUIModule.forRoot(),
-    ContentHeaderModule,
-    CoreTouchspinModule,
-    NgxDatatableModule,
-    NgSelectModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        NgbModule,
+        CoreCommonModule,
+        BlockUIModule.forRoot(),
+        ContentHeaderModule,
+        CoreTouchspinModule,
+        NgxDatatableModule,
+        NgSelectModule,
+        PerfectScrollbarModule
+    ]
 })
 export class SeguridadModule { }

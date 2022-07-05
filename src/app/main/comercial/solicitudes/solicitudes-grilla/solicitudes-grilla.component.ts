@@ -151,10 +151,10 @@ export class SolicitudesGrillaComponent implements OnInit {
 
   }
 
-  onEliminar(idSolicitudCab, nroSolicitud): void {
+  onEliminar(cab: SolicitudCab): void {
     Swal.fire({
       title: 'Confirmación',
-      text: `¿Desea eliminar el registro '${nroSolicitud}'?, esta acción no podrá revertirse`,
+      text: `¿Desea eliminar el registro '${cab.codigo}'?, esta acción no podrá revertirse`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí',
@@ -166,11 +166,8 @@ export class SolicitudesGrillaComponent implements OnInit {
     }).then(result => {
       if (result.value) {
         this.utilsService.blockUIStart('Eliminando...');
-        this.solicitudesService.eliminar({
-          idSolicitudCab: idSolicitudCab,
-          //idSolicitudDet: item.idSolicitudDet,
-          idUsuarioAud: 1
-        }).subscribe(response => {
+        cab.idUsuarioAud = 1;
+        this.solicitudesService.eliminar(cab).subscribe(response => {
           if (response.tipo === 1) {
             this.onListarSolicitudes(this.paramsURL);
             this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
@@ -203,11 +200,11 @@ export class SolicitudesGrillaComponent implements OnInit {
     }).then(result => {
       if (result.value) {
         this.utilsService.blockUIStart('Eliminando...');
-        this.solicitudesService.eliminarFactura({
-          idSolicitudCab: item.idSolicitudCab,
-          idSolicitudDet: item.idSolicitudDet,
-          idUsuarioAud: 1
-        }).subscribe(response => {
+        // @ts-ignore
+        let newCab = {...cab};
+        newCab.solicitudDet = newCab.solicitudDet.filter(f => f.idSolicitudDet === item.idSolicitudDet);
+        newCab.idUsuarioAud = 1;
+        this.solicitudesService.eliminarFactura(newCab).subscribe(response => {
           if (response.tipo === 1) {
             cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);
             if (cab.solicitudDet.length === 0)

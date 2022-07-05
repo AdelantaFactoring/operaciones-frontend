@@ -147,7 +147,7 @@
                             <td>
                               <div class="d-flex align-items-center">
                                 <a href="javascript:void(0)" title="Eliminar" (click)="onEliminar(cab, item)"
-                                   [class.disabled]="cab.idEstado === 6 ? true: null"
+                                   [class.disabled]="item.idEstado != 4 ? true : null"
                                    class="btn btn-raised btn-outline-danger btn-sm">
                                   <i class="text-danger cursor-pointer"
                                      data-feather="trash-2"></i>

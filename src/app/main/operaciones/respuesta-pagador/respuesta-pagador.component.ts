@@ -3,7 +3,6 @@ import {UtilsService} from "../../../shared/services/utils.service";
 import {NgbCalendar, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder} from "@angular/forms";
 import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
-import {ColumnMode} from '@swimlane/ngx-datatable';
 import {RespuestaPagadorService} from "./respuesta-pagador.service";
 import {SolicitudDet} from "../../../shared/models/comercial/solicitudDet";
 import Swal from "sweetalert2";
@@ -90,62 +89,51 @@ export class RespuestaPagadorComponent implements OnInit {
     });
   }
 
-  onFilas(idEstado, facturas: any): string {
-    let filas = "";
-    for (const item of facturas) {
-      filas += `<tr><td>${item.codigoSolicitud}</td><td>${item.codigoFactura}</td>
-                <td>${item.codigoRespuestaCavali}</td>${idEstado === 3 ? `<td>${item.codigoRespuestaAnotacion}</td>` : ''}</tr>`
-    }
-    return filas;
-  }
+  // onFilas(idEstado, facturas: any): string {
+  //   let filas = "";
+  //   for (const item of facturas) {
+  //     filas += `<tr><td>${item.codigoSolicitud}</td><td>${item.codigoFactura}</td>
+  //               <td>${item.codigoRespuestaCavali}</td>${idEstado === 3 ? `<td>${item.codigoRespuestaAnotacion}</td>` : ''}</tr>`
+  //   }
+  //   return filas;
+  // }
 
-  onVerRespuesta(cab: SolicitudCab, item: SolicitudDet, manualOpen: any): void {
-    this.idTipoRegistro = cab.idTipoRegistro;
-    this.idProcesoRespuestaCavali = item.idProcesoRespuestaCavali;
-    this.codigoRespuestaCavali = item.codigoRespuestaCavali;
-    this.estadoRespuestaCavali = item.estadoRespuestaCavali;
-    this.idProcesoRespuestaAnotacion = item.idProcesoRespuestaAnotacion;
-    this.codigoRespuestaAnotacion = item.codigoRespuestaAnotacion;
-    this.estadoRespuestaAnotacion = item.estadoRespuestaAnotacion;
-    manualOpen.open();
-  }
-
-  onInfoRespuesta(data: any, idEstado: number): void {
-    let facturas = JSON.parse(data);
-    Swal.fire({
-      title: 'Información',
-      html: `
-            <p style="text-align: justify">Algunas facturas se han registrado correctamente y otras han tenido problemas para registrar</p>
-            <p style="text-align: justify">La(s) siguiente(s) solicitude(s) contiene(n) factura(s) con problemas de registro:</p>
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                <tr>
-                  <th>N° Solicitud</th>
-                  <th>N° Factura</th>
-                  <th>Código Respuesta${idEstado === 3 ? 'Cavali' : ''}</th>
-                  ${idEstado === 3 ? '<th>Código Respuesta Anotación</th>' : ''}
-                </tr>
-                </thead>
-                <tbody>
-                ${this.onFilas(idEstado, facturas)}
-                </tbody>
-              </table>
-            </div>
-            <p style="text-align: justify">Consulte las facturas de las solicitudes para verificar su estado. Utilice el código de respuesta como referencia para su validación.</p>`,
-      icon: 'info',
-      width: '750px',
-      showCancelButton: false,
-      confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
-      customClass: {
-        confirmButton: 'btn btn-info',
-      },
-    }).then(result => {
-      if (result.value) {
-
-      }
-    });
-  }
+  // onInfoRespuesta(data: any, idEstado: number): void {
+  //   let facturas = JSON.parse(data);
+  //   Swal.fire({
+  //     title: 'Información',
+  //     html: `
+  //           <p style="text-align: justify">Algunas facturas se han registrado correctamente y otras han tenido problemas para registrar</p>
+  //           <p style="text-align: justify">La(s) siguiente(s) solicitude(s) contiene(n) factura(s) con problemas de registro:</p>
+  //           <div class="table-responsive">
+  //             <table class="table table-hover">
+  //               <thead>
+  //               <tr>
+  //                 <th>N° Solicitud</th>
+  //                 <th>N° Factura</th>
+  //                 <th>Código Respuesta${idEstado === 3 ? 'Cavali' : ''}</th>
+  //                 ${idEstado === 3 ? '<th>Código Respuesta Anotación</th>' : ''}
+  //               </tr>
+  //               </thead>
+  //               <tbody>
+  //               ${this.onFilas(idEstado, facturas)}
+  //               </tbody>
+  //             </table>
+  //           </div>
+  //           <p style="text-align: justify">Consulte las facturas de las solicitudes para verificar su estado. Utilice el código de respuesta como referencia para su validación.</p>`,
+  //     icon: 'info',
+  //     width: '750px',
+  //     showCancelButton: false,
+  //     confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
+  //     customClass: {
+  //       confirmButton: 'btn btn-info',
+  //     },
+  //   }).then(result => {
+  //     if (result.value) {
+  //
+  //     }
+  //   });
+  // }
 
   onRegistrarFacturas(idEstado: number): void {
     // @ts-ignore
@@ -189,17 +177,17 @@ export class RespuestaPagadorComponent implements OnInit {
           }
         }).then(result => {
           if (result.value) {
-
           }
         });
       } else if (response.tipo == 0) {
         this.utilsService.showNotification(response.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
-      } else if (response.tipo == 3) {
-        this.utilsService.blockUIStop();
-        this.onInfoRespuesta(response.mensaje, idEstado);
-        this.onListarSolicitudes();
       }
+      // else if (response.tipo == 3) {
+      //   this.utilsService.blockUIStop();
+      //   this.onInfoRespuesta(response.mensaje, idEstado);
+      //   this.onListarSolicitudes();
+      // }
     }, error => {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();
@@ -309,11 +297,11 @@ export class RespuestaPagadorComponent implements OnInit {
     }).then(result => {
       if (result.value) {
         this.utilsService.blockUIStart('Eliminando...');
-        this.respuestaPagadorService.eliminarFactura({
-          idSolicitudCab: item.idSolicitudCab,
-          idSolicitudDet: item.idSolicitudDet,
-          idUsuarioAud: 1
-        }).subscribe(response => {
+        // @ts-ignore
+        let newCab = {...cab};
+        newCab.solicitudDet = newCab.solicitudDet.filter(f => f.idSolicitudDet === item.idSolicitudDet);
+        newCab.idUsuarioAud = 1;
+        this.respuestaPagadorService.eliminarFactura(newCab).subscribe(response => {
           if (response.tipo === 1) {
             cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);
             if (cab.solicitudDet.length === 0)

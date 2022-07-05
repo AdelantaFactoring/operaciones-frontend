@@ -109,6 +109,7 @@
                     <td>
                       <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="{{'customCheck' + cab.idSolicitudCab}}"
+                               [disabled]="cab.idEstado != 1"
                                [(ngModel)]="cab.seleccionado" (ngModelOptions)="{ standalone: true }"/>
                         <label class="custom-control-label" for="{{'customCheck' + cab.idSolicitudCab}}"></label>
                       </div>
@@ -124,7 +125,7 @@
                   </tr>
                   <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse">
                     <td [colSpan]="11">
-                      <div class="row">
+                      <div class="row" *ngIf="cab.idEstado === 1">
                         <div class="d-flex flex-wrap mb-0">
                           <div class="pl-1 pt-1 pb-1">
                             <button type="submit" rippleEffect class="btn btn-success" (click)="onGuardarCambios(cab)">
@@ -141,9 +142,7 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="table-responsive"
-                             style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
-                             id="{{ 'detail' + cab.idSolicitudCab }}">
+                        <div class="table-responsive" style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden" id="{{ 'detail' + cab.idSolicitudCab }}">
                           <table class="table table-hover">
                             <thead>
                             <tr>
@@ -167,36 +166,31 @@
                                      class="btn btn-raised btn-outline-danger btn-sm">
                                     <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
                                   </a>
-                                  &nbsp;
-                                  <a href="javascript:void(0)" title="Ver Estado Cavali"
-                                     popoverTitle="Estado Cavali"
-                                     [ngbPopover]="respuestaCavali" [autoClose]="true" triggers="manual"
-                                     #manualOpen="ngbPopover" (click)="onVerRespuesta(cab, item, manualOpen)"
-                                     class="btn btn-raised btn-outline-info btn-sm">
-                                    <i class="text-info cursor-pointer" data-feather="eye"></i>
-                                  </a>
+<!--                                  &nbsp;-->
+<!--                                  <a href="javascript:void(0)" title="Ver Estado Cavali"-->
+<!--                                     popoverTitle="Estado Cavali"-->
+<!--                                     [ngbPopover]="respuestaCavali" [autoClose]="true" triggers="manual"-->
+<!--                                     #manualOpen="ngbPopover" (click)="onVerRespuesta(cab, item, manualOpen)"-->
+<!--                                     class="btn btn-raised btn-outline-info btn-sm">-->
+<!--                                    <i class="text-info cursor-pointer" data-feather="eye"></i>-->
+<!--                                  </a>-->
                                 </div>
                               </td>
-                              <td [ngClass]="{'row-edicion': item.editado, 'row-error-cavali': ((cab.idTipoRegistro === 1 && item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') ||
-                                    (cab.idTipoRegistro === 2 && ((item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') || (item.codigoRespuestaAnotacion != '0' && item.codigoRespuestaAnotacion != ''))))}"
+                              <td [ngClass]="{'row-edicion': item.editado }"
                                   *ngIf="cab.idTipoOperacion === 3">{{item.razonSocialPagProv}}</td>
-                              <td [ngClass]="{'row-edicion': item.editado, 'row-error-cavali': ((cab.idTipoRegistro === 1 && item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') ||
-                                    (cab.idTipoRegistro === 2 && ((item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') || (item.codigoRespuestaAnotacion != '0' && item.codigoRespuestaAnotacion != ''))))}"
+                              <td [ngClass]="{'row-edicion': item.editado }"
                                   *ngIf="cab.idTipoOperacion === 3">{{item.rucPagProv}}</td>
-                              <td [ngClass]="{'row-edicion': item.editado, 'row-error-cavali': ((cab.idTipoRegistro === 1 && item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') ||
-                                    (cab.idTipoRegistro === 2 && ((item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') || (item.codigoRespuestaAnotacion != '0' && item.codigoRespuestaAnotacion != ''))))}">
+                              <td [ngClass]="{'row-edicion': item.editado }">
                                 <p>{{item.nroDocumento}}</p></td>
-                              <td [ngClass]="{'row-edicion': item.editado, 'row-error-cavali': ((cab.idTipoRegistro === 1 && item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') ||
-                                    (cab.idTipoRegistro === 2 && ((item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') || (item.codigoRespuestaAnotacion != '0' && item.codigoRespuestaAnotacion != ''))))}">
+                              <td [ngClass]="{'row-edicion': item.editado }">
                                 <p>{{item.formaPago}}</p></td>
-                              <td [ngClass]="{'row-edicion': item.editado, 'row-error-cavali': ((cab.idTipoRegistro === 1 && item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') ||
-                                    (cab.idTipoRegistro === 2 && ((item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') || (item.codigoRespuestaAnotacion != '0' && item.codigoRespuestaAnotacion != ''))))}">
+                              <td [ngClass]="{'row-edicion': item.editado }">
                                 <p>{{item.montoSinIGV | number: '1.2-2'}}</p></td>
-                              <td [ngClass]="{'row-edicion': item.editado, 'row-error-cavali': ((cab.idTipoRegistro === 1 && item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') ||
-                                    (cab.idTipoRegistro === 2 && ((item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') || (item.codigoRespuestaAnotacion != '0' && item.codigoRespuestaAnotacion != ''))))}">
+                              <td [ngClass]="{'row-edicion': item.editado }">
                                 <p>{{item.montoConIGV | number: '1.2-2'}}</p></td>
                               <td>
-                                <div class="input-group">
+                                <p *ngIf="cab.idEstado != 1">{{item.fechaConfirmadoFormat}}</p>
+                                <div *ngIf="cab.idEstado === 1" class="input-group">
                                   <input class="form-control" placeholder="yyyy-mm-dd"
                                          [(ngModel)]="item.fechaConfirmado" container="body"
                                          (ngModelChange)="onCambiarFechaConfirmado($event, item)"
@@ -209,14 +203,14 @@
                                 </div>
                               </td>
                               <td>
-                                <input class="form-control" type="text" [(ngModel)]="item.netoConfirmado"
+                                <p *ngIf="cab.idEstado != 1">{{item.netoConfirmado | number: '1.2-2'}}</p>
+                                <input *ngIf="cab.idEstado === 1" class="form-control" type="text" [(ngModel)]="item.netoConfirmado"
                                        placeholder="0.00" (ngModelChange)="onCambiarMontoConfirmado(item, cab)"
                                        mask="separator" thousandSeparator=","/>
                               </td>
-                              <td [ngClass]="{'row-edicion': item.editado, 'row-error-cavali': ((cab.idTipoRegistro === 1 && item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') ||
-                                    (cab.idTipoRegistro === 2 && ((item.codigoRespuestaCavali != '0' && item.codigoRespuestaCavali != '') || (item.codigoRespuestaAnotacion != '0' && item.codigoRespuestaAnotacion != ''))))}">
-                                <p>{{item.fondoResguardo | number: '1.2-2'}}
-                                </p></td>
+                              <td [ngClass]="{'row-edicion': item.editado }">
+                                <p>{{item.fondoResguardo | number: '1.2-2'}}</p>
+                              </td>
                             </tr>
                             </tbody>
                           </table>
@@ -238,26 +232,6 @@
         </div>
       </div>
     </div>
-    <ng-template #respuestaCavali>
-      <div class="row spaced">
-        <div class="col-12">
-          <div class="divider divider-info">
-            <div class="divider-text">Factura Electrónica</div>
-          </div>
-        </div>
-        <div class="col-12">Id Proceso: {{idProcesoRespuestaCavali}}</div>
-        <div class="col-12">Código: {{codigoRespuestaCavali}}</div>
-        <div class="col-12">Estado: {{estadoRespuestaCavali}}</div>
-        <div *ngIf="idTipoRegistro === 2" class="col-12">
-          <div class="divider divider-success">
-            <div class="divider-text">Anotación en Cuenta</div>
-          </div>
-        </div>
-        <div *ngIf="idTipoRegistro === 2" class="col-12">Id Proceso: {{idProcesoRespuestaAnotacion}}</div>
-        <div *ngIf="idTipoRegistro === 2" class="col-12">Código: {{codigoRespuestaAnotacion}}</div>
-        <div *ngIf="idTipoRegistro === 2" class="col-12">Estado: {{estadoRespuestaAnotacion}}</div>
-      </div>
-    </ng-template>
     <block-ui></block-ui>
   </div>
 </div>

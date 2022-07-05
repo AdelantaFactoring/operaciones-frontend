@@ -60,5 +60,12 @@ export class ListaPermisoComponent implements OnInit {
       _node.acceso = false;
     });
   }
-  
+
+  onMenuCab(menuList: Menu[]): any[] {
+    return menuList.map(m => m.grupo).filter((value, index, self) => self.indexOf(value) === index);
+  }
+
+  onMenuDet(menuList: Menu[], grupo: string): Menu[] {
+    return menuList.filter(f => f.grupo === grupo);
+  }
 }

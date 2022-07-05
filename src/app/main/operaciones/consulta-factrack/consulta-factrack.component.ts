@@ -110,11 +110,11 @@ export class ConsultaFactrackComponent implements OnInit {
     }).then(result => {
       if (result.value) {
         this.utilsService.blockUIStart('Eliminando...');
-        this.consultaFactrackService.eliminarFactura({
-          idSolicitudCab: item.idSolicitudCab,
-          idSolicitudDet: item.idSolicitudDet,
-          idUsuarioAud: 1
-        }).subscribe(response => {
+        // @ts-ignore
+        let newCab = {...cab};
+        newCab.solicitudDet = newCab.solicitudDet.filter(f => f.idSolicitudDet === item.idSolicitudDet);
+        newCab.idUsuarioAud = 1;
+        this.consultaFactrackService.eliminarFactura(newCab).subscribe(response => {
           if (response.tipo === 1) {
             cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);
             if (cab.solicitudDet.length === 0)

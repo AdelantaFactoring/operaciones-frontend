@@ -55,9 +55,9 @@ export class SolicitudesService {
   }
 
   eliminar(payload): Observable<any> {
-    return this.requestMethod.delete(
+    return this.requestMethod.put(
       `${environment.apiUrl}${SOLICITUD.eliminar}`,
-      `?idSolicitudCab=${payload.idSolicitudCab}&idUsuarioAud=${payload.idUsuarioAud}`,
+      payload,
       {
         'Content-Type': CONTENT_TYPE.json
       }
@@ -75,9 +75,9 @@ export class SolicitudesService {
   }
 
   eliminarFactura(payload): Observable<any> {
-    return this.requestMethod.delete(
+    return this.requestMethod.put(
       `${environment.apiUrl}${SOLICITUD.eliminarFactura}`,
-      `?idSolicitudCab=${payload.idSolicitudCab}&idSolicitudDet=${payload.idSolicitudDet}&idUsuarioAud=${payload.idUsuarioAud}`,
+      payload,
       {
         'Content-Type': CONTENT_TYPE.json
       }
