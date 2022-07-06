@@ -184,9 +184,22 @@ export class ConsultaFactrackComponent implements OnInit {
   }
 
   onActualizarEstadoFactura(): void {
-    this.consultaFactrackService.consultarFactura()
-      .subscribe(response => {
-
-      });
+    this.consultaFactrackService.consultarFactura({
+      idUsuario: 1
+    }).subscribe(response => {
+      if (response.tipo === 1) {
+        this.onListarSolicitudes();
+        this.utilsService.showNotification('Información Actualizada', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+      } else if (response.tipo === 2) {
+        this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+      } else {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+      }
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
   }
 }
