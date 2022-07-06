@@ -5,6 +5,7 @@ import {TablaMaestra} from "../../../../shared/models/shared/tabla-maestra";
 import {UtilsService} from "../../../../shared/services/utils.service";
 import {ClientesService} from "../clientes.service";
 import Swal from "sweetalert2";
+import { User } from 'app/shared/models/auth/user';
 
 @Component({
   selector: 'app-gastos',
@@ -12,6 +13,7 @@ import Swal from "sweetalert2";
   styleUrls: ['./gastos.component.scss']
 })
 export class GastosComponent implements OnInit {
+  public currentUser: User;
   public submittedGastos: boolean;
   public gastosForm: FormGroup;
   public oldGastos: ClienteGastos;
@@ -43,6 +45,7 @@ export class GastosComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
   }
 
   fGastos(id: number): ClienteGastos[] {
@@ -167,7 +170,7 @@ export class GastosComponent implements OnInit {
           this.utilsService.blockUIStart('Eliminando...');
           this.clienteService.eliminarGastos({
             idClienteGastos: item.idClienteGastos,
-            idUsuarioAud: 1
+            idUsuarioAud: this.currentUser.idUsuario
           }).subscribe(response => {
             if (response.tipo === 1) {
               this.gastos = this.gastos.filter(f => f.idFila != item.idFila);

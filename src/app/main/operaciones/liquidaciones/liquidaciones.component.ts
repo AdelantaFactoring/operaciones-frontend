@@ -16,6 +16,7 @@ import {FileUploader} from "ng2-file-upload";
 import {Archivo} from "../../../shared/models/comercial/archivo";
 import {LiquidacionCabSustento} from "../../../shared/models/operaciones/LiquidacionCab-Sustento";
 import {ActivatedRoute} from "@angular/router";
+import { User } from 'app/shared/models/auth/user';
 
 @Component({
   selector: 'app-liquidaciones',
@@ -24,6 +25,7 @@ import {ActivatedRoute} from "@angular/router";
   //encapsulation: ViewEncapsulation.None
 })
 export class LiquidacionesComponent implements OnInit {
+  public currentUser: User;
   public mostrar: string = 'false';
 
   public contentHeader: object;
@@ -115,6 +117,7 @@ export class LiquidacionesComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.route.params.subscribe(s => this.mostrar = s.mostrar);
 
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
@@ -211,7 +214,7 @@ export class LiquidacionesComponent implements OnInit {
 
     liquidaciones.forEach(el => {
       el.idEstado = idEstado;
-      el.idUsuarioAud = 1;
+      el.idUsuarioAud = this.currentUser.idUsuario;
     });
 
     this.utilsService.blockUIStart('Aprobando...');
@@ -345,7 +348,7 @@ export class LiquidacionesComponent implements OnInit {
     if (itemActual.liquidacionDet.filter(f => f.cambioConfirmado).length == 0) return;
 
     itemActual.idDestino = 2;
-    itemActual.idUsuarioAud = 1;
+    itemActual.idUsuarioAud = this.currentUser.idUsuario;
     itemActual.liquidacionDet = itemActual.liquidacionDet.filter(f => f.cambioConfirmado);
 
     this.utilsService.blockUIStart('Guardando...');
@@ -542,7 +545,7 @@ export class LiquidacionesComponent implements OnInit {
       deudaAnterior: this.deudaAnterior,
       nuevoMontoTotal: this.liquidacionForm.controls.nuevoMontoTotal.value,
       observacion: this.observacion,
-      idUsuarioAud: 1,
+      idUsuarioAud: this.currentUser.idUsuario,
       liquidacionCabSustento: this.sustentos.filter(f => f.editado)
     }).subscribe(response => {
       if (response.tipo == 1) {
@@ -630,8 +633,8 @@ export class LiquidacionesComponent implements OnInit {
 
   private _OnEnviar(liquidaciones: any): void {
     liquidaciones.forEach(el => {
-      el.idEmpresa = 1;
-      el.idUsuarioAud = 1;
+      el.idEmpresa = this.currentUser.idEmpresa;
+      el.idUsuarioAud = this.currentUser.idUsuario;
       el.tipoNotificacion = 1;
     });
 
@@ -702,7 +705,7 @@ export class LiquidacionesComponent implements OnInit {
         this.utilsService.blockUIStart('Eliminando...');
         this.liquidacionesService.eliminar({
           idLiquidacionCab: cab.idLiquidacionCab,
-          idUsuarioAud: 1
+          idUsuarioAud: this.currentUser.idUsuario
         }).subscribe(response => {
           if (response.tipo === 1) {
             this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);

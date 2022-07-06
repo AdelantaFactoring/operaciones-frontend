@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { User } from 'app/shared/models/auth/user';
 import { SolicitudCab } from 'app/shared/models/comercial/solicitudCab';
 import { SolicitudCabSustento } from 'app/shared/models/comercial/solicitudCab-sustento';
 import { SolicitudDet } from 'app/shared/models/comercial/solicitudDet';
@@ -16,7 +17,7 @@ import { SolicitudesService } from '../solicitudes.service';
   styleUrls: ['./solicitudes-grilla.component.scss']
 })
 export class SolicitudesGrillaComponent implements OnInit {
-
+  public currentUser: User;
   @Input() paramsURL: any = 1;
 
   public submitted: boolean;
@@ -98,6 +99,7 @@ export class SolicitudesGrillaComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.tipoCT = await this.onListarMaestros(5, 0);
     this.utilsService.blockUIStop();
@@ -166,7 +168,7 @@ export class SolicitudesGrillaComponent implements OnInit {
     }).then(result => {
       if (result.value) {
         this.utilsService.blockUIStart('Eliminando...');
-        cab.idUsuarioAud = 1;
+        cab.idUsuarioAud = this.currentUser.idUsuario;
         this.solicitudesService.eliminar(cab).subscribe(response => {
           if (response.tipo === 1) {
             this.onListarSolicitudes(this.paramsURL);
@@ -203,7 +205,7 @@ export class SolicitudesGrillaComponent implements OnInit {
         // @ts-ignore
         let newCab = {...cab};
         newCab.solicitudDet = newCab.solicitudDet.filter(f => f.idSolicitudDet === item.idSolicitudDet);
-        newCab.idUsuarioAud = 1;
+        newCab.idUsuarioAud = this.currentUser.idUsuario;
         this.solicitudesService.eliminarFactura(newCab).subscribe(response => {
           if (response.tipo === 1) {
             cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);

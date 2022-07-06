@@ -17,6 +17,7 @@ import {FileUploader} from 'ng2-file-upload';
 import {AprobacionService} from './aprobacion.service';
 import * as fileSaver from 'file-saver';
 import Swal from 'sweetalert2';
+import { User } from 'app/shared/models/auth/user';
 
 @Component({
   selector: 'app-aprobacion',
@@ -24,6 +25,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./aprobacion.component.scss']
 })
 export class AprobacionComponent implements OnInit {
+  public currentUser: User;
   public contentHeader: object;
 
   public solicitudForm: FormGroup;
@@ -148,6 +150,7 @@ export class AprobacionComponent implements OnInit {
   };
 
   async ngOnInit(): Promise<void> {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.onListarDesembolso();
     this.tiposArchivos = await this.onListarMaestros(8, 0);
     this.getLastSunday();
@@ -232,7 +235,7 @@ export class AprobacionComponent implements OnInit {
       tipoCuentaBancariaDestino: this.solicitudForm.controls.tipoCuentaBancariaDestino.value,
       tipoCambioMoneda: this.tipoCambioMoneda,
       montoTotalConversion: this.montoConvertido,
-      idUsuarioAud: 1,
+      idUsuarioAud: this.currentUser.idUsuario,
       liquidacionCabSustento: this.sustentos.filter(f => f.editado)
     }).subscribe((response: any) => {
       switch (response.tipo) {
@@ -494,9 +497,9 @@ export class AprobacionComponent implements OnInit {
     }
 
     liquidaciones.forEach(el => {
-      el.idEmpresa = 1;
+      el.idEmpresa = this.currentUser.idEmpresa;
       el.idEstado = idEstado;
-      el.idUsuarioAud = 1;
+      el.idUsuarioAud = this.currentUser.idUsuario;
     });
 
     this.utilsService.blockUIStart('Confirmando...');
@@ -564,9 +567,9 @@ export class AprobacionComponent implements OnInit {
     }
 
     liquidaciones.forEach(el => {
-      el.idEmpresa = 1;
+      el.idEmpresa = this.currentUser.idEmpresa;
       el.idEstado = 4;
-      el.idUsuarioAud = 1;
+      el.idUsuarioAud = this.currentUser.idUsuario;
     });
 
     this.utilsService.blockUIStart('Generando archivo...');
@@ -662,8 +665,8 @@ export class AprobacionComponent implements OnInit {
     }
 
     liquidaciones.forEach(el => {
-      el.idEmpresa = 1;
-      el.idUsuarioAud = 1;
+      el.idEmpresa = this.currentUser.idEmpresa;
+      el.idUsuarioAud = this.currentUser.idUsuario;
       el.tipoNotificacion = 2;
     });
 

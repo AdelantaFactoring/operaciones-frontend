@@ -10,6 +10,7 @@ import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
 import Swal from "sweetalert2";
 import {ClienteGastos} from "../../../shared/models/comercial/cliente-gastos";
+import {User} from "../../../shared/models/auth/user";
 
 @Component({
   selector: 'app-clientes',
@@ -17,6 +18,7 @@ import {ClienteGastos} from "../../../shared/models/comercial/cliente-gastos";
   styleUrls: ['./clientes.component.scss']
 })
 export class ClientesComponent implements OnInit {
+  public currentUser: User;
   public contentHeader: object;
   public clientes: Cliente[];
   public submitted: boolean;
@@ -111,6 +113,7 @@ export class ClientesComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.monedas = await this.onListarMaestros(1, 0);
     this.utilsService.blockUIStop();
@@ -218,7 +221,7 @@ export class ClientesComponent implements OnInit {
         this.utilsService.blockUIStart('Eliminando...');
         this.clienteService.eliminar({
           idCliente: item.idCliente,
-          idUsuarioAud: 1
+          idUsuarioAud: this.currentUser.idUsuario
         }).subscribe(response => {
           if (response.tipo === 1) {
             this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
@@ -261,7 +264,7 @@ export class ClientesComponent implements OnInit {
       factoring: this.clienteForm.controls.factoring.value,
       confirming: this.clienteForm.controls.confirming.value,
       capitalTrabajo: this.clienteForm.controls.capitalTrabajo.value,
-      idUsuarioAud: 1,
+      idUsuarioAud: this.currentUser.idUsuario,
       contacto: this.contactos.filter(f => f.editado),
       cuenta: this.cuentas.filter(f => f.editado),
       gastos: this.gastos.filter(f => f.editado)
@@ -414,7 +417,7 @@ export class ClientesComponent implements OnInit {
           this.utilsService.blockUIStart('Eliminando...');
           this.clienteService.eliminarCuenta({
             idClienteCuenta: item.idClienteCuenta,
-            idUsuarioAud: 1
+            idUsuarioAud: this.currentUser.idUsuario
           }).subscribe(response => {
             if (response.tipo === 1) {
               this.cuentas = this.cuentas.filter(f => f.idFila != item.idFila);
@@ -546,7 +549,7 @@ export class ClientesComponent implements OnInit {
           this.utilsService.blockUIStart('Eliminando...');
           this.clienteService.eliminarContacto({
             idClienteContacto: item.idClienteContacto,
-            idUsuarioAud: 1
+            idUsuarioAud: this.currentUser.idUsuario
           }).subscribe(response => {
             if (response.tipo === 1) {
               this.contactos = this.contactos.filter(f => f.idFila != item.idFila);

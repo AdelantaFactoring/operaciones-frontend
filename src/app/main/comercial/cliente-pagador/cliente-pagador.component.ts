@@ -12,6 +12,7 @@ import {PagadorService} from "./../pagador/pagador.service";
 import {Pagador} from "app/shared/models/comercial/Pagador";
 import Swal from "sweetalert2";
 import {ClientePagadorGastos} from "app/shared/models/comercial/cliente-pagador-gastos";
+import { User } from 'app/shared/models/auth/user';
 
 @Component({
   selector: 'app-cliente-pagador',
@@ -19,6 +20,7 @@ import {ClientePagadorGastos} from "app/shared/models/comercial/cliente-pagador-
   styleUrls: ['./cliente-pagador.component.scss']
 })
 export class ClientePagadorComponent implements OnInit {
+  public currentUser: User;
   public contentHeader: object;
 
   public monedas: TablaMaestra[];
@@ -139,6 +141,7 @@ export class ClientePagadorComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.monedas = await this.onListarMaestros(1, 0);
     this.utilsService.blockUIStop();
@@ -336,7 +339,7 @@ export class ClientePagadorComponent implements OnInit {
 
     this.clientePagadorService.guardar({
       clientePagadorList: clientePagadorList,
-      idUsuarioAud: 1
+      idUsuarioAud: this.currentUser.idUsuario
     }).subscribe(response => {
       if (response.tipo === 1) {
         this.utilsService.showNotification('Información guardada correctamente (asignaciones)', 'Confirmación', 1);
@@ -391,7 +394,7 @@ export class ClientePagadorComponent implements OnInit {
 
     this.clientePagadorService.guardar({
       clientePagadorList: clientePagadorList,
-      idUsuarioAud: 1
+      idUsuarioAud: this.currentUser.idUsuario
     }).subscribe(response => {
       if (response.tipo === 1) {
         this.utilsService.showNotification('Información guardada correctamente (asignaciones)', 'Confirmación', 1);
@@ -445,7 +448,7 @@ export class ClientePagadorComponent implements OnInit {
 
           this.clientePagadorService.guardar({
             clientePagadorList: clientePagadorList,
-            idUsuarioAud: 1
+            idUsuarioAud: this.currentUser.idUsuario
           }).subscribe(response => {
             if (response.tipo === 1) {
               this.clientePagador = this.clientePagador.filter(f => f.idFila != item.idFila);
@@ -549,7 +552,7 @@ export class ClientePagadorComponent implements OnInit {
       limiteGastoNegociacion: this.clientePagadorGastosForm.controls.servicioCustodia.value,
       estado: true,
       totalRows: 0,
-      idUsuarioAud: 1,
+      idUsuarioAud: this.currentUser.idUsuario,
 
       idFila: this.utilsService.autoIncrement(this.clientePagadorGastos),
       edicion: false,
@@ -559,7 +562,7 @@ export class ClientePagadorComponent implements OnInit {
     this.clientePagadorService.guardarGastos({
       idClientePagador: this.idClientePagadorSeleccionado,
       clientePagadorGastosList: clientePagadorGastosList,
-      idUsuarioAud: 1
+      idUsuarioAud: this.currentUser.idUsuario
     }).subscribe(response => {
       if (response.tipo === 1) {
         this.utilsService.showNotification('Información guardada correctamente (gastos)', 'Confirmación', 1);
@@ -630,7 +633,7 @@ export class ClientePagadorComponent implements OnInit {
     this.clientePagadorService.guardarGastos({
       idClientePagador: this.idClientePagadorSeleccionado,
       clientePagadorGastosList: clientePagadorGastosList,
-      idUsuarioAud: 1
+      idUsuarioAud: this.currentUser.idUsuario
     }).subscribe(response => {
       if (response.tipo === 1) {
         this.utilsService.showNotification('Información guardada correctamente (gastos)', 'Confirmación', 1);
@@ -685,7 +688,7 @@ export class ClientePagadorComponent implements OnInit {
           this.clientePagadorService.guardarGastos({
             idClientePagador: this.idClientePagadorSeleccionado,
             clientePagadorGastosList: clientePagadorGastosList,
-            idUsuarioAud: 1
+            idUsuarioAud: this.currentUser.idUsuario
           }).subscribe(response => {
             if (response.tipo === 1) {
               this.clientePagadorGastos = this.clientePagadorGastos.filter(f => f.idFila != item.idFila);

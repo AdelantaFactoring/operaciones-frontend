@@ -17,6 +17,7 @@ import Swal from "sweetalert2";
 import {ClientePagadorService} from "../cliente-pagador/cliente-pagador.service";
 import {ClientePagadorGastos} from "../../../shared/models/comercial/cliente-pagador-gastos";
 import {ClienteGastos} from "../../../shared/models/comercial/cliente-gastos";
+import { User } from 'app/shared/models/auth/user';
 
 @Component({
   selector: 'app-check-list',
@@ -24,6 +25,7 @@ import {ClienteGastos} from "../../../shared/models/comercial/cliente-gastos";
   styleUrls: ['./check-list.component.scss']
 })
 export class CheckListComponent implements OnInit {
+  public currentUser: User;
   public contentHeader: object;
   public solicitudes: SolicitudCab[];
   public detalle: SolicitudDet[] = [];
@@ -149,6 +151,7 @@ export class CheckListComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.tiposArchivos = await this.onListarMaestros(6, 0);
     this.tipoCT = await this.onListarMaestros(5, 0);
@@ -319,7 +322,7 @@ export class CheckListComponent implements OnInit {
 
     solicitudes.forEach(el => {
       el.idEstado = idEstado;
-      el.idUsuarioAud = 1
+      el.idUsuarioAud = this.currentUser.idUsuario
     });
 
     this.utilsService.blockUIStart('Aprobando...');
@@ -476,7 +479,7 @@ export class CheckListComponent implements OnInit {
       montoSolicitudCT: 0,
       diasPrestamoCT: 0,
       fechaPagoCT: '',
-      idUsuarioAud: 1,
+      idUsuarioAud: this.currentUser.idUsuario,
       solicitudDet: this.detalle.filter(f => f.editado),
       solicitudCabSustento: this.sustentos.filter(f => f.editado)
     }).subscribe((response: any) => {

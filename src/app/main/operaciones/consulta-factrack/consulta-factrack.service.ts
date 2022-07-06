@@ -45,7 +45,7 @@ export class ConsultaFactrackService {
   consultarFactura(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${SOLICITUD.consutarFactura}`,
-      `?idUsuario=${payload.idUsuario}`,
+      `?idUsuarioAud=${payload.idUsuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

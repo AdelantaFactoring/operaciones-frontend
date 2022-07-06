@@ -15,6 +15,7 @@ import { ItemsList } from '@ng-select/ng-select/lib/items-list';
 import { ClienteContacto } from 'app/shared/models/comercial/cliente-contacto';
 import { LOADIPHLPAPI } from 'dns';
 import { Router } from '@angular/router';
+import { User } from 'app/shared/models/auth/user';
 
 @Component({
   selector: 'app-solicitudes-form',
@@ -34,6 +35,8 @@ export class SolicitudesFormComponent implements OnInit {
     url: `${environment.apiUrl}${SOLICITUD.upload}`,
     isHTML5: true
   });
+
+  public currentUser: User;
   public contentHeader: object;
 
   public submitted: boolean;
@@ -209,6 +212,7 @@ export class SolicitudesFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.onTablaMaestra(1000, 2);
     this.onRadioChange(this.tipoServicio, this.idTipoOperacion, this.flagConfirming, '');
   }
@@ -284,7 +288,7 @@ export class SolicitudesFormComponent implements OnInit {
       "idSolicitudCab": 0,
       "idCliente": this.idCliente,
       "idTipoOperacion": this.idTipoOperacion,
-      "idUsuarioAud": 1,
+      "idUsuarioAud": this.currentUser.idUsuario,
       "solicitudDet": this.params
     }).subscribe((response: SolicitudDetRespuesta[]) => {
 
@@ -342,7 +346,7 @@ export class SolicitudesFormComponent implements OnInit {
       gastoIncluidoIGV: this.capitalTrabajoForm.controls.gIncluidoIGV.value,
       totalFacConIGV: this.capitalTrabajoForm.controls.tFacturarIGV.value,
       totalDesembolsoConIGV: this.capitalTrabajoForm.controls.tDesembolsoIGV.value,
-      idUsuarioAud: 1,
+      idUsuarioAud: this.currentUser.idUsuario,
     }).subscribe(response => {
       if (response.tipo == 1) {
         this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
@@ -558,7 +562,7 @@ export class SolicitudesFormComponent implements OnInit {
       if (rs.tipo == 0) {
         this.dataXml.push(rs);
         console.log('data', this.dataXml);
-        
+
         this.procesar = false;
         count = Number(count) + 1;
         if (count == this.cantXml) {

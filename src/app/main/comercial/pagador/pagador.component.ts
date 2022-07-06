@@ -5,6 +5,7 @@ import {Pagador} from "../../../shared/models/comercial/pagador";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import Swal from 'sweetalert2';
+import {User} from "../../../shared/models/auth/user";
 
 @Component({
   selector: 'app-pagador',
@@ -12,6 +13,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./pagador.component.scss']
 })
 export class PagadorComponent implements OnInit {
+  public currentUser: User;
   public contentHeader: object;
   public pagador: Pagador[];
   public search: string = '';
@@ -66,6 +68,7 @@ export class PagadorComponent implements OnInit {
      }
 
   ngOnInit(): void {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.onListarPagador();
   }
 
@@ -99,7 +102,7 @@ export class PagadorComponent implements OnInit {
       limiteGastoNegociacion: this.pagadorForm.controls.limiteGastoNegociacion.value,
       telefono: this.pagadorForm.controls.telefono.value,
       correo: this.pagadorForm.controls.correo.value,
-      idUsuarioAud: 1,
+      idUsuarioAud: this.currentUser.idUsuario,
     }).subscribe(response => {
 
       if (response.tipo == 1) {
@@ -152,7 +155,7 @@ export class PagadorComponent implements OnInit {
         this.utilsService.blockUIStart('Eliminando...');
         this.pagadorService.eliminar({
           idPagador: item.idPagador,
-          idUsuarioAud: 1
+          idUsuarioAud: this.currentUser.idUsuario
         }).subscribe(response => {
           if (response.tipo === 1) {
             this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);

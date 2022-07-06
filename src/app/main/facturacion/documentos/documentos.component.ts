@@ -10,6 +10,7 @@ import {TablaMaestraService} from "../../../shared/services/tabla-maestra.servic
 import Swal from "sweetalert2";
 import {ClientesService} from "../../comercial/clientes/clientes.service";
 import {Cliente} from "../../../shared/models/comercial/cliente";
+import { User } from 'app/shared/models/auth/user';
 
 @Component({
   selector: 'app-documentos',
@@ -17,6 +18,7 @@ import {Cliente} from "../../../shared/models/comercial/cliente";
   styleUrls: ['./documentos.component.scss']
 })
 export class DocumentosComponent implements OnInit {
+  public currentUser: User;
   public contentHeader: object;
   public documentos: LiquidacionDocumentoCab[] = [];
   public clientes: Cliente[] = [];
@@ -159,6 +161,7 @@ export class DocumentosComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.tipoDocumento = await this.onListarMaestros(12, 0);
     this.moneda = await this.onListarMaestros(1, 0);
@@ -465,7 +468,7 @@ export class DocumentosComponent implements OnInit {
       idMedioPago: this.documentoForm.controls.medioPago.value,
       fechaVencimientoFormat: this.utilsService.formatoFecha_YYYYMMDD(this.documentoForm.controls.fechaVencimiento.value),
       monto: this.documentoForm.controls.monto.value,
-      idUsuarioAud: 1,
+      idUsuarioAud: this.currentUser.idUsuario,
       idTipoDocumentoReferencia: this.idTipoDocumentoReferencia,
       nroDocumentoReferencia: this.nroDocumentoReferencia,
       idBienServicioDetraccion: this.idBienServicioDetraccion,
@@ -673,7 +676,7 @@ export class DocumentosComponent implements OnInit {
         this.utilsService.blockUIStart("Eliminando...");
         this.documentosService.eliminar({
           idLiquidacionDocumentoCab: cab.idLiquidacionDocumentoCab,
-          idUsuarioAud: 1,
+          idUsuarioAud: this.currentUser.idUsuario,
         }).subscribe((response: any) => {
           switch (response.tipo) {
             case 1:

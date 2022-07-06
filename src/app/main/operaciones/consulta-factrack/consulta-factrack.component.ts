@@ -4,6 +4,7 @@ import {UtilsService} from "../../../shared/services/utils.service";
 import {ConsultaFactrackService} from "./consulta-factrack.service";
 import Swal from "sweetalert2";
 import {SolicitudDet} from "../../../shared/models/comercial/solicitudDet";
+import {User} from "../../../shared/models/auth/user";
 
 @Component({
   selector: 'app-consulta-factrack',
@@ -11,6 +12,7 @@ import {SolicitudDet} from "../../../shared/models/comercial/solicitudDet";
   styleUrls: ['./consulta-factrack.component.scss']
 })
 export class ConsultaFactrackComponent implements OnInit {
+  public currentUser: User;
   public contentHeader: object;
   public solicitudes: SolicitudCab[];
   public seleccionarTodo: boolean = false;
@@ -48,6 +50,7 @@ export class ConsultaFactrackComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.onListarSolicitudes();
   }
 
@@ -113,7 +116,7 @@ export class ConsultaFactrackComponent implements OnInit {
         // @ts-ignore
         let newCab = {...cab};
         newCab.solicitudDet = newCab.solicitudDet.filter(f => f.idSolicitudDet === item.idSolicitudDet);
-        newCab.idUsuarioAud = 1;
+        newCab.idUsuarioAud = this.currentUser.idUsuario;
         this.consultaFactrackService.eliminarFactura(newCab).subscribe(response => {
           if (response.tipo === 1) {
             cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);
@@ -145,7 +148,7 @@ export class ConsultaFactrackComponent implements OnInit {
 
     solicitudes.forEach(el => {
       el.idEstado = idEstado;
-      el.idUsuarioAud = 1
+      el.idUsuarioAud = this.currentUser.idUsuario
     });
 
     this.utilsService.blockUIStart('Confirmando...');
@@ -184,8 +187,9 @@ export class ConsultaFactrackComponent implements OnInit {
   }
 
   onActualizarEstadoFactura(): void {
+    this.utilsService.blockUIStart("Actualizando...");
     this.consultaFactrackService.consultarFactura({
-      idUsuario: 1
+      idUsuarioAud: this.currentUser.idUsuario
     }).subscribe(response => {
       if (response.tipo === 1) {
         this.onListarSolicitudes();

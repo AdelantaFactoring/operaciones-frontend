@@ -6,6 +6,7 @@ import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
 import {RespuestaPagadorService} from "./respuesta-pagador.service";
 import {SolicitudDet} from "../../../shared/models/comercial/solicitudDet";
 import Swal from "sweetalert2";
+import { User } from 'app/shared/models/auth/user';
 
 @Component({
   selector: 'app-respuesta-pagador',
@@ -13,6 +14,7 @@ import Swal from "sweetalert2";
   styleUrls: ['./respuesta-pagador.component.scss']
 })
 export class RespuestaPagadorComponent implements OnInit {
+  public currentUser: User;
   public contentHeader: object;
   public solicitudes: SolicitudCab[] = [];
   public seleccionarTodo: boolean = false;
@@ -64,6 +66,7 @@ export class RespuestaPagadorComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.onListarSolicitudes();
   }
 
@@ -153,7 +156,7 @@ export class RespuestaPagadorComponent implements OnInit {
       el.flagCavali = true;
       el.idTipoRegistro = idEstado === 4 ? 1 : 2;
       el.idEstado = idEstado;
-      el.idUsuarioAud = 1;
+      el.idUsuarioAud = this.currentUser.idUsuario;
     });
 
     this.utilsService.blockUIStart('Registrando...');
@@ -256,7 +259,7 @@ export class RespuestaPagadorComponent implements OnInit {
     }
 
     if (!valido) return;
-    item.idUsuarioAud = 1;
+    item.idUsuarioAud = this.currentUser.idUsuario;
     item.solicitudDet = item.solicitudDet.filter(f => f.editado);
 
     this.utilsService.blockUIStart('Guardando...');
@@ -300,7 +303,7 @@ export class RespuestaPagadorComponent implements OnInit {
         // @ts-ignore
         let newCab = {...cab};
         newCab.solicitudDet = newCab.solicitudDet.filter(f => f.idSolicitudDet === item.idSolicitudDet);
-        newCab.idUsuarioAud = 1;
+        newCab.idUsuarioAud = this.currentUser.idUsuario;
         this.respuestaPagadorService.eliminarFactura(newCab).subscribe(response => {
           if (response.tipo === 1) {
             cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);
