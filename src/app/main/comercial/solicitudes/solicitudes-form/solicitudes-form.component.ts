@@ -252,6 +252,12 @@ export class SolicitudesFormComponent implements OnInit {
         "idSolicitudDet": 0,
         "rucPagProv": this.idTipoOperacion == 1 ? item.rucDet : item.rucCab,
         "RazonSocialPagProv": this.idTipoOperacion == 1 ? item.razonSocialDet : item.razonSocialCab,
+
+        "codigoUbigeoCliente": this.idTipoOperacion == 1 ? item.codigoUbigeoDet : item.codigoUbigeoCab,
+        "direccionCliente": this.idTipoOperacion == 1 ? item.direccionDet : item.direccionCab,
+        "codigoUbigeoPagProv": this.idTipoOperacion == 1 ? item.codigoUbigeoCab : item.codigoUbigeoDet,
+        "direccionPagProv": this.idTipoOperacion == 1 ? item.direccionCab : item.direccionDet,
+
         "moneda": item.tipoMoneda,
         "nroDocumento": item.codFactura,
         "fechaConfirmadoFormat": item.fechaVencimiento,
@@ -551,6 +557,8 @@ export class SolicitudesFormComponent implements OnInit {
 
       if (rs.tipo == 0) {
         this.dataXml.push(rs);
+        console.log('data', this.dataXml);
+        
         this.procesar = false;
         count = Number(count) + 1;
         if (count == this.cantXml) {

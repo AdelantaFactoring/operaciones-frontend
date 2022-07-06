@@ -30,6 +30,11 @@ export class SolicitudArchivos {
     nroCuentaBancariaDestino: string = "";
     cCIDestino: string = "";
     tipoCuentaBancariaDestino: string = "";
+
+    codigoUbigeoCab: string = "";
+    direccionCab: string = "";
+    codigoUbigeoDet: string = "";
+    direccionDet: string = "";
 }
 
 export class SolicitudArchivosXlsx {
