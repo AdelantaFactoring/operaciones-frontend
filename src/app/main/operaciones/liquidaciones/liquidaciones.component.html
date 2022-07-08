@@ -1,8 +1,74 @@
 <div class="content-wrapper">
   <div class="content-body">
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <core-card #coreCard [actions]="['collapse']">
+<!--      style="cursor: pointer" (click)="coreCard.collapse()"-->
+      <h4 class="card-title">Buscar por</h4>
+      <div class="card-body">
+        <form [formGroup]="filtroForm">
+          <div class="row">
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>N° Liquidación</label>
+                <input class="form-control" formControlName="codigoLiquidacion" type="text" (ngModelChange)="onListarLiquidaciones()"/>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>N° Solicitud</label>
+                <input class="form-control" formControlName="codigoSolicitud" type="text" (ngModelChange)="onListarLiquidaciones()"/>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Cliente (RUC o Razón Social)</label>
+                <input class="form-control" formControlName="cliente" type="text" (ngModelChange)="onListarLiquidaciones()"/>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Pag. / Prov. (RUC o Razón Social)</label>
+                <input class="form-control" formControlName="pagadorProveedor" type="text" (ngModelChange)="onListarLiquidaciones()"/>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Moneda</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="currency" bindLabel="descripcion"
+                           placeholder="Moneda" bindValue="valor" formControlName="moneda"
+                           (ngModelChange)="onListarLiquidaciones()">
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Tipo Operación</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="operationType" bindLabel="descripcion"
+                           placeholder="Tipo Operación" bindValue="idColumna" formControlName="tipoOperacion"
+                           (ngModelChange)="onListarLiquidaciones()">
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Estado</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="state" bindLabel="descripcion"
+                           placeholder="Estado" bindValue="idColumna" formControlName="estado"
+                           (ngModelChange)="onListarLiquidaciones()">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </core-card>
     <div class="card">
       <div class="card-body">
+        <div class="row">
+          <div class="col-12" style="padding: 0">
+
+          </div>
+        </div>
         <div class="row">
           <div class="d-flex flex-wrap mb-0">
             <div class="p-1">
@@ -60,8 +126,13 @@
             <div class="table-responsive">
               <table class="table table-hover min-width-table">
                 <thead>
+                <tr class="fila-cabecera">
+                  <th [colSpan]="mostrar === 'true' ? 3 : 1" class="action-color">Acción</th>
+                  <th colspan="13">Liquidación</th>
+                  <th colspan="4" class="audit-color">Auditoría</th>
+                </tr>
                 <tr>
-                  <th>
+                  <th class="action-color">
                     <div class="d-flex align-items-center">
                       <a href="javascript:void(0)" title="Ocultar / Mostrar"
                          (click)="onCambiarVisibilidadDetalleTodo()">
@@ -74,14 +145,14 @@
                       </a>
                     </div>
                   </th>
-                  <th *ngIf="mostrar === 'true'">
+                  <th class="action-color" *ngIf="mostrar === 'true'">
                     <div class="custom-control custom-checkbox">
                       <input type="checkbox" class="custom-control-input" id="customCheckL" unchecked
                              [(ngModel)]="seleccionarTodo" (ngModelChange)="onSeleccionarTodo()"/>
                       <label class="custom-control-label" for="customCheckL"></label>
                     </div>
                   </th>
-                  <th *ngIf="mostrar === 'true'">Acción</th>
+                  <th class="action-color" *ngIf="mostrar === 'true'">Acción</th>
                   <th>N° Liquidación</th>
                   <th>N° Solicitud</th>
                   <th>Cliente</th>
@@ -95,6 +166,10 @@
                   <th>Observación</th>
                   <th>Tipo Operación</th>
                   <th>Estado</th>
+                  <th class="audit-color">Creador por</th>
+                  <th class="audit-color">Fecha Creación</th>
+                  <th class="audit-color">Modificado por</th>
+                  <th class="audit-color">Fecha Modificación</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -123,29 +198,67 @@
                     </td>
                     <td *ngIf="mostrar === 'true'">
                       <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Enviar Correo" [class.disabled]="cab.idEstado != 1 ? true: null"
-                           (click)="onEnviar(2, cab)"
-                           class="btn btn-raised btn-outline-warning btn-sm">
-                          <i class="text-warning cursor-pointer" data-feather="mail"></i>
-                        </a>
-                        &nbsp;
-                        <a href="javascript:void(0)" *ngIf="cab.idEstado == 1" title="Editar"
-                           (click)="onEditarCab(cab,  modalINFO)"
-                           class="btn btn-raised btn-outline-success btn-sm">
-                          <i class="text-success cursor-pointer" data-feather="edit"></i>
-                        </a>
-                        <a href="javascript:void(0)" *ngIf="cab.idEstado !== 1" title="Ver"
-                           (click)="onEditarCab(cab,  modalINFO)"
-                           class="btn btn-raised btn-outline-info btn-sm">
-                          <i class="text-info cursor-pointer" data-feather="eye"></i>
-                        </a>
-                        &nbsp;
-                        <a href="javascript:void(0)" title="Eliminar" [class.disabled]="cab.idEstado >= 5 ? true : null"
-                           (click)="onEliminar(cab)"
-                           class="btn btn-raised btn-outline-danger btn-sm">
-                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
-                        </a>
+                        <div ngbDropdown container="body">
+                          <a ngbDropdownToggle href="javascript:void(0);"
+                             class="btn btn-raised btn-outline-secondary btn-sm" id="dropdownBrowserState"
+                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                             title="Opciones">
+<!--                                                        <i data-feather="more-vertical"></i>-->
+                          </a>
+                          <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="dropdownBrowserState">
+                            <a ngbDropdownItem href="javascript:void(0)" title="Enviar Correo"
+                               [class.disabled]="cab.idEstado != 1 ? true: null"
+                               (click)="onEnviar(2, cab)"
+                               class="d-flex align-items-center">
+                              <i class="text-warning cursor-pointer mr-50" data-feather="mail"></i> Enviar Correo
+                            </a>
+                            <a ngbDropdownItem href="javascript:void(0)" *ngIf="cab.idEstado == 1" title="Editar"
+                               (click)="onEditarCab(cab,  modalINFO)"
+                               class="d-flex align-items-center">
+                              <i class="text-success cursor-pointer mr-50" data-feather="edit"></i> Editar
+                            </a>
+                            <a ngbDropdownItem href="javascript:void(0)" *ngIf="cab.idEstado !== 1" title="Ver"
+                               (click)="onEditarCab(cab,  modalINFO)"
+                               class="d-flex align-items-center">
+                              <i class="text-info cursor-pointer mr-50" data-feather="eye"></i> Ver
+                            </a>
+                            <a ngbDropdownItem href="javascript:void(0)" title="Eliminar"
+                               [class.disabled]="cab.idEstado >= 5 ? true : null"
+                               (click)="onEliminar(cab)"
+                               class="d-flex align-items-center">
+                              <i class="text-danger cursor-pointer mr-50" data-feather="trash-2"></i> Eliminar
+                            </a>
+                            <!--                            <a ngbDropdownItem href="javascript:void(0)" title="Auditoría"-->
+                            <!--                               class="d-flex align-items-center">-->
+                            <!--                              <i class="text-secondary fa fa-history mr-50"></i> Auditoría-->
+                            <!--                            </a>-->
+                          </div>
+                        </div>
                       </div>
+                      <!--                      <div class="d-flex align-items-center">-->
+                      <!--                        <a href="javascript:void(0)" title="Enviar Correo" [class.disabled]="cab.idEstado != 1 ? true: null"-->
+                      <!--                           (click)="onEnviar(2, cab)"-->
+                      <!--                           class="btn btn-raised btn-outline-warning btn-sm">-->
+                      <!--                          <i class="text-warning cursor-pointer" data-feather="mail"></i>-->
+                      <!--                        </a>-->
+                      <!--                        &nbsp;-->
+                      <!--                        <a href="javascript:void(0)" *ngIf="cab.idEstado == 1" title="Editar"-->
+                      <!--                           (click)="onEditarCab(cab,  modalINFO)"-->
+                      <!--                           class="btn btn-raised btn-outline-success btn-sm">-->
+                      <!--                          <i class="text-success cursor-pointer" data-feather="edit"></i>-->
+                      <!--                        </a>-->
+                      <!--                        <a href="javascript:void(0)" *ngIf="cab.idEstado !== 1" title="Ver"-->
+                      <!--                           (click)="onEditarCab(cab,  modalINFO)"-->
+                      <!--                           class="btn btn-raised btn-outline-info btn-sm">-->
+                      <!--                          <i class="text-info cursor-pointer" data-feather="eye"></i>-->
+                      <!--                        </a>-->
+                      <!--                        &nbsp;-->
+                      <!--                        <a href="javascript:void(0)" title="Eliminar" [class.disabled]="cab.idEstado >= 5 ? true : null"-->
+                      <!--                           (click)="onEliminar(cab)"-->
+                      <!--                           class="btn btn-raised btn-outline-danger btn-sm">-->
+                      <!--                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>-->
+                      <!--                        </a>-->
+                      <!--                      </div>-->
                     </td>
                     <td>{{cab.codigo}}</td>
                     <td>{{cab.codigoSolicitud}}</td>
@@ -160,9 +273,13 @@
                     <td>{{cab.observacion}}</td>
                     <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.estado}}</td>
+                    <td>{{cab.usuarioCreacion}}</td>
+                    <td>{{cab.fechaCreacion}}</td>
+                    <td>{{cab.usuarioModificacion}}</td>
+                    <td>{{cab.fechaModificacion}}</td>
                   </tr>
                   <tr id="{{ 'trL' + cab.idLiquidacionCab }}" style="visibility: collapse">
-                    <td [colSpan]="16">
+                    <td [colSpan]="mostrar === 'true' ? 20 : 18">
                       <div class="row" *ngIf="mostrar === 'true'">
                         <div class="d-flex flex-wrap mb-0">
                           <div class="pl-1 pt-1 pb-1">
@@ -182,7 +299,8 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="table-responsive" style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
+                        <div class="table-responsive"
+                             style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
                              id="{{ 'detailL' + cab.idLiquidacionCab }}">
                           <table class="table table-hover">
                             <thead>
@@ -243,8 +361,10 @@
                                   </a>
                                 </div>
                               </td>
-                              <td *ngIf="cab.idTipoOperacion === 3" [ngClass]="{'row-edicion': item.editado}"><p>{{item.razonSocialPagProv}}</p></td>
-                              <td *ngIf="cab.idTipoOperacion === 3" [ngClass]="{'row-edicion': item.editado}"><p>{{item.rucPagProv}}</p></td>
+                              <td *ngIf="cab.idTipoOperacion === 3" [ngClass]="{'row-edicion': item.editado}">
+                                <p>{{item.razonSocialPagProv}}</p></td>
+                              <td *ngIf="cab.idTipoOperacion === 3" [ngClass]="{'row-edicion': item.editado}">
+                                <p>{{item.rucPagProv}}</p></td>
                               <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.nroDocumento}}</p></td>
                               <td [ngClass]="{'row-edicion': item.editado}">
                                 <p>{{item.tasaNominalMensual | number: '1.2-2'}}</p></td>
@@ -434,9 +554,10 @@
                 <div class="col-md-6 col-12">
                   <div class="form-group">
                     <label>Monto Descuento</label>
-                    <input class="form-control" [(ngModel)]="deudaAnterior" [ngModelOptions]="{standalone: true}" type="text"
+                    <input class="form-control" [(ngModel)]="deudaAnterior" [ngModelOptions]="{standalone: true}"
+                           type="text"
                            (ngModelChange)="onDeudaAnteriorCambio($event)"
-                           mask="separator" thousandSeparator="," [disabled] ="ver || idTipoOperacion === 3"/>
+                           mask="separator" thousandSeparator="," [disabled]="ver || idTipoOperacion === 3"/>
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
@@ -449,9 +570,10 @@
                 <div class="col-12">
                   <div class="form-group">
                     <label>Observación</label>
-                    <textarea class="form-control" [(ngModel)]="observacion" [ngModelOptions]="{standalone: true}" type="text"
+                    <textarea class="form-control" [(ngModel)]="observacion" [ngModelOptions]="{standalone: true}"
+                              type="text"
                               [ngClass]="{ 'is-invalid': submitted && deudaAnterior > 0 && observacion === '' }"
-                              [disabled] ="ver || idTipoOperacion === 3"></textarea>
+                              [disabled]="ver || idTipoOperacion === 3"></textarea>
                     <div *ngIf="deudaAnterior > 0 && observacion === ''" class="invalid-feedback">
                       <div *ngIf="deudaAnterior > 0 && observacion === ''">* Campo obligatorio</div>
                     </div>
@@ -537,9 +659,11 @@
                       </thead>
                       <tbody>
                       <tr *ngFor="let item of sustentos">
-                        <td [ngClass]="{'row-edicion': item.editado}"><p [ngClass]="{ 'eliminado': !item.estado }">{{item.tipo}}</p></td>
+                        <td [ngClass]="{'row-edicion': item.editado}"><p
+                          [ngClass]="{ 'eliminado': !item.estado }">{{item.tipo}}</p></td>
                         <td [ngClass]="{'row-edicion': item.editado}">
-                          <a href="{{item.rutaArchivo}}" target="_blank"><strong [ngClass]="{ 'eliminado': !item.estado }">{{ item.archivo }}</strong></a>
+                          <a href="{{item.rutaArchivo}}" target="_blank"><strong
+                            [ngClass]="{ 'eliminado': !item.estado }">{{ item.archivo }}</strong></a>
                         </td>
                         <td nowrap *ngIf="!ver">
                           <button *ngIf="item.estado"

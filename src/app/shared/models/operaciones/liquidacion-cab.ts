@@ -45,6 +45,10 @@ export class LiquidacionCab {
   idUsuarioAud: number;
   edicion: boolean = false;
   idDestino: number;
+  usuarioCreacion: string;
+  fechaCreacion: string;
+  usuarioModificacion: string;
+  fechaModificacion: string;
 
   tipoNotificacion: number;
 }

@@ -5,7 +5,7 @@
   [ngClass]="{ 'card-fullscreen': onclickEvent.expandStatus }"
   *blockUI="coreCardId; template: _CoreBlockUiComponent"
 >
-  <div class="card-header" #cardHeader>
+  <div class="card-header" style="cursor: pointer;" (click)="collapse()" #cardHeader>
     <ng-content select=".card-title"></ng-content>
     <!-- heading elements -->
     <div class="heading-elements">

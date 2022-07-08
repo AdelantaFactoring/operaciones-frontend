@@ -15,6 +15,7 @@ import { LiquidacionesComponent } from './liquidaciones/liquidaciones.component'
 import {FileUploadModule} from "ng2-file-upload";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 import { GenerarLiquidacionComponent } from './generar-liquidacion/generar-liquidacion.component';
+import {CoreCardModule} from "../../../@core/components/core-card/core-card.module";
 
 const routes: Routes = [
   {
@@ -75,6 +76,7 @@ const routes: Routes = [
         NgxDatatableModule,
         FileUploadModule,
         PerfectScrollbarModule,
+        CoreCardModule,
     ]
 })
 export class OperacionesModule { }

@@ -4,6 +4,7 @@ import {BlockUI, NgBlockUI} from 'ng-block-ui';
 import {ToastrService} from 'ngx-toastr';
 import { Menu } from '../models/auth/user';
 import {FormControl} from "@angular/forms";
+import {TablaMaestra} from "../models/shared/tabla-maestra";
 
 class Mes {
   idMes: number;
@@ -131,7 +132,7 @@ export class UtilsService {
     const _menus = this.getUserMenus();
     const _menu = _menus.find(x => x.idMenu == idMenu);
     //console.log('menu', _menus);
-    
+
     if (_menu.acceso == false) {
       //console.log('access not found');
       router.navigate(['miscellaneous/not-authorized']);
@@ -154,6 +155,7 @@ export class UtilsService {
   setMenus(data: any) {
     sessionStorage.setItem('menus', JSON.stringify(data));
   }
+
   nameValidator(control: FormControl): { [key: string]: boolean } {
     const nameRegexp: RegExp = /[!@#$%^&*()_+\=\[\]{};:"\\|,<>\/?]/;
     if (control.value && nameRegexp.test(control.value)) {
@@ -167,4 +169,16 @@ export class UtilsService {
   //     return { invalidName: true };
   //   }
   // }
+
+  agregarTodos(idTabla: number, tabla: TablaMaestra[]): TablaMaestra[] {
+    tabla.push({
+      idTabla: idTabla,
+      idColumna: 0,
+      valor: '',
+      descripcion: '(Todos)'
+    });
+
+    // @ts-ignore
+    return [...tabla.sort((a, b) => a.idColumna - b.idColumna)];
+  }
 }

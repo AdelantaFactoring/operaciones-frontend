@@ -1,5 +1,19 @@
 @import '~@core/scss/angular/libs/file-uploader.component.scss';
 
+.fila-cabecera {
+  th {
+    text-align: center;
+  }
+}
+
+.action-color {
+  background-color: rgba(116, 253, 123, 0.12) !important;
+}
+
+.audit-color {
+  background-color: rgba(116, 183, 253, 0.12) !important;
+}
+
 .detail-th-color {
   background-color: rgba(252, 120, 120, 0.12) !important;
 }
@@ -26,5 +40,5 @@
 }
 
 .min-width-table {
-  min-width: 3200px;
+  min-width: 4000px;
 }

@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnInit, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, OnChanges, OnInit, ViewEncapsulation} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
@@ -24,7 +24,7 @@ import { User } from 'app/shared/models/auth/user';
   styleUrls: ['./liquidaciones.component.scss'],
   //encapsulation: ViewEncapsulation.None
 })
-export class LiquidacionesComponent implements OnInit {
+export class LiquidacionesComponent implements OnInit, AfterViewInit {
   public currentUser: User;
   public mostrar: string = 'false';
 
@@ -36,8 +36,8 @@ export class LiquidacionesComponent implements OnInit {
   public liquidaciones: LiquidacionCab[] = [];
   public seleccionarTodo: boolean = false;
   public cambiarIcono: boolean = false;
-  public solicitudForm: FormGroup;
   public liquidacionForm: FormGroup;
+  public filtroForm: FormGroup;
   public oldLiquidacionForm: FormGroup;
   public codigoSolicitud: string = '';
   public idTipoOperacion: number = 0;
@@ -53,6 +53,10 @@ export class LiquidacionesComponent implements OnInit {
   public tiposArchivos: TablaMaestra[] = [];
   public sustentos: LiquidacionCabSustento[] = [];
   public sustentosOld: LiquidacionCabSustento[] = [];
+
+  public currency: TablaMaestra[] = [];
+  public operationType: TablaMaestra[] = [];
+  public state: TablaMaestra[] = [];
 
   public search: string = '';
   public collectionSize: number = 0;
@@ -114,6 +118,15 @@ export class LiquidacionesComponent implements OnInit {
       //observacion: [''],
     });
     this.oldLiquidacionForm = this.liquidacionForm.value;
+    this.filtroForm = this.formBuilder.group({
+      codigoLiquidacion: [''],
+      codigoSolicitud: [''],
+      cliente: [''],
+      pagadorProveedor: [''],
+      moneda: [''],
+      tipoOperacion: [0],
+      estado: [0]
+    });
   }
 
   async ngOnInit(): Promise<void> {
@@ -124,8 +137,27 @@ export class LiquidacionesComponent implements OnInit {
     this.tipoCT = await this.onListarMaestros(5, 0);
     this.tiposArchivos = await this.onListarMaestros(8, 0);
     this.montoTotalFacturadoMinimoTM = await this.onListarMaestros(1000, 3);
+    this.currency = await this.onListarMaestros(1, 0);
+    this.operationType = await this.onListarMaestros(4, 0);
+    this.state = await this.onListarMaestros(7, 0);
+
+    this.currency = this.utilsService.agregarTodos(1, this.currency);
+    this.operationType = this.utilsService.agregarTodos(4, this.operationType);
+    this.state = this.utilsService.agregarTodos(7, this.state);
+
     this.utilsService.blockUIStop();
     this.onListarLiquidaciones();
+  }
+
+  ngAfterViewInit() {
+    // const elem = document.querySelector('.card-header');
+    // console.log(elem);
+    //
+    // // const style = window.getComputedStyle(elem);
+    // // style.cursor = 'pointer';
+    // elem.addEventListener("onclick", () => {
+    //   alert('Hola');
+    // });
   }
 
   async onListarMaestros(idTabla: number, idColumna: number): Promise<TablaMaestra[]> {
@@ -140,6 +172,13 @@ export class LiquidacionesComponent implements OnInit {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.liquidacionesService.listar({
       idConsulta: 1,
+      codigoLiquidacion: this.filtroForm.controls.codigoLiquidacion.value,
+      codigoSolicitud: this.filtroForm.controls.codigoSolicitud.value,
+      cliente: this.filtroForm.controls.cliente.value,
+      pagProv: this.filtroForm.controls.pagadorProveedor.value,
+      moneda: this.filtroForm.controls.moneda.value,
+      idTipoOperacion: this.filtroForm.controls.tipoOperacion.value,
+      idEstado: this.filtroForm.controls.estado.value,
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
