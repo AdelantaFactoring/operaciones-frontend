@@ -1,0 +1,244 @@
+<!--<form [formGroup]="detalleForm">-->
+<div class="row spaced">
+  <div class="col-12">
+    <div class="divider divider-success">
+      <div class="divider-text">Información del Documento</div>
+    </div>
+  </div>
+  <div class="col-md-6 col-12" *ngIf="dataCab.idTipoOperacion === 3">
+    <div class="form-group">
+      <label>RUC Proveedor</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.rucPagProv" [ngModelOptions]="{standalone: true}"
+             readonly/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12" *ngIf="dataCab.idTipoOperacion === 3">
+    <div class="form-group">
+      <label>Proveedor</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.razonSocialPagProv"
+             [ngModelOptions]="{standalone: true}" readonly/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>N° Documento</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.nroDocumento" [ngModelOptions]="{standalone: true}" readonly/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>Fecha Confirmada</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.fechaOperacionFormat"
+             [ngModelOptions]="{standalone: true}" readonly/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>Neto Confirmado</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.netoConfirmado" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>Fondo Resguardo</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.fondoResguardo" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>T.N.M. (%)</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.tasaNominalMensual" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>T.N.A. (%)</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.tasaNominalAnual" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="divider divider-warning">
+      <div class="divider-text">Detalle de la Liquidación</div>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>Fecha Operación</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.fechaOperacionFormat"
+             [ngModelOptions]="{standalone: true}"/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>Día(s) Efectivo</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.diasEfectivo" [ngModelOptions]="{standalone: true}" readonly/>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="divider divider-warning">
+      <div class="divider-text">Comisión Estructuración</div>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>Porcentaje</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.comisionEstructuracion"
+             [ngModelOptions]="{standalone: true}" readonly
+             mask="separator" thousandSeparator=","/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>Monto</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.montoComisionEstructuracion"
+             [ngModelOptions]="{standalone: true}" readonly
+             mask="separator" thousandSeparator="," />
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>IGV</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.comisionEstructuracionIGV"
+             [ngModelOptions]="{standalone: true}" readonly
+             mask="separator" thousandSeparator=","/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>Total</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.comisionEstructuracionConIGV"
+             [ngModelOptions]="{standalone: true}" readonly
+             mask="separator" thousandSeparator=","/>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="divider divider-warning">
+      <div class="divider-text">Interés</div>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>Monto a Financiar</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.montoCobrar" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>Interés</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.interes" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>IGV</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.interesIGV" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
+      <label>Total</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.interesConIGV" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="divider divider-warning">
+      <div class="divider-text">Gastos</div>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="form-group">
+      <label>Por Contrato</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.gastosContrato" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator=","/>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="form-group">
+      <label>Por Vigencia de Poder</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.gastoVigenciaPoder"
+             [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator=","/>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="form-group">
+      <label>Servicio Custodia</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.servicioCustodia" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator=","/>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="form-group">
+      <label>Servicio Cobranza</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.servicioCobranza" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator=","/>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="form-group">
+      <label>Comisión Carta Notarial</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.comisionCartaNotarial"
+             [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator=","/>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="form-group">
+      <label>SubTotal</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.gastosDiversos" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="form-group">
+      <label>IGV</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.gastosDiversosIGV" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="form-group">
+      <label>Total</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.gastosDiversosConIGV"
+             [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="divider divider-danger">
+      <div class="divider-text">Cálculo Final</div>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="form-group">
+      <label>Monto Total Facturado</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.montoTotalFacturado"
+             [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="form-group">
+      <label>Nota Crédito por Dev.</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.montoNotaCreditoDevolucion"
+             [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-md-4 col-12">
+    <div class="form-group">
+      <label>Monto Desembolso</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.montoDesembolso" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+</div>
+<!--</form>-->
