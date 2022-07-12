@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ClientesService} from 'app/main/comercial/clientes/clientes.service';
@@ -24,15 +24,25 @@ import { User } from 'app/shared/models/auth/user';
   templateUrl: './aprobacion.component.html',
   styleUrls: ['./aprobacion.component.scss']
 })
-export class AprobacionComponent implements OnInit {
+export class AprobacionComponent implements OnInit, AfterViewInit {
+  @ViewChild('coreCard') coreCard;
+
   public currentUser: User;
   public contentHeader: object;
 
   public solicitudForm: FormGroup;
+  public filtroForm: FormGroup;
+  public oldFiltroForm: FormGroup;
+
+  public currency: TablaMaestra[] = [];
+  public operationType: TablaMaestra[] = [];
+  public state: TablaMaestra[] = [];
+
   public search: string = '';
   public page: number = 1;
   public pageSize: number = 10;
   public collectionSize: number;
+
   public desembolsos: LiquidacionCab[] = [];
   public desembolsoDet: LiquidacionDet[] = [];
   public totalMontoDescembolso: number;
@@ -147,13 +157,41 @@ export class AprobacionComponent implements OnInit {
       tipoCambioMoneda: [{value: 0, disabled: false}],
       montoConvertido: [{value: 0, disabled: true}, Validators.required]
     });
+    this.filtroForm = this.formBuilder.group({
+      codigoLiquidacion: [''],
+      codigoSolicitud: [''],
+      cliente: [''],
+      pagadorProveedor: [''],
+      moneda: [''],
+      tipoOperacion: [0],
+      estado: [0],
+      pagadorProveedorDet: [''],
+      nroDocumento: [''],
+      fechaOperacion: [null]
+    });
+    this.oldFiltroForm = this.filtroForm.value;
   };
 
   async ngOnInit(): Promise<void> {
     this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-    this.onListarDesembolso();
+    this.utilsService.blockUIStart('Obteniendo información de maestros...');
+    this.currency = await this.onListarMaestros(1, 0);
+    this.operationType = await this.onListarMaestros(4, 0);
+    this.state = await this.onListarMaestros(7, 0);
+    this.currency = this.utilsService.agregarTodos(1, this.currency);
+    this.operationType = this.utilsService.agregarTodos(4, this.operationType);
+    this.state = this.utilsService.agregarTodos(7, this.state);
     this.tiposArchivos = await this.onListarMaestros(8, 0);
+    this.utilsService.blockUIStop();
+    this.onListarDesembolso();
     this.getLastSunday();
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.coreCard.collapse();
+      this.coreCard.onclickEvent.collapseStatus = true;
+    }, 0);
   }
 
   getLastSunday(): void {
@@ -178,7 +216,17 @@ export class AprobacionComponent implements OnInit {
   onListarDesembolso(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.desembolsoService.listar({
-      idConsulta: 2, // enviar 2
+      idConsulta: 2,
+      codigoLiquidacion: this.filtroForm.controls.codigoLiquidacion.value,
+      codigoSolicitud: this.filtroForm.controls.codigoSolicitud.value,
+      cliente: this.filtroForm.controls.cliente.value,
+      pagProv: this.filtroForm.controls.pagadorProveedor.value,
+      moneda: this.filtroForm.controls.moneda.value,
+      idTipoOperacion: this.filtroForm.controls.tipoOperacion.value,
+      idEstado: this.filtroForm.controls.estado.value,
+      pagProvDet: this.filtroForm.controls.pagadorProveedorDet.value,
+      nroDocumento: this.filtroForm.controls.nroDocumento.value,
+      fechaOperacion: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaOperacion.value) ?? "",
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
@@ -729,5 +777,15 @@ export class AprobacionComponent implements OnInit {
 
   onDesembolsoDet_Total(det: LiquidacionDet[]): number {
     return det.reduce((sum, current) => sum + current.montoDesembolso, 0);
+  }
+
+  onCambioFechaOperacion(): void {
+    this.filtroForm.controls.fechaOperacion.setValue(null);
+  }
+
+  onLimpiarFiltro($event): void {
+    if ($event === 'reload') {
+      this.filtroForm.reset(this.oldFiltroForm);
+    }
   }
 }

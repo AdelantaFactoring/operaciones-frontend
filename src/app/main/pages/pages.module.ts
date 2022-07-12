@@ -10,9 +10,10 @@ import { ContentHeaderModule } from 'app/layout/components/content-header/conten
 
 import { Ng2FlatpickrModule } from 'ng2-flatpickr';
 import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
+import {AuditComponent} from "./audit/audit.component";
 
 @NgModule({
-  declarations: [],
+  declarations: [AuditComponent],
   imports: [
     CommonModule,
     CoreCommonModule,
@@ -23,7 +24,9 @@ import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
     MiscellaneousModule,
     Ng2FlatpickrModule,
   ],
-
+  exports: [
+    AuditComponent
+  ],
   providers: []
 })
 export class PagesModule {}

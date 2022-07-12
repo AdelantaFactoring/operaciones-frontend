@@ -1,6 +1,108 @@
 <div class="content-wrapper">
   <div class="content-body">
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <core-card #coreCard [actions]="['collapse', 'reload']" (events)="onLimpiarFiltro($event)">
+      <h4 class="card-title">Buscar por</h4>
+      <div class="card-body">
+        <form [formGroup]="filtroForm">
+          <div class="row">
+            <div class="col-12">
+              <div class="divider divider-success">
+                <div class="divider-text">Liquidación - Cabecera</div>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>N° Liquidación</label>
+                <input class="form-control" formControlName="codigoLiquidacion" type="text" (ngModelChange)="onListarDesembolso()"/>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>N° Solicitud</label>
+                <input class="form-control" formControlName="codigoSolicitud" type="text" (ngModelChange)="onListarDesembolso()"/>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Cliente (RUC o Razón Social)</label>
+                <input class="form-control" formControlName="cliente" type="text" (ngModelChange)="onListarDesembolso()"/>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Pag. / Prov. (RUC o Razón Social)</label>
+                <input class="form-control" formControlName="pagadorProveedor" type="text" (ngModelChange)="onListarDesembolso()"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Moneda</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="currency" bindLabel="descripcion"
+                           placeholder="Moneda" bindValue="valor" formControlName="moneda"
+                           (ngModelChange)="onListarDesembolso()">
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Tipo Operación</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="operationType" bindLabel="descripcion"
+                           placeholder="Tipo Operación" bindValue="idColumna" formControlName="tipoOperacion"
+                           (ngModelChange)="onListarDesembolso()">
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Estado</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="state" bindLabel="descripcion"
+                           placeholder="Estado" bindValue="idColumna" formControlName="estado"
+                           (ngModelChange)="onListarDesembolso()">
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="divider divider-warning">
+                <div class="divider-text">Liquidación - Detalle</div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Pag. / Prov. (RUC o Razón Social)</label>
+                <input class="form-control" formControlName="pagadorProveedorDet" type="text" (ngModelChange)="onListarDesembolso()"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>N° Documento</label>
+                <input class="form-control" formControlName="nroDocumento" type="text" (ngModelChange)="onListarDesembolso()"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Fecha Operación</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         formControlName="fechaOperacion" container="body"
+                         ngbDatepicker #basicDP="ngbDatepicker" (ngModelChange)="onListarDesembolso()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-x"
+                            (click)="onCambioFechaOperacion()"
+                            type="button" rippleEffect></button>
+                  </div>
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDP.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </core-card>
     <div class="card">
       <div class="card-body">
         <div class="row">
@@ -134,7 +236,7 @@
                            class="btn btn-raised btn-outline-warning btn-sm">
                           <i class="text-warning cursor-pointer" data-feather="mail"></i>
                         </a>
-                        &nbsp;
+                        <ng-template [ngIf]="cab.idTipoOperacion === 1">&nbsp;</ng-template>
                         <a href="javascript:void(0)" *ngIf="cab.idEstado !== 5" title="Editar"
                            (click)="onEditar(cab,  modalINFO)"
                            class="btn btn-raised btn-outline-success btn-sm">

@@ -1,0 +1,38 @@
+<form [formGroup]="auditForm">
+    <div class="row spaced">
+      <div class="col-12">
+        <div class="divider divider-success">
+          <div class="divider-text">Creado por</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-12">
+        <div class="form-group">
+          <label>Usuario</label>
+          <input class="form-control" formControlName="usuarioCreacion" type="text"/>
+        </div>
+      </div>
+      <div class="col-md-6 col-12">
+        <div class="form-group">
+          <label>Fecha</label>
+          <input class="form-control" formControlName="fechaCreacion" type="text"/>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="divider divider-warning">
+          <div class="divider-text">Modificado por</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-12">
+        <div class="form-group">
+          <label>Usuario</label>
+          <input class="form-control" formControlName="usuarioModificacion" type="text"/>
+        </div>
+      </div>
+      <div class="col-md-6 col-12">
+        <div class="form-group">
+          <label>Fecha</label>
+          <input class="form-control" formControlName="fechaModificacion" type="text"/>
+        </div>
+      </div>
+    </div>
+</form>

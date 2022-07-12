@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnChanges, OnInit, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, OnChanges, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
@@ -17,6 +17,8 @@ import {Archivo} from "../../../shared/models/comercial/archivo";
 import {LiquidacionCabSustento} from "../../../shared/models/operaciones/LiquidacionCab-Sustento";
 import {ActivatedRoute} from "@angular/router";
 import { User } from 'app/shared/models/auth/user';
+import {Audit} from "../../../shared/models/shared/audit";
+import {ContentHeader} from "../../../layout/components/content-header/content-header.component";
 
 @Component({
   selector: 'app-liquidaciones',
@@ -25,10 +27,13 @@ import { User } from 'app/shared/models/auth/user';
   //encapsulation: ViewEncapsulation.None
 })
 export class LiquidacionesComponent implements OnInit, AfterViewInit {
+  @ViewChild('coreCard') coreCard;
+
   public currentUser: User;
   public mostrar: string = 'false';
 
-  public contentHeader: object;
+  public contentHeader: ContentHeader;
+  public audit: Audit = new Audit();
   public submitted: boolean = false;
   public seleccionarTodoSolicitud: boolean = false;
   public cambiarIconoSolicitud: boolean = false;
@@ -38,6 +43,7 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
   public cambiarIcono: boolean = false;
   public liquidacionForm: FormGroup;
   public filtroForm: FormGroup;
+  public oldFiltroForm: FormGroup;
   public oldLiquidacionForm: FormGroup;
   public codigoSolicitud: string = '';
   public idTipoOperacion: number = 0;
@@ -64,10 +70,14 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
   public page: number = 1;
 
   public codigo: string;
+  public nroDocumento: string;
   public deudaAnterior: number = 0;
   public observacion: string = '';
   public ver: boolean = false;
   public montoTotalFacturadoMinimoTM: TablaMaestra[] = [];
+
+  public dataCabecera: LiquidacionCab;
+  public dataDetalle: LiquidacionDet;
 
   get ReactiveIUForm(): any {
     return this.liquidacionForm.controls;
@@ -125,14 +135,16 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
       pagadorProveedor: [''],
       moneda: [''],
       tipoOperacion: [0],
-      estado: [0]
+      estado: [0],
+      pagadorProveedorDet: [''],
+      nroDocumento: [''],
+      fechaOperacion: [null]
     });
+    this.oldFiltroForm = this.filtroForm.value;
   }
 
   async ngOnInit(): Promise<void> {
     this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-    this.route.params.subscribe(s => this.mostrar = s.mostrar);
-
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.tipoCT = await this.onListarMaestros(5, 0);
     this.tiposArchivos = await this.onListarMaestros(8, 0);
@@ -140,24 +152,21 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     this.currency = await this.onListarMaestros(1, 0);
     this.operationType = await this.onListarMaestros(4, 0);
     this.state = await this.onListarMaestros(7, 0);
-
     this.currency = this.utilsService.agregarTodos(1, this.currency);
     this.operationType = this.utilsService.agregarTodos(4, this.operationType);
     this.state = this.utilsService.agregarTodos(7, this.state);
-
     this.utilsService.blockUIStop();
-    this.onListarLiquidaciones();
+    this.route.params.subscribe(s => {
+      this.mostrar = s.mostrar;
+      this.onListarLiquidaciones();
+    });
   }
 
   ngAfterViewInit() {
-    // const elem = document.querySelector('.card-header');
-    // console.log(elem);
-    //
-    // // const style = window.getComputedStyle(elem);
-    // // style.cursor = 'pointer';
-    // elem.addEventListener("onclick", () => {
-    //   alert('Hola');
-    // });
+    setTimeout(() => {
+      this.coreCard.collapse();
+      this.coreCard.onclickEvent.collapseStatus = true;
+    }, 0);
   }
 
   async onListarMaestros(idTabla: number, idColumna: number): Promise<TablaMaestra[]> {
@@ -171,7 +180,7 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
   onListarLiquidaciones(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.liquidacionesService.listar({
-      idConsulta: 1,
+      idConsulta: this.mostrar === 'true' ? 1 : 0,
       codigoLiquidacion: this.filtroForm.controls.codigoLiquidacion.value,
       codigoSolicitud: this.filtroForm.controls.codigoSolicitud.value,
       cliente: this.filtroForm.controls.cliente.value,
@@ -179,6 +188,9 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
       moneda: this.filtroForm.controls.moneda.value,
       idTipoOperacion: this.filtroForm.controls.tipoOperacion.value,
       idEstado: this.filtroForm.controls.estado.value,
+      pagProvDet: this.filtroForm.controls.pagadorProveedorDet.value,
+      nroDocumento: this.filtroForm.controls.nroDocumento.value,
+      fechaOperacion: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaOperacion.value) ?? "",
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
@@ -309,14 +321,33 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     this.onCalcular(cab, item);
   }
 
-  onEditar(cab: LiquidacionCab, item: LiquidacionDet): void {
-    if (cab.liquidacionDet.filter(f => f.edicion || f.editado).length > 0) {
-      this.utilsService.showNotification("Guarda o cancela los cambios primero", "Advertencia", 2);
-      return;
-    }
+  onEditar(cab: LiquidacionCab, item: LiquidacionDet, modal: object): void {
+    this.codigo = cab.codigo;
+    this.nroDocumento = item.nroDocumento;
+    this.dataCabecera = cab;
+    this.dataDetalle = item;
 
-    this.oldLiquidacionDet = {...item};
-    item.edicion = true;
+    setTimeout(() => {
+      this.modalService.open(modal, {
+        scrollable: true,
+        //size: 'lg',
+        windowClass: 'my-class',
+        animation: true,
+        centered: false,
+        backdrop: "static",
+        beforeDismiss: () => {
+          return true;
+        }
+      });
+    }, 0);
+
+    // if (cab.liquidacionDet.filter(f => f.edicion || f.editado).length > 0) {
+    //   this.utilsService.showNotification("Guarda o cancela los cambios primero", "Advertencia", 2);
+    //   return;
+    // }
+    //
+    // this.oldLiquidacionDet = {...item};
+    // item.edicion = true;
   }
 
   onCancelar(item: LiquidacionDet): void {
@@ -762,5 +793,37 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
         });
       }
     });
+  }
+
+  onCambioFechaOperacion(): void {
+    this.filtroForm.controls.fechaOperacion.setValue(null);
+  }
+
+  onLimpiarFiltro($event): void {
+    if ($event === 'reload') {
+      this.filtroForm.reset(this.oldFiltroForm);
+    }
+  }
+
+  onAuditoria(cab: LiquidacionCab, modal: any) {
+    this.codigo = cab.codigo;
+    this.audit = {
+      usuarioCreacion: cab.usuarioCreacion,
+      fechaCreacion: cab.fechaCreacion,
+      usuarioModificacion: cab.usuarioModificacion,
+      fechaModificacion: cab.fechaModificacion
+    };
+    setTimeout(() => {
+      this.modalService.open(modal, {
+        scrollable: true,
+        size: 'sm',
+        animation: true,
+        centered: false,
+        backdrop: "static",
+        beforeDismiss: () => {
+          return true;
+        }
+      });
+    }, 0);
   }
 }

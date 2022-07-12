@@ -14,6 +14,7 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { CardSnippetModule } from '@core/components/card-snippet/card-snippet.module';
 import { CoreDirectivesModule } from '@core/directives/directives';
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import {CoreCardModule} from "../../../@core/components/core-card/core-card.module";
 
 const routes: Routes = [
   {
@@ -46,7 +47,8 @@ const routes: Routes = [
         FileUploadModule,
         CardSnippetModule,
         CoreDirectivesModule,
-        PerfectScrollbarModule
+        PerfectScrollbarModule,
+        CoreCardModule
     ]
 })
 export class DesembolsosModule { }

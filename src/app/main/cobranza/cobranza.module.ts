@@ -14,6 +14,7 @@ import {RegistroPagosComponent} from './registro-pagos/registro-pagos.component'
 import {MiscellaneousModule} from "../pages/miscellaneous/miscellaneous.module";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 import {DevolucionesComponent} from './devoluciones/devoluciones.component';
+import {CoreCardModule} from "../../../@core/components/core-card/core-card.module";
 
 const routes: Routes = [
   {
@@ -54,7 +55,8 @@ const routes: Routes = [
     NgxDatatableModule,
     MiscellaneousModule,
     PerfectScrollbarModule,
-    FileUploadModule
+    FileUploadModule,
+    CoreCardModule
   ]
 })
 export class CobranzaModule {

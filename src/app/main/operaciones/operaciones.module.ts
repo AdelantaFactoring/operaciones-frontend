@@ -16,6 +16,9 @@ import {FileUploadModule} from "ng2-file-upload";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 import { GenerarLiquidacionComponent } from './generar-liquidacion/generar-liquidacion.component';
 import {CoreCardModule} from "../../../@core/components/core-card/core-card.module";
+import {MiscellaneousModule} from "../pages/miscellaneous/miscellaneous.module";
+import {PagesModule} from "../pages/pages.module";
+import { LiquidacionesDetalleComponent } from './liquidaciones/liquidaciones-detalle/liquidaciones-detalle.component';
 
 const routes: Routes = [
   {
@@ -61,22 +64,25 @@ const routes: Routes = [
     RespuestaPagadorComponent,
     ConsultaFactrackComponent,
     LiquidacionesComponent,
-    GenerarLiquidacionComponent
+    GenerarLiquidacionComponent,
+    LiquidacionesDetalleComponent,
   ],
-    imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        NgbModule,
-        CoreCommonModule,
-        BlockUIModule.forRoot(),
-        ContentHeaderModule,
-        CoreTouchspinModule,
-        NgSelectModule,
-        NgxMaskModule.forRoot(),
-        NgxDatatableModule,
-        FileUploadModule,
-        PerfectScrollbarModule,
-        CoreCardModule,
-    ]
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    NgbModule,
+    CoreCommonModule,
+    BlockUIModule.forRoot(),
+    ContentHeaderModule,
+    CoreTouchspinModule,
+    NgSelectModule,
+    NgxMaskModule.forRoot(),
+    NgxDatatableModule,
+    FileUploadModule,
+    PerfectScrollbarModule,
+    CoreCardModule,
+    MiscellaneousModule,
+    PagesModule
+  ]
 })
 export class OperacionesModule { }

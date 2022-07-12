@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {LiquidacionCab} from "../../../shared/models/operaciones/liquidacion-cab";
 import {UtilsService} from "../../../shared/services/utils.service";
 import {RegistroPagosService} from "./registro-pagos.service";
@@ -7,13 +7,17 @@ import {LiquidacionDet} from "../../../shared/models/operaciones/liquidacion-det
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
 import {LiquidacionPago} from 'app/shared/models/cobranza/liquidacion-pago';
+import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
+import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
 
 @Component({
   selector: 'app-registro-pagos',
   templateUrl: './registro-pagos.component.html',
   styleUrls: ['./registro-pagos.component.scss']
 })
-export class RegistroPagosComponent implements OnInit {
+export class RegistroPagosComponent implements OnInit, AfterViewInit {
+  @ViewChild('coreCard') coreCard;
+
   public contentHeader: object;
   public cambiarIcono: boolean = false;
   public cobranza: LiquidacionCab[] = [];
@@ -21,6 +25,8 @@ export class RegistroPagosComponent implements OnInit {
   public liquidacionForm: FormGroup;
   public pagoInfoForm: FormGroup;
   public oldPagoInfoForm: FormGroup;
+  public filtroForm: FormGroup;
+  public oldFiltroForm: FormGroup;
   public submitted: boolean = false;
   public ocultarPagoForm: boolean = false;
   public fechaMaxima: any;
@@ -28,6 +34,10 @@ export class RegistroPagosComponent implements OnInit {
   public idLiquidacionDet: number = 0;
   public codigo: string = '';
   public nroDocumento: string = '';
+
+  public currency: TablaMaestra[] = [];
+  public operationType: TablaMaestra[] = [];
+  public state: TablaMaestra[] = [];
 
   public search: string = '';
   public collectionSize: number = 0;
@@ -41,7 +51,8 @@ export class RegistroPagosComponent implements OnInit {
   constructor(private modalService: NgbModal,
               private utilsService: UtilsService,
               private registroPagosService: RegistroPagosService,
-              private formBuilder: FormBuilder,) {
+              private formBuilder: FormBuilder,
+              private tablaMaestraService: TablaMaestraService) {
     this.contentHeader = {
       headerTitle: 'Registro de Pagos',
       actionButton: true,
@@ -89,16 +100,62 @@ export class RegistroPagosComponent implements OnInit {
       observacion: ['']
     });
     this.oldPagoInfoForm = this.pagoInfoForm.value;
+    this.filtroForm = this.formBuilder.group({
+      codigoLiquidacion: [''],
+      codigoSolicitud: [''],
+      cliente: [''],
+      pagadorProveedor: [''],
+      moneda: [''],
+      tipoOperacion: [0],
+      estado: [0],
+      pagadorProveedorDet: [''],
+      nroDocumento: [''],
+      fechaOperacion: [null]
+    });
+    this.oldFiltroForm = this.filtroForm.value;
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.utilsService.blockUIStart('Obteniendo información de maestros...');
+    this.currency = await this.onListarMaestros(1, 0);
+    this.operationType = await this.onListarMaestros(4, 0);
+    this.state = await this.onListarMaestros(7, 0);
+    this.currency = this.utilsService.agregarTodos(1, this.currency);
+    this.operationType = this.utilsService.agregarTodos(4, this.operationType);
+    this.state = this.utilsService.agregarTodos(7, this.state);
+    this.utilsService.blockUIStop();
     this.onListarCobranza();
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.coreCard.collapse();
+      this.coreCard.onclickEvent.collapseStatus = true;
+    }, 0);
+  }
+
+  async onListarMaestros(idTabla: number, idColumna: number): Promise<TablaMaestra[]> {
+    return await this.tablaMaestraService.listar({
+      idTabla: idTabla,
+      idColumna: idColumna
+    }).then((response: TablaMaestra[]) => response, error => [])
+      .catch(error => []);
   }
 
   onListarCobranza(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.registroPagosService.listar({
       idConsulta: 3,
+      codigoLiquidacion: this.filtroForm.controls.codigoLiquidacion.value,
+      codigoSolicitud: this.filtroForm.controls.codigoSolicitud.value,
+      cliente: this.filtroForm.controls.cliente.value,
+      pagProv: this.filtroForm.controls.pagadorProveedor.value,
+      moneda: this.filtroForm.controls.moneda.value,
+      idTipoOperacion: this.filtroForm.controls.tipoOperacion.value,
+      idEstado: this.filtroForm.controls.estado.value,
+      pagProvDet: this.filtroForm.controls.pagadorProveedorDet.value,
+      nroDocumento: this.filtroForm.controls.nroDocumento.value,
+      fechaOperacion: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaOperacion.value) ?? "",
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
@@ -253,5 +310,15 @@ export class RegistroPagosComponent implements OnInit {
 
   saldo(value: number): number {
     return value < 0 ? 0 : value;
+  }
+
+  onCambioFechaOperacion(): void {
+    this.filtroForm.controls.fechaOperacion.setValue(null);
+  }
+
+  onLimpiarFiltro($event): void {
+    if ($event === 'reload') {
+      this.filtroForm.reset(this.oldFiltroForm);
+    }
   }
 }
