@@ -51,4 +51,14 @@ export class ConsultaFactrackService {
       }
     )
   }
+
+  consultarConformidad(payload): Observable<any> {
+    return this.requestMethod.get(
+      `${environment.apiUrl}${SOLICITUD.consultarConformidad}`,
+      `?idUsuarioAud=${payload.idUsuarioAud}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    )
+  }
 }

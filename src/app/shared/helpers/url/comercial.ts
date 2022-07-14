@@ -22,7 +22,8 @@ export const SOLICITUD = {
   guardarCT: '/solicitudCab/guardarCT',
   generarCarpeta: '/SolicitudCab/GenerarCarpeta',
   plantilla: '/SolicitudCab/PlantillaExcel',
-  consutarFactura: '/solicitudCab/consultarfactura'
+  consutarFactura: '/solicitudCab/consultarfactura',
+  consultarConformidad: '/solicitudCab/consultarConformidad'
 };
 
 export const PAGADOR = {
