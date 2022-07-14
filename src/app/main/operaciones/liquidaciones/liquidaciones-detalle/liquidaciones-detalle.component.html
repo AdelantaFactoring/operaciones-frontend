@@ -22,13 +22,14 @@
   <div class="col-md-6 col-12">
     <div class="form-group">
       <label>N° Documento</label>
-      <input class="form-control" type="text" [(ngModel)]="dataDet.nroDocumento" [ngModelOptions]="{standalone: true}" readonly/>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.nroDocumento" [ngModelOptions]="{standalone: true}"
+             readonly/>
     </div>
   </div>
   <div class="col-md-6 col-12">
     <div class="form-group">
       <label>Fecha Confirmada</label>
-      <input class="form-control" type="text" [(ngModel)]="dataDet.fechaOperacionFormat"
+      <input class="form-control" type="text" [(ngModel)]="dataDet.fechaConfirmado"
              [ngModelOptions]="{standalone: true}" readonly/>
     </div>
   </div>
@@ -49,14 +50,16 @@
   <div class="col-md-6 col-12">
     <div class="form-group">
       <label>T.N.M. (%)</label>
-      <input class="form-control" type="text" [(ngModel)]="dataDet.tasaNominalMensual" [ngModelOptions]="{standalone: true}"
+      <input class="form-control" type="text" [(ngModel)]="dataDet.tasaNominalMensual"
+             [ngModelOptions]="{standalone: true}"
              mask="separator" thousandSeparator="," readonly/>
     </div>
   </div>
   <div class="col-md-6 col-12">
     <div class="form-group">
       <label>T.N.A. (%)</label>
-      <input class="form-control" type="text" [(ngModel)]="dataDet.tasaNominalAnual" [ngModelOptions]="{standalone: true}"
+      <input class="form-control" type="text" [(ngModel)]="dataDet.tasaNominalAnual"
+             [ngModelOptions]="{standalone: true}"
              mask="separator" thousandSeparator="," readonly/>
     </div>
   </div>
@@ -68,14 +71,27 @@
   <div class="col-md-6 col-12">
     <div class="form-group">
       <label>Fecha Operación</label>
-      <input class="form-control" type="text" [(ngModel)]="dataDet.fechaOperacionFormat"
-             [ngModelOptions]="{standalone: true}"/>
+      <input *ngIf="dataCab.idEstado != 1" class="form-control" type="text" [(ngModel)]="dataDet.fechaOperacionFormat"
+             [ngModelOptions]="{standalone: true}" readonly/>
+      <div *ngIf="dataCab.idEstado === 1" class="input-group">
+        <input class="form-control" placeholder="yyyy-mm-dd"
+               [(ngModel)]="dataDet.fechaOperacion" container="body"
+               (ngModelChange)="onCambiarFechaOperacion($event, dataCab, dataDet)"
+               [ngModelOptions]="{standalone: true}"
+               ngbDatepicker #basicDP="ngbDatepicker">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary feather icon-calendar"
+                  (click)="basicDP.toggle()"
+                  type="button" rippleEffect></button>
+        </div>
+      </div>
     </div>
   </div>
   <div class="col-md-6 col-12">
     <div class="form-group">
       <label>Día(s) Efectivo</label>
-      <input class="form-control" type="text" [(ngModel)]="dataDet.diasEfectivo" [ngModelOptions]="{standalone: true}" readonly/>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.diasEfectivo" [ngModelOptions]="{standalone: true}"
+             readonly/>
     </div>
   </div>
   <div class="col-12">
@@ -96,7 +112,7 @@
       <label>Monto</label>
       <input class="form-control" type="text" [(ngModel)]="dataDet.montoComisionEstructuracion"
              [ngModelOptions]="{standalone: true}" readonly
-             mask="separator" thousandSeparator="," />
+             mask="separator" thousandSeparator=","/>
     </div>
   </div>
   <div class="col-md-6 col-12">
@@ -157,28 +173,34 @@
     <div class="form-group">
       <label>Por Contrato</label>
       <input class="form-control" type="text" [(ngModel)]="dataDet.gastosContrato" [ngModelOptions]="{standalone: true}"
-             mask="separator" thousandSeparator=","/>
+             [readonly]="dataCab.idEstado != 1"
+             mask="separator" thousandSeparator="," (ngModelChange)="onCalcular(dataCab, dataDet)" />
     </div>
   </div>
   <div class="col-md-4 col-12">
     <div class="form-group">
       <label>Por Vigencia de Poder</label>
       <input class="form-control" type="text" [(ngModel)]="dataDet.gastoVigenciaPoder"
-             [ngModelOptions]="{standalone: true}"
+             [ngModelOptions]="{standalone: true}" (ngModelChange)="onCalcular(dataCab, dataDet)"
+             [readonly]="dataCab.idEstado != 1"
              mask="separator" thousandSeparator=","/>
     </div>
   </div>
   <div class="col-md-4 col-12">
     <div class="form-group">
       <label>Servicio Custodia</label>
-      <input class="form-control" type="text" [(ngModel)]="dataDet.servicioCustodia" [ngModelOptions]="{standalone: true}"
+      <input class="form-control" type="text" [(ngModel)]="dataDet.servicioCustodia"
+             [ngModelOptions]="{standalone: true}" (ngModelChange)="onCalcular(dataCab, dataDet)"
+             [readonly]="dataCab.idEstado != 1"
              mask="separator" thousandSeparator=","/>
     </div>
   </div>
   <div class="col-md-4 col-12">
     <div class="form-group">
       <label>Servicio Cobranza</label>
-      <input class="form-control" type="text" [(ngModel)]="dataDet.servicioCobranza" [ngModelOptions]="{standalone: true}"
+      <input class="form-control" type="text" [(ngModel)]="dataDet.servicioCobranza"
+             [ngModelOptions]="{standalone: true}" (ngModelChange)="onCalcular(dataCab, dataDet)"
+             [readonly]="dataCab.idEstado != 1"
              mask="separator" thousandSeparator=","/>
     </div>
   </div>
@@ -186,7 +208,8 @@
     <div class="form-group">
       <label>Comisión Carta Notarial</label>
       <input class="form-control" type="text" [(ngModel)]="dataDet.comisionCartaNotarial"
-             [ngModelOptions]="{standalone: true}"
+             [ngModelOptions]="{standalone: true}" (ngModelChange)="onCalcular(dataCab, dataDet)"
+             [readonly]="dataCab.idEstado != 1"
              mask="separator" thousandSeparator=","/>
     </div>
   </div>
@@ -200,7 +223,8 @@
   <div class="col-md-4 col-12">
     <div class="form-group">
       <label>IGV</label>
-      <input class="form-control" type="text" [(ngModel)]="dataDet.gastosDiversosIGV" [ngModelOptions]="{standalone: true}"
+      <input class="form-control" type="text" [(ngModel)]="dataDet.gastosDiversosIGV"
+             [ngModelOptions]="{standalone: true}"
              mask="separator" thousandSeparator="," readonly/>
     </div>
   </div>
@@ -236,7 +260,8 @@
   <div class="col-md-4 col-12">
     <div class="form-group">
       <label>Monto Desembolso</label>
-      <input class="form-control" type="text" [(ngModel)]="dataDet.montoDesembolso" [ngModelOptions]="{standalone: true}"
+      <input class="form-control" type="text" [(ngModel)]="dataDet.montoDesembolso"
+             [ngModelOptions]="{standalone: true}"
              mask="separator" thousandSeparator="," readonly/>
     </div>
   </div>

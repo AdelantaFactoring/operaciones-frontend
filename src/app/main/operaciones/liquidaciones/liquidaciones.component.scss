@@ -39,6 +39,11 @@
   //width: 60%;
 }
 
+::ng-deep .my-class2 .modal-dialog {
+  min-width: 50%;
+  //width: 60%;
+}
+
 .min-width-table {
   min-width: 3000px;
 }

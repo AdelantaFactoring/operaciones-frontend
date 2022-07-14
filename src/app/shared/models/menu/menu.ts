@@ -64,6 +64,13 @@ export const menu: CoreMenu[] = [
       type: 'item',
       icon: 'search',
       url: 'operaciones/consultaFactrack'
+    }, {
+      id: '17',
+      title: 'Cavali',
+      // translate: 'MENU.DASHBOARD.ANALYTICS',
+      type: 'item',
+      icon: 'radio',
+      url: 'operaciones/cavali'
     }]
   },
   {

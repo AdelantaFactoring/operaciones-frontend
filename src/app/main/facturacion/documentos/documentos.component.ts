@@ -447,7 +447,7 @@ export class DocumentosComponent implements OnInit {
     // }
 
     this.documentosService.guardar({
-      idEmpresa: 1,
+      idEmpresa: this.currentUser.idEmpresa,
       idLiquidacionDocumentoCab: this.documentoForm.controls.idLiquidacionDocumentoCab.value,
       idLiquidacionCab: this.documentoForm.controls.idLiquidacionCab.value,
       idTipoDocumento: this.documentoForm.controls.tipoDocumento.value,
@@ -611,7 +611,7 @@ export class DocumentosComponent implements OnInit {
 
   onFirmarPublicarDeclarar(cab: LiquidacionDocumentoCab): void {
     this.utilsService.blockUIStart("Enviando información...");
-    cab.idEmpresa = 1;
+    cab.idEmpresa = this.currentUser.idEmpresa;
     this.documentosService.firmaPublicacionDeclaracion(cab).subscribe((response: any) => {
       switch (response.tipo) {
         case 1:
@@ -636,7 +636,7 @@ export class DocumentosComponent implements OnInit {
 
   onConsultarEstado(cab: LiquidacionDocumentoCab): void {
     this.utilsService.blockUIStart("Actualizando Estado...");
-    cab.idEmpresa = 1;
+    cab.idEmpresa = this.currentUser.idEmpresa;
     this.documentosService.consultarEstado(cab).subscribe((response: any) => {
       switch (response.tipo) {
         case 1:

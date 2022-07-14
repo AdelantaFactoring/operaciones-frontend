@@ -1,6 +1,7 @@
 export class LiquidacionDet {
   idLiquidacionDet: number;
   idLiquidacionCab: number;
+  idSolicitudDet: number;
   rucPagProv: string;
   razonSocialPagProv: string;
   titularCuentaBancariaDestino: string;

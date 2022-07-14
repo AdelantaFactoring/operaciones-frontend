@@ -19,6 +19,7 @@ import {CoreCardModule} from "../../../@core/components/core-card/core-card.modu
 import {MiscellaneousModule} from "../pages/miscellaneous/miscellaneous.module";
 import {PagesModule} from "../pages/pages.module";
 import { LiquidacionesDetalleComponent } from './liquidaciones/liquidaciones-detalle/liquidaciones-detalle.component';
+import { CavaliComponent } from './cavali/cavali.component';
 
 const routes: Routes = [
   {
@@ -56,6 +57,15 @@ const routes: Routes = [
         component: LiquidacionesComponent
       }
     ]
+  },
+  {
+    path: '',
+    children: [
+      {
+        path: 'cavali',
+        component: CavaliComponent
+      }
+    ]
   }
 ]
 
@@ -66,6 +76,7 @@ const routes: Routes = [
     LiquidacionesComponent,
     GenerarLiquidacionComponent,
     LiquidacionesDetalleComponent,
+    CavaliComponent,
   ],
   imports: [
     CommonModule,

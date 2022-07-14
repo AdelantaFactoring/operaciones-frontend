@@ -13,6 +13,7 @@ import {ClienteCuenta} from "../../../shared/models/comercial/cliente-cuenta";
 import {ClientesService} from "../../comercial/clientes/clientes.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import * as fileSaver from 'file-saver';
+import {User} from "../../../shared/models/auth/user";
 
 @Component({
   selector: 'app-devoluciones',
@@ -20,6 +21,7 @@ import * as fileSaver from 'file-saver';
   styleUrls: ['./devoluciones.component.scss']
 })
 export class DevolucionesComponent implements OnInit {
+  public currentUser: User;
   public submitted: boolean = false;
   public contentHeader: object;
   public devoluciones: LiquidacionDevolucion[] = [];
@@ -103,7 +105,10 @@ export class DevolucionesComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+    this.utilsService.blockUIStart("Obteniendo información de maestros...");
     this.tiposArchivos = await this.onListarMaestros(11, 0);
+    this.utilsService.blockUIStop();
     this.onListarDevolucion();
   }
 
@@ -365,7 +370,7 @@ export class DevolucionesComponent implements OnInit {
       tipoCambioMoneda: this.tipoCambioMoneda,
       montoConversion: this.devolucionForm.controls.montoConversion.value,
       fechaDesembolso: fechaDesembolso === null ? '' : `${fechaDesembolso.year}${String(fechaDesembolso.month).padStart(2, '0')}${String(fechaDesembolso.day).padStart(2, '0')}`,
-      idUsuarioAud: 1,
+      idUsuarioAud: this.currentUser.idUsuario,
       liquidacionDevolucionSustento: this.sustentos.filter(f => f.editado)
     }).subscribe((response: any) => {
       switch (response.tipo) {
@@ -420,9 +425,9 @@ export class DevolucionesComponent implements OnInit {
     }
 
     liquidaciones.forEach(el => {
-      el.idEmpresa = 1;
+      el.idEmpresa = this.currentUser.idEmpresa;
       el.idEstado = 1;
-      el.idUsuarioAud = 1;
+      el.idUsuarioAud = this.currentUser.idUsuario;
     });
 
     this.utilsService.blockUIStart('Generando archivo...');
@@ -480,9 +485,9 @@ export class DevolucionesComponent implements OnInit {
     }
 
     liquidaciones.forEach(el => {
-      el.idEmpresa = 1;
+      el.idEmpresa = this.currentUser.idEmpresa;
       el.idEstado = idEstado;
-      el.idUsuarioAud = 1;
+      el.idUsuarioAud = this.currentUser.idUsuario;
     });
 
     this.utilsService.blockUIStart('Confirmando...');
@@ -534,8 +539,8 @@ export class DevolucionesComponent implements OnInit {
     }
 
     liquidaciones.forEach(el => {
-      el.idEmpresa = 1;
-      el.idUsuarioAud = 1;
+      el.idEmpresa = this.currentUser.idEmpresa;
+      el.idUsuarioAud = this.currentUser.idUsuario;
     });
 
     this.utilsService.blockUIStart('Enviando...');

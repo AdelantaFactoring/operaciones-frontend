@@ -9,6 +9,7 @@ import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
 import {LiquidacionPago} from 'app/shared/models/cobranza/liquidacion-pago';
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
+import { User } from 'app/shared/models/auth/user';
 
 @Component({
   selector: 'app-registro-pagos',
@@ -18,6 +19,7 @@ import {TablaMaestraService} from "../../../shared/services/tabla-maestra.servic
 export class RegistroPagosComponent implements OnInit, AfterViewInit {
   @ViewChild('coreCard') coreCard;
 
+  public currentUser: User;
   public contentHeader: object;
   public cambiarIcono: boolean = false;
   public cobranza: LiquidacionCab[] = [];
@@ -31,7 +33,9 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   public ocultarPagoForm: boolean = false;
   public fechaMaxima: any;
 
+  public idLiquidacionCab: number = 0;
   public idLiquidacionDet: number = 0;
+  public idSolicitudDet: number = 0;
   public codigo: string = '';
   public nroDocumento: string = '';
 
@@ -116,6 +120,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.currency = await this.onListarMaestros(1, 0);
     this.operationType = await this.onListarMaestros(4, 0);
@@ -231,7 +236,9 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.liquidacionForm.controls.netoConfirmado.setValue(det.netoConfirmado);
     this.liquidacionForm.controls.fondoResguardo.setValue(det.fondoResguardo);
 
+    this.idLiquidacionCab = cab.idLiquidacionCab;
     this.idLiquidacionDet = det.idLiquidacionDet;
+    this.idSolicitudDet = det.idSolicitudDet;
     this.onInfoPago(det.idLiquidacionDet, '', this.pagoInfoForm.controls.tipoPago.value);
     this.onListarPago(det.idLiquidacionDet);
 
@@ -263,13 +270,16 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
 
     this.utilsService.blockUIStart('Guardando...');
     this.registroPagosService.insertarPago({
+      idEmpresa: this.currentUser.idEmpresa,
       idLiquidacionPago: 0,
+      idLiquidacionCab: this.idLiquidacionCab,
       idLiquidacionDet: this.idLiquidacionDet,
+      idSolicitudDet: this.idSolicitudDet,
       fechaPago: this.utilsService.formatoFecha_YYYYMMDD(this.pagoInfoForm.controls.fechaPago.value),
       montoPago: this.pagoInfoForm.controls.montoPago.value,
       _TipoPago: this.pagoInfoForm.controls.tipoPago.value,
       observacion: this.pagoInfoForm.controls.observacion.value,
-      idUsuarioAud: 1
+      idUsuarioAud: this.currentUser.idUsuario
     }).subscribe((response) => {
       switch (response.tipo) {
         case 1:

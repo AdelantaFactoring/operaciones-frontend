@@ -10,6 +10,7 @@ import {LiquidacionesService} from "../liquidaciones/liquidaciones.service";
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {SolicitudDet} from "../../../shared/models/comercial/solicitudDet";
 import {SolicitudCabSustento} from "../../../shared/models/comercial/solicitudCab-sustento";
+import { User } from 'app/shared/models/auth/user';
 
 @Component({
   selector: 'app-generar-liquidacion',
@@ -17,6 +18,7 @@ import {SolicitudCabSustento} from "../../../shared/models/comercial/solicitudCa
   styleUrls: ['./generar-liquidacion.component.scss']
 })
 export class GenerarLiquidacionComponent implements OnInit {
+  public currentUser: User;
   public contentHeader: object;
   public solicitudes: SolicitudCab[] = [];
   public tipoCT: TablaMaestra[] = [];
@@ -115,6 +117,7 @@ export class GenerarLiquidacionComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.tipoCT = await this.onListarMaestros(5, 0);
     this.montoTotalFacturadoMinimoTM = await this.onListarMaestros(1000, 3);
@@ -194,17 +197,9 @@ export class GenerarLiquidacionComponent implements OnInit {
       return;
     }
 
-    for (let cab of solicitudes) {
-      for (let det of cab.solicitudDet) {
-        // if () {
-        //
-        // }
-      }
-    }
-
     solicitudes.forEach(el => {
-      el.idEmpresa = 1;
-      el.idUsuarioAud = 1;
+      el.idEmpresa = this.currentUser.idEmpresa;
+      el.idUsuarioAud = this.currentUser.idUsuario;
     });
 
     this.utilsService.blockUIStart('Generando...');
@@ -387,7 +382,7 @@ export class GenerarLiquidacionComponent implements OnInit {
           [{
             idSolicitudCab: cab.idSolicitudCab,
             idEstado: 4,
-            idUsuarioAud: 1
+            idUsuarioAud: this.currentUser.idUsuario
           }]
         ).subscribe(response => {
           if (response.tipo === 1) {

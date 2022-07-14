@@ -16,7 +16,7 @@ import {FileUploader} from "ng2-file-upload";
 import {Archivo} from "../../../shared/models/comercial/archivo";
 import {LiquidacionCabSustento} from "../../../shared/models/operaciones/LiquidacionCab-Sustento";
 import {ActivatedRoute} from "@angular/router";
-import { User } from 'app/shared/models/auth/user';
+import {User} from 'app/shared/models/auth/user';
 import {Audit} from "../../../shared/models/shared/audit";
 import {ContentHeader} from "../../../layout/components/content-header/content-header.component";
 
@@ -322,6 +322,9 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
   }
 
   onEditar(cab: LiquidacionCab, item: LiquidacionDet, modal: object): void {
+    this.oldLiquidacionDet = {...item};
+    item.edicion = true;
+
     this.codigo = cab.codigo;
     this.nroDocumento = item.nroDocumento;
     this.dataCabecera = cab;
@@ -331,54 +334,48 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
       this.modalService.open(modal, {
         scrollable: true,
         //size: 'lg',
-        windowClass: 'my-class',
+        windowClass: 'my-class2',
         animation: true,
         centered: false,
         backdrop: "static",
+        keyboard: false,
         beforeDismiss: () => {
           return true;
         }
       });
     }, 0);
-
-    // if (cab.liquidacionDet.filter(f => f.edicion || f.editado).length > 0) {
-    //   this.utilsService.showNotification("Guarda o cancela los cambios primero", "Advertencia", 2);
-    //   return;
-    // }
-    //
-    // this.oldLiquidacionDet = {...item};
-    // item.edicion = true;
   }
 
-  onCancelar(item: LiquidacionDet): void {
-    if (!item.cambioConfirmado) {
-      item.fechaOperacion = this.oldLiquidacionDet.fechaOperacion;
-      item.fechaOperacionFormat = this.oldLiquidacionDet.fechaOperacionFormat;
-      item.diasEfectivo = this.oldLiquidacionDet.diasEfectivo;
-      item.interes = this.oldLiquidacionDet.interes;
-      item.interesIGV = this.oldLiquidacionDet.interesIGV;
-      item.interesConIGV = this.oldLiquidacionDet.interesConIGV;
-      item.gastosContrato = this.oldLiquidacionDet.gastosContrato;
-      item.gastoVigenciaPoder = this.oldLiquidacionDet.gastoVigenciaPoder;
-      item.servicioCustodia = this.oldLiquidacionDet.servicioCustodia;
-      item.servicioCobranza = this.oldLiquidacionDet.servicioCobranza;
-      item.comisionCartaNotarial = this.oldLiquidacionDet.comisionCartaNotarial;
-      item.gastosDiversos = this.oldLiquidacionDet.gastosDiversos;
-      item.gastosDiversosIGV = this.oldLiquidacionDet.gastosDiversosIGV;
-      item.gastosDiversosConIGV = this.oldLiquidacionDet.gastosDiversosConIGV;
-      item.montoTotalFacturado = this.oldLiquidacionDet.montoTotalFacturado;
-      item.montoDesembolso = this.oldLiquidacionDet.montoDesembolso;
-      item.edicion = false;
-      item.editado = false;
-    } else {
-      item.edicion = false;
-    }
+  onCancelar(item: LiquidacionDet, modal: any): void {
+    item.fechaOperacion = this.oldLiquidacionDet.fechaOperacion;
+    item.fechaOperacionFormat = this.oldLiquidacionDet.fechaOperacionFormat;
+    item.diasEfectivo = this.oldLiquidacionDet.diasEfectivo;
+    item.interes = this.oldLiquidacionDet.interes;
+    item.interesIGV = this.oldLiquidacionDet.interesIGV;
+    item.interesConIGV = this.oldLiquidacionDet.interesConIGV;
+    item.gastosContrato = this.oldLiquidacionDet.gastosContrato;
+    item.gastoVigenciaPoder = this.oldLiquidacionDet.gastoVigenciaPoder;
+    item.servicioCustodia = this.oldLiquidacionDet.servicioCustodia;
+    item.servicioCobranza = this.oldLiquidacionDet.servicioCobranza;
+    item.comisionCartaNotarial = this.oldLiquidacionDet.comisionCartaNotarial;
+    item.gastosDiversos = this.oldLiquidacionDet.gastosDiversos;
+    item.gastosDiversosIGV = this.oldLiquidacionDet.gastosDiversosIGV;
+    item.gastosDiversosConIGV = this.oldLiquidacionDet.gastosDiversosConIGV;
+    item.montoTotalFacturado = this.oldLiquidacionDet.montoTotalFacturado;
+    item.montoDesembolso = this.oldLiquidacionDet.montoDesembolso;
+    item.edicion = this.oldLiquidacionDet.edicion;
+    item.editado = this.oldLiquidacionDet.editado;
+    item.cambioConfirmado = this.oldLiquidacionDet.cambioConfirmado;
+
+    modal.dismiss("");
   }
 
-  onConfirmarCambio(item: LiquidacionDet): void {
+  onConfirmarCambio(item: LiquidacionDet, modal: any): void {
     item.edicion = false;
     item.editado = true;
     item.cambioConfirmado = true;
+
+    modal.dismiss("");
   }
 
   onCalcular(cab: LiquidacionCab, det: LiquidacionDet): void {

@@ -6,3 +6,7 @@ export const LIQUIDACIONES = {
   cambiarEstado: '/liquidacion/cambiarestado',
   pdf: '/liquidacion/ReEnviar'
 }
+
+export const SOLICITUD_CAVALI = {
+  listar: '/solicitudCavali/listar'
+}
