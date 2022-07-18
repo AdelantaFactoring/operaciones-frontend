@@ -126,7 +126,6 @@ export class SolicitudesFormComponent implements OnInit {
     if (form != '' && this.idTipoOperacion == 3) {
       this.horizontalWizardStepper.next();
     }
-
   }
 
   horizontalWizardStepperPrevious(flagDoble) {

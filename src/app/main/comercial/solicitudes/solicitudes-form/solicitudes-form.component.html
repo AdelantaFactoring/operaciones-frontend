@@ -118,10 +118,10 @@
               </button>
             </div>
             <div *ngIf="tipoFactoring" class="line"><i data-feather="chevron-right" class="font-medium-2"></i></div>
-            <div *ngIf="tipoFactoring" class="step" data-target="#autorizacion">
+            <div class="step" data-target="#autorizacion">
               <button class="step-trigger">
-                <span class="bs-stepper-box">3</span>
-                <span class="bs-stepper-label">
+                <span class="bs-stepper-box" *ngIf="tipoFactoring">3</span>
+                <span class="bs-stepper-label" *ngIf="tipoFactoring">
                   <span class="bs-stepper-title">Autorización</span>
                   <span class="bs-stepper-subtitle">Subir Archivo</span>
                 </span>
@@ -321,7 +321,7 @@
                       <i data-feather="save" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
                     <button *ngIf="flagConfirming || flagRespuestaFac || tipoFactoring"
-                            (click)="horizontalWizardStepperNext((!tipoFactoring ? personalInfoForm : autorizacionForm), (!tipoFactoring ? RespuestaFacForm : ''), 0)"
+                            (click)="horizontalWizardStepperNext(personalInfoForm , (!tipoFactoring ? RespuestaFacForm : ''), 0)"
                             class="btn btn-primary btn-next" rippleEffect>
                       <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
@@ -615,7 +615,7 @@
                       <i data-feather="save" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
                     <button *ngIf="flagConfirming || flagRespuestaFac"
-                            (click)="horizontalWizardStepperNext(personalInfoForm, RespuestaFacForm, 0)"
+                            (click)="horizontalWizardStepperNext(autorizacionForm, RespuestaFacForm, 0)"
                             class="btn btn-primary btn-next" rippleEffect>
                       <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
