@@ -56,6 +56,7 @@ export class SolicitudesFormComponent implements OnInit {
   public clienteGastos = [];
   public razonSocial = '';
   public ruc = '';
+  public tipoFactoring: boolean = false;
   public tasaNominalMensual: number = 0;
   public tasaNominalAnual: number = 0;
   public tasaNominalMensualMora: number = 0;

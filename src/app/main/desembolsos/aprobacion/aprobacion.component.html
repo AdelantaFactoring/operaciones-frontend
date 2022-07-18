@@ -2,7 +2,7 @@
   <div class="content-body">
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
     <core-card #coreCard [actions]="['collapse', 'reload']" (events)="onLimpiarFiltro($event)">
-      <h4 class="card-title">Buscar por</h4>
+      <h4 class="card-title">Buscar por <small><i>(click aquí para expandir)</i></small></h4>
       <div class="card-body">
         <form [formGroup]="filtroForm">
           <div class="row">

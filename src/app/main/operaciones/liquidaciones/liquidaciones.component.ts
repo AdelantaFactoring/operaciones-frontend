@@ -257,6 +257,11 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     }
 
     for (const el of liquidaciones) {
+      if (!el.correoValidacionEnviado) {
+        this.utilsService.showNotification(`Aún no se ha enviado el correo de validación para la liquidación '${el.codigo}'`, "Advertencia", 2);
+        return;
+      }
+
       if (el.liquidacionCabSustento.filter(f => f.idTipoSustento === 1 && f.idTipo === 1).length === 0) {
         this.utilsService.showNotification(`La liquidación '${el.codigo}' seleccionada no contiene un archivo de sustento de aprobación`, "Advertencia", 2);
         return;
