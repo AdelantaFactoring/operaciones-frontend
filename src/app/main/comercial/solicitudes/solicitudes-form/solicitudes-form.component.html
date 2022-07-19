@@ -600,8 +600,68 @@
               </div>
               <div id="autorizacion" class="content">
                 <form #autorizacionForm="ngForm">
+                  <div class="content-header">
+                    <div class="row">
+                      <div class="col-8">
+                        <h5 class="mb-0">Autorización</h5>
+                        <small>Documento de autorización</small>
+                      </div>
+                    </div>
+                  </div>
                   <div class="row">
-                    <h1>Archivo autorizacion</h1>
+                    <div class="col-md-12">
+                      <div ng2FileDrop [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
+                           (fileOver)="fileOverBase($event)" [uploader]="uploader2"
+                           class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone">
+                        Arrastre aqui el archivo
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-12 overflow-auto">
+                      <div class="d-flex justify-content-between mb-1">
+                        <label>Subir cola</label>
+                        <p>Longitud de la cola: {{ uploader2?.queue?.length }}</p>
+                      </div>
+
+                      <table class="table">
+                        <thead>
+                        <tr>
+                          <th width="40%">Nombre</th>
+                          <th>Tamaño</th>
+                          <th>Progreso</th>
+                          <th>Estado</th>
+                          <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of uploader2.queue">
+                          <!-- <td [ngClass]="{color: item?.file?.name.includes(.XML)}"> -->
+                          <td>
+                            <strong>{{ item?.file?.name }}</strong>
+                          </td>
+                          <td *ngIf="uploader2.options.isHTML5" nowrap>
+                            {{ item?.file?.size / 1024 / 1024 | number: '.2' }} MB
+                          </td>
+                          <td *ngIf="uploader2.options.isHTML5">
+                            <ngb-progressbar type="primary" [value]="item.progress">
+                            </ngb-progressbar>
+                          </td>
+                          <td class="text-center">
+                            <span *ngIf="item.isSuccess"><i data-feather="check"></i></span>
+                            <span *ngIf="item.isCancel"><i data-feather="slash"></i></span>
+                            <span *ngIf="item.isError"><i data-feather="x-circle"></i></span>
+                          </td>
+                          <td nowrap>
+                            <button type="button" class="btn btn-raised btn-outline-danger btn-sm"
+                                    (click)="item.remove()" rippleEffect>
+                              <i data-feather="trash"></i>
+                            </button>
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                   <div class="d-flex justify-content-between pt-1">
                     <button type="button" (click)="horizontalWizardStepperPrevious(0)" class="btn btn-primary btn-prev"
@@ -614,7 +674,11 @@
                       <span class="align-middle d-sm-inline-block d-none">Guardar</span>
                       <i data-feather="save" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
-                    <button *ngIf="flagConfirming || flagRespuestaFac"
+                    <button class="btn btn-primary" rippleEffect type="button" (click)="onProcesarAut()"
+                            [disabled]="!uploader2.getNotUploadedItems().length" *ngIf="procesarAut">
+                      <span [data-feather]="'save'"></span> Procesar Archivos
+                    </button>
+                    <button *ngIf="flagConfirming || flagRespuestaFac || !procesarAut"
                             (click)="horizontalWizardStepperNext(autorizacionForm, RespuestaFacForm, 0)"
                             class="btn btn-primary btn-next" rippleEffect>
                       <span class="align-middle d-sm-inline-block d-none">Siguiente</span>

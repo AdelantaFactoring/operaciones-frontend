@@ -18,6 +18,7 @@ export const SOLICITUD = {
   eliminar: '/solicitudCab/eliminar',
   eliminarFactura: '/solicitudCab/eliminarfactura',
   uploadXlsx: '/solicitudCab/uploadXlsx',
+  uploadAutorizacion: '/solicitudCab/uploadAutorizacion',
   actualizar: '/solicitudCab/actualizar',
   guardarCT: '/solicitudCab/guardarCT',
   generarCarpeta: '/SolicitudCab/GenerarCarpeta',

@@ -1,21 +1,21 @@
 import {AfterViewInit, Component, OnInit, ViewEncapsulation} from '@angular/core';
-import { DatePipe, Location } from '@angular/common';
+import {DatePipe, Location} from '@angular/common';
 import Stepper from 'bs-stepper';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { UtilsService } from "../../../../shared/services/utils.service";
-import { SolicitudesFormService } from "./solicitudes-form.service";
-import { NgbModal, NgbCalendar, NgbDate } from "@ng-bootstrap/ng-bootstrap";
-import { FileItem, FileUploader, ParsedResponseHeaders } from 'ng2-file-upload';
-import { environment } from '../../../../../environments/environment';
-import { SOLICITUD } from "../../../../shared/helpers/url/comercial";
-import { SolicitudArchivos, SolicitudArchivosXlsx } from 'app/shared/models/comercial/SolicitudArchivos';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {UtilsService} from "../../../../shared/services/utils.service";
+import {SolicitudesFormService} from "./solicitudes-form.service";
+import {NgbModal, NgbCalendar, NgbDate} from "@ng-bootstrap/ng-bootstrap";
+import {FileItem, FileUploader, ParsedResponseHeaders} from 'ng2-file-upload';
+import {environment} from '../../../../../environments/environment';
+import {SOLICITUD} from "../../../../shared/helpers/url/comercial";
+import {SolicitudArchivos, SolicitudArchivosXlsx} from 'app/shared/models/comercial/SolicitudArchivos';
 import Swal from 'sweetalert2';
-import { SolicitudDetRespuesta } from 'app/shared/models/comercial/SolicitudDet-Respuesta';
-import { ItemsList } from '@ng-select/ng-select/lib/items-list';
-import { ClienteContacto } from 'app/shared/models/comercial/cliente-contacto';
-import { LOADIPHLPAPI } from 'dns';
-import { Router } from '@angular/router';
-import { User } from 'app/shared/models/auth/user';
+import {SolicitudDetRespuesta} from 'app/shared/models/comercial/SolicitudDet-Respuesta';
+import {ItemsList} from '@ng-select/ng-select/lib/items-list';
+import {ClienteContacto} from 'app/shared/models/comercial/cliente-contacto';
+import {LOADIPHLPAPI} from 'dns';
+import {Router} from '@angular/router';
+import {User} from 'app/shared/models/auth/user';
 
 @Component({
   selector: 'app-solicitudes-form',
@@ -32,6 +32,10 @@ export class SolicitudesFormComponent implements OnInit {
     isHTML5: true
   });
   public uploaderXlsx: FileUploader = new FileUploader({
+    url: `${environment.apiUrl}${SOLICITUD.upload}`,
+    isHTML5: true
+  });
+  public uploader2: FileUploader = new FileUploader({
     url: `${environment.apiUrl}${SOLICITUD.upload}`,
     isHTML5: true
   });
@@ -83,6 +87,7 @@ export class SolicitudesFormComponent implements OnInit {
   hasBaseDropZoneOver: boolean;
   procesar: boolean = true;
   procesarXlsx: boolean = true;
+  public procesarAut: boolean = true;
   facCheck: boolean = true;
   idMoneda: number = 1;
   public usarGastosContrato: boolean = true;
@@ -93,16 +98,16 @@ export class SolicitudesFormComponent implements OnInit {
   public igvCT: number = 0;
   public selectedRowIds: number[] = [];
   public selectBasic = [
-    { name: 'UK' },
-    { name: 'USA' },
-    { name: 'Spain' },
-    { name: 'France' },
-    { name: 'Italy' },
-    { name: 'Australia' }
+    {name: 'UK'},
+    {name: 'USA'},
+    {name: 'Spain'},
+    {name: 'France'},
+    {name: 'Italy'},
+    {name: 'Australia'}
   ];
   private horizontalWizardStepper: Stepper;
   public contacto: ClienteContacto[] = [];
-  public selectMulti = [{ name: 'English' }, { name: 'French' }, { name: 'Spanish' }];
+  public selectMulti = [{name: 'English'}, {name: 'French'}, {name: 'Spanish'}];
   public selectMultiSelected;
   public zeroPad = (num, places) => String(num).padStart(places, '0');
   public fechaPagoCT = this.calendar.getToday();
@@ -139,12 +144,15 @@ export class SolicitudesFormComponent implements OnInit {
     alert('Submitted!!');
     return false;
   }
+
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;
   }
+
   get CapitalIUForm(): any {
     return this.capitalTrabajoForm.controls;
   }
+
   constructor(
     private modalService: NgbModal,
     private utilsService: UtilsService,
@@ -220,12 +228,14 @@ export class SolicitudesFormComponent implements OnInit {
   onRefrescar(): void {
     //this.onListarSolicitudes();
   }
+
   public fileOverBase(e: any): void {
     this.hasBaseDropZoneOver = e;
     if (e == false) {
       this.onBrowseChange();
       this.procesar = true;
       this.procesarXlsx = true;
+      this.procesarAut = true;
     }
   }
 
@@ -236,15 +246,15 @@ export class SolicitudesFormComponent implements OnInit {
     }
     if (this.idTipoOperacion == 3) {
       for (const row of this.dataXml) {
-        if (row.titularCuentaBancariaDestino == null || row.monedaCuentaBancariaDestino == null || row.bancoDestino == null || row.tipoCuentaBancariaDestino == null) {
+        if (row.titularCuentaBancariaDestino == null || row.monedaCuentaBancariaDestino == null || row.bancoDestino == null || row.tipoCuentaBancariaDestino == null
+          || row.nombreContacto == null || row.telefonoContacto == null || row.correoContacto == null) {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
           return;
-        }
-        else if (row.nroCuentaBancariaDestino == null && row.cCIDestino == null || row.nroCuentaBancariaDestino == '' && row.cCIDestino == '') {
+        } else if (row.nroCuentaBancariaDestino == null && row.cCIDestino == null || row.nroCuentaBancariaDestino == '' && row.cCIDestino == '') {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
           return;
-        }
-        else if (row.titularCuentaBancariaDestino == '' || row.monedaCuentaBancariaDestino == '' || row.bancoDestino == '' || row.tipoCuentaBancariaDestino == '') {
+        } else if (row.titularCuentaBancariaDestino == '' || row.monedaCuentaBancariaDestino == '' || row.bancoDestino == '' || row.tipoCuentaBancariaDestino == ''
+          || row.nombreContacto == '' || row.telefonoContacto == '' || row.correoContacto == '') {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
           return;
         }
@@ -296,8 +306,7 @@ export class SolicitudesFormComponent implements OnInit {
 
       if (this.idTipoOperacion == 1) {
         this.flagRespuestaFac = true;
-      }
-      else {
+      } else {
         this.flagRespuestaCon = true;
       }
       this.onGenerarCarpeta(this.solicitudDetRespuesta);
@@ -309,6 +318,7 @@ export class SolicitudesFormComponent implements OnInit {
     });
 
   }
+
   onGuardarCT(): void {
     this.submitted = true;
     if (this.capitalTrabajoForm.invalid) {
@@ -366,10 +376,12 @@ export class SolicitudesFormComponent implements OnInit {
     });
 
   }
+
   onBrowseChange() {
-    if (this.uploaderXlsx.queue.length > 1) {
-      this.uploaderXlsx.queue.splice(0, 1);
+    if (this.uploader.queue.length > 1) {
+      this.uploader.queue.splice(0, 1);
     }
+
     this.procesar = true;
     let flagEliminado = false;
     for (const item of this.uploader.queue) {
@@ -387,6 +399,7 @@ export class SolicitudesFormComponent implements OnInit {
       this.utilsService.showNotification('Se han eliminado los archivo que no continen una extensión .xml o .pdf', 'Validación', 2);
     }
   }
+
   onBrowseChangeXlsx() {
     if (this.uploaderXlsx.queue.length > 1) {
       this.uploaderXlsx.queue.splice(0, 1);
@@ -425,8 +438,7 @@ export class SolicitudesFormComponent implements OnInit {
       this.razonSocialCab = "Razon Social Cliente";
       this.rucDet = "Ruc Pagador";
       this.razonSocialDet = "Razon Social Pagador";
-    }
-    else if (idTipoOperacion == 2) {
+    } else if (idTipoOperacion == 2) {
       this.onTablaMaestra(5);
       this.onTablaMaestra(1);
       this.onChangeMoneda();
@@ -441,8 +453,7 @@ export class SolicitudesFormComponent implements OnInit {
           }
         });
       }, 0);
-    }
-    else {
+    } else {
       this.rucCab = "Ruc Proveedor";
       this.razonSocialCab = "Razon Social Proveedor";
       this.rucDet = "Ruc Cliente";
@@ -490,8 +501,7 @@ export class SolicitudesFormComponent implements OnInit {
     this.idCliente = idfila;
     if (this.idTipoOperacion == 2) {
       this.onClienteObtener(idfila, ruc, razon);
-    }
-    else {
+    } else {
       if (this.idTipoOperacion == 3) {
         this.onClienteObtener(idfila, ruc, razon);
       }
@@ -523,7 +533,7 @@ export class SolicitudesFormComponent implements OnInit {
 
     let list = [];
     for (const item of this.uploader.queue) {
-      list.push({ 'name': item?.file?.name });
+      list.push({'name': item?.file?.name});
       nameXml = item?.file?.name.substring(0, item?.file?.name.length - 4);
 
       if (item?.file?.name.includes('.xml') || item?.file?.name.includes('.XML')) {
@@ -534,8 +544,7 @@ export class SolicitudesFormComponent implements OnInit {
           this.utilsService.showNotification("El nombre del archivo " + item?.file?.name + " no coincide con ningun archivo .PDF", 'Alerta', 2);
           return;
         }
-      }
-      else {
+      } else {
         this.cantPdf = this.cantPdf + 1;
       }
     }
@@ -561,15 +570,13 @@ export class SolicitudesFormComponent implements OnInit {
 
       if (rs.tipo == 0) {
         this.dataXml.push(rs);
-        console.log('data', this.dataXml);
 
         this.procesar = false;
         count = Number(count) + 1;
         if (count == this.cantXml) {
           this.utilsService.showNotification('Información Procesada correctamente', 'Confirmación', 1);
         }
-      }
-      else {
+      } else {
         if (rs.tipo == 1) {
           this.dataPdf.push(rs);
         } else if (rs.tipo == 2) {
@@ -586,6 +593,7 @@ export class SolicitudesFormComponent implements OnInit {
 
     });
   }
+
   onProcesarXlsx(): void {
     this.uploaderXlsx.setOptions({
       url: `${environment.apiUrl}${SOLICITUD.uploadXlsx}`,
@@ -595,7 +603,6 @@ export class SolicitudesFormComponent implements OnInit {
     this.uploaderXlsx.uploadAll();
 
     this.uploaderXlsx.response.subscribe(res => {
-
       let rs = JSON.parse(res);
       this.dataXlsx = [];
 
@@ -605,29 +612,31 @@ export class SolicitudesFormComponent implements OnInit {
         if (this.cantXml != this.dataXlsx.length) {
           this.utilsService.showNotification("La cantida de registros en el Excel no coincide con la cantidad de facturas adjuntadas", 'Alerta', 2);
           this.procesarXlsx = true;
-        }
-        else {
+        } else {
+          let contacto = this.contacto.find(f => f.predeterminado);
+          if (contacto === null)
+            if (this.contacto.length > 0)
+              contacto = this.contacto[0];
+
           for (const row of this.dataXlsx) {
-            for (const item of this.dataXml) {
-              if (item.rucCab == row.ruc && item.tipoMoneda == row.moneda && item.codFactura == row.documento) {
-                item.netoPendiente = row.netoPagar;
-                item.fechaVencimiento = row.fechaVencimiento.substring(0, 10);
-                item.nombreContacto = this.contacto[0].nombre;
-                item.telefonoContacto = this.contacto[0].telefono;
-                item.correoContacto = this.contacto[0].correo;
-                item.titularCuentaBancariaDestino = row.razonSocialProv;
-                item.monedaCuentaBancariaDestino = row.moneda;
-                item.bancoDestino = row.banco;
-                item.nroCuentaBancariaDestino = row.ctaBancaria;
-                item.cCIDestino = row.cci;
-                item.tipoCuentaBancariaDestino = row.tipoCuenta;
-              }
+            let item = this.dataXml.find(f => f.rucCab == row.ruc && f.tipoMoneda == row.moneda && f.codFactura == row.documento);
+            if (item != null) {
+              item.netoPendiente = row.netoPagar;
+              item.fechaVencimiento = row.fechaVencimiento.substring(0, 10);
+              item.nombreContacto = contacto ? contacto[0].nombre : '';
+              item.telefonoContacto = contacto ? contacto[0].telefono : '';
+              item.correoContacto = contacto ? contacto[0].correo : '';
+              item.titularCuentaBancariaDestino = row.razonSocialProv;
+              item.monedaCuentaBancariaDestino = row.moneda;
+              item.bancoDestino = row.banco;
+              item.nroCuentaBancariaDestino = row.ctaBancaria;
+              item.cCIDestino = row.cci;
+              item.tipoCuentaBancariaDestino = row.tipoCuenta;
             }
           }
           this.procesarXlsx = false;
         }
-      }
-      else {
+      } else {
         if (rs.tipo == 1) {
           this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
           this.utilsService.blockUIStop();
@@ -638,6 +647,27 @@ export class SolicitudesFormComponent implements OnInit {
           this.utilsService.showNotification(res.mensaje, 'Error', 3);
           this.utilsService.blockUIStop();
         }
+      }
+    });
+  }
+
+  onProcesarAut(): void {
+    this.uploader2.setOptions({
+      url: `${environment.apiUrl}${SOLICITUD.uploadAutorizacion}`,
+    });
+
+    this.uploader2.uploadAll();
+    this.uploader2.response.subscribe(res => {
+      if (res.tipo == 1) {
+        this.procesarAut = false;
+        this.utilsService.showNotification('Documento cargado correctamente', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+      } else if (res.tipo == 2) {
+        this.utilsService.showNotification(res.mensaje, 'Alerta', 2);
+        this.utilsService.blockUIStop();
+      } else {
+        this.utilsService.showNotification(res.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
       }
     });
   }
@@ -659,6 +689,7 @@ export class SolicitudesFormComponent implements OnInit {
       }
     }
   }
+
   onMensajeValidacion(msg): void {
     Swal.fire({
       title: 'No Coincide',
@@ -691,54 +722,53 @@ export class SolicitudesFormComponent implements OnInit {
     }).subscribe(response => {
       if (this.idTipoOperacion == 3) {
         this.contacto = response.clienteContacto;
-      }
-      if (response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda).length > 0) {
-        this.clienteGastos = response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda);
+      } else {
+        if (response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda).length > 0) {
+          this.clienteGastos = response.clienteGastos.filter(x => x.idTipoOperacion == 2 && x.idMoneda == this.idMoneda);
 
-        for (const item of this.clienteGastos) {
-          this.ruc = item.ruc;
-          this.razonSocial = item.razonSocial;
-          this.tasaNominalMensual = item.tasaNominalMensual;
-          this.tasaNominalAnual = item.tasaNominalAnual;
-          this.tasaNominalMensualMora = item.tasaNominalMensualMora;
-          this.tasaNominalAnualMora = item.tasaNominalAnualMora;
-          this.financiamiento = item.financiamiento;
+          for (const item of this.clienteGastos) {
+            this.ruc = item.ruc;
+            this.razonSocial = item.razonSocial;
+            this.tasaNominalMensual = item.tasaNominalMensual;
+            this.tasaNominalAnual = item.tasaNominalAnual;
+            this.tasaNominalMensualMora = item.tasaNominalMensualMora;
+            this.tasaNominalAnualMora = item.tasaNominalAnualMora;
+            this.financiamiento = item.financiamiento;
+            this.capitalTrabajoForm.controls.ruc.setValue(ruc);
+            this.capitalTrabajoForm.controls.razonSocial.setValue(razon);
+            this.capitalTrabajoForm.controls.tasaMensual.setValue(item.tasaNominalMensual);
+            this.capitalTrabajoForm.controls.tasaAnual.setValue(item.tasaNominalAnual);
+            this.capitalTrabajoForm.controls.tasaMoraMensual.setValue(item.tasaNominalMensualMora);
+            this.capitalTrabajoForm.controls.tasaMoraAnual.setValue(item.tasaNominalAnualMora);
+            this.capitalTrabajoForm.controls.usarGastosContrato.setValue(true);
+            this.capitalTrabajoForm.controls.usarGastoVigenciaPoder.setValue(true);
+            this.capitalTrabajoForm.controls.contrato.setValue(item.gastosContrato);
+            this.capitalTrabajoForm.controls.cartaNotarial.setValue(item.comisionCartaNotarial);
+            this.capitalTrabajoForm.controls.servicioCobranza.setValue(item.servicioCobranza);
+            this.capitalTrabajoForm.controls.servicioCustodia.setValue(item.servicioCustodia);
+            this.capitalTrabajoForm.controls.financiamiento.setValue(item.financiamiento);
+            this.capitalTrabajoForm.controls.comisionEstructuracion.setValue(item.comisionEstructuracion);
+          }
+        } else {
+          this.ruc = ruc;
+          this.razonSocial = razon;
+          this.tasaNominalMensual = 0;
+          this.tasaNominalAnual = 0;
+          this.tasaNominalMensualMora = 0;
+          this.tasaNominalAnualMora = 0;
+          this.financiamiento = 0;
           this.capitalTrabajoForm.controls.ruc.setValue(ruc);
           this.capitalTrabajoForm.controls.razonSocial.setValue(razon);
-          this.capitalTrabajoForm.controls.tasaMensual.setValue(item.tasaNominalMensual);
-          this.capitalTrabajoForm.controls.tasaAnual.setValue(item.tasaNominalAnual);
-          this.capitalTrabajoForm.controls.tasaMoraMensual.setValue(item.tasaNominalMensualMora);
-          this.capitalTrabajoForm.controls.tasaMoraAnual.setValue(item.tasaNominalAnualMora);
-          this.capitalTrabajoForm.controls.usarGastosContrato.setValue(true);
-          this.capitalTrabajoForm.controls.usarGastoVigenciaPoder.setValue(true);
-          this.capitalTrabajoForm.controls.contrato.setValue(item.gastosContrato);
-          this.capitalTrabajoForm.controls.cartaNotarial.setValue(item.comisionCartaNotarial);
-          this.capitalTrabajoForm.controls.servicioCobranza.setValue(item.servicioCobranza);
-          this.capitalTrabajoForm.controls.servicioCustodia.setValue(item.servicioCustodia);
-          this.capitalTrabajoForm.controls.financiamiento.setValue(item.financiamiento);
-          this.capitalTrabajoForm.controls.comisionEstructuracion.setValue(item.comisionEstructuracion);
-
+          this.capitalTrabajoForm.controls.tasaAnual.setValue(0);
+          this.capitalTrabajoForm.controls.tasaMensual.setValue(0);
+          this.capitalTrabajoForm.controls.tasaMoraMensual.setValue(0);
+          this.capitalTrabajoForm.controls.tasaMoraAnual.setValue(0);
+          this.capitalTrabajoForm.controls.cartaNotarial.setValue(0);
+          this.capitalTrabajoForm.controls.servicioCobranza.setValue(0);
+          this.capitalTrabajoForm.controls.servicioCustodia.setValue(0);
+          this.capitalTrabajoForm.controls.financiamiento.setValue(0);
+          this.capitalTrabajoForm.controls.comisionEstructuracion.setValue(0);
         }
-      }
-      else {
-        this.ruc = ruc;
-        this.razonSocial = razon;
-        this.tasaNominalMensual = 0;
-        this.tasaNominalAnual = 0;
-        this.tasaNominalMensualMora = 0;
-        this.tasaNominalAnualMora = 0;
-        this.financiamiento = 0;
-        this.capitalTrabajoForm.controls.ruc.setValue(ruc);
-        this.capitalTrabajoForm.controls.razonSocial.setValue(razon);
-        this.capitalTrabajoForm.controls.tasaAnual.setValue(0);
-        this.capitalTrabajoForm.controls.tasaMensual.setValue(0);
-        this.capitalTrabajoForm.controls.tasaMoraMensual.setValue(0);
-        this.capitalTrabajoForm.controls.tasaMoraAnual.setValue(0);
-        this.capitalTrabajoForm.controls.cartaNotarial.setValue(0);
-        this.capitalTrabajoForm.controls.servicioCobranza.setValue(0);
-        this.capitalTrabajoForm.controls.servicioCustodia.setValue(0);
-        this.capitalTrabajoForm.controls.financiamiento.setValue(0);
-        this.capitalTrabajoForm.controls.comisionEstructuracion.setValue(0);
       }
       this.utilsService.blockUIStop();
     }, error => {
@@ -755,11 +785,9 @@ export class SolicitudesFormComponent implements OnInit {
     }).subscribe(response => {
       if (idTabla == 1) {
         this.optMoneda = response;
-      }
-      else if (idTabla == 5) {
+      } else if (idTabla == 5) {
         this.optTipo = response;
-      }
-      else {
+      } else {
         this.igvCT = response[0].valor;
         this.capitalTrabajoForm.controls.igvCT.setValue(this.igvCT);
       }
@@ -774,7 +802,7 @@ export class SolicitudesFormComponent implements OnInit {
     let fecha = new Date();
     let diasEfectivo = 0;
     if (idTipo == 2) {
-      fecha.setHours(0,0,0,0);
+      fecha.setHours(0, 0, 0, 0);
       let fecConfirmado = new Date(this.fechaPagoCT.year,
         this.fechaPagoCT.month - 1,
         this.fechaPagoCT.day, 0, 0, 0);
@@ -783,9 +811,7 @@ export class SolicitudesFormComponent implements OnInit {
       setTimeout(() => {
         this.capitalTrabajoForm.controls.diasPrestamo.setValue(diasEfectivo)
       }, 0);
-    }
-    else
-    {
+    } else {
       fecha.setDate(fecha.getDate() + Number(this.capitalTrabajoForm.controls.diasPrestamo.value) - 1);
 
       let date = {
@@ -797,6 +823,7 @@ export class SolicitudesFormComponent implements OnInit {
     }
     this.onCalcularCT();
   }
+
   onChangeMoneda(): void {
     this.ruc = '';
     this.razonSocial = '';
@@ -821,6 +848,7 @@ export class SolicitudesFormComponent implements OnInit {
     this.capitalTrabajoForm.controls.tFacturarIGV.setValue(0);
     this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(0);
   }
+
   onCalcularCT(): void {
     let TNM, TNA, nroDias, mDescontar, intereses, montoSolicitado, totFacturar, fondoResguardo = 0;
     let contrato, servicioCustodia, servicioCobranza, cartaNotarial, gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
@@ -851,8 +879,7 @@ export class SolicitudesFormComponent implements OnInit {
       this.capitalTrabajoForm.controls.gIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
       this.capitalTrabajoForm.controls.tFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
       this.capitalTrabajoForm.controls.tDesembolsoIGV.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
-    }
-    else {
+    } else {
       fondoResguardo = montoSolicitado - ((montoSolicitado * this.financiamiento) / 100);
       netoSolicitado = montoSolicitado - fondoResguardo;
 
@@ -870,6 +897,7 @@ export class SolicitudesFormComponent implements OnInit {
     }
 
   }
+
   validacionCT(): void {
     // let montoCT, ctSolicitado;
     // montoCT = Number(this.capitalTrabajoForm.controls.mcTrabajo.value);
@@ -877,6 +905,7 @@ export class SolicitudesFormComponent implements OnInit {
 
     this.onCalcularCT();
   }
+
   onGenerarCarpeta(data): void {
     this.solicitudesFormService.generarCarpeta(data).subscribe(response => {
       this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
@@ -886,10 +915,12 @@ export class SolicitudesFormComponent implements OnInit {
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
   }
+
   onGenerarPlantilla(): void {
     let reportURL = environment.apiUrl + SOLICITUD.plantilla;
     window.location.href = reportURL;
   }
+
   onEliminarFactura(item): void {
     item.remove();
     let archivo = item?.file?.name.substring(0, item?.file?.name.length - 4);
