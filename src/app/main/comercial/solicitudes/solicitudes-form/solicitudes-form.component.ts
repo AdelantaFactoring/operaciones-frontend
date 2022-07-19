@@ -130,6 +130,9 @@ export class SolicitudesFormComponent implements OnInit {
     }
     if (form != '' && this.idTipoOperacion == 3) {
       this.horizontalWizardStepper.next();
+      if (form == 'saltar') {
+        this.horizontalWizardStepper.next();
+      }
     }
   }
 
@@ -236,6 +239,15 @@ export class SolicitudesFormComponent implements OnInit {
       this.procesar = true;
       this.procesarXlsx = true;
       this.procesarAut = true;
+    }
+  }
+
+  public fileOverBaseXLSX(e: any): void {
+    this.hasBaseDropZoneOver = e;
+    if (e == false) {
+      this.onBrowseChangeXlsx();
+      this.procesar = true;
+      this.procesarXlsx = true;
     }
   }
 
@@ -378,10 +390,6 @@ export class SolicitudesFormComponent implements OnInit {
   }
 
   onBrowseChange() {
-    if (this.uploader.queue.length > 1) {
-      this.uploader.queue.splice(0, 1);
-    }
-
     this.procesar = true;
     let flagEliminado = false;
     for (const item of this.uploader.queue) {
@@ -402,22 +410,21 @@ export class SolicitudesFormComponent implements OnInit {
 
   onBrowseChangeXlsx() {
     if (this.uploaderXlsx.queue.length > 1) {
-      this.uploaderXlsx.queue.splice(0, 1);
+      this.uploaderXlsx.queue.splice(0, this.uploaderXlsx.queue.length);
+      this.utilsService.showNotification('Solo se permite un archivo a la vez', 'Validación', 2);
+      return;
     }
     this.procesarXlsx = true;
     let flagEliminado = false;
-    for (const item of this.uploaderXlsx.queue) {
+    for (let item of this.uploaderXlsx.queue) {
       let name = item._file.name;
-      if (name.includes('.xlsx') || name.includes('.XLSX')) {
-
-      } else {
+      if (!(name.includes('.xlsx') || name.includes('.XLSX'))) {
         flagEliminado = true;
         item.remove();
-      }
+      } 
     }
-
     if (flagEliminado == true) {
-      this.utilsService.showNotification('Se han eliminado los archivo que no continen una extensión .xml o .pdf', 'Validación', 2);
+      this.utilsService.showNotification('Se han eliminado los archivo que no continen una extensión .xlsx', 'Validación', 2);
     }
   }
 
@@ -532,7 +539,7 @@ export class SolicitudesFormComponent implements OnInit {
     }
 
     let list = [];
-    for (const item of this.uploader.queue) {
+    for (let item of this.uploader.queue) {
       list.push({'name': item?.file?.name});
       nameXml = item?.file?.name.substring(0, item?.file?.name.length - 4);
 
