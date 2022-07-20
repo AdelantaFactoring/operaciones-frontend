@@ -35,6 +35,9 @@ export class SolicitudArchivos {
     direccionCab: string = "";
     codigoUbigeoDet: string = "";
     direccionDet: string = "";
+
+    idTipoArchivo: number = 0;
+    archivoSustento: string = "";
 }
 
 export class SolicitudArchivosXlsx {

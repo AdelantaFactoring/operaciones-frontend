@@ -4,5 +4,7 @@ export class SolicitudDetRespuesta
     codigo: string;
     nombreArchivoXml: string;
     nombreArchivoPdf: string;
+    nombreArchivoSustento: string;
+    alterno: boolean;
     observacion: string;
 }

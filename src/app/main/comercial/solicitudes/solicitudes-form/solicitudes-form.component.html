@@ -130,7 +130,7 @@
             <div class="line" *ngIf="flagRespuestaFac"><i data-feather="chevron-right" class="font-medium-2"></i></div>
             <div class="step" data-target="#Respuesta-Factoring">
               <button class="step-trigger">
-                <span class="bs-stepper-box" *ngIf="flagRespuestaFac">{{tipoFactoring ? 4 : 3}}</span>
+                <span class="bs-stepper-box" *ngIf="flagRespuestaFac">{{tipoFactoring ? '4' : '3'}}</span>
                 <span class="bs-stepper-label" *ngIf="flagRespuestaFac">
                   <span class="bs-stepper-title">Respuesta</span>
                   <span class="bs-stepper-subtitle">Respuesta de la Solicitud</span>
@@ -320,10 +320,22 @@
                       <span class="align-middle d-sm-inline-block d-none">Guardar</span>
                       <i data-feather="save" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
-                    <button *ngIf="flagConfirming || flagRespuestaFac || tipoFactoring"
-                            (click)="horizontalWizardStepperNext(personalInfoForm , (!tipoFactoring && idTipoOperacion == 1 ? RespuestaFacForm : 'saltar'), 0)"
+                    <button *ngIf="(flagConfirming || flagRespuestaFac) && !tipoFactoring && idTipoOperacion === 1"
+                            (click)="horizontalWizardStepperNext(personalInfoForm, 'saltar', 0)"
                             class="btn btn-primary btn-next" rippleEffect>
-                      <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
+                      <span class="align-middle d-sm-inline-block d-none">Siguiente1</span>
+                      <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
+                    </button>
+                    <button *ngIf="tipoFactoring && idTipoOperacion === 1"
+                            (click)="horizontalWizardStepperNext(personalInfoForm , '', 0)"
+                            class="btn btn-primary btn-next" rippleEffect>
+                      <span class="align-middle d-sm-inline-block d-none">Siguiente2</span>
+                      <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
+                    </button>
+                    <button *ngIf="(flagConfirming || flagRespuestaFac) && idTipoOperacion === 3"
+                            (click)="horizontalWizardStepperNext(personalInfoForm , 'saltar', 0)"
+                            class="btn btn-primary btn-next" rippleEffect>
+                      <span class="align-middle d-sm-inline-block d-none">Siguiente3</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
                     </button>
                   </div>
@@ -466,8 +478,8 @@
               <div id="social-links" class="content">
                 <form #socialLinkForm="ngForm">
                   <div class="content-header">
-                    <h5 class="mb-0">Social Links</h5>
-                    <small>Enter Your Social Links.</small>
+                    <h5 class="mb-0">Lista Combinada</h5>
+                    <small>Datos XML y Excel.</small>
                   </div>
                   <div class="row">
                     <div class="col-md-12 col-12">
@@ -611,7 +623,7 @@
                   <div class="row">
                     <div class="col-md-12">
                       <div ng2FileDrop [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
-                           (fileOver)="fileOverBase($event)" [uploader]="uploader2"
+                           (fileOver)="fileOverBaseAut($event)" [uploader]="uploader2"
                            class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone">
                         Arrastre aqui el archivo
                       </div>
@@ -669,7 +681,7 @@
                       <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
                       <span class="align-middle d-sm-inline-block d-none">Anterior</span>
                     </button>
-                    <button *ngIf="!flagConfirming && !flagRespuestaFac" (click)="onGuardar()"
+                    <button *ngIf="!flagConfirming && !flagRespuestaFac && !procesarAut" (click)="onGuardar()"
                             class="btn btn-success btn-next" rippleEffect>
                       <span class="align-middle d-sm-inline-block d-none">Guardar</span>
                       <i data-feather="save" class="align-middle ml-sm-25 ml-0"></i>
@@ -678,8 +690,8 @@
                             [disabled]="!uploader2.getNotUploadedItems().length" *ngIf="procesarAut">
                       <span [data-feather]="'save'"></span> Procesar Archivos
                     </button>
-                    <button *ngIf="flagConfirming || flagRespuestaFac || !procesarAut"
-                            (click)="horizontalWizardStepperNext(autorizacionForm, RespuestaFacForm, 0)"
+                    <button *ngIf="flagConfirming || flagRespuestaFac"
+                            (click)="horizontalWizardStepperNext(autorizacionForm, '', 0)"
                             class="btn btn-primary btn-next" rippleEffect>
                       <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
                       <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>

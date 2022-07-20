@@ -16,6 +16,7 @@ import {ClienteContacto} from 'app/shared/models/comercial/cliente-contacto';
 import {LOADIPHLPAPI} from 'dns';
 import {Router} from '@angular/router';
 import {User} from 'app/shared/models/auth/user';
+import {Comun} from "../../../../shared/models/shared/comun";
 
 @Component({
   selector: 'app-solicitudes-form',
@@ -114,7 +115,7 @@ export class SolicitudesFormComponent implements OnInit {
 
   horizontalWizardStepperNext(data: any, form: any, id: number) {
     let nombreArchivo;
-    if (data.form.valid === true) {
+    if (data.form.valid === true && form != 'saltar') {
       if (id == 1) {
         for (const item of this.dataPdf) {
           nombreArchivo = '';
@@ -128,9 +129,12 @@ export class SolicitudesFormComponent implements OnInit {
       }
       this.horizontalWizardStepper.next();
     }
-    if (form != '' && this.idTipoOperacion == 3) {
+
+    if (form != '') {//&& this.idTipoOperacion == 3 {
       this.horizontalWizardStepper.next();
       if (form == 'saltar') {
+        if (this.idTipoOperacion == 3)
+          this.horizontalWizardStepper.next();
         this.horizontalWizardStepper.next();
       }
     }
@@ -237,7 +241,18 @@ export class SolicitudesFormComponent implements OnInit {
     if (e == false) {
       this.onBrowseChange();
       this.procesar = true;
-      this.procesarXlsx = true;
+    }
+  }
+
+  public fileOverBaseAut(e: any): void {
+    this.hasBaseDropZoneOver = e;
+    if (e == false) {
+      if (this.uploader2.queue.length > 1) {
+        this.uploader2.queue.splice(0, this.uploader2.queue.length);
+        this.utilsService.showNotification('Solo se permite un archivo a la vez', 'Validación', 2);
+        return;
+      }
+
       this.procesarAut = true;
     }
   }
@@ -246,7 +261,6 @@ export class SolicitudesFormComponent implements OnInit {
     this.hasBaseDropZoneOver = e;
     if (e == false) {
       this.onBrowseChangeXlsx();
-      this.procesar = true;
       this.procesarXlsx = true;
     }
   }
@@ -301,7 +315,10 @@ export class SolicitudesFormComponent implements OnInit {
         "BancoDestino": item.bancoDestino,
         "NroCuentaBancariaDestino": item.nroCuentaBancariaDestino,
         "CCIDestino": item.cCIDestino,
-        "TipoCuentaBancariaDestino": item.tipoCuentaBancariaDestino
+        "TipoCuentaBancariaDestino": item.tipoCuentaBancariaDestino,
+        "Alterno": this.tipoFactoring,
+        "IdTipoArchivo": item.idTipoArchivo,
+        "ArchivoSustento": item.archivoSustento
       });
     }
 
@@ -313,7 +330,6 @@ export class SolicitudesFormComponent implements OnInit {
       "idUsuarioAud": this.currentUser.idUsuario,
       "solicitudDet": this.params
     }).subscribe((response: SolicitudDetRespuesta[]) => {
-
       this.solicitudDetRespuesta = response;
 
       if (this.idTipoOperacion == 1) {
@@ -321,6 +337,7 @@ export class SolicitudesFormComponent implements OnInit {
       } else {
         this.flagRespuestaCon = true;
       }
+
       this.onGenerarCarpeta(this.solicitudDetRespuesta);
 
       this.utilsService.blockUIStop();
@@ -421,7 +438,7 @@ export class SolicitudesFormComponent implements OnInit {
       if (!(name.includes('.xlsx') || name.includes('.XLSX'))) {
         flagEliminado = true;
         item.remove();
-      } 
+      }
     }
     if (flagEliminado == true) {
       this.utilsService.showNotification('Se han eliminado los archivo que no continen una extensión .xlsx', 'Validación', 2);
@@ -435,6 +452,7 @@ export class SolicitudesFormComponent implements OnInit {
     this.razonSocial = "";
     this.tipoServicio = value;
     this.idTipoOperacion = idTipoOperacion;
+    this.tipoFactoring = idTipoOperacion != 1 ? false : this.tipoFactoring;
     this.hasBaseDropZoneOver = false;
     this.flagConfirming = flagConfirming;
 
@@ -630,9 +648,9 @@ export class SolicitudesFormComponent implements OnInit {
             if (item != null) {
               item.netoPendiente = row.netoPagar;
               item.fechaVencimiento = row.fechaVencimiento.substring(0, 10);
-              item.nombreContacto = contacto ? contacto[0].nombre : '';
-              item.telefonoContacto = contacto ? contacto[0].telefono : '';
-              item.correoContacto = contacto ? contacto[0].correo : '';
+              item.nombreContacto = contacto ? contacto.nombre : '';
+              item.telefonoContacto = contacto ? contacto.telefono : '';
+              item.correoContacto = contacto ? contacto.correo : '';
               item.titularCuentaBancariaDestino = row.razonSocialProv;
               item.monedaCuentaBancariaDestino = row.moneda;
               item.bancoDestino = row.banco;
@@ -664,16 +682,21 @@ export class SolicitudesFormComponent implements OnInit {
     });
 
     this.uploader2.uploadAll();
-    this.uploader2.response.subscribe(res => {
-      if (res.tipo == 1) {
+    this.uploader2.response.subscribe((res: string) => {
+      const result: Comun = JSON.parse(res);
+      if (result.tipo == 1) {
+        this.dataXml.forEach(el => {
+          el.idTipoArchivo = 11;
+          el.archivoSustento = result.mensaje;
+        });
         this.procesarAut = false;
         this.utilsService.showNotification('Documento cargado correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();
-      } else if (res.tipo == 2) {
-        this.utilsService.showNotification(res.mensaje, 'Alerta', 2);
+      } else if (result.tipo === 2) {
+        this.utilsService.showNotification(result.mensaje, 'Alerta', 2);
         this.utilsService.blockUIStop();
       } else {
-        this.utilsService.showNotification(res.mensaje, 'Error', 3);
+        this.utilsService.showNotification(result.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
       }
     });
