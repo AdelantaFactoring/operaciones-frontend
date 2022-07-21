@@ -140,11 +140,14 @@ export class SolicitudesFormComponent implements OnInit {
     }
   }
 
-  horizontalWizardStepperPrevious(flagDoble) {
-    this.horizontalWizardStepper.previous();
-    if (flagDoble == 1) {
+  horizontalWizardStepperPrevious(saltos: number) {
+    for (let i = 1; i <= saltos; i++) {
       this.horizontalWizardStepper.previous();
     }
+    // this.horizontalWizardStepper.previous();
+    // if (flagDoble == 1) {
+    //   this.horizontalWizardStepper.previous();
+    // }
   }
 
   onSubmit() {

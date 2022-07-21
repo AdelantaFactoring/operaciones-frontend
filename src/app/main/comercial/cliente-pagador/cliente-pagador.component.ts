@@ -223,9 +223,9 @@ export class ClientePagadorComponent implements OnInit {
   onListarPagador(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.pagadorService.listar({
-      search: this.searchCliente,
-      pageIndex: this.pageCliente,
-      pageSize: this.pageSizeCliente
+      search: this.searchPagador,
+      pageIndex: this.pagePagador,
+      pageSize: this.pageSizePagador
     }).subscribe((response: Pagador[]) => {
       this.pagadores = response;
       this.collectionSizePagador = response.length > 0 ? response[0].totalRows : 0;
