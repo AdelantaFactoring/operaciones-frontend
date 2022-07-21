@@ -28,6 +28,8 @@ export class RespuestaPagadorComponent implements OnInit {
   public codigoRespuestaAnotacion: string = '';
   public estadoRespuestaAnotacion: string = '';
 
+  public fechaMinima: any;
+
   public collectionSize: number = 0;
   public pageSize: number = 10;
   public page: number = 1;
@@ -83,6 +85,7 @@ export class RespuestaPagadorComponent implements OnInit {
       pageIndex: this.page,
       pageSize: this.pageSize
     }).subscribe((response: SolicitudCab[]) => {
+      this.fechaMinima = { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() + 1 };
       this.solicitudes = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
       this.utilsService.blockUIStop();
@@ -253,6 +256,10 @@ export class RespuestaPagadorComponent implements OnInit {
         return;
       } else if (el.netoConfirmado <= 0) {
         this.utilsService.showNotification("Ingrese Neto Confirmado", "", 2);
+        valido = false;
+        return;
+      } else if (el.netoConfirmado > el.montoConIGV) {
+        this.utilsService.showNotification(`El monto neto confirmado no debe ser mayor a ${ Intl.NumberFormat('es-PE').format(el.montoConIGV) } para el documento ${el.nroDocumento}`, "", 2);
         valido = false;
         return;
       }
