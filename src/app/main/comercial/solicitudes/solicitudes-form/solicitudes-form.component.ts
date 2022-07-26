@@ -131,14 +131,22 @@ export class SolicitudesFormComponent implements OnInit {
           }
         }
       }
+      if (id == 2) {
+        for (const item of this.dataXml) {
+          if (item.estadoDireccionCab == 0 || item.estadoUbigeoDet == 0 || item.estadoDireccionCab == 0 || item.estadoDireccionDet == 0) {
+            this.utilsService.showNotification('Debe de completar toda la información requerida de la(s) factura(s)', 'Validación', 2);
+            return;
+          }
+        }
+      }
       this.horizontalWizardStepper.next();
     }
 
     if (form != '') {//&& this.idTipoOperacion == 3 {
-      if (form == 'saltar' && this.idTipoOperacion == 3) {
+      if (form == 'saltar') {
         for (const item of this.dataXml) {
           if (item.estadoDireccionCab == 0 || item.estadoUbigeoDet == 0 || item.estadoDireccionCab == 0 || item.estadoDireccionDet == 0) {
-            this.utilsService.showNotification('Debe de completar toda la información requerida', 'Validación', 2);
+            this.utilsService.showNotification('Debe de completar toda la información requerida de la(s) factura(s)', 'Validación', 2);
             return;
           }
         }
@@ -288,7 +296,7 @@ export class SolicitudesFormComponent implements OnInit {
     if (this.idTipoOperacion == 3) {
       for (const row of this.dataXml) {
         if (row.netoPendiente > row.netoPendienteOld) {
-          this.utilsService.showNotification('Corregir el valor de Neto Pendiente', 'Validación', 2);
+          this.utilsService.showNotification('El neto pendiente debe ser menor o igual al neto pendiente XML', 'Validación', 2);
           return;
         }
         if (row.titularCuentaBancariaDestino == null || row.monedaCuentaBancariaDestino == null || row.bancoDestino == null || row.tipoCuentaBancariaDestino == null
@@ -301,6 +309,14 @@ export class SolicitudesFormComponent implements OnInit {
         } else if (row.titularCuentaBancariaDestino == '' || row.monedaCuentaBancariaDestino == '' || row.bancoDestino == '' || row.tipoCuentaBancariaDestino == ''
           || row.nombreContacto == '' || row.telefonoContacto == '' || row.correoContacto == '') {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
+          return;
+        }
+      }
+    }
+    else{
+      for (const item of this.dataXml) {
+        if (item.estadoDireccionCab == 0 || item.estadoUbigeoDet == 0 || item.estadoDireccionCab == 0 || item.estadoDireccionDet == 0) {
+          this.utilsService.showNotification('Debe de completar toda la información requerida', 'Validación', 2);
           return;
         }
       }
