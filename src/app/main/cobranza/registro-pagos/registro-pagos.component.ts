@@ -48,6 +48,8 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   public pageSize: number = 10;
   public page: number = 1;
 
+  private idsLiquidacionCab: number[] = [];
+
   get ReactiveIUForm() {
     return this.pagoInfoForm.controls;
   }
@@ -147,9 +149,10 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       .catch(error => []);
   }
 
-  onListarCobranza(): void {
+  async onListarCobranza(): Promise<void> {
     this.utilsService.blockUIStart('Obteniendo información...');
-    this.registroPagosService.listar({
+
+    const response = await this.registroPagosService.listar({
       idConsulta: 3,
       codigoLiquidacion: this.filtroForm.controls.codigoLiquidacion.value,
       codigoSolicitud: this.filtroForm.controls.codigoSolicitud.value,
@@ -164,17 +167,35 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
-    }).subscribe((response: LiquidacionCab[]) => {
-      this.cobranza = response;
-      this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
-      this.utilsService.blockUIStop();
-    }, error => {
-      this.utilsService.blockUIStop();
+    }).toPromise().catch(error => {
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
+
+    if (response) {
+      this.cobranza = response;
+      this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
+    }
+
+    this.utilsService.blockUIStop();
+
+    //   .subscribe((response: LiquidacionCab[]) => {
+    //   this.cobranza = response;
+    //   this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
+    //   this.utilsService.blockUIStop();
+    // }, error => {
+    //   this.utilsService.blockUIStop();
+    //   this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    // });
   }
 
   onCambiarVisibilidadDetalleTodo(): void {
+    if (!this.cambiarIcono) {
+      this.idsLiquidacionCab = [];
+      for (const item of this.cobranza) {
+        this.idsLiquidacionCab.push(item.idLiquidacionCab)
+      }
+    };
+
     this.cambiarIcono = !this.cambiarIcono;
     this.cobranza.forEach(el => {
       el.cambiarIcono = this.cambiarIcono;
@@ -184,6 +205,20 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   }
 
   onCambiarVisibilidadDetalle(item: LiquidacionCab): void {
+    if (!this.idsLiquidacionCab.some(a => a == item.idLiquidacionCab)) {
+      if (!item.cambiarIcono) {
+        this.idsLiquidacionCab.push(item.idLiquidacionCab);
+      }
+    } else {
+      if (item.cambiarIcono) {
+        for (let i = 0; i < this.idsLiquidacionCab.length; i++) {
+          if (this.idsLiquidacionCab[i] == item.idLiquidacionCab) {
+            this.idsLiquidacionCab.splice(i, 1);
+          }
+        }
+      }
+    }
+
     item.cambiarIcono = !item.cambiarIcono;
     document.getElementById('trL' + item.idLiquidacionCab).style.visibility = (item.cambiarIcono) ? "visible" : "collapse";
     document.getElementById('detailL' + item.idLiquidacionCab).style.display = (item.cambiarIcono) ? "block" : "none";
@@ -257,10 +292,19 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     }, 0);
   }
 
-  onCancelarPago(): void {
-    this.onListarCobranza();
+  async onCancelarPago(): Promise<void> {
     this.pagoInfoForm.reset(this.oldPagoInfoForm);
     this.modalService.dismissAll();
+
+    await this.onListarCobranza();
+    setTimeout(() => {
+      for (const item of this.cobranza) {
+        if (this.idsLiquidacionCab.some(a => a == item.idLiquidacionCab)) {
+          item.cambiarIcono = false;
+          this.onCambiarVisibilidadDetalle(item);
+        }
+      }
+    }, 0);
   }
 
   onGuardarPago(): void {
@@ -330,5 +374,15 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     if ($event === 'reload') {
       this.filtroForm.reset(this.oldFiltroForm);
     }
+  }
+
+  onRefrescar(): void {
+    this.idsLiquidacionCab = [];
+    this.onListarCobranza();
+  }
+
+  onBuscar(): void {
+    this.idsLiquidacionCab = [];
+    this.onListarCobranza();
   }
 }
