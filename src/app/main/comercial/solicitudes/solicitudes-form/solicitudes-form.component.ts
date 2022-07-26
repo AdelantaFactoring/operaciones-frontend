@@ -85,6 +85,10 @@ export class SolicitudesFormComponent implements OnInit {
   razonSocialCab: string;
   rucDet: string;
   razonSocialDet: string;
+  codigoUbigeoCab: string;
+  codigoUbigeoDet: string;
+  direccionCab: string;
+  direccionDet: string;
   hasBaseDropZoneOver: boolean;
   procesar: boolean = true;
   procesarXlsx: boolean = true;
@@ -131,6 +135,14 @@ export class SolicitudesFormComponent implements OnInit {
     }
 
     if (form != '') {//&& this.idTipoOperacion == 3 {
+      if (form == 'saltar' && this.idTipoOperacion == 3) {
+        for (const item of this.dataXml) {
+          if (item.estadoDireccionCab == 0 || item.estadoUbigeoDet == 0 || item.estadoDireccionCab == 0 || item.estadoDireccionDet == 0) {
+            this.utilsService.showNotification('Debe de completar toda la información requerida', 'Validación', 2);
+            return;
+          }
+        }
+      }
       this.horizontalWizardStepper.next();
       if (form == 'saltar') {
         if (this.idTipoOperacion == 3)
@@ -275,6 +287,10 @@ export class SolicitudesFormComponent implements OnInit {
     }
     if (this.idTipoOperacion == 3) {
       for (const row of this.dataXml) {
+        if (row.netoPendiente > row.netoPendienteOld) {
+          this.utilsService.showNotification('Corregir el valor de Neto Pendiente', 'Validación', 2);
+          return;
+        }
         if (row.titularCuentaBancariaDestino == null || row.monedaCuentaBancariaDestino == null || row.bancoDestino == null || row.tipoCuentaBancariaDestino == null
           || row.nombreContacto == null || row.telefonoContacto == null || row.correoContacto == null) {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
@@ -466,6 +482,10 @@ export class SolicitudesFormComponent implements OnInit {
       this.razonSocialCab = "Razon Social Cliente";
       this.rucDet = "Ruc Pagador";
       this.razonSocialDet = "Razon Social Pagador";
+      this.direccionCab = "Dirección Cliente";
+      this.codigoUbigeoCab = "Cod Ubigeo Cliente";
+      this.direccionDet = "Dirección Pagador";
+      this.codigoUbigeoDet = "Cod Ubigeo Pagador";
     } else if (idTipoOperacion == 2) {
       this.onTablaMaestra(5);
       this.onTablaMaestra(1);
@@ -486,6 +506,10 @@ export class SolicitudesFormComponent implements OnInit {
       this.razonSocialCab = "Razon Social Proveedor";
       this.rucDet = "Ruc Cliente";
       this.razonSocialDet = "Razon Social Cliente";
+      this.direccionCab = "Dirección Proveedor";
+      this.codigoUbigeoCab = "Cod Ubigeo Proveedor";
+      this.direccionDet = "Dirección Proveedor";
+      this.codigoUbigeoDet = "Cod Ubigeo Proveedor";
     }
   }
 
@@ -598,7 +622,7 @@ export class SolicitudesFormComponent implements OnInit {
 
       if (rs.tipo == 0) {
         this.dataXml.push(rs);
-
+        
         this.procesar = false;
         count = Number(count) + 1;
         if (count == this.cantXml) {
@@ -645,10 +669,11 @@ export class SolicitudesFormComponent implements OnInit {
           if (contacto === null)
             if (this.contacto.length > 0)
               contacto = this.contacto[0];
-
+          
           for (const row of this.dataXlsx) {
             let item = this.dataXml.find(f => f.rucCab == row.ruc && f.tipoMoneda == row.moneda && f.codFactura == row.documento);
             if (item != null) {
+              item.estadoNetoPen = row.netoPagar > item.netoPendienteOld ? 0 : 1;
               item.netoPendiente = row.netoPagar;
               item.fechaVencimiento = row.fechaVencimiento.substring(0, 10);
               item.nombreContacto = contacto ? contacto.nombre : '';
@@ -970,6 +995,37 @@ export class SolicitudesFormComponent implements OnInit {
         this.dataXml.splice(id, 1)
       }
       id = id + 1;
+    }
+  }
+
+  onActualizarCampo(item, tipo): void{
+    if (tipo == 1 && item.direccionCab != null && item.direccionCab != '') {
+      item.estadoDireccionCab = 2;
+    }
+    else if(tipo == 1 && item.direccionCab == null || item.direccionCab == '')
+    {
+      item.estadoDireccionCab = 0;
+    }
+    if (tipo == 2 && item.codigoUbigeoCab != null && item.codigoUbigeoCab != '' && item.codigoUbigeoCab.length == 6) {
+      item.estadoUbigeoCab = 2;
+    }
+    else if(tipo == 2 && item.codigoUbigeoCab == null || item.codigoUbigeoCab == '' || item.codigoUbigeoCab.length != 6)
+    {
+      item.estadoUbigeoCab = 0;
+    }
+    if (tipo == 3 && item.direccionDet != null && item.direccionDet != '') {
+      item.estadoDireccionDet = 2;
+    }
+    else if(tipo == 3 && item.direccionDet == null || item.direccionDet == '')
+    {
+      item.estadoDireccionDet = 0;
+    }
+    if (tipo == 4 && item.codigoUbigeoDet != null && item.codigoUbigeoDet != '' && item.codigoUbigeoDet.length == 6) {
+      item.estadoUbigeoDet = 2;
+    }
+    else if(tipo == 4 && item.codigoUbigeoDet == null || item.codigoUbigeoDet == '' || item.codigoUbigeoDet.length != 6)
+    {
+      item.estadoUbigeoDet = 0;
     }
   }
 }

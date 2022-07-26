@@ -38,6 +38,13 @@ export class SolicitudArchivos {
 
     idTipoArchivo: number = 0;
     archivoSustento: string = "";
+
+    estadoUbigeoCab: number;
+    estadoUbigeoDet: number;
+    estadoDireccionCab: number;
+    estadoDireccionDet: number;
+    netoPendienteOld: number;
+    estadoNetoPen: number;
 }
 
 export class SolicitudArchivosXlsx {
