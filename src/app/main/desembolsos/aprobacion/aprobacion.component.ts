@@ -565,7 +565,7 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
                 <tr>
                   <th>N° Liquidación</th>
                   <th>Correo Enviado</th>
-                  <th>Comprobante Generado</th>
+                  <th>Comprobante(s) generado(s)</th>
                 </tr>
                 </thead>
                 <tbody>
