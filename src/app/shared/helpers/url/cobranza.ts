@@ -1,9 +1,11 @@
 export const REGISTROPAGOS = {
   listar: '/liquidacion/listar',
   listarPago: '/liquidacion/listarPago',
+  obtenerEstadoPagoFactoringRegular: '/liquidacion/obtenerEstadoPagoFactoringRegular',
+  generarComprobanteEspecialFactoringRegular: '/liquidacion/generarComprobanteEspecialFactoringRegular',
   infoPago: '/liquidacion/infoPago',
   insertarPago: '/liquidacion/insertarPago',
-}
+  }
 
 export const DEVOLUCIONES = {
   listar: '/liquidacion/listarDevolucion',

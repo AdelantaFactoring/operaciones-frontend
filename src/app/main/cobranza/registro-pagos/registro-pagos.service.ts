@@ -41,6 +41,26 @@ export class RegistroPagosService {
     );
   }
 
+  obtenerEstadoPagoFactoringRegular(payload): Observable<any> {
+    return this.requestMethod.get(
+      `${environment.apiUrl}${REGISTROPAGOS.obtenerEstadoPagoFactoringRegular}`,
+      `?idLiquidacionCab=${payload.idLiquidacionCab}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  generarComprobanteEspecialFactoringRegular(payload): Observable<any> {
+    return this.requestMethod.post(
+      `${environment.apiUrl}${REGISTROPAGOS.generarComprobanteEspecialFactoringRegular}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
   infoPago(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${REGISTROPAGOS.infoPago}`,

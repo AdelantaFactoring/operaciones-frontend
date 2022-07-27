@@ -30,6 +30,7 @@ export class LiquidacionDet {
   nroDocumento: string;
   fechaConfirmado: string;
   netoConfirmado: number;
+  interesRestanteServicio: number;
   fondoResguardo: number;
   fechaOperacion: any;
   fechaOperacionFormat: string;

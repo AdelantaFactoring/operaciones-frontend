@@ -50,6 +50,7 @@ export class LiquidacionCab {
   fechaCreacion: string;
   usuarioModificacion: string;
   fechaModificacion: string;
+  alterno: boolean;
 
   tipoNotificacion: number;
 }

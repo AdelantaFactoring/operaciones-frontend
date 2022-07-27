@@ -10,6 +10,9 @@ import {LiquidacionPago} from 'app/shared/models/cobranza/liquidacion-pago';
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
 import { User } from 'app/shared/models/auth/user';
+import {
+  LiquidacionObtenerestadopagoFactoringregular
+} from "../../../shared/models/cobranza/liquidacion-obtenerestadopago-factoringregular";
 
 @Component({
   selector: 'app-registro-pagos',
@@ -48,6 +51,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   public pageSize: number = 10;
   public page: number = 1;
 
+  private liquidacionCabItem: LiquidacionCab;
   private idsLiquidacionCab: number[] = [];
 
   get ReactiveIUForm() {
@@ -91,6 +95,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       nroDocumento: [{value: '', disabled: true}],
       fechaConfirmada: [{value: '', disabled: true}],
       netoConfirmado: [{value: 0, disabled: true}],
+      interesRestanteServicio: [{value: 0, disabled: true}],
       fondoResguardo: [{value: 0, disabled: true}]
     });
     this.pagoInfoForm = this.formBuilder.group({
@@ -101,6 +106,8 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       gastos: [{value: 0, disabled: true}],
       saldoDeuda: [{value: 0, disabled: true}],
       tipoPago: [true],
+      flagInicioCliente: [false],
+      flagForzarGeneracion: [false],
       fechaPago: ['', Validators.required],
       montoPago: [0, [Validators.required, Validators.min(1)]],
       observacion: ['']
@@ -257,7 +264,45 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onPagar(modal: any, cab: LiquidacionCab, det: LiquidacionDet): void {
+  async onObtenerEstadoPagoFacturingRegular(idLiquidacionCab: number): Promise<void> {
+    const response: LiquidacionObtenerestadopagoFactoringregular[] = await this.registroPagosService.obtenerEstadoPagoFactoringRegular({
+      idLiquidacionCab: idLiquidacionCab,
+    }).toPromise().catch(error => {
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+
+    if (response) {
+      if (response.length > 0) {
+        this.pagoInfoForm.controls.flagInicioCliente.setValue(response[0].flagInicioCliente);
+        this.pagoInfoForm.controls.flagForzarGeneracion.setValue(response[0].flagForzarGeneracion);
+      }
+    }
+  }
+
+  async onGenerarComprobanteEspecialFactoringRegular(idLiquidacionCab: number): Promise<void> {
+    this.utilsService.blockUIStart('Generando información solicitada...');
+
+    const response: any = await this.registroPagosService.generarComprobanteEspecialFactoringRegular({
+      idLiquidacionCab: idLiquidacionCab,
+      flagInicioCliente: this.pagoInfoForm.controls.flagInicioCliente.value,
+      idUsuarioAud: this.currentUser.idUsuario
+    }).toPromise().catch(error => {
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+
+    if (response) {
+      await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab);
+      this.utilsService.showNotification('Generación completada satisfactoriamente', 'Confirmación', 1)
+    }
+
+    this.utilsService.blockUIStop();
+  }
+
+  async onGenerar(): Promise<void> {
+    await this.onGenerarComprobanteEspecialFactoringRegular(this.idLiquidacionCab);
+  }
+
+  async onPagar(modal: any, cab: LiquidacionCab, det: LiquidacionDet): Promise<void> {
     this.fechaMaxima = { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() };
     this.liquidacionForm.controls.idLiquidacionCab.setValue(cab.idLiquidacionCab);
     this.codigo = cab.codigo;
@@ -269,6 +314,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.liquidacionForm.controls.nroDocumento.setValue(det.nroDocumento);
     this.liquidacionForm.controls.fechaConfirmada.setValue(det.fechaConfirmado);
     this.liquidacionForm.controls.netoConfirmado.setValue(det.netoConfirmado);
+    this.liquidacionForm.controls.interesRestanteServicio.setValue(det.interesRestanteServicio);
     this.liquidacionForm.controls.fondoResguardo.setValue(det.fondoResguardo);
 
     this.idLiquidacionCab = cab.idLiquidacionCab;
@@ -276,6 +322,10 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.idSolicitudDet = det.idSolicitudDet;
     this.onInfoPago(det.idLiquidacionDet, '', this.pagoInfoForm.controls.tipoPago.value);
     this.onListarPago(det.idLiquidacionDet);
+
+    this.liquidacionCabItem = cab;
+
+    await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab);
 
     setTimeout(() => {
       this.modalService.open(modal, {
@@ -312,6 +362,12 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     if (this.pagoInfoForm.invalid)
       return;
 
+    if (this.liquidacionCabItem.idTipoOperacion == 1 && !this.liquidacionCabItem.alterno &&
+      this.pagoInfoForm.controls.flagInicioCliente.value && this.pagoInfoForm.controls.flagForzarGeneracion.value) {
+      this.utilsService.showNotification('Primero debe seleccionar la opción de GENERAR en "Grupo extra (Facturing Regular)"', 'Alerta', 2);
+      return;
+    }
+
     this.utilsService.blockUIStart('Guardando...');
     this.registroPagosService.insertarPago({
       idEmpresa: this.currentUser.idEmpresa,
@@ -324,16 +380,20 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       _TipoPago: this.pagoInfoForm.controls.tipoPago.value,
       observacion: this.pagoInfoForm.controls.observacion.value,
       idUsuarioAud: this.currentUser.idUsuario
-    }).subscribe((response) => {
+    }).subscribe(async (response) => {
       switch (response.tipo) {
         case 1:
           this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+
+          if (this.pagoInfoForm.controls.flagForzarGeneracion.value) await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab);
+
           this.utilsService.blockUIStop();
           this.pagoInfoForm.reset(this.oldPagoInfoForm);
           this.pagoInfoForm.controls.fecha.setValue({ year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() });
           this.onInfoPago(this.idLiquidacionDet, '', true);
           this.onListarPago(this.idLiquidacionDet);
           this.submitted = false;
+
           break;
         case 2:
           this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
