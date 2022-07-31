@@ -170,6 +170,7 @@
                   <th>Pagador / Proveedor RUC</th>
                   <th>Moneda</th>
                   <th>Neto Confirmado Total</th>
+                  <th>Interés restante total (servicio)</th>
                   <th>Pago Total</th>
                   <th>Saldo Total</th>
 <!--                  <th>Progreso Pago Total</th>-->
@@ -220,6 +221,7 @@
                     <td>{{cab.rucPagProv}}</td>
                     <td>{{cab.moneda}}</td>
                     <td>{{cab.netoConfirmadoTotal | number: '1.2-2'}}</td>
+                    <td>{{cab.interesRestanteServicioTotal | number: '1.2-2'}}</td>
                     <td>{{cab.pagoTotal | number: '1.2-2'}}</td>
                     <td>{{saldo(cab.saldoTotal) | number: '1.2-2'}}</td>
 <!--                    <td>-->
@@ -246,6 +248,7 @@
                               <th class="detail-th-color">N° Documento</th>
                               <th class="detail-th-color">Fecha Confirmada</th>
                               <th class="detail-th-color">Neto Confirmado</th>
+                              <th class="detail-th-color">Interés restante (servicio)</th>
                               <th class="detail-th-color">Día(s) Mora</th>
                               <th class="detail-th-color">Pago</th>
                               <th class="detail-th-color">Interés</th>
@@ -273,6 +276,7 @@
                               <td>{{item.nroDocumento}}</td>
                               <td>{{item.fechaConfirmado}}</td>
                               <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                              <td>{{item.interesRestanteServicio | number: '1.2-2'}}</td>
                               <td>{{item.diasMora}}</td>
                               <td>{{item.pago | number: '1.2-2'}}</td>
                               <td>{{item.interesPago | number: '1.2-2'}}</td>

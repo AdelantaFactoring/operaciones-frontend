@@ -40,6 +40,7 @@ export class LiquidacionCab {
   tipoCambioMoneda: number;
   montoTotalConversion: number;
   netoConfirmadoTotal: number;
+  interesRestanteServicioTotal: number;
   pagoTotal: number;
   saldoTotal: number;
   porcentajePagoTotal: number;
