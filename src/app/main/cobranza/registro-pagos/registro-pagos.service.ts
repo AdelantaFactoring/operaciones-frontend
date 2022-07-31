@@ -44,7 +44,7 @@ export class RegistroPagosService {
   obtenerEstadoPagoFactoringRegular(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${REGISTROPAGOS.obtenerEstadoPagoFactoringRegular}`,
-      `?idLiquidacionCab=${payload.idLiquidacionCab}`,
+      `?idLiquidacionCab=${payload.idLiquidacionCab}&idLiquidacionDet=${payload.idLiquidacionDet}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

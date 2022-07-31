@@ -264,9 +264,10 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     });
   }
 
-  async onObtenerEstadoPagoFacturingRegular(idLiquidacionCab: number): Promise<void> {
+  async onObtenerEstadoPagoFacturingRegular(idLiquidacionCab: number, idLiquidacionDet: number): Promise<void> {
     const response: LiquidacionObtenerestadopagoFactoringregular[] = await this.registroPagosService.obtenerEstadoPagoFactoringRegular({
       idLiquidacionCab: idLiquidacionCab,
+      idLiquidacionDet: idLiquidacionDet
     }).toPromise().catch(error => {
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
@@ -275,6 +276,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       if (response.length > 0) {
         this.pagoInfoForm.controls.flagInicioCliente.setValue(response[0].flagInicioCliente);
         this.pagoInfoForm.controls.flagForzarGeneracion.setValue(response[0].flagForzarGeneracion);
+        this.liquidacionForm.controls.interesRestanteServicio.setValue(response[0].interesRestanteServicio);
       }
     }
   }
@@ -291,7 +293,10 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     });
 
     if (response) {
-      await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab);
+      await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab, this.idLiquidacionDet);
+
+      this.onInfoPago(this.idLiquidacionDet, '', this.pagoInfoForm.controls.tipoPago.value);
+
       this.utilsService.showNotification('Generación completada satisfactoriamente', 'Confirmación', 1)
     }
 
@@ -325,7 +330,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
 
     this.liquidacionCabItem = cab;
 
-    await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab);
+    await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab, this.idLiquidacionDet);
 
     setTimeout(() => {
       this.modalService.open(modal, {
@@ -385,7 +390,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
         case 1:
           this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
 
-          if (this.pagoInfoForm.controls.flagForzarGeneracion.value) await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab);
+          if (this.pagoInfoForm.controls.flagForzarGeneracion.value) await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab, this.idLiquidacionDet);
 
           this.utilsService.blockUIStop();
           this.pagoInfoForm.reset(this.oldPagoInfoForm);
