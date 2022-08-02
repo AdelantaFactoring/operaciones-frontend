@@ -18,6 +18,7 @@ export class PagadorComponent implements OnInit {
   public pagador: Pagador[];
   public search: string = '';
   public pagadorForm: FormGroup;
+  public oldPagadorForm: FormGroup;
   public submitted: boolean;
   //Paginación
   public collectionSize: number = 0;
@@ -65,6 +66,7 @@ export class PagadorComponent implements OnInit {
         sector: [''],
         limiteGastoNegociacion: [0, Validators.required]
       });
+      this.oldPagadorForm = this.pagadorForm.value;
      }
 
   ngOnInit(): void {
@@ -208,7 +210,7 @@ export class PagadorComponent implements OnInit {
 
   onCancelar(): void {
     this.submitted = false;
-    this.pagadorForm.reset();
+    this.pagadorForm.reset(this.oldPagadorForm);
     this.modalService.dismissAll();
   }
 }

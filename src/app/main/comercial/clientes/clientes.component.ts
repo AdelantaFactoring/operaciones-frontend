@@ -330,7 +330,7 @@ export class ClientesComponent implements OnInit {
       nroCuenta: this.cuentaForm.controls.nroCuenta.value,
       cci: this.cuentaForm.controls.cci.value,
       tipoCuenta: this.cuentaForm.controls.tipoCuenta.value,
-      predeterminado: this.cuentaForm.controls.predeterminado.value,
+      predeterminado: this.cuentaForm.controls.predeterminado.value == null ? false : this.cuentaForm.controls.predeterminado.value,
       idFila: this.utilsService.autoIncrement(this.cuentas),
       edicion: false,
       editado: true
@@ -449,7 +449,7 @@ export class ClientesComponent implements OnInit {
     if (this.contactoForm.invalid)
       return;
 
-    let predeterminado = this.contactoForm.controls.predeterminado.value;
+    let predeterminado = this.contactoForm.controls.predeterminado.value == null ? false : this.contactoForm.controls.predeterminado.value;
 
     if (this.contactos.filter(f => f.predeterminado).length > 0 && predeterminado) {
       this.contactos.forEach(el => {

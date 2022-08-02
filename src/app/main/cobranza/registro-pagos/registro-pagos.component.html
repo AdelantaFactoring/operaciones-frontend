@@ -281,17 +281,17 @@
                                   </a>
                                 </div>
                               </td>
-                              <td *ngIf="cab.idTipoOperacion === 3">{{item.rucPagProv}}</td>
-                              <td *ngIf="cab.idTipoOperacion === 3">{{item.razonSocialPagProv}}</td>
-                              <td>{{item.nroDocumento}}</td>
-                              <td>{{item.fechaConfirmado}}</td>
-                              <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
-                              <td>{{item.interesRestanteServicio | number: '1.2-2'}}</td>
-                              <td>{{item.diasMora}}</td>
-                              <td>{{item.pago | number: '1.2-2'}}</td>
-                              <td>{{item.interesPago | number: '1.2-2'}}</td>
-                              <td>{{item.gastosPago | number: '1.2-2'}}</td>
-                              <td>{{saldo(item.saldo) | number: '1.2-2'}}</td>
+                              <td *ngIf="cab.idTipoOperacion === 3" [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.rucPagProv}}</td>
+                              <td *ngIf="cab.idTipoOperacion === 3" [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.razonSocialPagProv}}</td>
+                              <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.nroDocumento}}</td>
+                              <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.fechaConfirmado}}</td>
+                              <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.netoConfirmado | number: '1.2-2'}}</td>
+                              <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.interesRestanteServicio | number: '1.2-2'}}</td>
+                              <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.diasMora}}</td>
+                              <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.pago | number: '1.2-2'}}</td>
+                              <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.interesPago | number: '1.2-2'}}</td>
+                              <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}" >{{item.gastosPago | number: '1.2-2'}}</td>
+                              <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{saldo(item.saldo) | number: '1.2-2'}}</td>
                               <td>
                                 <div class="progress-wrapper">
                                   <div class="mb-25 text-center">{{porcentajePagoTotal(item.porcentajePago)}}%</div>
