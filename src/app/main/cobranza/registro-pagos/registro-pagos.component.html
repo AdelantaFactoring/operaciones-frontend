@@ -162,6 +162,7 @@
                       </a>
                     </div>
                   </th>
+                  <th style="width: 5px">Acción</th>
                   <th>N° Liquidación</th>
                   <th>N° Solicitud</th>
                   <th>Cliente</th>
@@ -191,6 +192,15 @@
                           <div *ngIf="cab.cambiarIcono"><i class="text-primary cursor-pointer"
                                                            data-feather="chevron-down"></i>
                           </div>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Inicio de pagos por factura" (click)="onShowInicioPagos(modalInicioPagos, cab)"
+                           [class.disabled]="!(cab.idTipoOperacion == 1 && !cab.alterno)"
+                           class="btn btn-raised btn-outline-primary btn-sm">
+                          <i class="text-primary cursor-pointer" data-feather="toggle-left"></i>
                         </a>
                       </div>
                     </td>
@@ -478,45 +488,43 @@
                         <div class="form-control custom-control custom-switch custom-control-inline"
                              style="border: 0px; background-color: transparent">
                           <label style="padding-right: 0.5rem; line-height: 1.7rem">Pagador</label>
-                          <input *ngIf="!pagoInfoForm.controls.flagForzarGeneracion.value" disabled type="checkbox" class="custom-control-input"
-                                 id="flagInicioCliente" formControlName="flagInicioCliente"/>
-                          <input *ngIf="pagoInfoForm.controls.flagForzarGeneracion.value" type="checkbox" class="custom-control-input"
+                          <input disabled type="checkbox" class="custom-control-input"
                                  id="flagInicioCliente" formControlName="flagInicioCliente"/>
                           <label class="custom-control-label"
                                  for="flagInicioCliente">Cliente</label>
                         </div>
                       </div>
                     </div>
-                    <div hidden class="col-12">
-                      <div class="form-control custom-control custom-switch custom-control-inline"
-                           style="border: 0px; background-color: transparent">
-                        <label style="padding-right: 0.5rem; line-height: 1.7rem">No</label>
-                        <input type="checkbox" class="custom-control-input"
-                               id="flagForzarGeneracion" formControlName="flagForzarGeneracion"/>
-                        <label class="custom-control-label"
-                               for="flagForzarGeneracion">Sí</label>
-                      </div>
-                    </div>
-                    <div class="col-12" *ngIf="pagoInfoForm.controls.flagInicioCliente.value">
-                      <ngb-alert *ngIf="pagoInfoForm.controls.flagForzarGeneracion.value" [type]="'info'" [dismissible]="false">
-                        <div class="alert-body">
-                          * Se debe generar una NOTA DE CRÉDITO que esté vinculada a la factura de los intereses sin IGV del servicio.<br>
-                          * Se debe generar una NUEVA FACTURA por los intereses con IGV del servicio.<br>
-                          * La DIFERENCIA en base a los nuevos intereses generados se AGREGARÁ A LA DEUDA.
-                        </div>
-                      </ngb-alert>
-                      <ngb-alert *ngIf="!pagoInfoForm.controls.flagForzarGeneracion.value" [type]="'success'" [dismissible]="false">
-                        <div class="alert-body">
-                          * Generación culminada correctamente. Se puede proceder con los pagos.
-                        </div>
-                      </ngb-alert>
-                    </div>
-                    <div class="col-12" *ngIf="pagoInfoForm.controls.flagInicioCliente.value">
-                      <button [disabled]="!pagoInfoForm.controls.flagForzarGeneracion.value" (click)="onGenerar()" rippleEffect class="btn btn-warning">
-                        <i class="mr-0 mr-sm-1" data-feather="settings"></i>
-                        <span class="d-none d-sm-inline-block">Generar</span>
-                      </button>
-                    </div>
+<!--                    <div hidden class="col-12">-->
+<!--                      <div class="form-control custom-control custom-switch custom-control-inline"-->
+<!--                           style="border: 0px; background-color: transparent">-->
+<!--                        <label style="padding-right: 0.5rem; line-height: 1.7rem">No</label>-->
+<!--                        <input type="checkbox" class="custom-control-input"-->
+<!--                               id="flagForzarGeneracion" formControlName="flagForzarGeneracion"/>-->
+<!--                        <label class="custom-control-label"-->
+<!--                               for="flagForzarGeneracion">Sí</label>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-12" *ngIf="pagoInfoForm.controls.flagInicioCliente.value">-->
+<!--                      <ngb-alert *ngIf="pagoInfoForm.controls.flagForzarGeneracion.value" [type]="'info'" [dismissible]="false">-->
+<!--                        <div class="alert-body">-->
+<!--                          * Se debe generar una NOTA DE CRÉDITO que esté vinculada a la factura de los intereses sin IGV del servicio.<br>-->
+<!--                          * Se debe generar una NUEVA FACTURA por los intereses con IGV del servicio.<br>-->
+<!--                          * La DIFERENCIA en base a los nuevos intereses generados se AGREGARÁ A LA DEUDA.-->
+<!--                        </div>-->
+<!--                      </ngb-alert>-->
+<!--                      <ngb-alert *ngIf="!pagoInfoForm.controls.flagForzarGeneracion.value" [type]="'success'" [dismissible]="false">-->
+<!--                        <div class="alert-body">-->
+<!--                          * Generación culminada correctamente. Se puede proceder con los pagos.-->
+<!--                        </div>-->
+<!--                      </ngb-alert>-->
+<!--                    </div>-->
+<!--                    <div class="col-12" *ngIf="pagoInfoForm.controls.flagInicioCliente.value">-->
+<!--                      <button [disabled]="!pagoInfoForm.controls.flagForzarGeneracion.value" (click)="onGenerar()" rippleEffect class="btn btn-warning">-->
+<!--                        <i class="mr-0 mr-sm-1" data-feather="settings"></i>-->
+<!--                        <span class="d-none d-sm-inline-block">Generar</span>-->
+<!--                      </button>-->
+<!--                    </div>-->
                   </div>
                 </div>
                 <div class="col-12">
@@ -564,10 +572,22 @@
                 <div class="col-12">
                   <div class="d-flex flex-wrap mb-0">
                     <div>
-                      <button type="submit" rippleEffect class="btn btn-success" (click)="onGuardarPago()">
+                      <button [disabled]="(liquidacionCabItem.idTipoOperacion == 1 && !liquidacionCabItem.alterno) ? !pagoInfoForm.controls.flagPagoHabilitado.value : false" type="submit" rippleEffect class="btn btn-success" (click)="onGuardarPago()">
                         <i class="mr-0 mr-sm-1" data-feather="save"></i>
                         <span class="d-none d-sm-inline-block">Guardar</span>
                       </button>
+                      <div *ngIf="liquidacionCabItem.idTipoOperacion == 1 && !liquidacionCabItem.alterno">
+                        <ngb-alert *ngIf="!pagoInfoForm.controls.flagPagoHabilitado.value" [type]="'danger'" [dismissible]="false">
+                          <div class="alert-body" style="font-size: 13px !important;">
+                            * Aun no se puede iniciar con los pagos (debe indicar quién inicia los pagos en la opción de la grilla principal).
+                          </div>
+                        </ngb-alert>
+                        <ngb-alert *ngIf="pagoInfoForm.controls.flagPagoHabilitado.value" [type]="'success'" [dismissible]="false">
+                          <div class="alert-body" style="font-size: 13px !important;">
+                            * Se puede iniciar / continuar con los pagos.
+                          </div>
+                        </ngb-alert>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -635,6 +655,109 @@
               <div class="col-md-12 col-12">
                 <div style="float: right">
                   <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelarPago()">
+                    <span [data-feather]="'x-circle'"></span> Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template #modalInicioPagos let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Liquidación: [{{codigo}}]</h4>
+            <button aria-label="Close" class="close" type="button" (click)="modal.dismiss()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" ngbAutofocus tabindex="0">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="customCheckS" unchecked
+                             [(ngModel)]="seleccionarTodoInicioPagos" (ngModelChange)="onSeleccionarTodoInicioPagos()"/>
+                      <label class="custom-control-label" for="customCheckS"></label>
+                    </div>
+                  </th>
+                  <th style="text-align: center">¿Quién inició los pagos?</th>
+                  <th>N° Documento</th>
+                  <th>Fecha Confirmada</th>
+                  <th>Neto Confirmado</th>
+                  <th>Nota de crédito</th>
+                  <th>Nueva factura</th>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-template let-item ngFor [ngForOf]="inicioPagosRows">
+                  <tr>
+                    <td>
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input"
+                               id="{{'customCheckS' + item.idLiquidacionDet}}"
+                               [disabled]="item.flagPagoHabilitado"
+                               [(ngModel)]="item.seleccionado" (ngModelOptions)="{ standalone: true }"/>
+                        <label class="custom-control-label" for="{{'customCheckS' + item.idLiquidacionDet}}"></label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="form-group">
+                        <div class="form-control custom-control custom-switch custom-control-inline"
+                             style="border: 0px; background-color: transparent">
+                          <label style="padding-right: 0.5rem; line-height: 1.7rem">Pagador</label>
+                          <input *ngIf="!item.flagPagoHabilitado" type="checkbox" class="custom-control-input" [(ngModel)]="item.flagInicioCliente" (change)="updateInicioPagosTotales()"
+                                 id="flagInicioCliente{{item.idLiquidacionDet}}"/>
+                          <input *ngIf="item.flagPagoHabilitado" type="checkbox" disabled class="custom-control-input" [(ngModel)]="item.flagInicioCliente" (change)="updateInicioPagosTotales()"
+                                 id="flagInicioCliente{{item.idLiquidacionDet}}"/>
+                          <label class="custom-control-label"
+                                 for="flagInicioCliente{{item.idLiquidacionDet}}">Cliente</label>
+                        </div>
+                      </div>
+<!--                      <div class="form-control custom-control custom-switch custom-control-inline"-->
+<!--                           style="border: 0px; background-color: transparent">-->
+<!--                        <label style="padding-right: 0.5rem; line-height: 1.7rem">Pagador</label>-->
+<!--                        <input type="checkbox" class="custom-control-input" value="false"/>-->
+<!--                        <label class="custom-control-label">Cliente</label>-->
+<!--                      </div>-->
+                    </td>
+                    <td [ngClass]="{'pagoHabilitado': item.flagPagoHabilitado}">{{item.nroDocumento}}</td>
+                    <td>{{item.fechaConfirmado}}</td>
+                    <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                    <td>{{item.nroDocumento_NC}}</td>
+                    <td>{{item.nroDocumento_FACT}}</td>
+                  </tr>
+                </ng-template>
+                </tbody>
+              </table>
+            </div>
+            <div class="row mt-1">
+              <div class="col-12" *ngIf="this.countCliente > 0">
+                <ngb-alert [type]="'info'" [dismissible]="false">
+                  <div class="alert-body" style="font-size: 13px !important;">
+                    * Se debe generar una NOTA DE CRÉDITO que esté vinculada a la factura de los intereses sin IGV del servicio.<br>
+                    * Se debe generar una NUEVA FACTURA por los intereses con IGV del servicio.<br>
+                    * La DIFERENCIA en base a los nuevos intereses generados se AGREGARÁ A LA DEUDA.
+                  </div>
+                </ngb-alert>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" style="display: block !important;">
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div style="float: left">
+                  <span style="font-weight: bold"> Total por pagador: {{countPagador | number}} </span><br>
+                  <span style="font-weight: bold" class="mb-1"> Total por cliente: {{countCliente | number}} </span>
+                </div>
+                <div style="float: right">
+                  <button class="btn btn-warning" rippleEffect type="button" (click)="onGuardarEstados()">
+                    <span [data-feather]="'settings'"></span> {{(countCliente > 0) ? 'Guardar estados y generar comprobante(s)' : 'Guardar estados'}}
+                  </button>
+                  &nbsp;
+<!--                  (click)="onCancelarPago()"-->
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="modal.dismiss()">
                     <span [data-feather]="'x-circle'"></span> Cerrar
                   </button>
                 </div>

@@ -13,6 +13,7 @@ import { User } from 'app/shared/models/auth/user';
 import {
   LiquidacionObtenerestadopagoFactoringregular
 } from "../../../shared/models/cobranza/liquidacion-obtenerestadopago-factoringregular";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-registro-pagos',
@@ -53,6 +54,10 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
 
   private liquidacionCabItem: LiquidacionCab;
   private idsLiquidacionCab: number[] = [];
+  private inicioPagosRows: any[] = [];
+  private countPagador: number = 0;
+  private countCliente: number = 0;
+  private seleccionarTodoInicioPagos: boolean = false;
 
   get ReactiveIUForm() {
     return this.pagoInfoForm.controls;
@@ -108,6 +113,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       tipoPago: [true],
       flagInicioCliente: [false],
       flagForzarGeneracion: [false],
+      flagPagoHabilitado: [false],
       fechaPago: ['', Validators.required],
       montoPago: [0, [Validators.required, Validators.min(1)]],
       observacion: ['']
@@ -286,26 +292,25 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
 
     const response: any = await this.registroPagosService.generarComprobanteEspecialFactoringRegular({
       idLiquidacionCab: idLiquidacionCab,
-      flagInicioCliente: this.pagoInfoForm.controls.flagInicioCliente.value,
+      liquidacionPagoFactoringRegularGenerar: this.inicioPagosRows,
       idUsuarioAud: this.currentUser.idUsuario
     }).toPromise().catch(error => {
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
 
     if (response) {
-      await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab, this.idLiquidacionDet);
+      // await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab, this.idLiquidacionDet);
+      // this.onInfoPago(this.idLiquidacionDet, '', this.pagoInfoForm.controls.tipoPago.value);
 
-      this.onInfoPago(this.idLiquidacionDet, '', this.pagoInfoForm.controls.tipoPago.value);
-
-      this.utilsService.showNotification('Generación completada satisfactoriamente', 'Confirmación', 1)
+      this.utilsService.showNotification('Operación completada satisfactoriamente', 'Confirmación', 1);
     }
 
     this.utilsService.blockUIStop();
   }
 
-  async onGenerar(): Promise<void> {
-    await this.onGenerarComprobanteEspecialFactoringRegular(this.idLiquidacionCab);
-  }
+  // async onGenerar(): Promise<void> {
+  //   await this.onGenerarComprobanteEspecialFactoringRegular(this.idLiquidacionCab);
+  // }
 
   async onPagar(modal: any, cab: LiquidacionCab, det: LiquidacionDet): Promise<void> {
     this.fechaMaxima = { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() };
@@ -331,6 +336,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.liquidacionCabItem = cab;
 
     await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab, this.idLiquidacionDet);
+    this.pagoInfoForm.controls.flagPagoHabilitado.setValue(det.flagPagoHabilitado);
 
     setTimeout(() => {
       this.modalService.open(modal, {
@@ -366,12 +372,6 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.submitted = true;
     if (this.pagoInfoForm.invalid)
       return;
-
-    if (this.liquidacionCabItem.idTipoOperacion == 1 && !this.liquidacionCabItem.alterno &&
-      this.pagoInfoForm.controls.flagInicioCliente.value && this.pagoInfoForm.controls.flagForzarGeneracion.value) {
-      this.utilsService.showNotification('Primero debe seleccionar la opción de GENERAR en "Grupo extra (Facturing Regular)"', 'Alerta', 2);
-      return;
-    }
 
     this.utilsService.blockUIStart('Guardando...');
     this.registroPagosService.insertarPago({
@@ -449,5 +449,87 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   onBuscar(): void {
     this.idsLiquidacionCab = [];
     this.onListarCobranza();
+  }
+
+  onShowInicioPagos(modal: NgbModal, cab: LiquidacionCab): void {
+    this.codigo = cab.codigo;
+    this.idLiquidacionCab = cab.idLiquidacionCab;
+    this.seleccionarTodoInicioPagos = false;
+
+    this.inicioPagosRows = JSON.parse(JSON.stringify(cab.liquidacionDet));
+
+    this.updateInicioPagosTotales();
+
+    setTimeout(() => {
+      this.modalService.open(modal, {
+        scrollable: true,
+        size: 'lg',
+        // windowClass: 'my-class',
+        animation: true,
+        // centered: true,
+        backdrop: "static",
+        beforeDismiss: () => {
+          return true;
+        }
+      });
+    }, 0);
+  }
+
+  updateInicioPagosTotales(): void {
+    let countPagador = 0;
+    let countCliente = 0;
+
+    for (const row of this.inicioPagosRows) {
+      if (row.flagInicioCliente) {
+        countCliente++;
+      } else {
+        countPagador++;
+      }
+    }
+
+    this.countPagador = countPagador;
+    this.countCliente = countCliente;
+  }
+
+  onSeleccionarTodoInicioPagos(): void {
+    this.inicioPagosRows.forEach(el => {
+        el.seleccionado = this.seleccionarTodoInicioPagos;
+    });
+  }
+
+  async onGuardarEstados(): Promise<void> {
+    if (this.inicioPagosRows.filter(a => a.seleccionado && !a.flagPagoHabilitado).length <= 0) {
+      this.utilsService.showNotification('Debe seleccionar por lo menos un documento habilitado', 'Alerta', 2);
+      return;
+    }
+
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea continuar con la operación?, esta acción no podrá revertirse`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      }
+    }).then(async result => {
+      if (result.value) {
+        await this.onGenerarComprobanteEspecialFactoringRegular(this.idLiquidacionCab);
+
+        await this.onListarCobranza();
+        setTimeout(() => {
+          for (const item of this.cobranza) {
+            if (this.idsLiquidacionCab.some(a => a == item.idLiquidacionCab)) {
+              item.cambiarIcono = false;
+              this.onCambiarVisibilidadDetalle(item);
+            }
+          }
+        }, 0);
+
+        this.modalService.dismissAll();
+      }
+    });
   }
 }

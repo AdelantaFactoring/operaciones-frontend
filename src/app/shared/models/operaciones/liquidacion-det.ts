@@ -54,4 +54,11 @@ export class LiquidacionDet {
   edicion: boolean = false;
   editado: boolean = false;
   cambioConfirmado: boolean = false;
+
+  flagInicioCliente: boolean;
+  flagPagoHabilitado: boolean;
+  nroDocumento_NC: string;
+  nroDocumento_FACT: string;
+
+  seleccionado: boolean = true;
 }
