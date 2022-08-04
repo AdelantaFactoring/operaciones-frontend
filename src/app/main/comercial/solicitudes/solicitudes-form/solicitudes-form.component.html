@@ -293,34 +293,48 @@
                               <td>{{item.razonSocialCab}}</td>
                               <td>{{item.rucDet}}</td>
                               <td>{{item.razonSocialDet}}</td>
-                              <td [ngClass]="{validacionRow: item.estadoDireccionCab == 0, success: item.estadoDireccionCab == 2}">
+                              <!-- <td [ngClass]="{validacionRow: item.estadoDireccionCab == 0, success: item.estadoDireccionCab == 2}">
                                 <p *ngIf="item.estadoDireccionCab == 1">{{item.direccionCab}}</p>
                                 <textarea *ngIf="item.estadoDireccionCab == 0 || item.estadoDireccionCab == 2" class="form-control"
                                   type="text" [(ngModel)]="item.direccionCab"
                                   (ngModelChange)="onActualizarCampo(item, 1)"
                                   [ngModelOptions]="{ standalone: true }">
                               </textarea>
+                              </td> -->
+                              <td [ngClass]="{validacionRow: item.estadoDireccionCab == 0, success: item.estadoDireccionCab == 2}">
+                                <p *ngIf="item.estadoDireccionCab == 1">{{item.direccionCab}}</p>
+                                <input *ngIf="item.estadoDireccionCab == 0 || item.estadoDireccionCab == 2" class="form-control"
+                                  type="text" [(ngModel)]="item.direccionCab"
+                                  (ngModelChange)="onActualizarCampo(item, 1)"
+                                  [ngModelOptions]="{ standalone: true }" />
                               </td>
                               <td [ngClass]="{validacionRow: item.estadoUbigeoCab == 0, success: item.estadoUbigeoCab == 2}">
                                 <p *ngIf="item.estadoUbigeoCab == 1">{{item.codigoUbigeoCab}}</p>
                                 <input *ngIf="item.estadoUbigeoCab == 0 || item.estadoUbigeoCab == 2" class="form-control"
                                   type="text" [(ngModel)]="item.codigoUbigeoCab"
                                   (ngModelChange)="onActualizarCampo(item, 2)"
-                                  [ngModelOptions]="{ standalone: true }" />
+                                  [ngModelOptions]="{ standalone: true }" placeholder="6 caracteres"/>
                               </td>
-                              <td [ngClass]="{validacionRow: item.estadoDireccionDet == 0, success: item.estadoDireccionDet == 2}">
+                              <!-- <td [ngClass]="{validacionRow: item.estadoDireccionDet == 0, success: item.estadoDireccionDet == 2}">
                                 <p *ngIf="item.estadoDireccionDet == 1">{{item.direccionDet}}</p>
                                 <textarea *ngIf="item.estadoDireccionDet == 0 || item.estadoDireccionDet == 2" class="form-control"
                                   type="text" [(ngModel)]="item.direccionDet"
                                   (ngModelChange)="onActualizarCampo(item, 3)"
                                   [ngModelOptions]="{ standalone: true }"></textarea>
+                              </td> -->
+                              <td [ngClass]="{validacionRow: item.estadoDireccionDet == 0, success: item.estadoDireccionDet == 2}">
+                                <p *ngIf="item.estadoDireccionDet == 1">{{item.direccionDet}}</p>
+                                <input *ngIf="item.estadoDireccionDet == 0 || item.estadoDireccionDet == 2" class="form-control"
+                                  type="text" [(ngModel)]="item.direccionDet"
+                                  (ngModelChange)="onActualizarCampo(item, 3)"
+                                  [ngModelOptions]="{ standalone: true }"/>
                               </td>
                               <td [ngClass]="{validacionRow: item.estadoUbigeoDet == 0, success: item.estadoUbigeoDet == 2}">
                                 <p *ngIf="item.estadoUbigeoDet == 1">{{item.codigoUbigeoDet}}</p>
                                 <input *ngIf="item.estadoUbigeoDet == 0 || item.estadoUbigeoDet == 2" class="form-control"
                                   type="text" [(ngModel)]="item.codigoUbigeoDet"
                                   (ngModelChange)="onActualizarCampo(item, 4)"
-                                  [ngModelOptions]="{ standalone: true }" />
+                                  [ngModelOptions]="{ standalone: true }" placeholder="6 caracteres"/>
                               </td>
                               <td>{{item.tipoMoneda}}</td>
                               <td>{{item.netoPendiente}}</td>

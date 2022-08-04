@@ -302,13 +302,17 @@ export class SolicitudesFormComponent implements OnInit {
         if (row.titularCuentaBancariaDestino == null || row.monedaCuentaBancariaDestino == null || row.bancoDestino == null || row.tipoCuentaBancariaDestino == null
           || row.nombreContacto == null || row.telefonoContacto == null || row.correoContacto == null) {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
+          console.log('Primero');
+          
           return;
         } else if (row.nroCuentaBancariaDestino == null && row.cCIDestino == null || row.nroCuentaBancariaDestino == '' && row.cCIDestino == '') {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
+          console.log('Segundo');
           return;
         } else if (row.titularCuentaBancariaDestino == '' || row.monedaCuentaBancariaDestino == '' || row.bancoDestino == '' || row.tipoCuentaBancariaDestino == ''
           || row.nombreContacto == '' || row.telefonoContacto == '' || row.correoContacto == '') {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
+          console.log('Tercero');
           return;
         }
       }
@@ -1015,33 +1019,34 @@ export class SolicitudesFormComponent implements OnInit {
   }
 
   onActualizarCampo(item, tipo): void{
-    if (tipo == 1 && item.direccionCab != null && item.direccionCab != '') {
-      item.estadoDireccionCab = 2;
+    if (tipo == 1) {
+      if (item.direccionCab != null && item.direccionCab != '') {
+        item.estadoDireccionCab = 2;
+      } else {
+        item.estadoDireccionCab = 0;
+      }
     }
-    else if(tipo == 1 && item.direccionCab == null || item.direccionCab == '')
-    {
-      item.estadoDireccionCab = 0;
-    }
-    if (tipo == 2 && item.codigoUbigeoCab != null && item.codigoUbigeoCab != '' && item.codigoUbigeoCab.length == 6) {
+    if (tipo == 2) {
       item.estadoUbigeoCab = 2;
+      if ( item.codigoUbigeoCab != null && item.codigoUbigeoCab != '' && item.codigoUbigeoCab.length == 6) {
+        item.estadoUbigeoCab = 2;
+      } else {
+        item.estadoUbigeoCab = 0;
+      }
     }
-    else if(tipo == 2 && item.codigoUbigeoCab == null || item.codigoUbigeoCab == '' || item.codigoUbigeoCab.length != 6)
-    {
-      item.estadoUbigeoCab = 0;
+    if (tipo == 3) {
+      if (item.direccionDet != null && item.direccionDet != '') {
+        item.estadoDireccionDet = 2;
+      } else {
+        item.estadoDireccionDet = 0;
+      }
     }
-    if (tipo == 3 && item.direccionDet != null && item.direccionDet != '') {
-      item.estadoDireccionDet = 2;
-    }
-    else if(tipo == 3 && item.direccionDet == null || item.direccionDet == '')
-    {
-      item.estadoDireccionDet = 0;
-    }
-    if (tipo == 4 && item.codigoUbigeoDet != null && item.codigoUbigeoDet != '' && item.codigoUbigeoDet.length == 6) {
-      item.estadoUbigeoDet = 2;
-    }
-    else if(tipo == 4 && item.codigoUbigeoDet == null || item.codigoUbigeoDet == '' || item.codigoUbigeoDet.length != 6)
-    {
-      item.estadoUbigeoDet = 0;
+    else if (tipo == 4) {
+      if (item.codigoUbigeoDet != null && item.codigoUbigeoDet != '' && item.codigoUbigeoDet.length == 6) {
+        item.estadoUbigeoDet = 2;
+      } else {
+        item.estadoUbigeoDet = 0;
+      }
     }
   }
 }
