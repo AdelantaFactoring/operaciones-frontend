@@ -57,6 +57,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   private inicioPagosRows: any[] = [];
   private countPagador: number = 0;
   private countCliente: number = 0;
+  private countClienteSeleccionado: number = 0;
   private seleccionarTodoInicioPagos: boolean = false;
 
   get ReactiveIUForm() {
@@ -283,6 +284,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
         this.pagoInfoForm.controls.flagInicioCliente.setValue(response[0].flagInicioCliente);
         this.pagoInfoForm.controls.flagForzarGeneracion.setValue(response[0].flagForzarGeneracion);
         this.liquidacionForm.controls.interesRestanteServicio.setValue(response[0].interesRestanteServicio);
+        this.pagoInfoForm.controls.flagPagoHabilitado.setValue(response[0].flagPagoHabilitado);
       }
     }
   }
@@ -292,7 +294,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
 
     const response: any = await this.registroPagosService.generarComprobanteEspecialFactoringRegular({
       idLiquidacionCab: idLiquidacionCab,
-      liquidacionPagoFactoringRegularGenerar: this.inicioPagosRows,
+      liquidacionPagoFactoringRegularGenerar: this.inicioPagosRows.filter(a => a.seleccionado),
       idUsuarioAud: this.currentUser.idUsuario
     }).toPromise().catch(error => {
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
@@ -336,7 +338,6 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.liquidacionCabItem = cab;
 
     await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab, this.idLiquidacionDet);
-    this.pagoInfoForm.controls.flagPagoHabilitado.setValue(det.flagPagoHabilitado);
 
     setTimeout(() => {
       this.modalService.open(modal, {
@@ -390,14 +391,15 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
         case 1:
           this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
 
-          if (this.pagoInfoForm.controls.flagForzarGeneracion.value) await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab, this.idLiquidacionDet);
-
           this.utilsService.blockUIStop();
           this.pagoInfoForm.reset(this.oldPagoInfoForm);
           this.pagoInfoForm.controls.fecha.setValue({ year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() });
           this.onInfoPago(this.idLiquidacionDet, '', true);
           this.onListarPago(this.idLiquidacionDet);
           this.submitted = false;
+
+          await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab, this.idLiquidacionDet);
+
 
           break;
         case 2:
@@ -478,6 +480,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   updateInicioPagosTotales(): void {
     let countPagador = 0;
     let countCliente = 0;
+    let countClienteSeleccionado = 0;
 
     for (const row of this.inicioPagosRows) {
       if (row.flagInicioCliente) {
@@ -485,10 +488,15 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       } else {
         countPagador++;
       }
+
+      if (row.seleccionado && row.flagInicioCliente && !row.flagPagoHabilitado) {
+        countClienteSeleccionado++;
+      }
     }
 
     this.countPagador = countPagador;
     this.countCliente = countCliente;
+    this.countClienteSeleccionado = countClienteSeleccionado;
   }
 
   onSeleccionarTodoInicioPagos(): void {

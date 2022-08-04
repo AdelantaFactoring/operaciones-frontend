@@ -171,7 +171,7 @@
                   <th>Pagador / Proveedor RUC</th>
                   <th>Moneda</th>
                   <th>Neto Confirmado Total</th>
-                  <th>Interés restante total (servicio)</th>
+                  <th>IGV restante total (servicio)</th>
                   <th>Pago Total</th>
                   <th>Saldo Total</th>
 <!--                  <th>Progreso Pago Total</th>-->
@@ -258,7 +258,7 @@
                               <th class="detail-th-color">N° Documento</th>
                               <th class="detail-th-color">Fecha Confirmada</th>
                               <th class="detail-th-color">Neto Confirmado</th>
-                              <th class="detail-th-color">Interés restante (servicio)</th>
+                              <th class="detail-th-color">IGV restante (servicio)</th>
                               <th class="detail-th-color">Día(s) Mora</th>
                               <th class="detail-th-color">Pago</th>
                               <th class="detail-th-color">Interés</th>
@@ -391,7 +391,7 @@
                 </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
-                    <label>Interés restante (servicio)</label>
+                    <label>IGV restante (servicio)</label>
                     <input class="form-control" formControlName="interesRestanteServicio" type="text"
                            mask="separator" thousandSeparator=","/>
                   </div>
@@ -696,7 +696,7 @@
                     <td>
                       <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input"
-                               id="{{'customCheckS' + item.idLiquidacionDet}}"
+                               id="{{'customCheckS' + item.idLiquidacionDet}}" (change)="updateInicioPagosTotales()"
                                [disabled]="item.flagPagoHabilitado"
                                [(ngModel)]="item.seleccionado" (ngModelOptions)="{ standalone: true }"/>
                         <label class="custom-control-label" for="{{'customCheckS' + item.idLiquidacionDet}}"></label>
@@ -733,7 +733,7 @@
               </table>
             </div>
             <div class="row mt-1">
-              <div class="col-12" *ngIf="this.countCliente > 0">
+              <div class="col-12" *ngIf="this.countClienteSeleccionado > 0">
                 <ngb-alert [type]="'info'" [dismissible]="false">
                   <div class="alert-body" style="font-size: 13px !important;">
                     * Se debe generar una NOTA DE CRÉDITO que esté vinculada a la factura de los intereses sin IGV del servicio.<br>
@@ -753,7 +753,7 @@
                 </div>
                 <div style="float: right">
                   <button class="btn btn-warning" rippleEffect type="button" (click)="onGuardarEstados()">
-                    <span [data-feather]="'settings'"></span> {{(countCliente > 0) ? 'Guardar estados y generar comprobante(s)' : 'Guardar estados'}}
+                    <span [data-feather]="'settings'"></span> {{(countClienteSeleccionado > 0) ? 'Guardar estados y generar comprobante(s)' : 'Guardar estados'}}
                   </button>
                   &nbsp;
 <!--                  (click)="onCancelarPago()"-->
