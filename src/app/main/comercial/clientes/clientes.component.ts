@@ -244,6 +244,7 @@ export class ClientesComponent implements OnInit {
 
   onGuardar(): void {
     this.submitted = true;
+    
     if (this.clienteForm.invalid)
       return;
 
@@ -254,6 +255,13 @@ export class ClientesComponent implements OnInit {
       return;
     }
 
+    if (this.contactos.length == 0) {
+      this.submittedContacto = true;
+      if (this.contactoForm.invalid) {
+        this.utilsService.showNotification("Tener como minimo un contacto", "Advertencia", 2);
+        return; 
+      }
+    }
     this.utilsService.blockUIStart('Guardando...');
     this.clienteService.guardar({
       idCliente: this.clienteForm.controls.idCliente.value,
