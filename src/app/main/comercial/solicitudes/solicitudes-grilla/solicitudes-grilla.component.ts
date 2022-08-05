@@ -114,13 +114,14 @@ export class SolicitudesGrillaComponent implements OnInit {
       .catch(error => []);
   }
 
-  onRefrescar(): void {
-    this.onListarSolicitudes(this.paramsURL);
+  onRefrescar(id = 0): void {
+    this.onListarSolicitudes(this.paramsURL, id);
   }
 
-  onListarSolicitudes(idSubConsulta): void {
+  onListarSolicitudes(idSubConsulta, idUsuario = 0): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesService.listar({
+      idUsuario: idUsuario,
       idConsulta: 1,
       idSubConsulta: idSubConsulta,
       search: this.search,

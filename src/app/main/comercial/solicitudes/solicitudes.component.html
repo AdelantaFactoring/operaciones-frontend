@@ -1,6 +1,70 @@
 <div class="content-wrapper">
   <div class="content-body">
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <core-card #coreCard [actions]="['collapse', 'reload']">
+      <h4 class="card-title">Buscar por</h4>
+      <div class="card-body">
+        <form [formGroup]="filtroForm">
+          <div class="row">
+            <!-- <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>N° Documento</label>
+                <input class="form-control" formControlName="nroDocumento" type="text"
+                       (ngModelChange)="onListarCavali()"/>
+              </div>
+            </div> -->
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Usuario</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="optUsuario" bindLabel="nombreCompleto"
+                           placeholder="Usuario" bindValue="idUsuario" formControlName="usuario"
+                           (ngModelChange)="onChangeUsuario()">
+                </ng-select>
+              </div>
+            </div>
+            <!-- <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Estado</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="state" bindLabel="descripcion"
+                           placeholder="Estado" bindValue="idColumna" formControlName="estado"
+                           (ngModelChange)="onListarCavali()">
+                </ng-select>
+              </div>
+            </div> -->
+            <!-- <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Fecha Desde</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         formControlName="fechaDesde" container="body" [(ngModel)]="filterFecha.desde"
+                         ngbDatepicker #basicDPDes="ngbDatepicker" (ngModelChange)="onListarCavali()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDPDes.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+            <!-- <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Fecha Hasta</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         formControlName="fechaHasta" container="body" [(ngModel)]="filterFecha.hasta"
+                         ngbDatepicker #basicDPHas="ngbDatepicker" (ngModelChange)="onListarCavali()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDPHas.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </form>
+      </div>
+    </core-card>
     <div class="card">
       <div class="card-body">
         <div class="row">

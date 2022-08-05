@@ -7,6 +7,7 @@ import {UtilsService} from "../../../shared/services/utils.service";
 import {CavaliService} from "./cavali.service";
 import {SolicitudCavali} from "../../../shared/models/operaciones/solicitud-cavali";
 import { User } from 'app/shared/models/auth/user';
+import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-cavali',
@@ -28,10 +29,12 @@ export class CavaliComponent implements OnInit {
   public pageSize: number = 10;
   public page: number = 1;
 
+  public filterFecha: any;
   constructor(private formBuilder: FormBuilder,
               private tablaMaestraService: TablaMaestraService,
               private utilsService: UtilsService,
-              private cavaliService: CavaliService) {
+              private cavaliService: CavaliService,
+              private calendar: NgbCalendar,) {
     this.contentHeader = {
       headerTitle: 'Cavali',
       actionButton: true,
@@ -57,9 +60,22 @@ export class CavaliComponent implements OnInit {
     this.filtroForm = formBuilder.group({
       nroDocumento: [''],
       tipoProceso: [0],
-      estado: [0]
+      estado: [0],
+      fechaDesde: [''],
+      fechaHasta: ['']
     });
     this.oldFiltroForm = this.filtroForm.value;
+
+    let fecha = new Date();
+    fecha.setDate(fecha.getDate() -  Number(5));
+    this.filterFecha = {
+      desde: {
+        year: fecha.getFullYear(),
+        month: fecha.getMonth() + 1,
+        day: fecha.getDate()
+      },
+      hasta: this.calendar.getToday()
+    };
   }
 
   async ngOnInit(): Promise<void> {
@@ -84,6 +100,8 @@ export class CavaliComponent implements OnInit {
     this.cavaliService.listar({
       nroDocumento: this.filtroForm.controls.nroDocumento.value,
       idTipoProceso: this.filtroForm.controls.tipoProceso.value,
+      fechaDesde: this.utilsService.formatoFecha_YYYYMMDD(this.filterFecha.desde),
+      fechaHasta: this.utilsService.formatoFecha_YYYYMMDD(this.filterFecha.hasta),
       idEstado: this.filtroForm.controls.estado.value,
       search: this.search,
       pageIndex: this.page,

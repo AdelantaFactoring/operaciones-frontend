@@ -42,4 +42,15 @@ export class UsuarioService {
       }
     );
   }
+
+  combo(payload): Observable<any> {
+    return this.requestMethod.get(
+      `${environment.apiUrl}${USUARIO.combo}`,
+      `?idEmpresa=${payload.idEmpresa}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
 }

@@ -4,7 +4,8 @@ export const USUARIO = {
     guardar: '/usuario/InsertarActualizar',
     login: '/usuario/Login',
     cambioClave: '/usuario/CambioClave',
-    actualizarDatos: '/usuario/ActualizarDatos'
+    actualizarDatos: '/usuario/ActualizarDatos',
+    combo: '/usuario/Combo'
 }
 
 export const PERFIL = {

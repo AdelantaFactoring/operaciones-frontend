@@ -699,7 +699,7 @@ export class SolicitudesFormComponent implements OnInit {
               item.nombreContacto = contacto ? contacto.nombre : '';
               item.telefonoContacto = contacto ? contacto.telefono : '';
               item.correoContacto = contacto ? contacto.correo : '';
-              item.titularCuentaBancariaDestino = row.razonSocialProv;
+              item.titularCuentaBancariaDestino = row.razonSocialProv.toUpperCase(); //toUpperCase() 220804 Maiquin
               item.monedaCuentaBancariaDestino = row.moneda;
               item.bancoDestino = row.banco;
               item.nroCuentaBancariaDestino = row.ctaBancaria;

@@ -31,6 +31,36 @@
                 </ng-select>
               </div>
             </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Fecha Desde</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         formControlName="fechaDesde" container="body" [(ngModel)]="filterFecha.desde"
+                         ngbDatepicker #basicDPDes="ngbDatepicker" (ngModelChange)="onListarCavali()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDPDes.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Fecha Hasta</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         formControlName="fechaHasta" container="body" [(ngModel)]="filterFecha.hasta"
+                         ngbDatepicker #basicDPHas="ngbDatepicker" (ngModelChange)="onListarCavali()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDPHas.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </form>
       </div>

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -8,7 +8,8 @@ import {SolicitudDet} from "../../../shared/models/comercial/SolicitudDet";
 import {environment} from '../../../../environments/environment';
 import {SOLICITUD} from "../../../shared/helpers/url/comercial";
 import Swal from 'sweetalert2';
-
+import { UsuarioService } from 'app/main/seguridad/usuario/usuario.service';
+import { SolicitudesGrillaComponent } from './solicitudes-grilla/solicitudes-grilla.component';
 @Component({
   selector: 'app-solicitudes',
   templateUrl: './solicitudes.component.html',
@@ -16,6 +17,8 @@ import Swal from 'sweetalert2';
 })
 export class SolicitudesComponent implements OnInit {
 
+  @ViewChild(SolicitudesGrillaComponent) grilla: SolicitudesGrillaComponent;
+  
   hasBaseDropZoneOver: boolean;
   public contentHeader: object;
   public solicitudes: SolicitudCab[];
@@ -57,6 +60,11 @@ export class SolicitudesComponent implements OnInit {
   public ruc: string = '';
   public selectedRowIds: number[] = [];
   public dataXml = [];
+  
+  public filtroForm: FormGroup;
+  public oldFiltroForm: FormGroup;
+  public optUsuario = [];
+
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;
   }
@@ -68,7 +76,8 @@ export class SolicitudesComponent implements OnInit {
   constructor(private modalService: NgbModal,
               private formBuilder: FormBuilder,
               private utilsService: UtilsService,
-              private solicitudesService: SolicitudesService) {
+              private solicitudesService: SolicitudesService,
+              private usuarioService: UsuarioService) {
     this.contentHeader = {
       headerTitle: 'Solicitudes',
       actionButton: true,
@@ -135,11 +144,16 @@ export class SolicitudesComponent implements OnInit {
       telefonoC: [''],
       estado: ['']
     });
+
+    this.filtroForm = this.formBuilder.group({
+      usuario: [0]
+    });
   }
 
   ngOnInit(): void {
     this.onRefrescar();
     this.hasBaseDropZoneOver = false;
+    this.onUsuarioCombo();
   }
 
   // onListarSolicitudes(): void {
@@ -168,6 +182,7 @@ export class SolicitudesComponent implements OnInit {
 
   onRefrescar(): void {
     this.activeId = 1;
+    //this.grilla.onRefrescar(this.filtroForm.controls.usuario.value);
     //this.onListarSolicitudes();
   }
 
@@ -201,5 +216,22 @@ export class SolicitudesComponent implements OnInit {
         });
       }, 0);
     }
+  }
+
+  onUsuarioCombo(): void{
+    this.utilsService.blockUIStart('Obteniendo información...');
+    this.usuarioService.combo({
+      idEmpresa: 1
+    }).subscribe(response => {
+      this.optUsuario = response;
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+  }
+
+  onChangeUsuario(): void{
+    this.grilla.onRefrescar(this.filtroForm.controls.usuario.value);
   }
 }

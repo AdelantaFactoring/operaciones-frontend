@@ -16,8 +16,8 @@ export class CavaliService {
   listar(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${SOLICITUD_CAVALI.listar}`,
-      `?nroDocumento=${payload.nroDocumento}&idTipoProceso=${payload.idTipoProceso}&idEstado=${payload.idEstado}` +
-      `&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
+      `?nroDocumento=${payload.nroDocumento}&idTipoProceso=${payload.idTipoProceso}&fechaDesde=${payload.fechaDesde}&fechaHasta=${payload.fechaHasta}` +
+      `&idEstado=${payload.idEstado}&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

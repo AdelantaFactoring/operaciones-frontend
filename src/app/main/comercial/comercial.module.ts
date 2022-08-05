@@ -23,6 +23,7 @@ import {SolicitudesGrillaComponent} from './solicitudes/solicitudes-grilla/solic
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 import {PERFECT_SCROLLBAR_CONFIG} from "ngx-perfect-scrollbar";
 import {PerfectScrollbarConfigInterface} from 'ngx-perfect-scrollbar';
+import { CoreCardModule } from '@core/components/core-card/core-card.module';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   //suppressScrollX: true
@@ -111,7 +112,8 @@ const routes: Routes = [
     FileUploadModule,
     CardSnippetModule,
     CoreDirectivesModule,
-    PerfectScrollbarModule
+    PerfectScrollbarModule,
+    CoreCardModule,
   ],
   providers: [
     {
