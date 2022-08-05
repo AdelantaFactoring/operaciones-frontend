@@ -10,6 +10,7 @@ import {SOLICITUD} from "../../../shared/helpers/url/comercial";
 import Swal from 'sweetalert2';
 import { UsuarioService } from 'app/main/seguridad/usuario/usuario.service';
 import { SolicitudesGrillaComponent } from './solicitudes-grilla/solicitudes-grilla.component';
+import { User } from 'app/shared/models/auth/user';
 @Component({
   selector: 'app-solicitudes',
   templateUrl: './solicitudes.component.html',
@@ -18,7 +19,7 @@ import { SolicitudesGrillaComponent } from './solicitudes-grilla/solicitudes-gri
 export class SolicitudesComponent implements OnInit {
 
   @ViewChild(SolicitudesGrillaComponent) grilla: SolicitudesGrillaComponent;
-  
+  public currentUser: User;
   hasBaseDropZoneOver: boolean;
   public contentHeader: object;
   public solicitudes: SolicitudCab[];
@@ -151,9 +152,11 @@ export class SolicitudesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.onRefrescar();
     this.hasBaseDropZoneOver = false;
     this.onUsuarioCombo();
+    this.filtroForm.controls.usuario.setValue(this.currentUser.idUsuario);
   }
 
   // onListarSolicitudes(): void {
@@ -221,7 +224,7 @@ export class SolicitudesComponent implements OnInit {
   onUsuarioCombo(): void{
     this.utilsService.blockUIStart('Obteniendo información...');
     this.usuarioService.combo({
-      idEmpresa: 1
+      idEmpresa: this.currentUser.idEmpresa
     }).subscribe(response => {
       this.optUsuario = response;
       this.utilsService.blockUIStop();
