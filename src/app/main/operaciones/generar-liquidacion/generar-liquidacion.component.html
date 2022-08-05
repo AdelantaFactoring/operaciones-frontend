@@ -112,7 +112,7 @@
                         </a>
                         &nbsp;
                         <a href="javascript:void(0)" title="Rechazar"
-                           (click)="onRechazarSolicitud(cab)"
+                           (click)="onRechazarSolicitud(cab, modalObservacionRechazo)"
                            class="btn btn-raised btn-outline-danger btn-sm">
                           <!--                              <i class="text cursor-pointer" data-feather="eye"></i>-->
                           <i class="fa fa-minus-circle"></i>
@@ -599,6 +599,40 @@
             <div class="row">
               <div class="col-md-12 col-12">
                 <div style="float: right">
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="modal.dismiss('Cross click')">
+                    <span [data-feather]="'x-circle'"></span> Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template #modalObservacionRechazo let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">N° Solicitud - [{{codigoSolicitud}}]</h4>
+            <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" ngbAutofocus tabindex="0" >
+            <div class="row">
+              <div class="col-12">
+                <label for="basicTextarea">Motivo de rechazo</label>
+                <fieldset class="form-group">
+                  <textarea [(ngModel)]="motivoRechazo" class="form-control" id="basicTextarea" minlength="1" maxlength="100" rows="3" placeholder="Ingresar motivo de rechazo..."></textarea>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" style="display: block !important;">
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div style="float: right">
+                  <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardarRechazo()">
+                    <span [data-feather]="'save'"></span> Guardar
+                  </button>
+                  &nbsp;
                   <button class="btn btn-secondary" rippleEffect type="button" (click)="modal.dismiss('Cross click')">
                     <span [data-feather]="'x-circle'"></span> Cerrar
                   </button>

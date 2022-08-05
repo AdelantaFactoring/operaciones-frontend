@@ -82,6 +82,7 @@
                   <th>Moneda</th>
                   <th>Tipo Operación</th>
                   <th>Estado</th>
+                  <th>Observación rechazo</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -116,7 +117,7 @@
                         </a>
                       </div>
                     </td>
-                    <td>{{cab.codigo}}</td>
+                    <td [ngClass]="{'solicitudRechazo': cab.observacionRechazo != ''}">{{cab.codigo}}</td>
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
                     <td>{{cab.razonSocialPagProv}}</td>
@@ -124,6 +125,7 @@
                     <td>{{cab.moneda}}</td>
                     <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.estado}}</td>
+                    <td>{{cab.observacionRechazo}}</td>
                   </tr>
                   <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse" *ngIf="cab.solicitudDet.length > 0">
                     <td [colSpan]="11">

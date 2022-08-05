@@ -36,6 +36,9 @@ export class GenerarLiquidacionComponent implements OnInit {
   public pageSizeSolicitud: number = 10;
   public pageSolicitud: number = 1;
 
+  public motivoRechazo: string = '';
+  public solicitudCabItem: SolicitudCab;
+
   constructor(private modalService: NgbModal,
               private utilsService: UtilsService,
               private solicitudesService: SolicitudesService,
@@ -364,10 +367,34 @@ export class GenerarLiquidacionComponent implements OnInit {
     }, 0);
   }
 
-  onRechazarSolicitud(cab: SolicitudCab): void {
+  onRechazarSolicitud(cab: SolicitudCab, modal: NgbModal): void {
+    this.solicitudCabItem = cab;
+    this.codigoSolicitud = cab.codigo;
+    this.motivoRechazo = '';
+
+    setTimeout(() => {
+      this.modalService.open(modal, {
+        scrollable: true,
+        size: 'sm',
+        animation: true,
+        centered: true,
+        backdrop: "static",
+        beforeDismiss: () => {
+          return true;
+        }
+      });
+    }, 0);
+  }
+
+  onGuardarRechazo() {
+    if (this.motivoRechazo.trim() == '') {
+      this.utilsService.showNotification('El motivo del rechazo es obligatorio de indicar', 'Alerta', 2);
+      return;
+    }
+
     Swal.fire({
       title: 'Confirmación',
-      text: `¿Está seguro de rechazar la solicitud '${cab.codigo}'?`,
+      text: `¿Está seguro de rechazar la solicitud '${this.solicitudCabItem.codigo}'?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí',
@@ -381,14 +408,16 @@ export class GenerarLiquidacionComponent implements OnInit {
         this.utilsService.blockUIStart('Eliminando...');
         this.solicitudesService.cambiarEstado(
           [{
-            idSolicitudCab: cab.idSolicitudCab,
+            idSolicitudCab: this.solicitudCabItem.idSolicitudCab,
             idEstado: 4,
+            observacionRechazo: this.motivoRechazo,
             idUsuarioAud: this.currentUser.idUsuario
           }]
         ).subscribe(response => {
           if (response.tipo === 1) {
             this.utilsService.showNotification('Solicitud rechazada correctamente', 'Confirmación', 1);
             this.utilsService.blockUIStop();
+            this.modalService.dismissAll();
             this.onListarSolicitudes();
           } else if (response.tipo === 2) {
             this.utilsService.showNotification(response.mensaje, 'Alerta', 2);

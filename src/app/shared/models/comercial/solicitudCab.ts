@@ -46,6 +46,7 @@ export class SolicitudCab {
   idEstado: number;
   estado: string;
   alterno: boolean;
+  observacionRechazo: string;
   idTipoOperacion: number;
   tipoOperacion: string;
   fechaCreacion: string;
