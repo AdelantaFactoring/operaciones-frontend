@@ -136,6 +136,7 @@ export class GenerarLiquidacionComponent implements OnInit {
   onListarSolicitudes(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.solicitudesService.listar({
+      idUsuario: 0,
       idConsulta: 5,
       idSubConsulta: 0,
       search: this.searchSolicitud,
