@@ -126,6 +126,7 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
       //deudaAnterior: [0],
       nuevoMontoTotal: [{value: 0, disabled: true}],
       //observacion: [''],
+      flagPagoInteresAdelantado: false
     });
     this.oldLiquidacionForm = this.liquidacionForm.value;
     this.filtroForm = this.formBuilder.group({
@@ -264,6 +265,11 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
 
       if (el.liquidacionCabSustento.filter(f => f.idTipoSustento === 1 && f.idTipo === 1).length === 0) {
         this.utilsService.showNotification(`La liquidación '${el.codigo}' seleccionada no contiene un archivo de sustento de aprobación`, "Advertencia", 2);
+        return;
+      }
+
+      if (el.flagPagoInteresAdelantado && el.liquidacionCabSustento.filter(f => f.idTipoSustento === 1 && (f.idTipo === 3 || f.idTipo === 4)).length != 2) {
+        this.utilsService.showNotification(`(Pago de intereses y gastos adelantados) Debe subir la confirmación del cliente y del pago`, "Advertencia", 2);
         return;
       }
     }
@@ -469,6 +475,8 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     //this.liquidacionForm.controls.observacion.setValue(cab.observacion);
     this.observacion = cab.observacion ?? '';
     this.sustentos = cab.liquidacionCabSustento.filter(x => x.idTipoSustento === 1);
+
+    this.liquidacionForm.controls.flagPagoInteresAdelantado.setValue(cab.flagPagoInteresAdelantado);
 
     setTimeout(() => {
       this.modalService.open(modal, {

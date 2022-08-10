@@ -192,6 +192,7 @@
                   <th class="action-color">Acción</th>
                   <th>N° Liquidación</th>
                   <th>N° Solicitud</th>
+                  <th>Tipo Operación</th>
                   <th>Cliente</th>
                   <th>Cliente RUC</th>
                   <th>Pagador / Proveedor</th>
@@ -201,7 +202,6 @@
                   <th>Monto Descuento</th>
                   <th>Nuevo Monto Total</th>
                   <th>Observación</th>
-                  <th>Tipo Operación</th>
                   <th>Estado</th>
                 </tr>
                 </thead>
@@ -301,6 +301,7 @@
                     </td>
                     <td>{{cab.codigo}}</td>
                     <td>{{cab.codigoSolicitud}}</td>
+                    <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
                     <td>{{cab.razonSocialPagProv}}</td>
@@ -310,7 +311,6 @@
                     <td>{{cab.deudaAnterior | number: '1.2-2'}}</td>
                     <td><strong>{{cab.nuevoMontoTotal | number: '1.2-2'}}</strong></td>
                     <td>{{cab.observacion}}</td>
-                    <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.estado}}</td>
                   </tr>
                   <tr id="{{ 'trL' + cab.idLiquidacionCab }}" style="visibility: collapse">
@@ -604,6 +604,17 @@
                     </div>
                   </div>
                 </div>
+                <div *ngIf="idTipoOperacion == 3" class="col-md-6 col-12">
+                  <div class="form-group">
+                    <div class="custom-control custom-switch custom-control-inline">
+                      <input type="checkbox" disabled class="custom-control-input"
+                             id="flagPagoInteresAdelantado" formControlName="flagPagoInteresAdelantado"/>
+                      <label class="custom-control-label"
+                             for="flagPagoInteresAdelantado">Pago adelantado de intereses y gastos</label>
+                    </div>
+                    <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
+                  </div>
+                </div>
                 <div class="col-12">
                   <div class="divider divider-secondary">
                     <div class="divider-text">Documento(s) de Sustento</div>
@@ -628,7 +639,7 @@
                     <table class="table table-hover">
                       <thead>
                       <tr>
-                        <th [width]="250">Tipo</th>
+                        <th style="width: 350px">Tipo</th>
                         <th>Nombre</th>
                         <th>Tamaño</th>
                         <th>Acción</th>
@@ -636,9 +647,9 @@
                       </thead>
                       <tbody>
                       <tr *ngFor="let item of archivos">
-                        <td [width]="250">
+                        <td style="width: 350px">
                           <ng-select appendTo="body" [clearable]="false" [items]="tiposArchivos"
-                                     style="width: 250px"
+                                     style="width: 350px"
                                      bindLabel="descripcion" placeholder="Tipo Archivo"
                                      bindValue="idColumna" [(ngModel)]="item.idTipo"
                                      [ngModelOptions]="{standalone: true}">

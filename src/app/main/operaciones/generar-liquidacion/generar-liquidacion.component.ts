@@ -115,7 +115,8 @@ export class GenerarLiquidacionComponent implements OnInit {
       interesIncluidoIGV: [{value: 0, disabled: true}],
       gastosIncluidoIGV: [{value: 0, disabled: true}],
       totalFacturarIGV: [{value: 0, disabled: true}],
-      totalDesembolso: [{value: 0, disabled: true}]
+      totalDesembolso: [{value: 0, disabled: true}],
+      flagPagoInteresAdelantado: false
     });
   }
 
@@ -347,6 +348,8 @@ export class GenerarLiquidacionComponent implements OnInit {
     this.solicitudForm.controls.montoSolicitudCT.setValue(item.montoSolicitudCT);
     this.solicitudForm.controls.diasPrestamoCT.setValue(item.diasPrestamoCT);
     this.solicitudForm.controls.fechaPagoCT.setValue(item.fechaPagoCT);
+
+    this.solicitudForm.controls.flagPagoInteresAdelantado.setValue(item.flagPagoInteresAdelantado);
 
     this.detalleSolicitud = item.solicitudDet;
     this.sustentosSolicitud = item.solicitudCabSustento;

@@ -69,12 +69,12 @@
                   </th>
                   <th>Acción</th>
                   <th>N° Solicitud</th>
+                  <th>Tipo Operación</th>
                   <th>Cliente</th>
                   <th>Cliente RUC</th>
                   <th>Pagador / Proveedor</th>
                   <th>Pagador / Proveedor RUC</th>
                   <th>Moneda</th>
-                  <th>Tipo Operación</th>
                   <th>Estado</th>
                 </tr>
                 </thead>
@@ -120,12 +120,12 @@
                       </div>
                     </td>
                     <td>{{cab.codigo}}</td>
+                    <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
                     <td>{{cab.razonSocialPagProv}}</td>
                     <td>{{cab.rucPagProv}}</td>
                     <td>{{cab.moneda}}</td>
-                    <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.estado}}</td>
                   </tr>
                   <tr id="{{ 'trS' + cab.idSolicitudCab }}" style="visibility: collapse"
@@ -234,6 +234,17 @@
                   <div class="form-group">
                     <label>Tipo Operación</label>
                     <input class="form-control" formControlName="tipoOperacion" type="text"/>
+                  </div>
+                </div>
+                <div *ngIf="solicitudForm.controls.idTipoOperacion.value == 3" class="col-md-6 col-12">
+                  <div class="form-group">
+                    <div class="custom-control custom-switch custom-control-inline">
+                      <input type="checkbox" disabled class="custom-control-input"
+                             id="flagPagoInteresAdelantado" formControlName="flagPagoInteresAdelantado"/>
+                      <label class="custom-control-label"
+                             for="flagPagoInteresAdelantado">Pago adelantado de intereses y gastos</label>
+                    </div>
+                    <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
                   </div>
                 </div>
                 <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">

@@ -52,6 +52,7 @@ export class LiquidacionCab {
   usuarioModificacion: string;
   fechaModificacion: string;
   alterno: boolean;
+  flagPagoInteresAdelantado: boolean;
 
   tipoNotificacion: number;
 }

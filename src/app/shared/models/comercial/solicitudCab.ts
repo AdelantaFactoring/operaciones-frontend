@@ -47,6 +47,7 @@ export class SolicitudCab {
   estado: string;
   alterno: boolean;
   observacionRechazo: string;
+  flagPagoInteresAdelantado: boolean;
   idTipoOperacion: number;
   tipoOperacion: string;
   fechaCreacion: string;
