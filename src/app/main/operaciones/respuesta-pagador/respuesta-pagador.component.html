@@ -80,12 +80,12 @@
                     </div>
                   </th>
                   <th>N° Solicitud</th>
+                  <th>Tipo Operación</th>
                   <th>Cliente</th>
                   <th>Cliente RUC</th>
                   <th>Pagador / Proveedor</th>
                   <th>Pagador / Proveedor RUC</th>
                   <th>Moneda</th>
-                  <th>Tipo Operación</th>
                   <th>Estado</th>
                 </tr>
                 </thead>
@@ -115,12 +115,12 @@
                       </div>
                     </td>
                     <td>{{cab.codigo}}</td>
+                    <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
                     <td>{{cab.razonSocialPagProv}}</td>
                     <td>{{cab.rucPagProv}}</td>
                     <td>{{cab.moneda}}</td>
-                    <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.estado}}</td>
                   </tr>
                   <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse">

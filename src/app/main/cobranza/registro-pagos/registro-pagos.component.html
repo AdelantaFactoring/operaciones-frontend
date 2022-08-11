@@ -210,9 +210,10 @@
                         <p class="mb-25">
                           {{cab.codigo}}
                         </p>
-                        <div class="progress-wrapper">
+                        <div class="progress-wrapper" style="text-align: center">
                           <ngb-progressbar [striped]="true" [animated]="true" type="primary"
-                                           [value]="porcentajePagoTotal(cab.porcentajePagoTotal)">{{porcentajePagoTotal(cab.porcentajePagoTotal)}}%</ngb-progressbar>
+                                           [value]="porcentajePagoTotal(cab.porcentajePagoTotal)"></ngb-progressbar>
+                          <span style="font-size: 12px">{{porcentajePagoTotal(cab.porcentajePagoTotal)}}%</span>
                         </div>
                       </div>
                     </td>
@@ -253,6 +254,7 @@
                             <thead>
                             <tr>
                               <th class="detail-th-color">Acción</th>
+                              <th class="detail-th-color">Progreso Pago</th>
                               <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
                               <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
                               <th class="detail-th-color">N° Documento</th>
@@ -264,7 +266,7 @@
                               <th class="detail-th-color">Interés</th>
                               <th class="detail-th-color">Gastos</th>
                               <th class="detail-th-color">Saldo</th>
-                              <th class="detail-th-color">Progreso Pago</th>
+                              <th *ngIf="cab.idTipoOperacion == 3" class="detail-th-color">¿Intereses y <br> gastos pagados? <br> (Confirming)</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -281,6 +283,13 @@
                                   </a>
                                 </div>
                               </td>
+                              <td>
+                                <div class="progress-wrapper">
+                                  <div class="mb-25 text-center">{{porcentajePagoTotal(item.porcentajePago)}}%</div>
+                                  <ngb-progressbar [striped]="true" [animated]="true" type="primary"
+                                                   [value]="porcentajePagoTotal(item.porcentajePago)"></ngb-progressbar>
+                                </div>
+                              </td>
                               <td *ngIf="cab.idTipoOperacion === 3" [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.rucPagProv}}</td>
                               <td *ngIf="cab.idTipoOperacion === 3" [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.razonSocialPagProv}}</td>
                               <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.nroDocumento}}</td>
@@ -292,13 +301,7 @@
                               <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.interesPago | number: '1.2-2'}}</td>
                               <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}" >{{item.gastosPago | number: '1.2-2'}}</td>
                               <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{saldo(item.saldo) | number: '1.2-2'}}</td>
-                              <td>
-                                <div class="progress-wrapper">
-                                  <div class="mb-25 text-center">{{porcentajePagoTotal(item.porcentajePago)}}%</div>
-                                  <ngb-progressbar [striped]="true" [animated]="true" type="primary"
-                                                   [value]="porcentajePagoTotal(item.porcentajePago)"></ngb-progressbar>
-                                </div>
-                              </td>
+                              <td *ngIf="cab.idTipoOperacion == 3" [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{(item.flagPagoInteresConfirming) ? 'Sí' : 'No'}}</td>
                             </tr>
                             </tbody>
                           </table>
@@ -389,7 +392,7 @@
                            mask="separator" thousandSeparator=","/>
                   </div>
                 </div>
-                <div class="col-md-6 col-12">
+                <div class="col-md-6 col-12" *ngIf="liquidacionCabItem.idTipoOperacion == 1 && !liquidacionCabItem.alterno">
                   <div class="form-group">
                     <label>IGV restante (servicio)</label>
                     <input class="form-control" formControlName="interesRestanteServicio" type="text"
@@ -400,6 +403,27 @@
                   <div class="form-group">
                     <label>Fondo Resguardo</label>
                     <input class="form-control" formControlName="fondoResguardo" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Interés con IGV (servicio)</label>
+                    <input class="form-control" formControlName="interesServicio" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Gastos con IGV (servicio)</label>
+                    <input class="form-control" formControlName="gastosServicio" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Monto total a facturar</label>
+                    <input class="form-control" formControlName="montoTotalFacturar" type="text"
                            mask="separator" thousandSeparator=","/>
                   </div>
                 </div>
@@ -532,6 +556,19 @@
                     <div class="divider-text"><span [data-feather]="'chevrons-down'"></span></div>
                   </div>
                 </div>
+                <div class="col-12" *ngIf="liquidacionCabItem.idTipoOperacion == 3">
+                  <div class="form-group">
+                    <div class="form-control custom-control custom-switch custom-control-inline"
+                         style="border: 0px; background-color: transparent">
+                      <label style="padding-right: 0.5rem; line-height: 1.7rem">Regular</label>
+                      <input type="checkbox" class="custom-control-input"
+                             id="tipoPago2" formControlName="flagPagoInteresConfirming" (ngModelChange)="onCambioTipoPago2($event)"
+                      />
+                      <label class="custom-control-label"
+                             for="tipoPago2">Intereses y gastos (servicio)</label>
+                    </div>
+                  </div>
+                </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
                     <label>Fecha Pago</label>
@@ -624,13 +661,25 @@
                     <tbody>
                     <tr *ngFor="let item of pagos">
                       <td>{{item.fechaConfirmada}}</td>
-                      <td>{{item.fechaPago}}</td>
-                      <td>{{item.diasMora | number: '1.0'}}</td>
-                      <td>{{item.montoCobrar | number: '1.2-2'}}</td>
+                      <td>
+                        <div *ngIf="!item.flagPagoInteresConfirming">
+                          {{item.fechaPago}}
+                        </div>
+                        <div class="cell-line-height" *ngIf="item.flagPagoInteresConfirming">
+                          <p class="mb-25">
+                            {{item.fechaPago}}
+                          </p>
+                          <span class="text-muted font-small-3">
+                            <div class="badge badge-pill badge-glow badge-info">Intereses y gastos</div>
+                          </span>
+                        </div>
+                      </td>
+                      <td>{{(item.flagPagoInteresConfirming) ? '-' : item.diasMora | number: '1.0'}}</td>
+                      <td>{{(item.flagPagoInteresConfirming) ? '-' : item.montoCobrar | number: '1.2-2'}}</td>
                       <td>{{item.montoPago | number: '1.2-2'}}</td>
-                      <td>{{item.interes | number: '1.2-2'}}</td>
-                      <td>{{item.gastos | number: '1.2-2'}}</td>
-                      <td>{{item.saldoDeuda | number: '1.2-2'}}</td>
+                      <td>{{(item.flagPagoInteresConfirming) ? '-' : item.interes | number: '1.2-2'}}</td>
+                      <td>{{(item.flagPagoInteresConfirming) ? '-' : item.gastos | number: '1.2-2'}}</td>
+                      <td>{{(item.flagPagoInteresConfirming) ? '-' : item.saldoDeuda | number: '1.2-2'}}</td>
                       <td>{{item.tipoPago}}</td>
                       <td>{{item.observacion}}</td>
                       <td>

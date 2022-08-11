@@ -61,4 +61,6 @@ export class LiquidacionDet {
   nroDocumento_FACT: string;
 
   seleccionado: boolean = true;
+
+  flagPagoInteresConfirming: boolean;
 }

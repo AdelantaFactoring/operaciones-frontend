@@ -102,7 +102,11 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       fechaConfirmada: [{value: '', disabled: true}],
       netoConfirmado: [{value: 0, disabled: true}],
       interesRestanteServicio: [{value: 0, disabled: true}],
-      fondoResguardo: [{value: 0, disabled: true}]
+      fondoResguardo: [{value: 0, disabled: true}],
+
+      interesServicio: [{value: 0, disabled: true}],
+      gastosServicio: [{value: 0, disabled: true}],
+      montoTotalFacturar: [{value: 0, disabled: true}]
     });
     this.pagoInfoForm = this.formBuilder.group({
       nuevaFechaConfirmada: [{value: '', disabled: true}],
@@ -117,7 +121,9 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       flagPagoHabilitado: [false],
       fechaPago: ['', Validators.required],
       montoPago: [0, [Validators.required, Validators.min(1)]],
-      observacion: ['']
+      observacion: [''],
+
+      flagPagoInteresConfirming: false
     });
     this.oldPagoInfoForm = this.pagoInfoForm.value;
     this.filtroForm = this.formBuilder.group({
@@ -329,6 +335,10 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.liquidacionForm.controls.interesRestanteServicio.setValue(det.interesRestanteServicio);
     this.liquidacionForm.controls.fondoResguardo.setValue(det.fondoResguardo);
 
+    this.liquidacionForm.controls.interesServicio.setValue(det.interesConIGV);
+    this.liquidacionForm.controls.gastosServicio.setValue(det.gastosDiversosConIGV);
+    this.liquidacionForm.controls.montoTotalFacturar.setValue(det.montoTotalFacturado);
+
     this.idLiquidacionCab = cab.idLiquidacionCab;
     this.idLiquidacionDet = det.idLiquidacionDet;
     this.idSolicitudDet = det.idSolicitudDet;
@@ -336,6 +346,12 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.onListarPago(det.idLiquidacionDet);
 
     this.liquidacionCabItem = cab;
+
+    if (det.flagPagoInteresConfirming) {
+      this.pagoInfoForm.controls.flagPagoInteresConfirming.disable();
+    } else {
+      this.pagoInfoForm.controls.flagPagoInteresConfirming.enable();
+    }
 
     await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab, this.idLiquidacionDet);
 
@@ -369,6 +385,14 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     }, 0);
   }
 
+  onCheckPagoInteresConfirming() : void {
+    if (this.pagos.filter(a => a.flagPagoInteresConfirming).length > 0) {
+      this.pagoInfoForm.controls.flagPagoInteresConfirming.disable();
+    } else {
+      this.pagoInfoForm.controls.flagPagoInteresConfirming.enable();
+    }
+  }
+
   onGuardarPago(): void {
     this.submitted = true;
     if (this.pagoInfoForm.invalid)
@@ -385,6 +409,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       montoPago: this.pagoInfoForm.controls.montoPago.value,
       _TipoPago: this.pagoInfoForm.controls.tipoPago.value,
       observacion: this.pagoInfoForm.controls.observacion.value,
+      flagPagoInteresConfirming: this.pagoInfoForm.controls.flagPagoInteresConfirming.value,
       idUsuarioAud: this.currentUser.idUsuario
     }).subscribe(async (response) => {
       switch (response.tipo) {
@@ -400,6 +425,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
 
           await this.onObtenerEstadoPagoFacturingRegular(this.idLiquidacionCab, this.idLiquidacionDet);
 
+          this.onCheckPagoInteresConfirming();
 
           break;
         case 2:
@@ -419,6 +445,16 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
 
   onCambioTipoPago($event: boolean): void {
     this.onInfoPago(this.idLiquidacionDet, this.utilsService.formatoFecha_YYYYMMDD(this.pagoInfoForm.controls.fecha.value), $event);
+  }
+
+  onCambioTipoPago2($event: boolean): void {
+    if ($event) {
+      this.pagoInfoForm.controls.montoPago.setValue(this.liquidacionForm.controls.montoTotalFacturar.value);
+      this.pagoInfoForm.controls.montoPago.disable();
+    } else {
+      this.pagoInfoForm.controls.montoPago.setValue(0);
+      this.pagoInfoForm.controls.montoPago.enable();
+    }
   }
 
   onCambioFecha($event: any) {

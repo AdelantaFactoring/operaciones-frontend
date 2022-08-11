@@ -13,4 +13,5 @@ export class LiquidacionPago {
   observacion: string;
   comprobanteGenerado1: number;
   comprobanteGenerado2: number;
+  flagPagoInteresConfirming: boolean;
 }
