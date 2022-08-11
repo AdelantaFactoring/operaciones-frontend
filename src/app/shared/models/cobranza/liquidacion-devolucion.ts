@@ -31,4 +31,8 @@ export class LiquidacionDevolucion {
   totalRows: number;
   seleccionado: boolean;
   liquidacionDevolucionSustento: LiquidacionDevolucionSustento[];
+  usuarioCreacion: string;
+  fechaCreacion: string;
+  usuarioModificacion: string;
+  fechaModificacion: string;
 }

@@ -51,9 +51,9 @@
           <div class="col-12">
             <div class="table-responsive">
               <table class="table table-hover min-width-table">
-                <thead>
+                <thead class="centerall-header">
                 <tr>
-                  <th>
+                  <th rowspan="2">
                     <div class="d-flex align-items-center">
                       <a href="javascript:void(0)" title="Ocultar / Mostrar"
                          (click)="onCambiarVisibilidadDetalleTodo()">
@@ -66,22 +66,29 @@
                       </a>
                     </div>
                   </th>
-                  <th>Acción</th>
-                  <th>Tipo Documento</th>
-                  <th>N° Documento</th>
-                  <th>Cliente</th>
-                  <th>Cliente RUC</th>
+                  <th rowspan="2">Acción</th>
+                  <th rowspan="2">Tipo Documento</th>
+                  <th rowspan="2">N° Documento</th>
+                  <th style="min-width: 300px !important;" rowspan="2">Cliente</th>
+                  <th rowspan="2">Cliente RUC</th>
                   <!--                  <th>Dirección</th>-->
-                  <th>Fecha Emisión</th>
-                  <th>Moneda</th>
-                  <th>Forma Pago</th>
+                  <th rowspan="2">Fecha Emisión</th>
+                  <th rowspan="2">Moneda</th>
+                  <th rowspan="2">Forma Pago</th>
                   <!--                  <th>Fecha Vencimiento</th>-->
-                  <th>Monto</th>
-                  <th>Monto (IGV)</th>
-                  <th>Monto Total</th>
-                  <th>Estado</th>
-                  <th>Archivo PDF</th>
-                  <th>Archivo XML</th>
+                  <th rowspan="2">Monto</th>
+                  <th rowspan="2">Monto (IGV)</th>
+                  <th rowspan="2">Monto Total</th>
+                  <th rowspan="2">Estado</th>
+                  <th rowspan="2">Archivo PDF</th>
+                  <th rowspan="2">Archivo XML</th>
+                  <th colspan="4" class="audit-columns">Auditoría</th>
+                </tr>
+                <tr>
+                  <th class="audit-columns">Creado por</th>
+                  <th class="audit-columns">Fecha creación</th>
+                  <th class="audit-columns">Modificado por</th>
+                  <th class="audit-columns">Fecha modificación</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -174,6 +181,10 @@
                         </a>
                       </div>
                     </td>
+                    <td>{{cab.usuarioCreacion}}</td>
+                    <td>{{cab.fechaCreacion}}</td>
+                    <td>{{cab.usuarioModificacion}}</td>
+                    <td>{{cab.fechaModificacion}}</td>
                   </tr>
                   <tr id="{{ 'tr' + cab.idLiquidacionDocumentoCab }}" style="visibility: collapse"
                       *ngIf="cab.liquidacionDocumentoDet.length > 0">

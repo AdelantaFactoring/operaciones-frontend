@@ -64,27 +64,34 @@
           <div class="col-12">
             <div class="table-responsive">
               <table class="table table-hover min-width-table">
-                <thead>
+                <thead class="centerall-header">
                 <tr>
-                  <th>
+                  <th rowspan="2">
                     <div class="custom-control custom-checkbox">
                       <input type="checkbox" class="custom-control-input" id="customCheck" unchecked
                              [(ngModel)]="seleccionarTodo" (ngModelChange)="onSeleccionarTodo()"/>
                       <label class="custom-control-label" for="customCheck"></label>
                     </div>
                   </th>
-                  <th>Acción</th>
-                  <th>N° Liquidación</th>
-                  <th>N° Solicitud</th>
-                  <th>Tipo Operación</th>
-                  <th>Cliente</th>
-                  <th>Cliente RUC</th>
-                  <th>Pagador / Proveedor</th>
-                  <th>Pagador / Proveedor RUC</th>
-                  <th>Moneda</th>
-                  <th>N° Documento</th>
-                  <th>Monto</th>
-                  <th>Estado</th>
+                  <th rowspan="2">Acción</th>
+                  <th rowspan="2">N° Liquidación</th>
+                  <th rowspan="2">N° Solicitud</th>
+                  <th rowspan="2">Tipo Operación</th>
+                  <th rowspan="2">Cliente</th>
+                  <th rowspan="2">Cliente RUC</th>
+                  <th rowspan="2" style="min-width: 300px !important;">Pagador / Proveedor</th>
+                  <th rowspan="2">Pagador / Proveedor RUC</th>
+                  <th rowspan="2">Moneda</th>
+                  <th rowspan="2">N° Documento</th>
+                  <th rowspan="2">Monto</th>
+                  <th rowspan="2">Estado</th>
+                  <th colspan="4" class="audit-columns">Auditoría</th>
+                </tr>
+                <tr>
+                  <th class="audit-columns">Creado por</th>
+                  <th class="audit-columns">Fecha creación</th>
+                  <th class="audit-columns">Modificado por</th>
+                  <th class="audit-columns">Fecha modificación</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -130,6 +137,10 @@
                     <td>{{cab.nroDocumento}}</td>
                     <td>{{cab.monto | number: '1.2-2'}}</td>
                     <td>{{cab.estado}}</td>
+                    <td>{{cab.usuarioCreacion}}</td>
+                    <td>{{cab.fechaCreacion}}</td>
+                    <td>{{cab.usuarioModificacion}}</td>
+                    <td>{{cab.fechaModificacion}}</td>
                   </tr>
                 </ng-template>
                 </tbody>

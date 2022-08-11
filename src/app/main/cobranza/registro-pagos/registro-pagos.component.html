@@ -147,9 +147,9 @@
           <div class="col-12">
             <div class="table-responsive">
               <table class="table table-hover min-width-table">
-                <thead>
+                <thead class="centerall-header">
                 <tr>
-                  <th>
+                  <th rowspan="2">
                     <div class="d-flex align-items-center">
                       <a href="javascript:void(0)" title="Ocultar / Mostrar"
                          (click)="onCambiarVisibilidadDetalleTodo()">
@@ -162,21 +162,28 @@
                       </a>
                     </div>
                   </th>
-                  <th style="width: 5px">Acción</th>
-                  <th>N° Liquidación</th>
-                  <th>N° Solicitud</th>
-                  <th>Cliente</th>
-                  <th>Cliente RUC</th>
-                  <th>Pagador / Proveedor</th>
-                  <th>Pagador / Proveedor RUC</th>
-                  <th>Moneda</th>
-                  <th>Neto Confirmado Total</th>
-                  <th>IGV restante total (servicio)</th>
-                  <th>Pago Total</th>
-                  <th>Saldo Total</th>
+                  <th rowspan="2" tyle="width: 5px">Acción</th>
+                  <th rowspan="2">N° Liquidación</th>
+                  <th rowspan="2">N° Solicitud</th>
+                  <th rowspan="2">Cliente</th>
+                  <th rowspan="2">Cliente RUC</th>
+                  <th rowspan="2">Pagador / Proveedor</th>
+                  <th rowspan="2">Pagador / Proveedor RUC</th>
+                  <th rowspan="2">Moneda</th>
+                  <th rowspan="2">Neto Confirmado Total</th>
+                  <th rowspan="2">IGV restante total (servicio)</th>
+                  <th rowspan="2">Pago Total</th>
+                  <th rowspan="2">Saldo Total</th>
 <!--                  <th>Progreso Pago Total</th>-->
 <!--                  <th>Tipo Operación</th>-->
-                  <th>Estado</th>
+                  <th rowspan="2">Estado</th>
+                  <th colspan="4" class="audit-columns">Auditoría</th>
+                </tr>
+                <tr>
+                  <th class="audit-columns">Creado por</th>
+                  <th class="audit-columns">Fecha creación</th>
+                  <th class="audit-columns">Modificado por</th>
+                  <th class="audit-columns">Fecha modificación</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -244,6 +251,10 @@
 <!--                    </td>-->
 <!--                    <td>{{cab.tipoOperacion}}</td>-->
                     <td>{{cab.estado}}</td>
+                    <td>{{cab.usuarioCreacion}}</td>
+                    <td>{{cab.fechaCreacion}}</td>
+                    <td>{{cab.usuarioModificacion}}</td>
+                    <td>{{cab.fechaModificacion}}</td>
                   </tr>
                   <tr id="{{ 'trL' + cab.idLiquidacionCab }}" style="visibility: collapse">
                     <td [colSpan]="14">
@@ -642,20 +653,25 @@
                   <i class="text-secondary cursor-pointer fa fa-minus-circle"></i> : No Requerido</p>
                 <div class="table-responsive">
                   <table class="table table-hover">
-                    <thead>
+                    <thead class="centerall-header">
                     <tr>
-                      <th>Fecha Confirmada</th>
-                      <th>Fecha Pago</th>
-                      <th>Día(s) Mora</th>
-                      <th>Monto a Financiar</th>
-                      <th>Monto Pago</th>
-                      <th>Interés</th>
-                      <th>Gastos</th>
-                      <th>Saldo (Deuda)</th>
-                      <th>Tipo de Pago</th>
-                      <th>Observación</th>
-                      <th>¿FACTURA GENERADA? (INTERÉS MORA)</th>
-                      <th>¿FACTURA GENERADA? (GASTOS MORA)</th>
+                      <th rowspan="2">Fecha Confirmada</th>
+                      <th rowspan="2">Fecha Pago</th>
+                      <th rowspan="2">Día(s) Mora</th>
+                      <th rowspan="2">Monto a Financiar</th>
+                      <th rowspan="2">Monto Pago</th>
+                      <th rowspan="2">Interés</th>
+                      <th rowspan="2">Gastos</th>
+                      <th rowspan="2">Saldo (Deuda)</th>
+                      <th rowspan="2">Tipo de Pago</th>
+                      <th rowspan="2">Observación</th>
+                      <th rowspan="2">¿FACTURA GENERADA? (INTERÉS MORA)</th>
+                      <th rowspan="2">¿FACTURA GENERADA? (GASTOS MORA)</th>
+                      <th colspan="2" class="audit-columns">Auditoría</th>
+                    </tr>
+                    <tr>
+                      <th class="audit-columns">Creado por</th>
+                      <th class="audit-columns">Fecha creación</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -692,6 +708,8 @@
                         <i *ngIf="item.comprobanteGenerado2 === 0" class="text-danger cursor-pointer fa fa-ban"></i>
                         <i *ngIf="item.comprobanteGenerado2 === 2" class="text-secondary cursor-pointer fa fa-minus-circle"></i>
                       </td>
+                      <td>{{item.usuarioCreacion}}</td>
+                      <td>{{item.fechaCreacion}}</td>
                     </tr>
                     </tbody>
                   </table>

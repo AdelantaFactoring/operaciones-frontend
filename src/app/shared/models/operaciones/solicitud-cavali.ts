@@ -9,5 +9,9 @@ export class SolicitudCavali {
   mensaje: string;
   idEstado: number;
   estado: string;
+  usuarioCreacion: string;
+  fechaCreacion: string;
+  usuarioModificacion: string;
+  fechaModificacion: string;
   totalRows: number;
 }

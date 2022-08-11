@@ -48,9 +48,14 @@ export class SolicitudCab {
   alterno: boolean;
   observacionRechazo: string;
   flagPagoInteresAdelantado: boolean;
+
+  usuarioCreacion: string;
+  fechaCreacion: string;
+  usuarioModificacion: string;
+  fechaModificacion: string;
+
   idTipoOperacion: number;
   tipoOperacion: string;
-  fechaCreacion: string;
   idUsuarioAud: number;
   totalRows: number;
   checkList: boolean;

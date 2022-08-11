@@ -14,4 +14,8 @@ export class LiquidacionPago {
   comprobanteGenerado1: number;
   comprobanteGenerado2: number;
   flagPagoInteresConfirming: boolean;
+  usuarioCreacion: string;
+  fechaCreacion: string;
+  usuarioModificacion: string;
+  fechaModificacion: string;
 }

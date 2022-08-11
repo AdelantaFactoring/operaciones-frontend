@@ -57,4 +57,8 @@ export class LiquidacionDocumentoCab {
   liquidacionDocumentoDet: LiquidacionDocumentoDet[] = [];
   seleccionado: boolean = false;
   cambiarIcono: boolean = false;
+  usuarioCreacion: string;
+  fechaCreacion: string;
+  usuarioModificacion: string;
+  fechaModificacion: string;
 }

@@ -10,5 +10,9 @@ export class Usuario {
     perfil: string;
     archivoFoto: string;
     google: boolean;
+    usuarioCreacion: string;
+    fechaCreacion: string;
+    usuarioModificacion: string;
+    fechaModificacion: string;
     totalRows: number;
 }

@@ -53,10 +53,17 @@
             <div class="col-12">
               <div class="table-responsive">
                 <table class="table table-hover min-width-table">
-                  <thead>
+                  <thead class="centerall-header">
                   <tr>
-                    <th>Acción</th>
-                    <th>Perfil</th>
+                    <th rowspan="2">Acción</th>
+                    <th rowspan="2">Perfil</th>
+                    <th colspan="4" class="audit-columns">Auditoría</th>
+                  </tr>
+                  <tr>
+                    <th class="audit-columns">Creado por</th>
+                    <th class="audit-columns">Fecha creación</th>
+                    <th class="audit-columns">Modificado por</th>
+                    <th class="audit-columns">Fecha modificación</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -76,6 +83,10 @@
                         </div>
                       </td>
                       <td>{{row.perfil}}</td>
+                      <td>{{row.usuarioCreacion}}</td>
+                      <td>{{row.fechaCreacion}}</td>
+                      <td>{{row.usuarioModificacion}}</td>
+                      <td>{{row.fechaModificacion}}</td>
                     </tr>
                   </ng-template>
                   </tbody>

@@ -117,14 +117,21 @@
 <!--            <perfect-scrollbar [config]="{ suppressScrollX: false, suppressScrollY: true }">-->
             <div class="table-responsive">
               <table class="table table-hover min-width-table">
-                <thead>
+                <thead class="centerall-header">
                 <tr>
-                  <th>N° Documento</th>
-                  <th>Tipo Proceso</th>
-                  <th>Id. Proceso</th>
-                  <th>Código</th>
-                  <th>Mensaje</th>
-                  <th>Estado</th>
+                  <th rowspan="2">N° Documento</th>
+                  <th rowspan="2">Tipo Proceso</th>
+                  <th rowspan="2">Id. Proceso</th>
+                  <th rowspan="2">Código</th>
+                  <th rowspan="2">Mensaje</th>
+                  <th rowspan="2">Estado</th>
+                  <th colspan="4" class="audit-columns">Auditoría</th>
+                </tr>
+                <tr>
+                  <th class="audit-columns">Creado por</th>
+                  <th class="audit-columns">Fecha creación</th>
+                  <th class="audit-columns">Modificado por</th>
+                  <th class="audit-columns">Fecha modificación</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -135,6 +142,10 @@
                   <td>{{item.codigo}}</td>
                   <td>{{item.mensaje}}</td>
                   <td>{{item.estado}}</td>
+                  <td>{{item.usuarioCreacion}}</td>
+                  <td>{{item.fechaCreacion}}</td>
+                  <td>{{item.usuarioModificacion}}</td>
+                  <td>{{item.fechaModificacion}}</td>
                 </tr>
                 </tbody>
               </table>

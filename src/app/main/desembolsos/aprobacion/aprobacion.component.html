@@ -166,9 +166,9 @@
           <div class="col-12">
             <div class="table-responsive">
               <table class="table table-hover min-width-table">
-                <thead>
+                <thead class="centerall-header">
                 <tr>
-                  <th>
+                  <th rowspan="2">
                     <div class="d-flex align-items-center">
                       <a href="javascript:void(0)" title="Ocultar / Mostrar"
                          (click)="onCambiarVisibilidadDetalleTodo()">
@@ -181,26 +181,33 @@
                       </a>
                     </div>
                   </th>
-                  <th>
+                  <th rowspan="2">
                     <div class="custom-control custom-checkbox">
                       <input type="checkbox" class="custom-control-input" id="customCheck" unchecked
                              [(ngModel)]="seleccionarTodo" (ngModelChange)="onSeleccionarTodo()"/>
                       <label class="custom-control-label" for="customCheck"></label>
                     </div>
                   </th>
-                  <th>Acción</th>
-                  <th>N° Liquidación</th>
-                  <th>N° Solicitud</th>
-                  <th>Tipo Operación</th>
-                  <th>Cliente</th>
-                  <th>Cliente RUC</th>
-                  <th>Pagador / Proveedor</th>
-                  <th>Pagador / Proveedor RUC</th>
-                  <th>Moneda</th>
-                  <th>Monto Total</th>
-                  <th>Monto Descuento</th>
-                  <th>Nuevo Monto Total</th>
-                  <th>Estado</th>
+                  <th rowspan="2">Acción</th>
+                  <th rowspan="2">N° Liquidación</th>
+                  <th rowspan="2">N° Solicitud</th>
+                  <th rowspan="2">Tipo Operación</th>
+                  <th rowspan="2">Cliente</th>
+                  <th rowspan="2">Cliente RUC</th>
+                  <th rowspan="2">Pagador / Proveedor</th>
+                  <th rowspan="2">Pagador / Proveedor RUC</th>
+                  <th rowspan="2">Moneda</th>
+                  <th rowspan="2">Monto Total</th>
+                  <th rowspan="2">Monto Descuento</th>
+                  <th rowspan="2">Nuevo Monto Total</th>
+                  <th rowspan="2">Estado</th>
+                  <th colspan="4" class="audit-columns">Auditoría</th>
+                </tr>
+                <tr>
+                  <th class="audit-columns">Creado por</th>
+                  <th class="audit-columns">Fecha creación</th>
+                  <th class="audit-columns">Modificado por</th>
+                  <th class="audit-columns">Fecha modificación</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -261,6 +268,10 @@
                     <td>{{cab.deudaAnterior | number: '1.2-2'}}</td>
                     <td><strong>{{cab.nuevoMontoTotal | number: '1.2-2'}}</strong></td>
                     <td>{{cab.estado}}</td>
+                    <td>{{cab.usuarioCreacion}}</td>
+                    <td>{{cab.fechaCreacion}}</td>
+                    <td>{{cab.usuarioModificacion}}</td>
+                    <td>{{cab.fechaModificacion}}</td>
                   </tr>
                   <tr id="{{ 'tr' + cab.idLiquidacionCab }}" style="visibility: collapse">
                     <td [colSpan]="15">

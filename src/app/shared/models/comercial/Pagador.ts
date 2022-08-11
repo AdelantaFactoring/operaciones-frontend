@@ -8,9 +8,10 @@ export class Pagador {
     telefono: string;
     correo: string;
     limiteGastoNegociacion: number;
-    usuarioCreador: string;
+    usuarioCreacion: string;
     fechaCreacion: string;
+    usuarioModificacion: string;
+    fechaModificacion: string;
     totalRows: number;
     usuarioAud: string;
   }
-  

@@ -51,13 +51,20 @@
           <div class="col-12">
             <div class="table-responsive">
               <table class="table table-hover min-width-table">
-                <thead>
+                <thead class="centerall-header">
                 <tr>
-                  <th>Acción</th>
-                  <th>RUC</th>
-                  <th>Razón Social</th>
-                  <th>Dirección Principal</th>
-                  <th>Dirección Facturación</th>
+                  <th rowspan="2">Acción</th>
+                  <th rowspan="2">RUC</th>
+                  <th rowspan="2">Razón Social</th>
+                  <th rowspan="2">Dirección Principal</th>
+                  <th rowspan="2">Dirección Facturación</th>
+                  <th colspan="4" class="audit-columns">Auditoría</th>
+                </tr>
+                <tr>
+                  <th class="audit-columns">Creado por</th>
+                  <th class="audit-columns">Fecha creación</th>
+                  <th class="audit-columns">Modificado por</th>
+                  <th class="audit-columns">Fecha modificación</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -79,6 +86,10 @@
                   <td>{{item.razonSocial}}</td>
                   <td>{{item.direccionPrincipal}}</td>
                   <td>{{item.direccionFacturacion}}</td>
+                  <td>{{item.usuarioCreacion}}</td>
+                  <td>{{item.fechaCreacion}}</td>
+                  <td>{{item.usuarioModificacion}}</td>
+                  <td>{{item.fechaModificacion}}</td>
                 </tr>
                 </tbody>
               </table>

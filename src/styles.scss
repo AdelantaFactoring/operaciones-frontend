@@ -24,3 +24,12 @@
 //.thead {
 //  width: calc( 100% - 1.4em )
 //}
+
+.centerall-header tr th {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.audit-columns {
+  background-color: #e1c9003d !important;
+}
