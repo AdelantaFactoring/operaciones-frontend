@@ -55,4 +55,12 @@ export class LiquidacionCab {
   flagPagoInteresAdelantado: boolean;
 
   tipoNotificacion: number;
+
+  interesConIGV_Total: number;
+  gastosDiversosConIGV_Total: number;
+  montoFacturado_Total: number;
+  fecha_PAI: string;
+  monto_PAI: number;
+  observacion_PAI: string;
+  flagPagoInteresConfirming: boolean;
 }

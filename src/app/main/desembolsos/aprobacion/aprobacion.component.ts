@@ -155,7 +155,9 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
       totFacurarConIGVCT: [{value: 0, disabled: true}],
       totDesembolsarConIGVCT: [{value: 0, disabled: true}],
       tipoCambioMoneda: [{value: 0, disabled: false}],
-      montoConvertido: [{value: 0, disabled: true}, Validators.required]
+      montoConvertido: [{value: 0, disabled: true}, Validators.required],
+
+      flagPagoInteresAdelantado: [{value: false, disabled: true}]
     });
     this.filtroForm = this.formBuilder.group({
       codigoLiquidacion: [''],
@@ -397,6 +399,10 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
     this.solicitudForm.controls.tipoCambioMoneda.setValue(item.tipoCambioMoneda);
 
     this.tipoCambioMoneda = item.tipoCambioMoneda;
+
+    console.log(item)
+
+    this.solicitudForm.controls.flagPagoInteresAdelantado.setValue(item.flagPagoInteresAdelantado);
 
     this.solicitudForm.controls.montoTotal.setValue(item.nuevoMontoTotal);
     this.solicitudForm.controls.deudaAnterior.setValue(item.deudaAnterior);

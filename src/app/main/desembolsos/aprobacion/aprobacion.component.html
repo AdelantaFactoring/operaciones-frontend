@@ -457,6 +457,17 @@
                     </div>
                   </div>
                 </div>
+                <div *ngIf="solicitudForm.controls.idTipoOperacion.value == 3" class="col-12">
+                  <div class="form-group">
+                    <div class="custom-control custom-switch custom-control-inline">
+                      <input type="checkbox" disabled class="custom-control-input"
+                             id="flagPagoInteresAdelantado" formControlName="flagPagoInteresAdelantado"/>
+                      <label class="custom-control-label"
+                             for="flagPagoInteresAdelantado">Pago adelantado de intereses y gastos</label>
+                    </div>
+                    <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
+                  </div>
+                </div>
 
                 <div class="col-12">
                   <div class="divider divider-success">

@@ -80,4 +80,24 @@ export class RegistroPagosService {
       }
     );
   }
+
+  getPAI(payload): Observable<any> {
+    return this.requestMethod.get(
+      `${environment.apiUrl}${REGISTROPAGOS.getPAI}`,
+      `?idLiquidacionCab=${payload.idLiquidacionCab}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  updatePAI(payload): Observable<any> {
+    return this.requestMethod.post(
+      `${environment.apiUrl}${REGISTROPAGOS.updatePAI}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }

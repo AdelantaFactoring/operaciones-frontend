@@ -5,6 +5,8 @@ export const REGISTROPAGOS = {
   generarComprobanteEspecialFactoringRegular: '/liquidacion/generarComprobanteEspecialFactoringRegular',
   infoPago: '/liquidacion/infoPago',
   insertarPago: '/liquidacion/insertarPago',
+  getPAI: '/liquidacion/getPAI',
+  updatePAI: '/liquidacion/updatePAI'
   }
 
 export const DEVOLUCIONES = {

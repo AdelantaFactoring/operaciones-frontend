@@ -30,6 +30,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   public pagos: LiquidacionPago[] = [];
   public liquidacionForm: FormGroup;
   public pagoInfoForm: FormGroup;
+  public paiForm: FormGroup;
   public oldPagoInfoForm: FormGroup;
   public filtroForm: FormGroup;
   public oldFiltroForm: FormGroup;
@@ -62,6 +63,10 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
 
   get ReactiveIUForm() {
     return this.pagoInfoForm.controls;
+  }
+
+  get ReactiveIUFormPAI() {
+    return this.paiForm.controls;
   }
 
   constructor(private modalService: NgbModal,
@@ -139,6 +144,15 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       fechaOperacion: [null]
     });
     this.oldFiltroForm = this.filtroForm.value;
+
+    this.paiForm = this.formBuilder.group({
+      interesConIGV_Total: [{value: 0, disabled: true}],
+      gastosDiversosConIGV_Total: [{value: 0, disabled: true}],
+      montoFacturado_Total: [{value: 0, disabled: true}],
+      fecha_PAI: ['', Validators.required],
+      monto_PAI: [{value: 0, disabled: true}, [Validators.required, Validators.min(1)]],
+      observacion_PAI: ['']
+    });
   }
 
   async ngOnInit(): Promise<void> {
@@ -511,6 +525,106 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
         }
       });
     }, 0);
+  }
+
+  onShowPAI(modal: NgbModal, cab: LiquidacionCab): void {
+    this.fechaMaxima = { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() };
+    this.codigo = cab.codigo;
+    this.idLiquidacionCab = cab.idLiquidacionCab;
+
+    this.liquidacionCabItem = cab;
+
+    this.utilsService.blockUIStart('Obteniendo información...');
+    this.registroPagosService.getPAI({
+      idLiquidacionCab: this.idLiquidacionCab
+    }).subscribe((response: LiquidacionCab) => {
+      this.paiForm.controls.interesConIGV_Total.setValue(response[0].interesConIGV_Total);
+      this.paiForm.controls.gastosDiversosConIGV_Total.setValue(response[0].gastosDiversosConIGV_Total);
+      this.paiForm.controls.montoFacturado_Total.setValue(response[0].montoFacturado_Total);
+
+      let fechaPago = {
+        year: new Date().getFullYear(),
+        month: new Date().getMonth() + 1,
+        day: new Date().getDate()
+      };
+
+      if (response[0].fecha_PAI != '') {
+        let split = response[0].fecha_PAI.split('/');
+        fechaPago.day = parseInt(split[0]);
+        fechaPago.month = parseInt(split[1]);
+        fechaPago.year = parseInt(split[2]);
+      }
+
+      this.paiForm.controls.fecha_PAI.setValue(fechaPago);
+      this.paiForm.controls.monto_PAI.setValue((response[0].monto_PAI == 0) ? response[0].montoFacturado_Total : response[0].monto_PAI);
+      this.paiForm.controls.observacion_PAI.setValue(response[0].observacion_PAI);
+
+      if (cab.flagPagoInteresConfirming) {
+        this.paiForm.controls.fecha_PAI.disable();
+        this.paiForm.controls.observacion_PAI.disable();
+      } else {
+        this.paiForm.controls.fecha_PAI.enable();
+        this.paiForm.controls.observacion_PAI.enable();
+      }
+
+      this.utilsService.blockUIStop();
+
+      setTimeout(() => {
+        this.modalService.open(modal, {
+          scrollable: true,
+          size: 'lg',
+          // windowClass: 'my-class',
+          animation: true,
+          // centered: true,
+          backdrop: "static",
+          beforeDismiss: () => {
+            return true;
+          }
+        });
+      }, 0);
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+  }
+
+  onGuardarPAI(): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea continuar con la operación?, esta acción no podrá revertirse`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      }
+    }).then(async result => {
+      if (result.value) {
+        this.utilsService.blockUIStart('Guardando información...');
+        this.registroPagosService.updatePAI({
+          idLiquidacionCab: this.idLiquidacionCab,
+          fecha_PAI: this.utilsService.formatoFecha_YYYYMMDD(this.paiForm.controls.fecha_PAI.value),
+          monto_PAI: this.paiForm.controls.monto_PAI.value,
+          observacion_PAI: this.paiForm.controls.observacion_PAI.value,
+          idUsuarioAud: this.currentUser.idUsuario
+        }).subscribe((response: LiquidacionCab) => {
+          this.utilsService.showNotification('Operación realizada satisfactoriamente', 'Confirmación', 1)
+
+          this.modalService.dismissAll();
+
+          this.utilsService.blockUIStop();
+
+          this.onListarCobranza();
+        }, error => {
+          this.utilsService.blockUIStop();
+          this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+        });
+
+        this.modalService.dismissAll();
+      }
+    });
   }
 
   updateInicioPagosTotales(): void {

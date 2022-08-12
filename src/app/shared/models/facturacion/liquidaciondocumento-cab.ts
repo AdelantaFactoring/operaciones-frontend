@@ -61,4 +61,5 @@ export class LiquidacionDocumentoCab {
   fechaCreacion: string;
   usuarioModificacion: string;
   fechaModificacion: string;
+  correoClienteContacto: string;
 }
