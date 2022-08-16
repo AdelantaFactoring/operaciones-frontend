@@ -375,6 +375,11 @@ export class GenerarLiquidacionComponent implements OnInit {
     this.codigoSolicitud = cab.codigo;
     this.motivoRechazo = '';
 
+    if (cab.idEstado == 5) { // Aprobada
+      this.utilsService.showNotification(`La solicitud "${cab.codigo}" ya está aprobada.`, 'Alerta', 2);
+      return;
+    }
+
     setTimeout(() => {
       this.modalService.open(modal, {
         scrollable: true,

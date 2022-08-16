@@ -243,8 +243,8 @@ export class SolicitudesFormComponent implements OnInit {
       montoDesc: [0],
       fondoResguardo: [0],
       netoSolicitado: [0],
-      usarGastosContrato: [true],
-      usarGastoVigenciaPoder: [true],
+      usarGastosContrato: [false],
+      usarGastoVigenciaPoder: [false],
       gastoVigenciaPoder: [0]
     });
   }
@@ -303,7 +303,7 @@ export class SolicitudesFormComponent implements OnInit {
           || row.nombreContacto == null || row.telefonoContacto == null || row.correoContacto == null) {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
           console.log('Primero');
-          
+
           return;
         } else if (row.nroCuentaBancariaDestino == null && row.cCIDestino == null || row.nroCuentaBancariaDestino == '' && row.cCIDestino == '') {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
@@ -642,7 +642,7 @@ export class SolicitudesFormComponent implements OnInit {
 
       if (rs.tipo == 0) {
         this.dataXml.push(rs);
-        
+
         this.procesar = false;
         count = Number(count) + 1;
         if (count == this.cantXml) {
@@ -689,7 +689,7 @@ export class SolicitudesFormComponent implements OnInit {
           if (contacto === null)
             if (this.contacto.length > 0)
               contacto = this.contacto[0];
-          
+
           for (const row of this.dataXlsx) {
             let item = this.dataXml.find(f => f.rucCab == row.ruc && f.tipoMoneda == row.moneda && f.codFactura == row.documento);
             if (item != null) {
