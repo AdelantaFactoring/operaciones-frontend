@@ -192,7 +192,8 @@
                   <th rowspan="2" class="action-color">Acción</th>
                   <th rowspan="2">N° Liquidación</th>
                   <th rowspan="2">N° Solicitud</th>
-                  <th rowspan="2">Tipo Operación</th>
+<!--                  <th rowspan="2">Tipo Operación</th>-->
+                  <th style="min-width: 300px" rowspan="2">Fecha operación</th>
                   <th rowspan="2">Cliente</th>
                   <th rowspan="2">Cliente RUC</th>
                   <th rowspan="2">Pagador / Proveedor</th>
@@ -307,8 +308,34 @@
                       <!--                      </div>-->
                     </td>
                     <td>{{cab.codigo}}</td>
-                    <td>{{cab.codigoSolicitud}}</td>
-                    <td>{{cab.tipoOperacion}}</td>
+                    <td>
+                      <div class="cell-line-height">
+                        <p class="mb-25">
+                          {{cab.codigoSolicitud}}
+                        </p>
+                        <span class="text-muted font-small-3">{{cab.tipoOperacion}}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <input [readonly]="cab.idEstado != 1" [minDate]="fechaMinima" class="form-control" placeholder="yyyy-mm-dd" container="body" [(ngModel)]="cab.fechaOperacion_Global_MOD"
+                               ngbDatepicker #basicDP2="ngbDatepicker">
+                        <div class="input-group-append">
+                          <button [disabled]="cab.idEstado != 1" class="btn btn-outline-secondary feather icon-calendar"
+                                  (click)="basicDP2.toggle()"
+                                  type="button" rippleEffect></button>
+                        </div>
+                        <div class="input-group-append">
+                          <button [disabled]="checkFechaOperacionGlobal(cab)" class="btn feather icon-check"
+                                  [ngClass]="{'btn-outline-secondary': checkFechaOperacionGlobal(cab), 'btn-outline-success': !checkFechaOperacionGlobal(cab)}"
+                                  (click)="onSaveFechaOperacionGlobal(cab)" ngbTooltip="Guardar fecha de operación"
+                                  type="button" rippleEffect></button>
+                        </div>
+                      </div>
+                    </td>
+<!--                    <td>{{cab.fechaOperacion_Global_ORG}}</td>-->
+<!--                    <td>{{cab.codigoSolicitud}}</td>-->
+<!--                    <td>{{cab.tipoOperacion}}</td>-->
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
                     <td>{{cab.razonSocialPagProv}}</td>

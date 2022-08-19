@@ -38,7 +38,7 @@ export class LiquidacionesDetalleComponent implements OnInit {
 
     if (cab.idTipoOperacion != 2) {
       det.interes = Math.round((det.montoCobrar * ((det.tasaNominalAnual / 100) / 360) * det.diasEfectivo) * 100) / 100;
-      det.interesIGV = Math.round((det.interes * (det.igv / 100)) * 100) / 100;
+      det.interesIGV = (cab.idTipoOperacion == 1 && !cab.alterno) ? 0 : Math.round((det.interes * (det.igv / 100)) * 100) / 100;
       det.interesConIGV = det.interes + det.interesIGV;
     }
     det.gastosDiversos = det.gastosContrato + det.gastoVigenciaPoder + det.servicioCustodia

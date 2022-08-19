@@ -4,7 +4,8 @@ export const LIQUIDACIONES = {
   eliminar: '/liquidacion/eliminar',
   actualizar: '/liquidacion/actualizar',
   cambiarEstado: '/liquidacion/cambiarestado',
-  pdf: '/liquidacion/ReEnviar'
+  pdf: '/liquidacion/ReEnviar',
+  cambiarFechaOperacionGlobal: '/liquidacion/cambiarFechaOperacionGlobal'
 }
 
 export const SOLICITUD_CAVALI = {

@@ -83,6 +83,8 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     return this.liquidacionForm.controls;
   }
 
+  public fechaMinima: any = { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() };
+
   constructor(
     private route: ActivatedRoute,
     private modalService: NgbModal,
@@ -198,6 +200,17 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     }).subscribe((response: LiquidacionCab[]) => {
       this.liquidaciones = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
+
+      let fechaOperacionOrgSplit;
+      for (const row of this.liquidaciones) {
+        fechaOperacionOrgSplit = row.fechaOperacion_Global_ORG.split('/');
+        row.fechaOperacion_Global_MOD = {
+          year: parseInt(fechaOperacionOrgSplit[2]),
+          month: parseInt(fechaOperacionOrgSplit[1]),
+          day: parseInt(fechaOperacionOrgSplit[0])
+        }
+      }
+
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -288,6 +301,7 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
       } else if (response.comun.tipo == 2) {
         this.utilsService.showNotification(response.comun.mensaje, 'Validación', 2);
         this.utilsService.blockUIStop();
+        this.onListarLiquidaciones();
       } else if (response.comun.tipo == 0) {
         this.utilsService.showNotification(response.comun.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
@@ -835,5 +849,55 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
         }
       });
     }, 0);
+  }
+
+  onSaveFechaOperacionGlobal(cab: LiquidacionCab) {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Confirma el cambio de fecha de operación para todos los documentos?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart('Guardando fecha de operación...');
+        this.liquidacionesService.cambiarFechaOperacionGlobal({
+          idLiquidacionCab: cab.idLiquidacionCab,
+          fechaOperacion_Global_MOD: `${cab.fechaOperacion_Global_MOD.year.toString()}${cab.fechaOperacion_Global_MOD.month.toString().padStart(2, '0')}${cab.fechaOperacion_Global_MOD.day.toString().padStart(2, '0')}`,
+          idUsuarioAud: this.currentUser.idUsuario
+        }).subscribe(response => {
+          if (response.tipo == 1) {
+            this.utilsService.showNotification('Información registrada correctamente', 'Confirmación', 1);
+            this.utilsService.blockUIStop();
+
+            this.onListarLiquidaciones();
+          } else if (response.tipo == 2) {
+            this.utilsService.showNotification(response.mensaje, 'Validación', 2);
+            this.utilsService.blockUIStop();
+          } else if (response.tipo == 0) {
+            this.utilsService.showNotification(response.mensaje, 'Error', 3);
+            this.utilsService.blockUIStop();
+          }
+        }, error => {
+          this.utilsService.blockUIStop();
+          this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+        });
+      }
+    });
+  }
+
+  checkFechaOperacionGlobal(cab: LiquidacionCab): boolean {
+    if (cab.idEstado != 1) {
+      return true;
+    }
+
+    let fechaOperacionGlobalModFormatted = `${cab.fechaOperacion_Global_MOD.day.toString().padStart(2, '0')}/${cab.fechaOperacion_Global_MOD.month.toString().padStart(2, '0')}/${cab.fechaOperacion_Global_MOD.year.toString()}`;
+
+    return fechaOperacionGlobalModFormatted == cab.fechaOperacion_Global_ORG;
   }
 }

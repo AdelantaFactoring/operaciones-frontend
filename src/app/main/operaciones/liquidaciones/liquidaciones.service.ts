@@ -74,4 +74,14 @@ export class LiquidacionesService {
       }
     );
   }
+
+  cambiarFechaOperacionGlobal(payload): Observable<any> {
+    return this.requestMethod.post(
+      `${environment.apiUrl}${LIQUIDACIONES.cambiarFechaOperacionGlobal}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }

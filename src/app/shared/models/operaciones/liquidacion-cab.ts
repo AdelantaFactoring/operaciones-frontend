@@ -63,4 +63,7 @@ export class LiquidacionCab {
   monto_PAI: number;
   observacion_PAI: string;
   flagPagoInteresConfirming: boolean;
+
+  fechaOperacion_Global_ORG: string;
+  fechaOperacion_Global_MOD: any;
 }
