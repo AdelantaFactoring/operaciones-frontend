@@ -130,7 +130,6 @@ export class SolicitudesGrillaComponent implements OnInit {
     }).subscribe((response: SolicitudCab[]) => {
       this.solicitudes = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
-
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();

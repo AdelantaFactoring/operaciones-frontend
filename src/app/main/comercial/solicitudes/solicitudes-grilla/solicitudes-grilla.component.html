@@ -403,7 +403,17 @@
 <div class="row">
   <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
     <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onRefrescar()"
-                    [pageSize]="pageSize"></ngb-pagination>
+           [maxSize]="5"  [rotate]="true"
+           [boundaryLinks]="true" [pageSize]="pageSize">
+           <ng-template ngbPaginationFirst>First</ng-template>
+           <ng-template ngbPaginationPrevious
+             ><span [data-feather]="'chevron-left'" [class]="'font-weight-bolder'"></span>Prev
+           </ng-template>
+           <ng-template ngbPaginationNext
+             >Next<span [data-feather]="'chevron-right'" [class]="'font-weight-bolder'"></span>
+           </ng-template>
+           <ng-template ngbPaginationLast>Last</ng-template>      
+    </ngb-pagination>
   </div>
 </div>
 
