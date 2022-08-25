@@ -152,9 +152,20 @@
             </div>
             <div class="row">
               <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
-                <ngb-pagination [collectionSize]="collectionSizeClientePagador" [(page)]="pageClientePagador"
-                                (pageChange)="onRefrescarClientePagador()"
-                                [pageSize]="pageSizeClientePagador">
+                <ngb-pagination [collectionSize]="collectionSizeClientePagador" [(page)]="pageClientePagador" (pageChange)="onRefrescarClientePagador()"
+                                [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSizeClientePagador" [ellipses]="false">
+                  <ng-template ngbPaginationFirst>
+                    <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
+                  </ng-template>
+                  <ng-template ngbPaginationPrevious>
+                    <span [data-feather]="'chevron-left'" [size]="18" [class]="'font-weight-bolder'"></span>
+                  </ng-template>
+                  <ng-template ngbPaginationNext>
+                    <span [data-feather]="'chevron-right'" [size]="18" [class]="'font-weight-bolder'"></span>
+                  </ng-template>
+                  <ng-template ngbPaginationLast>
+                    <span [data-feather]="'chevrons-right'" [size]="18" [class]="'font-weight-bolder'"></span>
+                  </ng-template>
                 </ngb-pagination>
               </div>
             </div>
@@ -401,10 +412,20 @@
             </div>
             <div style="visibility: collapse" class="row mt-1">
               <div class="col-12 col-md-12 d-flex justify-content-end">
-                <ngb-pagination [collectionSize]="collectionSizeClientePagadorGastos"
-                                [(page)]="pageClientePagadorGastos"
-                                (pageChange)="onRefrescarClientePagadorGastos()"
-                                [pageSize]="pageSizeClientePagadorGastos">
+                <ngb-pagination [collectionSize]="collectionSizeClientePagadorGastos" [(page)]="pageClientePagadorGastos" (pageChange)="onRefrescarClientePagadorGastos()"
+                                [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSizeClientePagadorGastos" [ellipses]="false">
+                  <ng-template ngbPaginationFirst>
+                    <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
+                  </ng-template>
+                  <ng-template ngbPaginationPrevious>
+                    <span [data-feather]="'chevron-left'" [size]="18" [class]="'font-weight-bolder'"></span>
+                  </ng-template>
+                  <ng-template ngbPaginationNext>
+                    <span [data-feather]="'chevron-right'" [size]="18" [class]="'font-weight-bolder'"></span>
+                  </ng-template>
+                  <ng-template ngbPaginationLast>
+                    <span [data-feather]="'chevrons-right'" [size]="18" [class]="'font-weight-bolder'"></span>
+                  </ng-template>
                 </ngb-pagination>
               </div>
             </div>
@@ -472,8 +493,21 @@
         </div>
         <div class="row">
           <div class="col-12 col-md-12 d-flex justify-content-end">
-            <ngb-pagination [collectionSize]="collectionSizeCliente" [(page)]="pageCliente"
-                            (pageChange)="onRefrescarCliente()" [pageSize]="pageSizeCliente"></ngb-pagination>
+            <ngb-pagination [collectionSize]="collectionSizeCliente" [(page)]="pageCliente" (pageChange)="onRefrescarCliente()"
+                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSizeCliente" [ellipses]="false">
+              <ng-template ngbPaginationFirst>
+                <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationPrevious>
+                <span [data-feather]="'chevron-left'" [size]="18" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationNext>
+                <span [data-feather]="'chevron-right'" [size]="18" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationLast>
+                <span [data-feather]="'chevrons-right'" [size]="18" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+            </ngb-pagination>
           </div>
         </div>
       </div>
@@ -537,8 +571,21 @@
         </div>
         <div class="row">
           <div class="col-12 col-md-12 d-flex justify-content-end">
-            <ngb-pagination [collectionSize]="collectionSizePagador" [(page)]="pagePagador"
-                            (pageChange)="onRefrescarPagador()" [pageSize]="pageSizePagador"></ngb-pagination>
+            <ngb-pagination [collectionSize]="collectionSizePagador" [(page)]="pagePagador" (pageChange)="onRefrescarPagador()"
+                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSizePagador" [ellipses]="false">
+              <ng-template ngbPaginationFirst>
+                <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationPrevious>
+                <span [data-feather]="'chevron-left'" [size]="18" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationNext>
+                <span [data-feather]="'chevron-right'" [size]="18" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationLast>
+                <span [data-feather]="'chevrons-right'" [size]="18" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+            </ngb-pagination>
           </div>
         </div>
       </div>

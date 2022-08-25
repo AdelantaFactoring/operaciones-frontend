@@ -89,6 +89,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
+
     this.iniciarSesion(false);
   }
 
@@ -103,7 +104,7 @@ export class LoginComponent implements OnInit {
       clave: this.f.password.value,
       google: gmail
     }).subscribe((response: User[]) => {
-      
+
       if (response.length > 0) {
           sessionStorage.setItem('currentUser', JSON.stringify(response[0]));
           sessionStorage.setItem('currentUserPermission', JSON.stringify(response[0].menu));
@@ -131,8 +132,8 @@ export class LoginComponent implements OnInit {
    */
   ngOnInit(): void {
     this.loginForm = this._formBuilder.group({
-      email: ['admin@demo.com', [Validators.required]],
-      password: ['admin', Validators.required]
+      email: ['', Validators.required],
+      password: ['', Validators.required]
     });
 
     // get return url from route parameters or default to '/'
