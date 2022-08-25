@@ -83,7 +83,7 @@ export class UsuarioComponent implements OnInit {
       google: [false]
     });
 
-    this.oldUsuarioForm = this.usuarioForm;
+    this.oldUsuarioForm = this.usuarioForm.value;
   }
 
   ngOnInit(): void {

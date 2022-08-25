@@ -68,7 +68,7 @@ export class PerfilComponent implements OnInit {
       perfil: ['', Validators.required]
     });
 
-    this.oldPerfilForm = this.perfilForm;
+    this.oldPerfilForm = this.perfilForm.value;
   }
 
   ngOnInit(): void {
