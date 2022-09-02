@@ -116,6 +116,7 @@ export class SolicitudesFormComponent implements OnInit {
   public selectMultiSelected;
   public zeroPad = (num, places) => String(num).padStart(places, '0');
   public fechaPagoCT = this.calendar.getToday();
+  public activeId: any = 2;
 
   horizontalWizardStepperNext(data: any, form: any, id: number) {
     let nombreArchivo;
@@ -1041,7 +1042,7 @@ export class SolicitudesFormComponent implements OnInit {
         item.estadoDireccionDet = 0;
       }
     }
-    else if (tipo == 4) {
+    if (tipo == 4) {
       if (item.codigoUbigeoDet != null && item.codigoUbigeoDet != '' && item.codigoUbigeoDet.length == 6) {
         item.estadoUbigeoDet = 2;
       } else {

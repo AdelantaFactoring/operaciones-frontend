@@ -64,6 +64,7 @@ export class CheckListComponent implements OnInit {
     //url: `${environment.apiUrl}${SOLICITUD.subirSustento}`,
     isHTML5: true
   });
+  public activeId: any = 2;
 
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;

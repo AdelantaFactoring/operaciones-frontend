@@ -139,10 +139,12 @@
                     <td>{{cab.usuarioModificacion}}</td>
                     <td>{{cab.fechaModificacion}}</td>
                   </tr>
-                  <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse" *ngIf="cab.solicitudDet.length > 0">
-                    <td [colSpan]="11">
-                      <div class="table-responsive" style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
-                           id="{{ 'detail' + cab.idSolicitudCab }}" >
+                  <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse"
+                      *ngIf="cab.solicitudDet.length > 0">
+                    <td [colSpan]="16">
+                      <div class="table-responsive"
+                           style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
+                           id="{{ 'detail' + cab.idSolicitudCab }}">
                         <table class="table table-hover">
                           <thead>
                           <tr>
@@ -185,7 +187,8 @@
         <div class="row">
           <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
             <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onRefrescar()"
-                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize" [ellipses]="false">
+                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize"
+                            [ellipses]="false">
               <ng-template ngbPaginationFirst>
                 <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
               </ng-template>
@@ -211,7 +214,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" ngbAutofocus tabindex="0" >
+      <div class="modal-body" ngbAutofocus tabindex="0">
         <form [formGroup]="solicitudForm">
           <div class="row spaced">
             <div class="col-12">
@@ -430,18 +433,18 @@
                 <div class="divider-text">Monto calculado</div>
               </div>
             </div>
-            <div class="col-md-6 col-12"  [hidden]="idTipoOperacion != 2">
+            <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
               <div class="form-group">
                 <label>Fondo Resguardo</label>
                 <input class="form-control" formControlName="fondoResguardo" type="text" placeholder="0.00"
-                      mask="separator" thousandSeparator=","/>
+                       mask="separator" thousandSeparator=","/>
               </div>
             </div>
             <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
               <div class="form-group">
                 <label>Monto a financiar</label>
-                <input class="form-control"  formControlName="netoSolicitado" type="text" placeholder="0.00"
-                        mask="separator" thousandSeparator=","/>
+                <input class="form-control" formControlName="netoSolicitado" type="text" placeholder="0.00"
+                       mask="separator" thousandSeparator=","/>
               </div>
             </div>
             <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
@@ -463,7 +466,7 @@
               <div class="form-group">
                 <label>Total a Facturar</label>
                 <input class="form-control" formControlName="totalFacturarIGV" type="text" placeholder="0.00"
-                      mask="separator" thousandSeparator=","/>
+                       mask="separator" thousandSeparator=","/>
               </div>
             </div>
             <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
@@ -558,7 +561,8 @@
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Nombre(s) y Apellidos</label>
-                <input class="form-control" [(ngModel)]="nombreContacto" [ngModelOptions]="{standalone: true}" type="text" readonly
+                <input class="form-control" [(ngModel)]="nombreContacto" [ngModelOptions]="{standalone: true}"
+                       type="text" readonly
                        [ngClass]="{ 'is-invalid': submitted && nombreContacto === '' }"/>
                 <div *ngIf="nombreContacto === ''" class="invalid-feedback">
                   <div *ngIf="nombreContacto === ''">* Campo obligatorio</div>
@@ -568,7 +572,8 @@
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Teléfono</label>
-                <input class="form-control" [(ngModel)]="telefonoContacto" [ngModelOptions]="{standalone: true}" type="text" readonly
+                <input class="form-control" [(ngModel)]="telefonoContacto" [ngModelOptions]="{standalone: true}"
+                       type="text" readonly
                        [ngClass]="{ 'is-invalid': submitted && telefonoContacto === '' }"/>
                 <div *ngIf="telefonoContacto === ''" class="invalid-feedback">
                   <div *ngIf="telefonoContacto === ''">* Campo obligatorio</div>
@@ -578,7 +583,8 @@
             <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Correo</label>
-                <input class="form-control" [(ngModel)]="correoContacto" [ngModelOptions]="{standalone: true}" type="text" readonly
+                <input class="form-control" [(ngModel)]="correoContacto" [ngModelOptions]="{standalone: true}"
+                       type="text" readonly
                        [ngClass]="{ 'is-invalid': submitted && correoContacto === ''}"/>
                 <div *ngIf="correoContacto === ''" class="invalid-feedback">
                   <div *ngIf="correoContacto === ''">* Campo obligatorio</div>
@@ -599,7 +605,8 @@
             <div class="col-12" *ngIf="idTipoOperacion != 3">
               <div class="d-flex flex-wrap mb-0">
                 <div class="pb-1">
-                  <button type="submit" rippleEffect class="btn btn-warning" (click)="onSeleccioneCuenta(modalCUENTA)" [disabled]="idTipoOperacion === 3">
+                  <button type="submit" rippleEffect class="btn btn-warning" (click)="onSeleccioneCuenta(modalCUENTA)"
+                          [disabled]="idTipoOperacion === 3">
                     <i class="mr-0 mr-sm-1" data-feather="arrow-right-circle"></i>
                     <span class="d-none d-sm-inline-block">Seleccione...</span>
                   </button>
@@ -678,15 +685,43 @@
               </div>
             </div>
             <div class="col-12">
-              <div
-                ng2FileDrop
-                [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
-                (fileOver)="fileOverBase($event)"
-                [uploader]="archivosSustento"
-                class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
-              >
-                Arrastre aquí los archivos
-              </div>
+              <ul ngbNav #nav="ngbNav" [(activeId)]="activeId" class="nav-tabs">
+                <li [ngbNavItem]="1">
+                  <a ngbNavLink>Navegación</a>
+                  <ng-template ngbNavContent>
+                    <fieldset class="form-group">
+                      <!--                          <label for="file-upload-multiple">Multiple</label>-->
+                      <div class="custom-file">
+                        <input
+                          type="file"
+                          class="custom-file-input"
+                          ng2FileSelect
+                          [uploader]="archivosSustento"
+                          (onFileSelected)="fileOverBase(false)"
+                          multiple
+                          id="file-upload-multiple"
+                        />
+                        <label class="custom-file-label">Seleccione...</label>
+                      </div>
+                    </fieldset>
+                  </ng-template>
+                </li>
+                <li [ngbNavItem]="2">
+                  <a ngbNavLink>Arrastar y Soltar</a>
+                  <ng-template ngbNavContent>
+                    <div
+                      ng2FileDrop
+                      [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
+                      (fileOver)="fileOverBase($event)"
+                      [uploader]="archivosSustento"
+                      class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
+                    >
+                      Arrastre aquí los archivos
+                    </div>
+                  </ng-template>
+                </li>
+              </ul>
+              <div [ngbNavOutlet]="nav" class="mt-2"></div>
             </div>
             <div class="col-12">
               <div class="d-flex justify-content-between mb-1">
@@ -752,15 +787,17 @@
                   </thead>
                   <tbody>
                   <tr *ngFor="let item of sustentos">
-                    <td [ngClass]="{'row-edicion': item.editado}"><p [ngClass]="{ 'eliminado': !item.estado }">{{item.tipo}}</p></td>
+                    <td [ngClass]="{'row-edicion': item.editado}"><p
+                      [ngClass]="{ 'eliminado': !item.estado }">{{item.tipo}}</p></td>
                     <td [ngClass]="{'row-edicion': item.editado}">
-                      <a href="{{item.rutaArchivo}}" target="_blank"><strong [ngClass]="{ 'eliminado': !item.estado }">{{ item.archivo }}</strong></a>
+                      <a href="{{item.rutaArchivo}}" target="_blank"><strong
+                        [ngClass]="{ 'eliminado': !item.estado }">{{ item.archivo }}</strong></a>
                     </td>
                     <td nowrap>
                       <button *ngIf="item.estado"
-                        type="button"
-                        class="btn btn-raised btn-outline-danger btn-sm"
-                        rippleEffect (click)="onEliminarArchivoAdjunto(item)">
+                              type="button"
+                              class="btn btn-raised btn-outline-danger btn-sm"
+                              rippleEffect (click)="onEliminarArchivoAdjunto(item)">
                         <i data-feather="trash"></i>
                       </button>
                     </td>
@@ -796,7 +833,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" ngbAutofocus tabindex="0" >
+      <div class="modal-body" ngbAutofocus tabindex="0">
         <div class="row spaced">
           <div class="col-12">
             <div class="form-group">
@@ -804,7 +841,7 @@
                 <table class="table table-hover">
                   <thead>
                   <tr>
-<!--                    <th>Acción</th>-->
+                    <!--                    <th>Acción</th>-->
                     <th>Nombre</th>
                     <th>Ape. Paterno</th>
                     <th>Ape. Materno</th>
@@ -815,13 +852,13 @@
                   </thead>
                   <tbody>
                   <tr *ngFor="let item of contactos" (click)="onSeleccionarContacto(item, modal)">
-<!--                    <td>-->
-<!--                      <div class="d-flex align-items-center">-->
-<!--                        <a href="javascript:void(0)" title="Seleccionar" (click)="onSeleccionarContacto(item, modal)">-->
-<!--                          <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>-->
-<!--                        </a>-->
-<!--                      </div>-->
-<!--                    </td>-->
+                    <!--                    <td>-->
+                    <!--                      <div class="d-flex align-items-center">-->
+                    <!--                        <a href="javascript:void(0)" title="Seleccionar" (click)="onSeleccionarContacto(item, modal)">-->
+                    <!--                          <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>-->
+                    <!--                        </a>-->
+                    <!--                      </div>-->
+                    <!--                    </td>-->
                     <td>{{item.nombre}}</td>
                     <td>{{item.apellidoPaterno}}</td>
                     <td>{{item.apellidoMaterno}}</td>
@@ -845,7 +882,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" ngbAutofocus tabindex="0" >
+      <div class="modal-body" ngbAutofocus tabindex="0">
         <div class="row spaced">
           <div class="col-md-12 col-12">
             <div class="form-group">
@@ -854,7 +891,7 @@
                 <table class="table table-hover">
                   <thead>
                   <tr>
-<!--                    <th>Acción</th>-->
+                    <!--                    <th>Acción</th>-->
                     <th>Titular</th>
                     <th>Banco</th>
                     <th>Moneda</th>
@@ -866,13 +903,13 @@
                   </thead>
                   <tbody>
                   <tr *ngFor="let item of cuentas" (click)="onSeleccionarCuenta(item, modal)">
-<!--                    <td>-->
-<!--                      <div class="d-flex align-items-center">-->
-<!--                        <a href="javascript:void(0)" title="Seleccionar" (click)="onSeleccionarCuenta(item, modal)">-->
-<!--                          <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>-->
-<!--                        </a>-->
-<!--                      </div>-->
-<!--                    </td>-->
+                    <!--                    <td>-->
+                    <!--                      <div class="d-flex align-items-center">-->
+                    <!--                        <a href="javascript:void(0)" title="Seleccionar" (click)="onSeleccionarCuenta(item, modal)">-->
+                    <!--                          <i class="text-primary cursor-pointer" data-feather="arrow-right-circle"></i>-->
+                    <!--                        </a>-->
+                    <!--                      </div>-->
+                    <!--                    </td>-->
                     <td>{{item.titular}}</td>
                     <td>{{item.banco}}</td>
                     <td>{{item.moneda}}</td>

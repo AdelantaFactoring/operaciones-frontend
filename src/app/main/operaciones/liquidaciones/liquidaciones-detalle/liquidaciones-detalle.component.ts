@@ -9,6 +9,7 @@ import {LiquidacionCab} from "../../../../shared/models/operaciones/liquidacion-
   styleUrls: ['./liquidaciones-detalle.component.scss']
 })
 export class LiquidacionesDetalleComponent implements OnInit {
+  @Input() mostrar: string;
   @Input() dataCab: LiquidacionCab;
   @Input() dataDet: LiquidacionDet;
 

@@ -274,7 +274,7 @@
                     <td>{{cab.fechaModificacion}}</td>
                   </tr>
                   <tr id="{{ 'tr' + cab.idLiquidacionCab }}" style="visibility: collapse">
-                    <td [colSpan]="15">
+                    <td [colSpan]="19">
                       <div class="table-responsive"
                            style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
                            id="{{ 'detail' + cab.idLiquidacionCab }}">
@@ -643,6 +643,30 @@
                   </div>
                 </div>
                 <div class="col-12" *ngIf="!ver">
+                  <ul ngbNav #nav="ngbNav" [(activeId)]="activeId" class="nav-tabs">
+                    <li [ngbNavItem]="1">
+                      <a ngbNavLink>Navegación</a>
+                      <ng-template ngbNavContent>
+                        <fieldset class="form-group">
+                          <!--                          <label for="file-upload-multiple">Multiple</label>-->
+                          <div class="custom-file">
+                            <input
+                              type="file"
+                              class="custom-file-input"
+                              ng2FileSelect
+                              [uploader]="archivosSustento"
+                              (onFileSelected)="fileOverBase(false)"
+                              multiple
+                              id="file-upload-multiple"
+                            />
+                            <label class="custom-file-label">Seleccione...</label>
+                          </div>
+                        </fieldset>
+                      </ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                      <a ngbNavLink>Arrastar y Soltar</a>
+                      <ng-template ngbNavContent>
                   <div
                     ng2FileDrop
                     [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
@@ -653,6 +677,10 @@
                   >
                     Arrastre aquí los archivos
                   </div>
+                      </ng-template>
+                    </li>
+                  </ul>
+                  <div [ngbNavOutlet]="nav" class="mt-2"></div>
                 </div>
                 <div class="col-12" *ngIf="!ver">
                   <div class="d-flex justify-content-between mb-1">

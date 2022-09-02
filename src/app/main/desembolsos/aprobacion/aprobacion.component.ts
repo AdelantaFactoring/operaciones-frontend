@@ -73,6 +73,7 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
   });
 
   sundayDate = null;
+  public activeId: any = 2;
 
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;

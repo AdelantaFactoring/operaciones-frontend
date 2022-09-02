@@ -84,6 +84,7 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
   }
 
   public fechaMinima: any = { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() };
+  public activeId: any = 2;
 
   constructor(
     private route: ActivatedRoute,
