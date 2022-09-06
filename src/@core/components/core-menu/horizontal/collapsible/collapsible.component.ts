@@ -7,7 +7,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { CoreConfigService } from '@core/services/config.service';
 import { CoreMenuService } from '@core/components/core-menu/core-menu.service';
 
-import { User } from 'app/shared/models/auth/user';
+import {Menu, User} from 'app/shared/models/auth/user';
 
 @Component({
   selector: '[core-menu-horizontal-collapsible]',
@@ -62,7 +62,8 @@ export class CoreMenuHorizontalCollapsibleComponent implements OnInit, OnDestroy
 
     // Subscribe to the current menu changes
     this._coreMenuService.onMenuChanged.pipe(takeUntil(this._unsubscribeAll)).subscribe(() => {
-      this.currentUser = this._coreMenuService.currentUser;
+      //this.currentUser = this._coreMenuService.currentUser;
+      this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     });
 
     // Listen for router events and expand
@@ -184,5 +185,9 @@ export class CoreMenuHorizontalCollapsibleComponent implements OnInit, OnDestroy
     }
 
     return false;
+  }
+
+  onAcceso(menu: Menu[], idMenuL: number): boolean {
+    return menu.filter(x => x.idMenu == idMenuL && x.acceso).length > 0;
   }
 }

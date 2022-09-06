@@ -56,11 +56,11 @@ export class CoreMenuComponent implements OnInit {
     });
   }
 
-  onAcceso(menu: Menu[], idMenuL: number): boolean{
-    return menu.find(x => x.idMenu == idMenuL && x.acceso) != null;
+  onAcceso(menu: Menu[], idMenuL: number): boolean {
+    return menu.filter(x => x.idMenu == idMenuL && x.acceso).length > 0;
   }
 
-  onAccesoSeccion(menu: Menu[], nombreSeccion: string): boolean{
+  onAccesoSeccion(menu: Menu[], nombreSeccion: string): boolean {
     return menu.filter(x => x.grupo == nombreSeccion.toUpperCase() && x.acceso).length > 0;
   }
 
