@@ -888,7 +888,8 @@ export class SolicitudesFormComponent implements OnInit {
       let diffTime = Math.abs(fecha.getTime() - fecConfirmado.getTime());
       diasEfectivo = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
       setTimeout(() => {
-        this.capitalTrabajoForm.controls.diasPrestamo.setValue(diasEfectivo)
+        this.capitalTrabajoForm.controls.diasPrestamo.setValue(diasEfectivo);
+        this.onCalcularCT();
       }, 0);
     } else {
       fecha.setDate(fecha.getDate() + Number(this.capitalTrabajoForm.controls.diasPrestamo.value) - 1);
@@ -899,8 +900,8 @@ export class SolicitudesFormComponent implements OnInit {
         day: fecha.getDate()
       }
       this.capitalTrabajoForm.controls.fechaPago.setValue(date);
+      this.onCalcularCT();
     }
-    this.onCalcularCT();
   }
 
   onChangeMoneda(): void {
