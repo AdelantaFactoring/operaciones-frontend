@@ -931,9 +931,10 @@ export class SolicitudesFormComponent implements OnInit {
 
   onCalcularCT(): void {
     let TNM, TNA, nroDias, mDescontar, intereses, montoSolicitado, totFacturar, fondoResguardo = 0;
-    let contrato, servicioCustodia, servicioCobranza, cartaNotarial, gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
+    let comisionEstructuracion, contrato, servicioCustodia, servicioCobranza, cartaNotarial, gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV, comisionEstructuracionCIGV;
     let netoSolicitado = 0, IGV;
 
+    comisionEstructuracion = this.capitalTrabajoForm.controls.comisionEstructuracion.value;
     contrato = this.capitalTrabajoForm.controls.contrato.value;
     servicioCustodia = this.capitalTrabajoForm.controls.servicioCustodia.value;
     servicioCobranza = this.capitalTrabajoForm.controls.servicioCobranza.value;
@@ -944,12 +945,14 @@ export class SolicitudesFormComponent implements OnInit {
     montoSolicitado = this.capitalTrabajoForm.controls.ctSolicitado.value;
     gDiversonsSIgv = contrato + servicioCustodia + servicioCobranza + cartaNotarial;
     IGV = this.igvCT / 100;
+    comisionEstructuracionCIGV = (montoSolicitado * (comisionEstructuracion / 100)) * (IGV + 1);
+
     if (this.idTipo == 1) {
       netoSolicitado = ((360 * montoSolicitado) + (360 * (gDiversonsSIgv * (IGV + 1)))) / (360 - ((nroDias * ((TNM / 100) * 12)) * (IGV + 1)));
       mDescontar = ((360 * netoSolicitado) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12)) * (IGV + 1)));
       intereses = netoSolicitado * ((TNA / 100) / 360) * nroDias * (IGV + 1);
       gDiversonsCIgv = gDiversonsSIgv * IGV;
-      gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
+      gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv + comisionEstructuracionCIGV;
       totFacturar = intereses + gastoIncluidoIGV;
 
       this.capitalTrabajoForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100) / 100);
@@ -965,7 +968,7 @@ export class SolicitudesFormComponent implements OnInit {
 
       gDiversonsCIgv = gDiversonsSIgv * IGV;
       intereses = netoSolicitado * ((TNA / 100) / 360) * (nroDias) * (IGV + 1);
-      gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
+      gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv + comisionEstructuracionCIGV;
       totFacturar = intereses + gastoIncluidoIGV;
 
       this.capitalTrabajoForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100) / 100);

@@ -33,7 +33,7 @@ export class GastosComponent implements OnInit {
       idMoneda: [1],
       tasaNominalMensual: [0, [Validators.required, Validators.min(0.01)]],
       tasaNominalAnual: [0, [Validators.required, Validators.min(0.01)]],
-      tasaNominalMensualMora: [{ value: 0, disable: true, validators: [Validators.required, Validators.min(0.01)]}],
+      tasaNominalMensualMora: [{ value: 0, validators: [Validators.required, Validators.min(0.01)]}],
       tasaNominalAnualMora: [0, [Validators.required, Validators.min(0.01)]],
       financiamiento: [0],
       comisionEstructuracion: [0],
