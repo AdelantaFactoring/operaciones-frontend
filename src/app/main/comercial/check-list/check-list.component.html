@@ -1,6 +1,24 @@
 <div class="content-wrapper">
   <div class="content-body">
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <core-card #coreCard [actions]="['collapse', 'reload']" (events)="onLimpiarFiltro($event)">
+      <h4 class="card-title">Buscar por <small><i>(click aquí para expandir)</i></small></h4>
+      <div class="card-body">
+        <form [formGroup]="filtroForm">
+          <div class="row">
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Usuario</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="optUsuario" bindLabel="nombreCompleto"
+                           placeholder="Usuario" bindValue="idUsuario" formControlName="usuario"
+                           (ngModelChange)="onListarSolicitudes()">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </core-card>
     <div class="card">
       <div class="card-body">
         <div class="row">
@@ -790,8 +808,8 @@
                     <td [ngClass]="{'row-edicion': item.editado}"><p
                       [ngClass]="{ 'eliminado': !item.estado }">{{item.tipo}}</p></td>
                     <td [ngClass]="{'row-edicion': item.editado}">
-                      <a href="{{item.rutaArchivo}}" target="_blank"><strong
-                        [ngClass]="{ 'eliminado': !item.estado }">{{ item.archivo }}</strong></a>
+                      <a href="{{item.rutaArchivo}}" target="_blank">
+                        <strong [ngClass]="{ 'eliminado': !item.estado }">{{ item.archivo }}</strong></a>
                     </td>
                     <td nowrap>
                       <button *ngIf="item.estado"

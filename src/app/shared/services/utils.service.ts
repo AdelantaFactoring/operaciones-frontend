@@ -1,10 +1,12 @@
 import {Injectable} from '@angular/core';
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
 import {BlockUI, NgBlockUI} from 'ng-block-ui';
 import {ToastrService} from 'ngx-toastr';
-import { Menu } from '../models/auth/user';
+import {Menu} from '../models/auth/user';
 import {FormControl} from "@angular/forms";
 import {TablaMaestra} from "../models/shared/tabla-maestra";
+import {RequestMethod} from "../helpers/request-method";
+import {Observable} from "rxjs";
 
 class Mes {
   idMes: number;
@@ -18,6 +20,7 @@ export class UtilsService {
   @BlockUI() blockUI: NgBlockUI;
 
   meses: Mes[] = [];
+  private requestMethod = new RequestMethod();
 
   constructor(
     private toastr: ToastrService
@@ -159,7 +162,7 @@ export class UtilsService {
   nameValidator(control: FormControl): { [key: string]: boolean } {
     const nameRegexp: RegExp = /[!@#$%^&*()_+\=\[\]{};:"\\|,<>\/?]/;
     if (control.value && nameRegexp.test(control.value)) {
-      return { invalidName: true };
+      return {invalidName: true};
     }
   }
 
@@ -180,5 +183,17 @@ export class UtilsService {
 
     // @ts-ignore
     return [...tabla.sort((a, b) => a.idColumna - b.idColumna)];
+  }
+
+  descargarArchivo(url: string): void {
+    this.requestMethod.get(url, null, {responseType: 'blob'})
+      .subscribe((res: Response) => {
+        console.log(res);
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(res);
+        console.log(a.href);
+        a.download = "file";
+        a.click();
+      })
   }
 }

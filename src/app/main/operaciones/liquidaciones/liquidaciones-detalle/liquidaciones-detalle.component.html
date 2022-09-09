@@ -42,6 +42,13 @@
   </div>
   <div class="col-md-6 col-12">
     <div class="form-group">
+      <label>Financiamiento (%)</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.financiamiento" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
       <label>Fondo Resguardo</label>
       <input class="form-control" type="text" [(ngModel)]="dataDet.fondoResguardo" [ngModelOptions]="{standalone: true}"
              mask="separator" thousandSeparator="," readonly/>

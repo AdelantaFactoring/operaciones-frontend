@@ -66,4 +66,6 @@ export class LiquidacionCab {
 
   fechaOperacion_Global_ORG: string;
   fechaOperacion_Global_MOD: any;
+
+  idUsuarioCreacionSolicitud: number;
 }

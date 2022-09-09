@@ -149,6 +149,7 @@ export class SolicitudesComponent implements OnInit {
     this.filtroForm = this.formBuilder.group({
       usuario: [0]
     });
+    this.oldFiltroForm = this.filtroForm.value;
   }
 
   ngOnInit(): void {
@@ -236,5 +237,11 @@ export class SolicitudesComponent implements OnInit {
 
   onChangeUsuario(): void{
     this.grilla.onRefrescar(this.filtroForm.controls.usuario.value);
+  }
+
+  onLimpiarFiltro($event: any) {
+    if ($event === 'reload') {
+      this.filtroForm.reset(this.oldFiltroForm);
+    }
   }
 }

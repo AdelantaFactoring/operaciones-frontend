@@ -1,17 +1,19 @@
 <div class="content-wrapper">
   <div class="content-body">
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
-    <core-card #coreCard [actions]="['collapse', 'reload']">
-      <h4 class="card-title">Buscar por</h4>
+    <core-card #coreCard [actions]="['collapse', 'reload']" (events)="onLimpiarFiltro($event)">
+      <h4 class="card-title">Buscar por <small><i>(click aquí para expandir)</i></small></h4>
       <div class="card-body">
         <form [formGroup]="filtroForm">
-          <div class="col-md-4 col-12">
-            <div class="form-group">
-              <label>Usuario</label>
-              <ng-select appendTo="body" [clearable]="false" [items]="optUsuario" bindLabel="nombreCompleto"
-                         placeholder="Usuario" bindValue="idUsuario" formControlName="usuario"
-                         (ngModelChange)="onChangeUsuario()">
-              </ng-select>
+          <div class="row">
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Usuario</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="optUsuario" bindLabel="nombreCompleto"
+                           placeholder="Usuario" bindValue="idUsuario" formControlName="usuario"
+                           (ngModelChange)="onChangeUsuario()">
+                </ng-select>
+              </div>
             </div>
           </div>
         </form>
