@@ -41,7 +41,6 @@ export class ProyectadoComponent implements OnInit {
     this.route.params.subscribe(s => {
       this.moneda = s.moneda;
       // this.onListarLiquidaciones();
-      console.log('moneda', this.moneda);
       this.contentHeader = {
         breadcrumb: {
           type: '',

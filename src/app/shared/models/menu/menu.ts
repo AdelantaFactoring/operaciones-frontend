@@ -9,7 +9,7 @@ export const menu: CoreMenu[] = [
     icon: 'package',
     children: [
       {
-        id: 'Tablero',
+        id: '18',
         title: 'Tablero',
         // translate: 'MENU.DASHBOARD.ANALYTICS',
         type: 'collapsible',
