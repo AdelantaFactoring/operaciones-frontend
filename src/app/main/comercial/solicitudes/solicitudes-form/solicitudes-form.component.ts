@@ -529,8 +529,8 @@ export class SolicitudesFormComponent implements OnInit {
       this.razonSocialDet = "Razon Social Cliente";
       this.direccionCab = "Dirección Proveedor";
       this.codigoUbigeoCab = "Cod Ubigeo Proveedor";
-      this.direccionDet = "Dirección Proveedor";
-      this.codigoUbigeoDet = "Cod Ubigeo Proveedor";
+      this.direccionDet = "Dirección Cliente";
+      this.codigoUbigeoDet = "Cod Ubigeo Cliente";
     }
   }
 
