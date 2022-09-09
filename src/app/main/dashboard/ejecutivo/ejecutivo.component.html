@@ -6,20 +6,26 @@
         <h4 class="card-title">Buscar por ejecutivo</h4>
         <div class="card-body">
           <!-- <form [formGroup]="filtroForm"> -->
-            <div class="row">
+            <div class="d-flex flex-wrap mb-0">
+              <div class="pt-1 pb-1 pr-1" *ngFor="let item of ejecutivoFilter">
+                <button type="submit" rippleEffect class="btn btn-outline-info"
+                (click)="onEjecutivo(item.idEjecutivo)">{{item.usuarioNombreCompleto}}
+                  <!-- <i class="mr-0 mr-sm-1" data-feather="refresh-cw"
+                  (click)="onEjecutivo(item.idEjecutivo)"></i>
+                  <span class="d-none d-sm-inline-block">{{item.usuarioNombreCompleto}}</span> -->
+                </button>
+              </div>
+             
+            </div>
+            <!-- <div class="row">
               <div class="col-md-2 col-12" *ngFor="let item of ejecutivoFilter">
                 <div class="form-group">
                   <button type="button" class="btn btn-outline-info" rippleEffect
                   (click)="onEjecutivo(item.idEjecutivo)">{{item.usuarioNombreCompleto}}</button>
-                  <!-- <label>Deudor (Pagador)</label>
-                  <ng-select appendTo="body" [clearable]="false" [items]="optUsuario" bindLabel="nombreCompleto"
-                             placeholder="Pagador" bindValue="idUsuario" formControlName="pagador"
-                             >
-                  </ng-select> -->
 
                 </div>
               </div>
-            </div>
+            </div> -->
           <!-- </form> -->
         </div>
       </core-card>

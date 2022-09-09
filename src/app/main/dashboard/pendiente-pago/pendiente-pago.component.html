@@ -28,7 +28,51 @@
           </form>
         </div>
       </core-card> -->
-    <div class="card">
+      <div class="row">
+        <div class="col-md-6 col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive table-wrapper">
+                <table class="table table-hover">
+                  <thead class="centerall-header">
+                    <tr>
+                      <th>Nombre Deudor(Pagador)</th>
+                      <th>Monto Negociado</th>
+                      <th>%</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-template let-cab ngFor [ngForOf]="pagadorLista">
+                      <tr (click)="onRowClick(cab)" [ngClass]="{'rowColor': cab.flagSeleccionado}">
+                        <td>{{cab.razonSocialPagProv}}</td>
+                        <td>{{cab.saldoTotal | number: '1.2-2'}}</td>
+                        <td>{{cab.porcentajePagoTotal | number: '1.2-2'}}%</td>
+                      </tr>
+                    </ng-template>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td>Total</td>
+                      <td>{{total | number: '1.2-2'}}</td>
+                      <td>100%</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="echarts__demo" echarts [options]="ejecutivoPie"
+              (chartClick)="onPruebaPie($event, 'chartClick')">
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- <div class="card">
       <div class="card-body">
 
         <div class="row">
@@ -68,7 +112,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <block-ui></block-ui>
   </div>
 </div>
