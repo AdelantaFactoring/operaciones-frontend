@@ -42,6 +42,13 @@
   </div>
   <div class="col-md-6 col-12">
     <div class="form-group">
+      <label>Financiamiento (%)</label>
+      <input class="form-control" type="text" [(ngModel)]="dataDet.financiamiento" [ngModelOptions]="{standalone: true}"
+             mask="separator" thousandSeparator="," readonly/>
+    </div>
+  </div>
+  <div class="col-md-6 col-12">
+    <div class="form-group">
       <label>Fondo Resguardo</label>
       <input class="form-control" type="text" [(ngModel)]="dataDet.fondoResguardo" [ngModelOptions]="{standalone: true}"
              mask="separator" thousandSeparator="," readonly/>
@@ -71,9 +78,9 @@
   <div class="col-md-6 col-12">
     <div class="form-group">
       <label>Fecha Operación</label>
-      <input *ngIf="dataCab.idEstado != 1" class="form-control" type="text" [(ngModel)]="dataDet.fechaOperacionFormat"
+      <input *ngIf="mostrar === 'false' || dataCab.idEstado != 1" class="form-control" type="text" [(ngModel)]="dataDet.fechaOperacionFormat"
              [ngModelOptions]="{standalone: true}" readonly/>
-      <div *ngIf="dataCab.idEstado === 1" class="input-group">
+      <div *ngIf="mostrar === 'true' && dataCab.idEstado === 1" class="input-group">
         <input class="form-control" placeholder="yyyy-mm-dd"
                [(ngModel)]="dataDet.fechaOperacion" container="body"
                (ngModelChange)="onCambiarFechaOperacion($event, dataCab, dataDet)"
@@ -173,7 +180,7 @@
     <div class="form-group">
       <label>Por Contrato</label>
       <input class="form-control" type="text" [(ngModel)]="dataDet.gastosContrato" [ngModelOptions]="{standalone: true}"
-             [readonly]="dataCab.idEstado != 1"
+             [readonly]="mostrar === 'false' || dataCab.idEstado != 1"
              mask="separator" thousandSeparator="," (ngModelChange)="onCalcular(dataCab, dataDet)" />
     </div>
   </div>
@@ -182,7 +189,7 @@
       <label>Por Vigencia de Poder</label>
       <input class="form-control" type="text" [(ngModel)]="dataDet.gastoVigenciaPoder"
              [ngModelOptions]="{standalone: true}" (ngModelChange)="onCalcular(dataCab, dataDet)"
-             [readonly]="dataCab.idEstado != 1"
+             [readonly]="mostrar === 'false' || dataCab.idEstado != 1"
              mask="separator" thousandSeparator=","/>
     </div>
   </div>
@@ -191,7 +198,7 @@
       <label>Servicio Custodia</label>
       <input class="form-control" type="text" [(ngModel)]="dataDet.servicioCustodia"
              [ngModelOptions]="{standalone: true}" (ngModelChange)="onCalcular(dataCab, dataDet)"
-             [readonly]="dataCab.idEstado != 1"
+             [readonly]="mostrar === 'false' || dataCab.idEstado != 1"
              mask="separator" thousandSeparator=","/>
     </div>
   </div>
@@ -200,7 +207,7 @@
       <label>Servicio Cobranza</label>
       <input class="form-control" type="text" [(ngModel)]="dataDet.servicioCobranza"
              [ngModelOptions]="{standalone: true}" (ngModelChange)="onCalcular(dataCab, dataDet)"
-             [readonly]="dataCab.idEstado != 1"
+             [readonly]="mostrar === 'false' || dataCab.idEstado != 1"
              mask="separator" thousandSeparator=","/>
     </div>
   </div>
@@ -209,7 +216,7 @@
       <label>Comisión Carta Notarial</label>
       <input class="form-control" type="text" [(ngModel)]="dataDet.comisionCartaNotarial"
              [ngModelOptions]="{standalone: true}" (ngModelChange)="onCalcular(dataCab, dataDet)"
-             [readonly]="dataCab.idEstado != 1"
+             [readonly]="mostrar === 'false' || dataCab.idEstado != 1"
              mask="separator" thousandSeparator=","/>
     </div>
   </div>

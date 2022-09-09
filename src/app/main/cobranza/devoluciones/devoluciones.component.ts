@@ -47,6 +47,7 @@ export class DevolucionesComponent implements OnInit {
   public collectionSize: number = 0;
   public pageSize: number = 10;
   public page: number = 1;
+  public activeId: any = 2;
 
   get ReactiveIUForm(): any {
     return this.devolucionForm.controls;

@@ -1,18 +1,11 @@
 <div class="content-wrapper">
   <div class="content-body">
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
-    <core-card #coreCard [actions]="['collapse', 'reload']">
-      <h4 class="card-title">Buscar por</h4>
+    <core-card #coreCard [actions]="['collapse', 'reload']" (events)="onLimpiarFiltro($event)">
+      <h4 class="card-title">Buscar por <small><i>(click aquí para expandir)</i></small></h4>
       <div class="card-body">
         <form [formGroup]="filtroForm">
           <div class="row">
-            <!-- <div class="col-md-4 col-12">
-              <div class="form-group">
-                <label>N° Documento</label>
-                <input class="form-control" formControlName="nroDocumento" type="text"
-                       (ngModelChange)="onListarCavali()"/>
-              </div>
-            </div> -->
             <div class="col-md-4 col-12">
               <div class="form-group">
                 <label>Usuario</label>
@@ -22,45 +15,6 @@
                 </ng-select>
               </div>
             </div>
-            <!-- <div class="col-md-4 col-12">
-              <div class="form-group">
-                <label>Estado</label>
-                <ng-select appendTo="body" [clearable]="false" [items]="state" bindLabel="descripcion"
-                           placeholder="Estado" bindValue="idColumna" formControlName="estado"
-                           (ngModelChange)="onListarCavali()">
-                </ng-select>
-              </div>
-            </div> -->
-            <!-- <div class="col-md-4 col-12">
-              <div class="form-group">
-                <label>Fecha Desde</label>
-                <div class="input-group">
-                  <input class="form-control" placeholder="yyyy-mm-dd"
-                         formControlName="fechaDesde" container="body" [(ngModel)]="filterFecha.desde"
-                         ngbDatepicker #basicDPDes="ngbDatepicker" (ngModelChange)="onListarCavali()">
-                  <div class="input-group-append">
-                    <button class="btn btn-outline-secondary feather icon-calendar"
-                            (click)="basicDPDes.toggle()"
-                            type="button" rippleEffect></button>
-                  </div>
-                </div>
-              </div>
-            </div> -->
-            <!-- <div class="col-md-4 col-12">
-              <div class="form-group">
-                <label>Fecha Hasta</label>
-                <div class="input-group">
-                  <input class="form-control" placeholder="yyyy-mm-dd"
-                         formControlName="fechaHasta" container="body" [(ngModel)]="filterFecha.hasta"
-                         ngbDatepicker #basicDPHas="ngbDatepicker" (ngModelChange)="onListarCavali()">
-                  <div class="input-group-append">
-                    <button class="btn btn-outline-secondary feather icon-calendar"
-                            (click)="basicDPHas.toggle()"
-                            type="button" rippleEffect></button>
-                  </div>
-                </div>
-              </div>
-            </div> -->
           </div>
         </form>
       </div>
@@ -89,19 +43,22 @@
           <li [ngbNavItem]="1">
             <a ngbNavLink>Factoring</a>
             <ng-template ngbNavContent>
-              <app-solicitudes-grilla [paramsURL]="1"></app-solicitudes-grilla>
+              <app-solicitudes-grilla [paramsURL]="1"
+                                      [idUsuario]="filtroForm.controls.usuario.value"></app-solicitudes-grilla>
             </ng-template>
           </li>
           <li [ngbNavItem]="2">
             <a ngbNavLink>Capital de Trabajo</a>
             <ng-template ngbNavContent>
-              <app-solicitudes-grilla [paramsURL]="2"></app-solicitudes-grilla>
+              <app-solicitudes-grilla [paramsURL]="2"
+                                      [idUsuario]="filtroForm.controls.usuario.value"></app-solicitudes-grilla>
             </ng-template>
           </li>
           <li [ngbNavItem]="3">
             <a ngbNavLink>Confirming</a>
             <ng-template ngbNavContent>
-              <app-solicitudes-grilla [paramsURL]="3"></app-solicitudes-grilla>
+              <app-solicitudes-grilla [paramsURL]="3"
+                                      [idUsuario]="filtroForm.controls.usuario.value"></app-solicitudes-grilla>
             </ng-template>
           </li>
         </ul>

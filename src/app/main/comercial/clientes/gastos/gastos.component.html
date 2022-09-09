@@ -33,7 +33,7 @@
         </td>
         <td><input class="form-control" type="text" placeholder="T.N.M. (%)"
                    [ngClass]="{ 'is-invalid': submittedGastos && ReactiveIUFormGastos.tasaNominalMensual.errors }"
-                   (ngModelChange)="onCambioTNM($event)"
+                   (ngModelChange)="onCambioTNM($event, 1)"
                    formControlName="tasaNominalMensual" mask="separator" thousandSeparator=","/></td>
 <!--        <td><input class="form-control" type="text" placeholder="T.N.A. (%)"-->
 <!--                   formControlName="tasaNominalAnual"-->
@@ -41,7 +41,8 @@
 <!--        </td>-->
         <td><input class="form-control" type="text" placeholder="T.N.M. (%) Mora"
                    [ngClass]="{ 'is-invalid': submittedGastos && ReactiveIUFormGastos.tasaNominalMensualMora.errors }"
-                   formControlName="tasaNominalMensualMora" mask="separator" thousandSeparator=","/></td>
+                   formControlName="tasaNominalMensualMora" mask="separator" thousandSeparator=","
+                   (ngModelChange)="onCambioTNM($event, 2)"/></td>
 <!--        <td><input class="form-control" type="text" placeholder="T.N.A. (%) Mora"-->
 <!--                   formControlName="tasaNominalAnualMora"-->
 <!--                   [ngClass]="{ 'is-invalid': submittedGastos && ReactiveIUFormGastos.tasaNominalAnualMora.errors }"/>-->
@@ -98,31 +99,32 @@
                      [ngModelOptions]="{standalone: true}">
           </ng-select>
         </td>
-<!--        <td [ngClass]="{'row-edicion': item.editado}">-->
-<!--          <p *ngIf="!item.edicion">{{item.tasaNominalMensual | number: '1.2-2'}}</p>-->
-<!--          <input *ngIf="item.edicion" class="form-control" type="text" placeholder="T.N.M. (%)"-->
-<!--                 [(ngModel)]="item.tasaNominalMensual" mask="separator" thousandSeparator=","-->
-<!--                 (ngModelChange)="onCambioTNM_Fila(item)"-->
-<!--                 [ngModelOptions]="{standalone: true}"/>-->
-<!--        </td>-->
         <td [ngClass]="{'row-edicion': item.editado}">
-          <p *ngIf="!item.edicion">{{item.tasaNominalAnual | number: '1.2-2'}}</p>
-          <input *ngIf="item.edicion" class="form-control" type="text" placeholder="T.N.A. (%)"
-                 [(ngModel)]="item.tasaNominalAnual" mask="separator" thousandSeparator=","
+          <p *ngIf="!item.edicion">{{item.tasaNominalMensual | number: '1.2-2'}}</p>
+          <input *ngIf="item.edicion" class="form-control" type="text" placeholder="T.N.M. (%)"
+                 [(ngModel)]="item.tasaNominalMensual" mask="separator" thousandSeparator=","
+                 (ngModelChange)="onCambioTNM_Fila(item, 1)"
                  [ngModelOptions]="{standalone: true}"/>
         </td>
 <!--        <td [ngClass]="{'row-edicion': item.editado}">-->
-<!--          <p *ngIf="!item.edicion">{{item.tasaNominalMensualMora | number: '1.2-2'}}</p>-->
-<!--          <input *ngIf="item.edicion" class="form-control" type="text" placeholder="T.N.M. (%)"-->
-<!--                 [(ngModel)]="item.tasaNominalMensualMora" mask="separator" thousandSeparator=","-->
+<!--          <p *ngIf="!item.edicion">{{item.tasaNominalAnual | number: '1.2-2'}}</p>-->
+<!--          <input *ngIf="item.edicion" class="form-control" type="text" placeholder="T.N.A. (%)"-->
+<!--                 [(ngModel)]="item.tasaNominalAnual" mask="separator" thousandSeparator=","-->
 <!--                 [ngModelOptions]="{standalone: true}"/>-->
 <!--        </td>-->
         <td [ngClass]="{'row-edicion': item.editado}">
-          <p *ngIf="!item.edicion">{{item.tasaNominalAnualMora | number: '1.2-2'}}</p>
-          <input *ngIf="item.edicion" class="form-control" type="text" placeholder="T.N.A. (%)"
-                 [(ngModel)]="item.tasaNominalAnualMora" mask="separator" thousandSeparator=","
+          <p *ngIf="!item.edicion">{{item.tasaNominalMensualMora | number: '1.2-2'}}</p>
+          <input *ngIf="item.edicion" class="form-control" type="text" placeholder="T.N.M. (%)" [disabled]="true"
+                 [(ngModel)]="item.tasaNominalMensualMora" mask="separator" thousandSeparator=","
+                 (ngModelChange)="onCambioTNM_Fila(item, 2)"
                  [ngModelOptions]="{standalone: true}"/>
         </td>
+<!--        <td [ngClass]="{'row-edicion': item.editado}">-->
+<!--          <p *ngIf="!item.edicion">{{item.tasaNominalAnualMora | number: '1.2-2'}}</p>-->
+<!--          <input *ngIf="item.edicion" class="form-control" type="text" placeholder="T.N.A. (%)"-->
+<!--                 [(ngModel)]="item.tasaNominalAnualMora" mask="separator" thousandSeparator=","-->
+<!--                 [ngModelOptions]="{standalone: true}"/>-->
+<!--        </td>-->
         <td [ngClass]="{'row-edicion': item.editado}">
           <p *ngIf="!item.edicion">{{item.financiamiento | number: '1.2-2'}}</p>
           <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Financiamiento (%)"

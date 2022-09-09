@@ -33,7 +33,7 @@ export class GastosComponent implements OnInit {
       idMoneda: [1],
       tasaNominalMensual: [0, [Validators.required, Validators.min(0.01)]],
       tasaNominalAnual: [0, [Validators.required, Validators.min(0.01)]],
-      tasaNominalMensualMora: [0, [Validators.required, Validators.min(0.01)]],
+      tasaNominalMensualMora: [{ value: 0, validators: [Validators.required, Validators.min(0.01)]}],
       tasaNominalAnualMora: [0, [Validators.required, Validators.min(0.01)]],
       financiamiento: [0],
       comisionEstructuracion: [0],
@@ -192,15 +192,23 @@ export class GastosComponent implements OnInit {
     }
   }
 
-  onCambioTNM($event): void {
-    this.gastosForm.controls.tasaNominalAnual.setValue(Math.round(((Number($event) * 12) + Number.EPSILON) * 100) / 100);
-    this.gastosForm.controls.tasaNominalMensualMora.setValue(Math.round(((Number($event) * 2) + Number.EPSILON) * 100) / 100);
-    this.gastosForm.controls.tasaNominalAnualMora.setValue(Math.round(((Number($event) * 2 * 12) + Number.EPSILON) * 100) / 100);
+  onCambioTNM($event, tipoTasa: number): void {
+    if (tipoTasa === 1) {
+      this.gastosForm.controls.tasaNominalAnual.setValue(Math.round(((Number($event) * 12) + Number.EPSILON) * 100) / 100);
+      this.gastosForm.controls.tasaNominalMensualMora.setValue(Math.round(((Number($event) * 2) + Number.EPSILON) * 100) / 100);
+      this.gastosForm.controls.tasaNominalAnualMora.setValue(Math.round(((Number($event) * 2 * 12) + Number.EPSILON) * 100) / 100);
+    } else {
+      this.gastosForm.controls.tasaNominalAnualMora.setValue(Math.round(((Number($event) * 12) + Number.EPSILON) * 100) / 100);
+    }
   }
 
-  onCambioTNM_Fila(fila: ClienteGastos): void {
-    fila.tasaNominalAnual = Math.round(((fila.tasaNominalMensual * 12) + Number.EPSILON) * 100) / 100;
-    fila.tasaNominalMensualMora = Math.round(((fila.tasaNominalMensual * 2) + Number.EPSILON) * 100) / 100;
-    fila.tasaNominalAnualMora = Math.round(((fila.tasaNominalMensual * 2 * 12) + Number.EPSILON) * 100) / 100;
+  onCambioTNM_Fila(fila: ClienteGastos, tipoTasa: number): void {
+    if (tipoTasa === 1) {
+      fila.tasaNominalAnual = Math.round(((fila.tasaNominalMensual * 12) + Number.EPSILON) * 100) / 100;
+      fila.tasaNominalMensualMora = Math.round(((fila.tasaNominalMensual * 2) + Number.EPSILON) * 100) / 100;
+      fila.tasaNominalAnualMora = Math.round(((fila.tasaNominalMensual * 2 * 12) + Number.EPSILON) * 100) / 100;
+    } else {
+      fila.tasaNominalAnualMora = Math.round(((fila.tasaNominalMensual * 12) + Number.EPSILON) * 100) / 100;
+    }
   }
 }

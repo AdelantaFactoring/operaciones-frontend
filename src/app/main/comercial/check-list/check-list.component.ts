@@ -18,6 +18,7 @@ import {ClientePagadorService} from "../cliente-pagador/cliente-pagador.service"
 import {ClientePagadorGastos} from "../../../shared/models/comercial/cliente-pagador-gastos";
 import {ClienteGastos} from "../../../shared/models/comercial/cliente-gastos";
 import { User } from 'app/shared/models/auth/user';
+import {UsuarioService} from "../../seguridad/usuario/usuario.service";
 
 @Component({
   selector: 'app-check-list',
@@ -64,6 +65,11 @@ export class CheckListComponent implements OnInit {
     //url: `${environment.apiUrl}${SOLICITUD.subirSustento}`,
     isHTML5: true
   });
+  public activeId: any = 2;
+
+  public filtroForm: FormGroup;
+  public oldFiltroForm: FormGroup;
+  public optUsuario = [];
 
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;
@@ -75,7 +81,8 @@ export class CheckListComponent implements OnInit {
               private clientePagadorService: ClientePagadorService,
               private formBuilder: FormBuilder,
               private modalService: NgbModal,
-              private tablaMaestraService: TablaMaestraService) {
+              private tablaMaestraService: TablaMaestraService,
+              private usuarioService: UsuarioService) {
     this.contentHeader = {
       headerTitle: 'Check list',
       actionButton: true,
@@ -149,6 +156,11 @@ export class CheckListComponent implements OnInit {
       totalDesembolso:  [{value: 0, disabled: true}],
       flagPagoInteresAdelantado: false,
     });
+
+    this.filtroForm = this.formBuilder.group({
+      usuario: [0]
+    });
+    this.oldFiltroForm = this.filtroForm.value;
   }
 
   async ngOnInit(): Promise<void> {
@@ -158,7 +170,23 @@ export class CheckListComponent implements OnInit {
     this.tipoCT = await this.onListarMaestros(5, 0);
     this.utilsService.blockUIStop();
 
-    this.onListarSolicitudes();
+    this.onUsuarioCombo();
+    this.filtroForm.controls.usuario.setValue(this.currentUser.idUsuario);
+
+    //this.onListarSolicitudes();
+  }
+
+  onUsuarioCombo(): void{
+    this.utilsService.blockUIStart('Obteniendo información...');
+    this.usuarioService.combo({
+      idEmpresa: this.currentUser.idEmpresa
+    }).subscribe(response => {
+      this.optUsuario = response;
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
   }
 
   async onListarMaestros(idTabla: number, idColumna: number): Promise<TablaMaestra[]> {
@@ -172,6 +200,7 @@ export class CheckListComponent implements OnInit {
   onListarSolicitudes(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.checkListService.listar({
+      idUsuario: this.filtroForm.controls.usuario.value,
       idConsulta: 4,
       idSubConsulta: 0,
       search: this.search,
@@ -681,6 +710,12 @@ export class CheckListComponent implements OnInit {
       this.solicitudForm.controls.gastosIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totalFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totalDesembolso.setValue(Math.round(((netoSolicitado + Number.EPSILON) - totFacturar) * 100) / 100);
+    }
+  }
+
+  onLimpiarFiltro($event: any) {
+    if ($event === 'reload') {
+      this.filtroForm.reset(this.oldFiltroForm);
     }
   }
 }

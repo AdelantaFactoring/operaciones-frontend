@@ -19,6 +19,7 @@ import { SolicitudesService } from '../solicitudes.service';
 export class SolicitudesGrillaComponent implements OnInit {
   public currentUser: User;
   @Input() paramsURL: any = 1;
+  @Input() idUsuario: any = 0;
 
   public submitted: boolean;
   public cambiarIcono: boolean = false;
@@ -103,7 +104,7 @@ export class SolicitudesGrillaComponent implements OnInit {
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.tipoCT = await this.onListarMaestros(5, 0);
     this.utilsService.blockUIStop();
-    this.onListarSolicitudes(this.paramsURL);
+    this.onListarSolicitudes(this.paramsURL, this.idUsuario);
   }
 
   async onListarMaestros(idTabla: number, idColumna: number): Promise<TablaMaestra[]> {

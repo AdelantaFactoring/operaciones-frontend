@@ -192,7 +192,7 @@
                   <th rowspan="2" class="action-color">Acción</th>
                   <th rowspan="2">N° Liquidación</th>
                   <th rowspan="2">N° Solicitud</th>
-<!--                  <th rowspan="2">Tipo Operación</th>-->
+                  <!--                  <th rowspan="2">Tipo Operación</th>-->
                   <th style="min-width: 300px" rowspan="2">Fecha operación</th>
                   <th rowspan="2">Cliente</th>
                   <th rowspan="2">Cliente RUC</th>
@@ -247,38 +247,40 @@
                             <!--                                                        <i data-feather="more-vertical"></i>-->
                           </a>
                           <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="dropdownBrowserState">
-                            <a ngbDropdownItem href="javascript:void(0)" title="Enviar Correo" *ngIf="mostrar === 'true'"
+                            <a ngbDropdownItem href="javascript:void(0)" title="Enviar Correo"
+                               *ngIf="mostrar === 'true'"
                                [class.disabled]="cab.idEstado != 1 ? true: null"
                                (click)="onEnviar(2, cab)"
                                class="d-flex align-items-center">
                               <i class="text-warning cursor-pointer mr-50" data-feather="mail"></i> Enviar Correo
                             </a>
-                            <a ngbDropdownItem href="javascript:void(0)" *ngIf="cab.idEstado == 1 && mostrar === 'true'" title="Editar"
+                            <a ngbDropdownItem href="javascript:void(0)" *ngIf="cab.idEstado == 1 && mostrar === 'true'"
+                               title="Editar"
                                (click)="onEditarCab(cab,  modalINFO)"
                                class="d-flex align-items-center">
                               <i class="text-success cursor-pointer mr-50" data-feather="edit"></i> Editar
                             </a>
-                            <a ngbDropdownItem href="javascript:void(0)" *ngIf="cab.idEstado !== 1" title="Ver"
+                            <a ngbDropdownItem href="javascript:void(0)" *ngIf="mostrar === 'false' || cab.idEstado !== 1" title="Ver"
                                (click)="onEditarCab(cab,  modalINFO)"
                                class="d-flex align-items-center">
                               <i class="text-info cursor-pointer mr-50" data-feather="eye"></i> Ver info. de descuento
                             </a>
-<!--                            <a ngbDropdownItem href="javascript:void(0)" *ngIf="mostrar === 'false'" title="Ver"-->
-<!--                               (click)="onEditarCab(cab,  modalINFO)"-->
-<!--                               class="d-flex align-items-center">-->
-<!--                              <i class="text-info cursor-pointer mr-50" data-feather="eye"></i> Ver info. de desembolso-->
-<!--                            </a>-->
+                            <!--                            <a ngbDropdownItem href="javascript:void(0)" *ngIf="mostrar === 'false'" title="Ver"-->
+                            <!--                               (click)="onEditarCab(cab,  modalINFO)"-->
+                            <!--                               class="d-flex align-items-center">-->
+                            <!--                              <i class="text-info cursor-pointer mr-50" data-feather="eye"></i> Ver info. de desembolso-->
+                            <!--                            </a>-->
                             <a ngbDropdownItem href="javascript:void(0)" title="Eliminar" *ngIf="mostrar === 'true'"
                                [class.disabled]="cab.idEstado >= 5 ? true : null"
                                (click)="onEliminar(cab)"
                                class="d-flex align-items-center">
                               <i class="text-danger cursor-pointer mr-50" data-feather="trash-2"></i> Eliminar
                             </a>
-<!--                            <a ngbDropdownItem href="javascript:void(0)" title="Auditoría"-->
-<!--                               (click)="onAuditoria(cab, modalAUDIT)"-->
-<!--                               class="d-flex align-items-center">-->
-<!--                              <i class="text-secondary fa fa-history mr-50"></i> Auditoría-->
-<!--                            </a>-->
+                            <!--                            <a ngbDropdownItem href="javascript:void(0)" title="Auditoría"-->
+                            <!--                               (click)="onAuditoria(cab, modalAUDIT)"-->
+                            <!--                               class="d-flex align-items-center">-->
+                            <!--                              <i class="text-secondary fa fa-history mr-50"></i> Auditoría-->
+                            <!--                            </a>-->
                           </div>
                         </div>
                       </div>
@@ -317,11 +319,13 @@
                       </div>
                     </td>
                     <td>
-                      <div class="input-group">
-                        <input [readonly]="cab.idEstado != 1" [minDate]="fechaMinima" class="form-control" placeholder="yyyy-mm-dd" container="body" [(ngModel)]="cab.fechaOperacion_Global_MOD"
+                      <p *ngIf="mostrar === 'false' || cab.idEstado != 1">{{cab.fechaOperacion_Global_ORG}}</p>
+                      <div *ngIf="mostrar === 'true' && cab.idEstado === 1" class="input-group">
+                        <input [minDate]="fechaMinima" class="form-control" placeholder="yyyy-mm-dd" container="body"
+                               [(ngModel)]="cab.fechaOperacion_Global_MOD"
                                ngbDatepicker #basicDP2="ngbDatepicker">
                         <div class="input-group-append">
-                          <button [disabled]="cab.idEstado != 1" class="btn btn-outline-secondary feather icon-calendar"
+                          <button class="btn btn-outline-secondary feather icon-calendar"
                                   (click)="basicDP2.toggle()"
                                   type="button" rippleEffect></button>
                         </div>
@@ -333,9 +337,9 @@
                         </div>
                       </div>
                     </td>
-<!--                    <td>{{cab.fechaOperacion_Global_ORG}}</td>-->
-<!--                    <td>{{cab.codigoSolicitud}}</td>-->
-<!--                    <td>{{cab.tipoOperacion}}</td>-->
+                    <!--                    <td>{{cab.fechaOperacion_Global_ORG}}</td>-->
+                    <!--                    <td>{{cab.codigoSolicitud}}</td>-->
+                    <!--                    <td>{{cab.tipoOperacion}}</td>-->
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
                     <td>{{cab.razonSocialPagProv}}</td>
@@ -352,7 +356,7 @@
                     <td>{{cab.fechaModificacion}}</td>
                   </tr>
                   <tr id="{{ 'trL' + cab.idLiquidacionCab }}" style="visibility: collapse">
-                    <td [colSpan]="mostrar === 'true' ? 16 : 14">
+                    <td [colSpan]="mostrar === 'true' ? 21 : 19">
                       <div class="row" *ngIf="mostrar === 'true' && cab.idEstado === 1">
                         <div class="d-flex flex-wrap mb-0">
                           <div class="pl-1 pt-1 pb-1">
@@ -413,27 +417,29 @@
                             <tr *ngFor="let item of cab.liquidacionDet">
                               <td>
                                 <div class="d-flex align-items-center">
-                                  <a *ngIf="mostrar === 'true' && cab.idEstado === 1" href="javascript:void(0)" title="Editar"
+                                  <a *ngIf="mostrar === 'true' && cab.idEstado === 1" href="javascript:void(0)"
+                                     title="Editar"
                                      (click)="onEditar(cab, item, modalDETALLE)"
                                      class="btn btn-raised btn-outline-success btn-sm">
                                     <i class="text-success cursor-pointer" data-feather="edit"></i>
                                   </a>
-                                  <a *ngIf="cab.idEstado != 1" href="javascript:void(0)" title="Ver"
+                                  <a *ngIf="mostrar === 'false' || cab.idEstado != 1" href="javascript:void(0)"
+                                     title="Ver"
                                      (click)="onEditar(cab, item, modalDETALLE)"
                                      class="btn btn-raised btn-outline-info btn-sm">
                                     <i class="text-info cursor-pointer" data-feather="eye"></i>
                                   </a>
-<!--                                  <a *ngIf="item.edicion" href="javascript:void(0)" title="Cancelar"-->
-<!--                                     (click)="onCancelar(item)"-->
-<!--                                     class="btn btn-raised btn-outline-secondary btn-sm">-->
-<!--                                    <i class="text-secondary cursor-pointer" data-feather="corner-up-left"></i>-->
-<!--                                  </a>-->
-<!--                                  &nbsp;-->
-<!--                                  <a *ngIf="item.edicion" href="javascript:void(0)" title="Confirmar cambios"-->
-<!--                                     class="btn btn-raised btn-outline-success btn-sm"-->
-<!--                                     (click)="onConfirmarCambio(item)">-->
-<!--                                    <i class="text-success cursor-pointer" data-feather="save"></i>-->
-<!--                                  </a>-->
+                                  <!--                                  <a *ngIf="item.edicion" href="javascript:void(0)" title="Cancelar"-->
+                                  <!--                                     (click)="onCancelar(item)"-->
+                                  <!--                                     class="btn btn-raised btn-outline-secondary btn-sm">-->
+                                  <!--                                    <i class="text-secondary cursor-pointer" data-feather="corner-up-left"></i>-->
+                                  <!--                                  </a>-->
+                                  <!--                                  &nbsp;-->
+                                  <!--                                  <a *ngIf="item.edicion" href="javascript:void(0)" title="Confirmar cambios"-->
+                                  <!--                                     class="btn btn-raised btn-outline-success btn-sm"-->
+                                  <!--                                     (click)="onConfirmarCambio(item)">-->
+                                  <!--                                    <i class="text-success cursor-pointer" data-feather="save"></i>-->
+                                  <!--                                  </a>-->
                                 </div>
                               </td>
                               <td *ngIf="cab.idTipoOperacion === 3" [ngClass]="{'row-edicion': item.editado}">
@@ -443,91 +449,16 @@
                               <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.nroDocumento}}</p></td>
                               <td [ngClass]="{'row-edicion': item.editado}">
                                 <p>{{item.tasaNominalMensual | number: '1.2-2'}}</p></td>
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}">-->
-                              <!--                                <p>{{item.tasaNominalAnual | number: '1.2-2'}}</p></td>-->
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}">-->
-                              <!--                                <p>{{item.financiamiento | number: '1.2-2'}}</p></td>-->
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}" style="min-width: 220px">-->
-                              <!--                                <p *ngIf="!item.edicion">{{item.fechaOperacionFormat}}</p>-->
-                              <!--                                <div class="input-group" *ngIf="item.edicion">-->
-                              <!--                                  <input class="form-control" placeholder="yyyy-mm-dd"-->
-                              <!--                                         [(ngModel)]="item.fechaOperacion" container="body"-->
-                              <!--                                         (ngModelChange)="onCambiarFechaOperacion($event, cab, item)"-->
-                              <!--                                         ngbDatepicker #basicDP="ngbDatepicker">-->
-                              <!--                                  <div class="input-group-append">-->
-                              <!--                                    <button class="btn btn-outline-secondary feather icon-calendar"-->
-                              <!--                                            (click)="basicDP.toggle()"-->
-                              <!--                                            type="button" rippleEffect></button>-->
-                              <!--                                  </div>-->
-                              <!--                                </div>-->
-                              <!--                              </td>-->
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.fechaConfirmado}}</p></td>-->
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}">-->
-                              <!--                                <p>{{item.diasEfectivo | number: '1.0-0'}}</p></td>-->
                               <td [ngClass]="{'row-edicion': item.editado}">
                                 <p>{{item.netoConfirmado | number: '1.2-2'}}</p></td>
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}">-->
-                              <!--                                <p>{{item.comisionEstructuracion | number: '1.2-2'}}</p></td>-->
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}">-->
-                              <!--                                <p>{{item.montoComisionEstructuracion | number: '1.2-2'}}</p></td>-->
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}">-->
-                              <!--                                <p>{{item.comisionEstructuracionIGV | number: '1.2-2'}}</p></td>-->
                               <td [ngClass]="{'row-edicion': item.editado}">
                                 <p>{{item.comisionEstructuracionConIGV | number: '1.2-2'}}</p></td>
                               <td [ngClass]="{'row-edicion': item.editado}">
                                 <p>{{item.fondoResguardo | number: '1.2-2'}}</p></td>
                               <td [ngClass]="{'row-edicion': item.editado}">
                                 <p>{{item.montoCobrar | number: '1.2-2'}}</p></td>
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.interes | number: '1.2-2'}}</p>-->
-                              <!--                              </td>-->
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}"><p>{{item.interesIGV | number: '1.2-2'}}</p>-->
-                              <!--                              </td>-->
                               <td [ngClass]="{'row-edicion': item.editado}">
                                 <p>{{item.interesConIGV | number: '1.2-2'}}</p></td>
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}">-->
-                              <!--                                <p *ngIf="!item.edicion">{{item.gastosContrato | number: '1.2-2'}}</p>-->
-                              <!--                                <input *ngIf="item.edicion" class="form-control" type="text"-->
-                              <!--                                       placeholder="Gastos Contrato"-->
-                              <!--                                       [(ngModel)]="item.gastosContrato" mask="separator" thousandSeparator=","-->
-                              <!--                                       (ngModelChange)="onCalcular(cab, item)"-->
-                              <!--                                       [ngModelOptions]="{standalone: true}"/>-->
-                              <!--                              </td>-->
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}">-->
-                              <!--                                <p *ngIf="!item.edicion">{{item.gastoVigenciaPoder | number: '1.2-2'}}</p>-->
-                              <!--                                <input *ngIf="item.edicion" class="form-control" type="text"-->
-                              <!--                                       placeholder="Gasto Vigencia Poder"-->
-                              <!--                                       [(ngModel)]="item.gastoVigenciaPoder" mask="separator" thousandSeparator=","-->
-                              <!--                                       (ngModelChange)="onCalcular(cab, item)"-->
-                              <!--                                       [ngModelOptions]="{standalone: true}"/>-->
-                              <!--                              </td>-->
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}">-->
-                              <!--                                <p *ngIf="!item.edicion">{{item.servicioCustodia | number: '1.2-2'}}</p>-->
-                              <!--                                <input *ngIf="item.edicion" class="form-control" type="text"-->
-                              <!--                                       placeholder="Servicio Custodia"-->
-                              <!--                                       [(ngModel)]="item.servicioCustodia" mask="separator" thousandSeparator=","-->
-                              <!--                                       (ngModelChange)="onCalcular(cab, item)"-->
-                              <!--                                       [ngModelOptions]="{standalone: true}"/>-->
-                              <!--                              </td>-->
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}">-->
-                              <!--                                <p *ngIf="!item.edicion">{{item.servicioCobranza | number: '1.2-2'}}</p>-->
-                              <!--                                <input *ngIf="item.edicion" class="form-control" type="text"-->
-                              <!--                                       placeholder="Servicio Cobranza"-->
-                              <!--                                       [(ngModel)]="item.servicioCobranza" mask="separator" thousandSeparator=","-->
-                              <!--                                       (ngModelChange)="onCalcular(cab, item)"-->
-                              <!--                                       [ngModelOptions]="{standalone: true}"/>-->
-                              <!--                              </td>-->
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}">-->
-                              <!--                                <p *ngIf="!item.edicion">{{item.comisionCartaNotarial | number: '1.2-2'}}</p>-->
-                              <!--                                <input *ngIf="item.edicion" class="form-control" type="text"-->
-                              <!--                                       placeholder="Comisión Carta Notarial"-->
-                              <!--                                       [(ngModel)]="item.comisionCartaNotarial" mask="separator" thousandSeparator=","-->
-                              <!--                                       (ngModelChange)="onCalcular(cab, item)"-->
-                              <!--                                       [ngModelOptions]="{standalone: true}"/>-->
-                              <!--                              </td>-->
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}">-->
-                              <!--                                <p>{{item.gastosDiversos | number: '1.2-2'}}</p></td>-->
-                              <!--                              <td [ngClass]="{'row-edicion': item.editado}">-->
-                              <!--                                <p>{{item.gastosDiversosIGV | number: '1.2-2'}}</p></td>-->
                               <td [ngClass]="{'row-edicion': item.editado}">
                                 <p>{{item.gastosDiversosConIGV | number: '1.2-2'}}</p></td>
                               <td [ngClass]="{'row-edicion': item.editado}">
@@ -552,7 +483,8 @@
         <div class="row">
           <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
             <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onListarLiquidaciones()"
-                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize" [ellipses]="false">
+                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize"
+                            [ellipses]="false">
               <ng-template ngbPaginationFirst>
                 <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
               </ng-template>
@@ -576,7 +508,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body" ngbAutofocus tabindex="0" >
+          <div class="modal-body" ngbAutofocus tabindex="0">
             <form [formGroup]="liquidacionForm">
               <div class="row spaced">
                 <div class="col-12">
@@ -672,15 +604,44 @@
                   </div>
                 </div>
                 <div class="col-12" *ngIf="!ver">
-                  <div
-                    ng2FileDrop
-                    [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
-                    (fileOver)="fileOverBase($event)"
-                    [uploader]="archivosSustento"
-                    class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
-                  >
-                    Arrastre aquí los archivos
-                  </div>
+                  <ul ngbNav #nav="ngbNav" [(activeId)]="activeId" class="nav-tabs">
+                    <li [ngbNavItem]="1">
+                      <a ngbNavLink>Navegación</a>
+                      <ng-template ngbNavContent>
+                        <fieldset class="form-group">
+                          <!--                          <label for="file-upload-multiple">Multiple</label>-->
+                          <div class="custom-file">
+                            <input
+                              type="file"
+                              class="custom-file-input"
+                              ng2FileSelect
+                              accept=".eml"
+                              [uploader]="archivosSustento"
+                              (onFileSelected)="fileOverBase(false)"
+                              multiple
+                              id="file-upload-multiple"
+                            />
+                            <label class="custom-file-label">Seleccione...</label>
+                          </div>
+                        </fieldset>
+                      </ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                      <a ngbNavLink>Arrastar y Soltar</a>
+                      <ng-template ngbNavContent>
+                        <div
+                          ng2FileDrop
+                          [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
+                          (fileOver)="fileOverBase($event)"
+                          [uploader]="archivosSustento"
+                          class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
+                        >
+                          Arrastre aquí los archivos
+                        </div>
+                      </ng-template>
+                    </li>
+                  </ul>
+                  <div [ngbNavOutlet]="nav" class="mt-2"></div>
                 </div>
                 <div class="col-12" *ngIf="!ver">
                   <div class="d-flex justify-content-between mb-1">
@@ -790,28 +751,31 @@
 
         <ng-template #modalDETALLE let-modal>
           <div class="modal-header">
-            <h4 class="modal-title">Liquidación [{{codigo}}]{{ ((nroDocumento != '') ? '- N° Documento [' + nroDocumento + ']' : '')}}</h4>
+            <h4 class="modal-title">Liquidación [{{codigo}}
+              ]{{ ((nroDocumento != '') ? '- N° Documento [' + nroDocumento + ']' : '')}}</h4>
             <button aria-label="Close" class="close" type="button" (click)="onCancelar(dataDetalle, modal)">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body" >
-            <app-liquidaciones-detalle [dataCab]="dataCabecera" [dataDet]="dataDetalle"></app-liquidaciones-detalle>
+          <div class="modal-body">
+            <app-liquidaciones-detalle [mostrar]="mostrar" [dataCab]="dataCabecera"
+                                       [dataDet]="dataDetalle"></app-liquidaciones-detalle>
           </div>
           <div class="modal-footer">
             <div class="row">
               <div class="d-flex flex-wrap mb-0">
-                <div class="p-1" *ngIf="dataCabecera.idEstado === 1">
+                <div class="p-1" *ngIf="mostrar === 'true' && dataCabecera.idEstado === 1">
                   <button type="button" rippleEffect class="btn btn-secondary" (click)="onCancelar(dataDetalle, modal)">
                     <i class="mr-0 mr-sm-1" data-feather="x-circle"></i> Cancelar
                   </button>
                 </div>
-                <div class="pt-1 pb-1" *ngIf="dataCabecera.idEstado === 1">
-                  <button type="submit" rippleEffect class="btn btn-success" (click)="onConfirmarCambio(dataDetalle, modal)">
+                <div class="pt-1 pb-1" *ngIf="mostrar === 'true' && dataCabecera.idEstado === 1">
+                  <button type="submit" rippleEffect class="btn btn-success"
+                          (click)="onConfirmarCambio(dataDetalle, modal)">
                     <i class="mr-0 mr-sm-1" data-feather="save"></i> Confirmar
                   </button>
                 </div>
-                <div class="p-1" *ngIf="dataCabecera.idEstado != 1">
+                <div class="p-1" *ngIf="mostrar === 'false' || dataCabecera.idEstado != 1">
                   <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar(dataDetalle, modal)">
                     <span [data-feather]="'x-circle'"></span> Cerrar
                   </button>
@@ -828,7 +792,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body" >
+          <div class="modal-body">
             <app-audit [data]="audit"></app-audit>
           </div>
           <div class="modal-footer" style="display: block !important;">

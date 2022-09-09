@@ -5,9 +5,9 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SolicitudesService} from "./solicitudes.service";
 import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
 import {SolicitudDet} from "../../../shared/models/comercial/SolicitudDet";
-import {environment} from '../../../../environments/environment';
-import {SOLICITUD} from "../../../shared/helpers/url/comercial";
-import Swal from 'sweetalert2';
+// import {environment} from '../../../../environments/environment';
+// import {SOLICITUD} from "../../../shared/helpers/url/comercial";
+// import Swal from 'sweetalert2';
 import { UsuarioService } from 'app/main/seguridad/usuario/usuario.service';
 import { SolicitudesGrillaComponent } from './solicitudes-grilla/solicitudes-grilla.component';
 import { User } from 'app/shared/models/auth/user';
@@ -61,7 +61,7 @@ export class SolicitudesComponent implements OnInit {
   public ruc: string = '';
   public selectedRowIds: number[] = [];
   public dataXml = [];
-  
+
   public filtroForm: FormGroup;
   public oldFiltroForm: FormGroup;
   public optUsuario = [];
@@ -149,6 +149,7 @@ export class SolicitudesComponent implements OnInit {
     this.filtroForm = this.formBuilder.group({
       usuario: [0]
     });
+    this.oldFiltroForm = this.filtroForm.value;
   }
 
   ngOnInit(): void {
@@ -236,5 +237,11 @@ export class SolicitudesComponent implements OnInit {
 
   onChangeUsuario(): void{
     this.grilla.onRefrescar(this.filtroForm.controls.usuario.value);
+  }
+
+  onLimpiarFiltro($event: any) {
+    if ($event === 'reload') {
+      this.filtroForm.reset(this.oldFiltroForm);
+    }
   }
 }
