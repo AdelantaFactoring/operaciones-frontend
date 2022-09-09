@@ -1,6 +1,82 @@
-import {CoreMenu} from '@core/types';
+import { CoreMenu } from '@core/types';
 
 export const menu: CoreMenu[] = [
+  {
+    id: 'dashboard',
+    title: 'Dashboard',
+    // translate: 'MENU.DASHBOARD.COLLAPSIBLE',
+    type: 'section',
+    icon: 'package',
+    children: [
+      {
+        id: 'Tablero',
+        title: 'Tablero',
+        // translate: 'MENU.DASHBOARD.ANALYTICS',
+        type: 'collapsible',
+        icon: 'package',
+        //url: 'dashboard/pendientepago',
+        children: [
+          {
+            id: '18',
+            title: 'Global PEN',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'dashboard/pendientepago/PEN',
+            icon: 'circle',
+            //openInNewTab: true
+          },
+          {
+            id: '18',
+            title: 'Ejecutivo PEN',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'dashboard/ejecutivo/PEN',
+            icon: 'circle',
+          },
+          {
+            id: '18',
+            title: 'Proyectado PEN',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'dashboard/proyectado/PEN',
+            icon: 'circle',
+          },
+          {
+            id: '18',
+            title: 'Global USD',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'dashboard/pendientepago/USD',
+            icon: 'circle',
+          },
+          {
+            id: '18',
+            title: 'Ejecutivo USD',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'dashboard/ejecutivo/USD',
+            icon: 'circle',
+          },
+          {
+            id: '18',
+            title: 'Proyectado USD',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'dashboard/proyectado/USD',
+            icon: 'circle',
+          },
+          {
+            id: '18',
+            title: 'Acum. Ejecutivo',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'dashboard/acumEjecutivo',
+            icon: 'circle',
+          },
+        ]
+      },
+    ]
+  },
   {
     id: 'comercial',
     title: 'Comercial',
@@ -74,7 +150,7 @@ export const menu: CoreMenu[] = [
     }]
   },
   {
-    id:'liquidacion',
+    id: 'liquidacion',
     title: 'Liquidación',
     type: 'section',
     icon: 'dollar-sign',

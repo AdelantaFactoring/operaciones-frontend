@@ -1,0 +1,179 @@
+<div class="row">
+    <!-- <div class="col-md-6 col-12">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="d-flex align-items-center">Mostrar
+                <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
+                    (change)="onRefrescar()">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                filas</label>
+        </div>
+    </div> -->
+    <!-- <div class="col-md-6 col-12 d-flex justify-content-md-end">
+        <div class="d-flex align-items-center justify-content-end mb-1">
+            <label class="d-flex align-items-center">Buscar<input type="search" placeholder="Buscar"
+                    class="form-control ml-25" [(ngModel)]="search" [ngModelOptions]="{ standalone: true }"
+                    (change)="onRefrescar()" /></label>
+        </div>
+    </div> -->
+</div>
+<div class="row" *ngIf="paramsURL == 1">
+    <div class="col-md-6 col-12">
+        <div class="table-responsive table-wrapper">
+            <table class="table table-hover">
+                <thead class="centerall-header">
+                    <tr>
+                        <th>Nombre Deudor(Pagador)</th>
+                        <th>Monto Negociado</th>
+                        <th>%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-template let-cab ngFor [ngForOf]="pagadorLista">
+                        <tr (click)="onRowClick(cab)"
+                        [ngClass]="{'rowColor': cab.flagSeleccionado}">
+                            <td>{{cab.razonSocialPagProv}}</td>
+                            <td>{{cab.netoConfirmadoTotal | number: '1.2-2'}}</td>
+                            <td>{{cab.porcentajePagoTotal | number: '1.2-2'}}%</td>
+                        </tr>
+                    </ng-template>
+                </tbody>
+                <tfoot >
+                    <tr>
+                        <td>Total</td>
+                        <td>{{total | number: '1.2-2'}}</td>
+                        <td>100%</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-6 col-12">
+        <div class="echarts__demo" echarts [options]="ejecutivoPie" (chartClick)="onPruebaPie($event, 'chartClick')">
+        </div>
+    </div>
+</div>
+
+<div class="row" *ngIf="paramsURL == 2">
+    <div class="col-12">
+        <div class="echarts__demo" echarts [options]="ejecutivoPie">
+        </div>
+    </div>
+</div>
+
+<div class="row" *ngIf="paramsURL == 3">
+    <div class="col-12">
+        <div class="table-responsive">
+            <table class="table table-hover min-width-table">
+                <thead class="centerall-header">
+                    <tr>
+                        <th *ngFor="let item of columnaAnio" [attr.colspan]="item.cant"
+                            style="border-right: 1px solid;">{{item.anio}}</th>
+                    </tr>
+                    <tr>
+                        <th *ngFor="let item of columnaMes">{{item.columna}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-template let-cab ngFor [ngForOf]="solicitudes">
+                        <tr>
+                            <td>{{cab.pagador}}</td>
+                            <td>{{cab.monto}}</td>
+                            <td>{{cab.porcentaje}}</td>
+                        </tr>
+                    </ng-template>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="row" *ngIf="paramsURL == 2">
+    <div class="col-12">
+        <div class="table-responsive">
+            <table class="table table-hover min-width-table2">
+                <thead class="centerall-header">
+                    <tr>
+                        <th rowspan="2">Acción</th>
+                        <th rowspan="2">N° Solicitud</th>
+                        <th rowspan="2">Tipo Operación</th>
+                        <th rowspan="2">Cliente</th>
+                        <th rowspan="2">Cliente RUC</th>
+                        <th rowspan="2">Pagador / Proveedor</th>
+                        <th rowspan="2">Pagador / Proveedor RUC</th>
+                        <th rowspan="2">Moneda</th>
+                        <th rowspan="2">Tipo</th>
+                        <th rowspan="2">Monto</th>
+                        <th rowspan="2">Monto Solicitado</th>
+                        <th rowspan="2">Estado</th>
+                        <th colspan="4" class="audit-columns">Auditoría</th>
+                    </tr>
+                    <tr>
+                        <th class="audit-columns">Creado por</th>
+                        <th class="audit-columns">Fecha creación</th>
+                        <th class="audit-columns">Modificado por</th>
+                        <th class="audit-columns">Fecha modificación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-template let-cab ngFor [ngForOf]="solicitudes">
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <a href="javascript:void(0)" title="Ver"
+                                        (click)="onVerDetalleSolicitud(cab, modalINFOSOLICITUD)"
+                                        class="btn btn-raised btn-outline-info btn-sm">
+                                        <i class="text-info cursor-pointer" data-feather="eye"></i>
+                                    </a>
+                                    &nbsp;
+                                    <a href="javascript:void(0)" title="Eliminar"
+                                        [class.disabled]="cab.idEstado === 6 ? true: null" (click)="onEliminar(cab)"
+                                        class="btn btn-raised btn-outline-danger btn-sm">
+                                        <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            <td>{{cab.codigo}}</td>
+                            <td>{{cab.tipoOperacion}}</td>
+                            <td>{{cab.razonSocialCliente}}</td>
+                            <td>{{cab.rucCliente}}</td>
+                            <td>{{cab.razonSocialPagProv}}</td>
+                            <td>{{cab.rucPagProv}}</td>
+                            <td>{{cab.moneda}}</td>
+                            <td>{{cab.tipoCT}}</td>
+                            <td>{{cab.montoCT}}</td>
+                            <td>{{cab.montoSolicitudCT}}</td>
+                            <td>{{cab.estado}}</td>
+                            <td>{{cab.usuarioCreacion}}</td>
+                            <td>{{cab.fechaCreacion}}</td>
+                            <td>{{cab.usuarioModificacion}}</td>
+                            <td>{{cab.fechaModificacion}}</td>
+                        </tr>
+                    </ng-template>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> -->
+<!-- <div class="row">
+    <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
+        <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onRefrescar()" [maxSize]="3"
+            [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize" [ellipses]="false">
+            <ng-template ngbPaginationFirst>
+                <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
+            </ng-template>
+            <ng-template ngbPaginationPrevious>
+                <span [data-feather]="'chevron-left'" [size]="18" [class]="'font-weight-bolder'"></span>
+            </ng-template>
+            <ng-template ngbPaginationNext>
+                <span [data-feather]="'chevron-right'" [size]="18" [class]="'font-weight-bolder'"></span>
+            </ng-template>
+            <ng-template ngbPaginationLast>
+                <span [data-feather]="'chevrons-right'" [size]="18" [class]="'font-weight-bolder'"></span>
+            </ng-template>
+        </ngb-pagination>
+    </div>
+</div> -->

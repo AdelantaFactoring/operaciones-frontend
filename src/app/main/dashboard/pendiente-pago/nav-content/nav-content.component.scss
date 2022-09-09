@@ -1,0 +1,71 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#chart-container {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.echarts__demo {
+    height: 600px;
+    width: 100%;
+}
+
+// .scroll {
+//     width: 20%; /* 140px * 5 column + 16px scrollbar width */
+//     border-spacing: 0;
+//     border: 2px solid black;
+// }
+
+// .scroll tbody,
+// .scroll thead tr { display: block; }
+
+// .scroll tbody {
+//     height: 600px;
+//     overflow-y: auto;
+//     overflow-x: scroll;
+// }
+// .min-width-table {
+//     min-width: 3000px;
+//   }
+
+.table-wrapper {
+    width: 100%;
+    height: 700px; /* Altura de ejemplo */
+    overflow: auto;
+  }
+  
+//   .table-wrapper table {
+//     border-collapse: separate;
+//     border-spacing: 0;
+//   }
+  
+  .table-wrapper table thead {
+    position: -webkit-sticky; /* Safari... */
+    position: sticky;
+    top: 0;
+    left: 0;
+    background-color: rgba(242,242,246,255);
+  }
+
+  .table-wrapper table tfoot {
+    position: -webkit-sticky; /* Safari... */
+    position: sticky;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(242,242,246,255);
+  }
+  
+  // .table-wrapper table thead th,
+  // .table-wrapper table tfoot td,
+  // .table-wrapper table tbody td {
+  //   // border: 1px solid #000;
+  //   // background-color: #FFF;
+  // }
+
+  .rowColor {
+    background-color: aqua;
+  }

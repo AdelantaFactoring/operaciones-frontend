@@ -1,0 +1,69 @@
+
+<div class="content-wrapper">
+    <div class="content-body">
+      <app-content-header [contentHeader]="contentHeader"></app-content-header>
+      <core-card #coreCard [actions]="['collapse', 'reload']">
+        <h4 class="card-title">Buscar por ejecutivo</h4>
+        <div class="card-body">
+          <!-- <form [formGroup]="filtroForm"> -->
+            <div class="row">
+              <div class="col-md-2 col-12" *ngFor="let item of ejecutivoFilter">
+                <div class="form-group">
+                  <button type="button" class="btn btn-outline-info" rippleEffect
+                  (click)="onEjecutivo(item.idEjecutivo)">{{item.usuarioNombreCompleto}}</button>
+                  <!-- <label>Deudor (Pagador)</label>
+                  <ng-select appendTo="body" [clearable]="false" [items]="optUsuario" bindLabel="nombreCompleto"
+                             placeholder="Pagador" bindValue="idUsuario" formControlName="pagador"
+                             >
+                  </ng-select> -->
+
+                </div>
+              </div>
+            </div>
+          <!-- </form> -->
+        </div>
+      </core-card>
+      <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover min-width-table">
+                            <thead class="centerall-header">
+                                <tr>
+                                  <th>YEAR</th>
+                                    <th *ngFor="let item of columnaAnio3" [attr.colspan]="item.cant"
+                                        style="border-right: 1px solid;">{{item.anio}}
+                                      
+                                    </th>
+                                </tr>
+                                <tr>
+                                  <th>Nombre Deudor</th>
+                                  <ng-template let-cab ngFor [ngForOf]="columnaAnio3">
+                                    <!--  <th>{{cab.anio}}</th> -->
+                                    <th *ngFor="let item of cab.det">
+                                       {{idMes(item.mes)}}
+                                    </th>
+                                  </ng-template>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-template let-cab ngFor [ngForOf]="pagadorCab">
+                                    <tr>
+                                        <td>{{cab.razonSocialCliente}}</td>
+                                        <!-- <td>{{cab.monto}}</td>
+                                        <td>{{cab.porcentaje}}</td> -->
+                                    </tr>
+                                </ng-template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+      <block-ui></block-ui>
+    </div>
+  </div>
+  

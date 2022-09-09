@@ -63,4 +63,7 @@ export class LiquidacionDet {
   seleccionado: boolean = true;
 
   flagPagoInteresConfirming: boolean;
+
+  anio: string;
+  mes: number;
 }

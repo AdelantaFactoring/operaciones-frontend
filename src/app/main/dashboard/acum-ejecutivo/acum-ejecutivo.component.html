@@ -1,0 +1,57 @@
+<div class="content-wrapper">
+  <div class="content-body">
+    <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <!-- <core-card #coreCard [actions]="['collapse', 'reload']">
+          <h4 class="card-title">Buscar por</h4>
+          <div class="card-body">
+            <form [formGroup]="filtroForm">
+              <div class="row">
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Deudor (Pagador)</label>
+                    <ng-select appendTo="body" [clearable]="false" [items]="optUsuario" bindLabel="nombreCompleto"
+                               placeholder="Pagador" bindValue="idUsuario" formControlName="pagador"
+                               >
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Usuario (Ejecutivo)</label>
+                    <ng-select appendTo="body" [clearable]="false" [items]="optUsuario" bindLabel="nombreCompleto"
+                               placeholder="Ejecutivo" bindValue="idUsuario" formControlName="usuario"
+                               >
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </core-card> -->
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <div class="echarts__demo" echarts [options]="ejecutivoPie" (chartClick)="onPruebaPie($event, 1)">
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <h1 class="posicion">{{acumulado | number: '1.2-2'}}</h1>
+            <h3 class="posicion2">Acumulado</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12">
+            <div class="echarts__demo" echarts [options]="ejecutivoBar" (chartClick)="onPruebaPie($event, 2)">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <block-ui></block-ui>
+  </div>
+</div>

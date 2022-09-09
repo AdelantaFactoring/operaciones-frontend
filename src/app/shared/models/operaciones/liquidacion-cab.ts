@@ -66,4 +66,9 @@ export class LiquidacionCab {
 
   fechaOperacion_Global_ORG: string;
   fechaOperacion_Global_MOD: any;
+
+  flagSeleccionado: boolean = false;
+
+  idEjecutivo: number;
+  usuarioNombreCompleto: string;
 }
