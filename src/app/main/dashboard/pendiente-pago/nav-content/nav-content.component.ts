@@ -36,7 +36,6 @@ export class NavContentComponent implements OnInit {
   }
 
   async onListarCobranza(): Promise<void> {
-    console.log('mone', this.moneda);
     
     this.utilsService.blockUIStart('Obteniendo información...');
 
@@ -129,8 +128,6 @@ export class NavContentComponent implements OnInit {
         selected: item.flagSeleccionado
       })
     } 
-    
-    console.log('data2', data2);
     
     let formato = '';
     formato = !tool ? '{a} <br/> Ejecutivo: {b} <br/> Monto por Cobrar: {c} ({d}%)' : 
@@ -230,7 +227,6 @@ export class NavContentComponent implements OnInit {
     let data = [];
     tool = item.flagSeleccionado ? false : true;
     item.flagSeleccionado = tool;
-    console.log('flag', item.flagSeleccionado, 'name', item.usuarioCreacion);
     
     for (const it of this.pagadorLista4) {
       if (it.usuarioCreacion === item.usuarioCreacion) {
@@ -249,7 +245,6 @@ export class NavContentComponent implements OnInit {
         });
       }
     }
-    console.log('data', data);
     
     await this.onPie(data, tool, item.netoConfirmadoTotal + ' (' + parseFloat(item.porcentajePagoTotal.toString()).toFixed(2) + '%)', item.idLiquidacionCab);
   }

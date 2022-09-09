@@ -25,12 +25,12 @@
           <span [routerLink]="item.openInNewTab ? [] : [item.url]" [skipLocationChange]="true" class="d-none"></span>
         </li>
         <!-- collapsible -->
-<!--        <li-->
-<!--          core-menu-vertical-collapsible-->
-<!--          *ngIf="item.type == 'collapsible' && onAcceso(currentUser.menu, item.id)"-->
-<!--          [item]="item"-->
-<!--          class="nav-item has-sub"-->
-<!--        ></li>-->
+       <li
+         core-menu-vertical-collapsible
+         *ngIf="item.type == 'collapsible' && onAcceso(currentUser.menu, item.id)"
+         [item]="item"
+         class="nav-item has-sub"
+       ></li>
       </ng-container>
     </ng-container>
 

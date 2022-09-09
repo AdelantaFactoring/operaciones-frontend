@@ -292,8 +292,6 @@ export class AcumEjecutivoComponent implements OnInit {
       }
     }
    } else {
-    console.log('event', event);
-    
    }
 
   }

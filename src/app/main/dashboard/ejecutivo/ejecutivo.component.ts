@@ -138,7 +138,6 @@ export class EjecutivoComponent implements OnInit {
     if (response) {
       this.pagadorCab = response.liquidacionCab;
       this.pagadorDet = response.liquidacionDet;
-      console.log('cab', this.pagadorCab);
       this.onEjecutivoFilter(this.pagadorCab);
       this.onGenerarData();
       // this.pagadorLista3 = response;
@@ -262,7 +261,6 @@ export class EjecutivoComponent implements OnInit {
   }
 
   onEjecutivo(idEjecutivo): void {
-    console.log('IdEje', idEjecutivo);
     
   }
 
@@ -274,7 +272,6 @@ export class EjecutivoComponent implements OnInit {
       }
     });
 
-    console.log('ejecutivo', this.ejecutivoFilter);
     
   }
 }
