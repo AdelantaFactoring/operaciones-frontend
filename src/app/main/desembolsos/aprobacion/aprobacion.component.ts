@@ -706,9 +706,8 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
       if (liquidaciones.length === 0) {
         this.utilsService.showNotification("Seleccione una o varias liquidaciones", "", 2);
         return;
-      } else if (liquidaciones.filter(f => f.idTipoOperacion != 1).length > 0) {
-        this.utilsService.showNotification('Seleccione solo liquidaciones de tipo operación "Factoring"', "", 2);
-        return;
+      } else if (liquidaciones.filter(f => f.idTipoOperacion != 1 || f.alterno).length > 0) {
+        this.utilsService.showNotification('Seleccione solo liquidaciones de tipo operación "Factoring (Regular)"', "", 2);        return;
       }
     }
 
