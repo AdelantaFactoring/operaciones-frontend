@@ -237,7 +237,7 @@
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Enviar Correo" *ngIf="cab.idTipoOperacion === 1"
+                        <a href="javascript:void(0)" title="Enviar Correo" *ngIf="cab.idTipoOperacion === 1 && !cab.alterno"
                            [class.disabled]="cab.idEstado != 5 || cab.idTipoOperacion != 1 ? true: null"
                            (click)="onEnviar(2, cab)"
                            class="btn btn-raised btn-outline-warning btn-sm">
