@@ -79,6 +79,7 @@
                       <label class="custom-control-label" for="customCheck"></label>
                     </div>
                   </th>
+                  <th rowspan="2">Acción</th>
                   <th rowspan="2">N° Solicitud</th>
                   <th rowspan="2">Tipo Operación</th>
                   <th rowspan="2">Cliente</th>
@@ -121,6 +122,15 @@
                         <label class="custom-control-label" for="{{'customCheck' + cab.idSolicitudCab}}"></label>
                       </div>
                     </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a href="javascript:void(0)" title="Ver sustento" (click)="onVer(cab, modalINFO)"
+                           [class.disabled]="!cab.alterno ? true : null"
+                           class="btn btn-raised btn-outline-info btn-sm">
+                          <i class="text-info cursor-pointer" data-feather="eye"></i>
+                        </a>
+                      </div>
+                    </td>
                     <td>{{cab.codigo}}</td>
                     <td>{{cab.tipoOperacion}}</td>
                     <td>{{cab.razonSocialCliente}}</td>
@@ -135,7 +145,7 @@
                     <td>{{cab.fechaModificacion}}</td>
                   </tr>
                   <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse">
-                    <td [colSpan]="14">
+                    <td [colSpan]="15">
                       <div class="row" *ngIf="cab.idEstado === 1">
                         <div class="d-flex flex-wrap mb-0">
                           <div class="pl-1 pt-1 pb-1">
@@ -153,7 +163,9 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="table-responsive" style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden" id="{{ 'detail' + cab.idSolicitudCab }}">
+                        <div class="table-responsive"
+                             style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
+                             id="{{ 'detail' + cab.idSolicitudCab }}">
                           <table class="table table-hover">
                             <thead>
                             <tr>
@@ -177,14 +189,14 @@
                                      class="btn btn-raised btn-outline-danger btn-sm">
                                     <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
                                   </a>
-<!--                                  &nbsp;-->
-<!--                                  <a href="javascript:void(0)" title="Ver Estado Cavali"-->
-<!--                                     popoverTitle="Estado Cavali"-->
-<!--                                     [ngbPopover]="respuestaCavali" [autoClose]="true" triggers="manual"-->
-<!--                                     #manualOpen="ngbPopover" (click)="onVerRespuesta(cab, item, manualOpen)"-->
-<!--                                     class="btn btn-raised btn-outline-info btn-sm">-->
-<!--                                    <i class="text-info cursor-pointer" data-feather="eye"></i>-->
-<!--                                  </a>-->
+                                  <!--                                  &nbsp;-->
+                                  <!--                                  <a href="javascript:void(0)" title="Ver Estado Cavali"-->
+                                  <!--                                     popoverTitle="Estado Cavali"-->
+                                  <!--                                     [ngbPopover]="respuestaCavali" [autoClose]="true" triggers="manual"-->
+                                  <!--                                     #manualOpen="ngbPopover" (click)="onVerRespuesta(cab, item, manualOpen)"-->
+                                  <!--                                     class="btn btn-raised btn-outline-info btn-sm">-->
+                                  <!--                                    <i class="text-info cursor-pointer" data-feather="eye"></i>-->
+                                  <!--                                  </a>-->
                                 </div>
                               </td>
                               <td [ngClass]="{'row-edicion': item.editado }"
@@ -216,12 +228,14 @@
                               </td>
                               <td>
                                 <p *ngIf="cab.idEstado != 1">{{item.netoConfirmado | number: '1.2-2'}}</p>
-                                <input *ngIf="cab.idEstado === 1" class="form-control" type="text" [(ngModel)]="item.netoConfirmado"
+                                <input *ngIf="cab.idEstado === 1" class="form-control" type="text"
+                                       [(ngModel)]="item.netoConfirmado"
                                        placeholder="0.00" (ngModelChange)="onCambiarMontoConfirmado(item, cab)"
                                        [ngClass]="{ 'is-invalid': item.netoConfirmado > item.montoConIGV }"
                                        mask="separator" thousandSeparator=","/>
                                 <div *ngIf="item.netoConfirmado > item.montoConIGV" class="invalid-feedback">
-                                  <div *ngIf="item.netoConfirmado > item.montoConIGV">* El monto no debe ser mayor a {{ item.montoConIGV | number: '1.2-2' }}</div>
+                                  <div *ngIf="item.netoConfirmado > item.montoConIGV">* El monto no debe ser mayor
+                                    a {{ item.montoConIGV | number: '1.2-2' }}</div>
                                 </div>
                               </td>
                               <td [ngClass]="{'row-edicion': item.editado }">
@@ -243,7 +257,8 @@
         <div class="row">
           <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
             <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onRefrescar()"
-                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize" [ellipses]="false">
+                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize"
+                            [ellipses]="false">
               <ng-template ngbPaginationFirst>
                 <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
               </ng-template>
@@ -261,6 +276,109 @@
         </div>
       </div>
     </div>
+
+    <ng-template #modalINFO let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel1">Solicitud - [{{codigo}}]</h4>
+        <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross Click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ngbAutofocus tabindex="0">
+        <form [formGroup]="solicitudForm">
+          <div class="row spaced">
+            <div class="col-12">
+              <div class="divider divider-info">
+                <div class="divider-text">Información General</div>
+              </div>
+            </div>
+            <div class="col-md-12 col-12" hidden>
+              <div class="form-group">
+                <label>Id</label>
+                <input class="form-control" formControlName="idSolicitudCab" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>RUC (Cliente)</label>
+                <input class="form-control" formControlName="rucCliente" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Razón Social (Cliente)</label>
+                <input class="form-control" formControlName="razonSocialCliente" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>RUC (Pagador / Proveedor)</label>
+                <input class="form-control" formControlName="rucPagProv" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Razón Social (Pagador / Proveedor)</label>
+                <input class="form-control" formControlName="razonSocialPagProv" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Moneda</label>
+                <input class="form-control" formControlName="moneda" type="text"/>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Tipo Operación</label>
+                <input class="form-control" formControlName="tipoOperacion" type="text"/>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="divider divider-secondary">
+                <div class="divider-text">Documento(s) de Sustento</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="d-flex justify-content-between mb-1">
+                <h4>Archivo(s) adjuntos</h4>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Nombre</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of sustentos">
+                    <td><p>{{item.tipo}}</p></td>
+                    <td>
+                      <a href="{{item.rutaArchivo}}" target="_blank">
+                        <strong>{{ item.archivo }}</strong></a>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer" style="display: block !important;">
+        <div class="row">
+          <div class="col-md-12 col-12">
+            <div style="float: right">
+              <button class="btn btn-secondary" rippleEffect type="button" (click)="modal.dismiss('Cross Click')">
+                <span [data-feather]="'x-circle'"></span> Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
     <block-ui></block-ui>
   </div>
 </div>

@@ -9,6 +9,11 @@
   }
 }
 
+::ng-deep .my-class .modal-dialog {
+  min-width: 60%;
+  //width: 60%;
+}
+
 //.row-error-cavali {
 //  background-color: red !important;
 //  p {

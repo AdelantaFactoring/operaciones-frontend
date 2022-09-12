@@ -155,6 +155,7 @@ export class CheckListComponent implements OnInit {
       totalFacturarIGV:  [{value: 0, disabled: true}],
       totalDesembolso:  [{value: 0, disabled: true}],
       flagPagoInteresAdelantado: false,
+      observacion: ['']
     });
 
     this.filtroForm = this.formBuilder.group({
@@ -288,6 +289,7 @@ export class CheckListComponent implements OnInit {
     this.solicitudForm.controls.fechaPagoCT.setValue(item.fechaPagoCT);
 
     this.solicitudForm.controls.flagPagoInteresAdelantado.setValue(item.flagPagoInteresAdelantado);
+    this.solicitudForm.controls.observacion.setValue(item.observacion);
 
     this.detalle = item.solicitudDet;
     this.sustentos = item.solicitudCabSustento;
@@ -512,6 +514,7 @@ export class CheckListComponent implements OnInit {
       diasPrestamoCT: 0,
       fechaPagoCT: '',
       flagPagoInteresAdelantado: this.solicitudForm.controls.flagPagoInteresAdelantado.value,
+      observacion: this.solicitudForm.controls.observacion.value,
       idUsuarioAud: this.currentUser.idUsuario,
       solicitudDet: this.detalle.filter(f => f.editado),
       solicitudCabSustento: this.sustentos.filter(f => f.editado)

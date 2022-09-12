@@ -1,12 +1,13 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
 import {NgbCalendar, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
 import {RespuestaPagadorService} from "./respuesta-pagador.service";
 import {SolicitudDet} from "../../../shared/models/comercial/solicitudDet";
 import Swal from "sweetalert2";
 import { User } from 'app/shared/models/auth/user';
+import {SolicitudCabSustento} from "../../../shared/models/comercial/solicitudCab-sustento";
 
 @Component({
   selector: 'app-respuesta-pagador',
@@ -19,6 +20,7 @@ export class RespuestaPagadorComponent implements OnInit {
   public solicitudes: SolicitudCab[] = [];
   public seleccionarTodo: boolean = false;
   public cambiarIcono: boolean = false;
+  public solicitudForm: FormGroup;
 
   public idTipoRegistro: number = 0;
   public idProcesoRespuestaCavali: number = 0;
@@ -35,6 +37,13 @@ export class RespuestaPagadorComponent implements OnInit {
   public page: number = 1;
   public search: string = '';
   @ViewChild('tableRowDetails') tableRowDetails: any;
+
+  public codigo: string = "";
+  public sustentos: SolicitudCabSustento[] = [];
+
+  get ReactiveIUForm(): any {
+    return this.solicitudForm.controls;
+  }
 
   constructor(
     private modalService: NgbModal,
@@ -65,6 +74,18 @@ export class RespuestaPagadorComponent implements OnInit {
         ]
       }
     };
+
+    this.solicitudForm = this.formBuilder.group({
+      idSolicitudCab: [0],
+      idTipoOperacion: [0],
+      codigo: [{value: '', disabled: true}],
+      rucCliente: [{value: '', disabled: true}],
+      razonSocialCliente: [{value: '', disabled: true}],
+      rucPagProv: [{value: '', disabled: true}],
+      razonSocialPagProv: [{value: '', disabled: true}],
+      moneda: [{value: '', disabled: true}],
+      tipoOperacion: [{value: '', disabled: true}]
+    });
   }
 
   ngOnInit(): void {
@@ -330,5 +351,34 @@ export class RespuestaPagadorComponent implements OnInit {
         });
       }
     });
+  }
+
+  onVer(item: SolicitudCab, modal: any) {
+    this.solicitudForm.controls.idSolicitudCab.setValue(item.idSolicitudCab);
+    this.solicitudForm.controls.idTipoOperacion.setValue(item.idTipoOperacion);
+    this.solicitudForm.controls.codigo.setValue(item.codigo);
+    this.codigo = item.codigo;
+    this.solicitudForm.controls.rucCliente.setValue(item.rucCliente);
+    this.solicitudForm.controls.razonSocialCliente.setValue(item.razonSocialCliente);
+    this.solicitudForm.controls.rucPagProv.setValue(item.rucPagProv);
+    this.solicitudForm.controls.razonSocialPagProv.setValue(item.razonSocialPagProv);
+    this.solicitudForm.controls.moneda.setValue(item.moneda);
+    this.solicitudForm.controls.tipoOperacion.setValue(item.tipoOperacion);
+
+    this.sustentos = item.solicitudCabSustento;
+
+    setTimeout(() => {
+      this.modalService.open(modal, {
+        scrollable: true,
+        //size: 'lg',
+        windowClass: 'my-class',
+        animation: true,
+        centered: false,
+        backdrop: "static",
+        beforeDismiss: () => {
+          return true;
+        }
+      });
+    }, 0);
   }
 }

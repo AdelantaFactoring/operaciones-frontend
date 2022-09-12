@@ -129,7 +129,8 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
       //deudaAnterior: [0],
       nuevoMontoTotal: [{value: 0, disabled: true}],
       //observacion: [''],
-      flagPagoInteresAdelantado: false
+      flagPagoInteresAdelantado: false,
+      observacionSolicitud: [{value: '', disabled: true}],
     });
     this.oldLiquidacionForm = this.liquidacionForm.value;
     this.filtroForm = this.formBuilder.group({
@@ -489,6 +490,7 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     this.liquidacionForm.controls.nuevoMontoTotal.setValue(cab.nuevoMontoTotal);
     //this.liquidacionForm.controls.observacion.setValue(cab.observacion);
     this.observacion = cab.observacion ?? '';
+    this.liquidacionForm.controls.observacionSolicitud.setValue(cab.observacionSolicitud);
     this.sustentos = cab.liquidacionCabSustento.filter(x => x.idTipoSustento === 1);
 
     this.liquidacionForm.controls.flagPagoInteresAdelantado.setValue(cab.flagPagoInteresAdelantado);

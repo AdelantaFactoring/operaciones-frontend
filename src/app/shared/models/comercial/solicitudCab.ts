@@ -47,6 +47,7 @@ export class SolicitudCab {
   estado: string;
   alterno: boolean;
   observacionRechazo: string;
+  observacion: string;
   flagPagoInteresAdelantado: boolean;
 
   usuarioCreacion: string;

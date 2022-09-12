@@ -90,12 +90,13 @@ export class SolicitudesGrillaComponent implements OnInit {
       gastosConIGVCT: [{value: 0, disabled: true}],
       totFacurarConIGVCT: [{value: 0, disabled: true}],
       totDesembolsarConIGVCT: [{value: 0, disabled: true}],
-      fondoResguardo:  [{value: 0, disabled: true}],
-      netoSolicitado:  [{value: 0, disabled: true}],
-      interesIncluidoIGV:  [{value: 0, disabled: true}],
-      gastosIncluidoIGV:  [{value: 0, disabled: true}],
-      totalFacturarIGV:  [{value: 0, disabled: true}],
-      totalDesembolso:  [{value: 0, disabled: true}]
+      fondoResguardo: [{value: 0, disabled: true}],
+      netoSolicitado: [{value: 0, disabled: true}],
+      interesIncluidoIGV: [{value: 0, disabled: true}],
+      gastosIncluidoIGV: [{value: 0, disabled: true}],
+      totalFacturarIGV: [{value: 0, disabled: true}],
+      totalDesembolso: [{value: 0, disabled: true}],
+      observacion: [{value: '', disabled: true}],
     });
   }
 
@@ -272,7 +273,7 @@ export class SolicitudesGrillaComponent implements OnInit {
     this.solicitudForm.controls.montoSolicitudCT.setValue(item.montoSolicitudCT);
     this.solicitudForm.controls.diasPrestamoCT.setValue(item.diasPrestamoCT);
     this.solicitudForm.controls.fechaPagoCT.setValue(item.fechaPagoCT);
-
+    this.solicitudForm.controls.observacion.setValue(item.observacion);
     this.detalleSolicitud = item.solicitudDet;
     this.sustentosSolicitud = item.solicitudCabSustento;
     this.onCalcularCT(item);

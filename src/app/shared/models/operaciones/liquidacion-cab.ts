@@ -68,6 +68,7 @@ export class LiquidacionCab {
   fechaOperacion_Global_MOD: any;
 
   idUsuarioCreacionSolicitud: number;
+  observacionSolicitud: string;
 
   flagSeleccionado: boolean = false;
 
