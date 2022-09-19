@@ -119,7 +119,7 @@ export class DocumentosComponent implements OnInit {
       prefijo: [''],
       serie: [0],
       serieFormat: [{value: '', disabled: true}],
-      correlativo: [0, [Validators.required, Validators.min(1), Validators.max(99999999)]],
+      correlativo: [0],
       nroDocumento: [''],
       // tipoOperacion: [null],
       // tipoNota: [null],
@@ -222,7 +222,7 @@ export class DocumentosComponent implements OnInit {
     this.ReactiveIUForm.idCliente.setValue(item.idCliente);
     this.ReactiveIUForm.rucCliente.setValue(item.ruc);
     this.ReactiveIUForm.razonSocialCliente.setValue(item.razonSocial);
-    this.ReactiveIUForm.direccionCliente.setValue(item.direccionPrincipal);
+    this.ReactiveIUForm.direccionCliente.setValue(item.direccionFacturacion);
     modal.dismiss();
   }
 
@@ -285,20 +285,20 @@ export class DocumentosComponent implements OnInit {
 
   async onRefrescarCorrelativo(idTipoDocumento: number): Promise<void> {
     this.utilsService.blockUIStart('Obteniendo último correlativo...');
-    this.nroComprobante = await this.onListarMaestros((idTipoDocumento === 1) ? 14 : ((idTipoDocumento === 3) ? 24 : 23), 0);
+    //this.nroComprobante = await this.onListarMaestros((idTipoDocumento === 1) ? 14 : ((idTipoDocumento === 3) ? 24 : 23), 0);
 
-    let prefijo = this.nroComprobante.find(f => f.idColumna === 1).valor;
-    let nroDigitosSerie = Number(this.nroComprobante.find(f => f.idColumna === 2).valor);
-    let serie = Number(this.nroComprobante.find(f => f.idColumna === 3).valor);
-    let correlativo = Number(this.nroComprobante.find(f => f.idColumna === 4).valor);
+    // let prefijo = this.nroComprobante.find(f => f.idColumna === 1).valor;
+    // let nroDigitosSerie = Number(this.nroComprobante.find(f => f.idColumna === 2).valor);
+    // let serie = Number(this.nroComprobante.find(f => f.idColumna === 3).valor);
+    // let correlativo = Number(this.nroComprobante.find(f => f.idColumna === 4).valor);
 
-    serie = correlativo === 99999999 ? serie + 1 : serie;
+    // serie = correlativo === 99999999 ? serie + 1 : serie;
 
-    this.ReactiveIUForm.prefijo.setValue(prefijo);
-    this.ReactiveIUForm.serie.setValue(serie);
-    this.ReactiveIUForm.correlativo.setValue(String(correlativo === 99999999 ? 1 : correlativo + 1).padStart(8, '0'));
-    this.ReactiveIUForm.serieFormat.setValue(prefijo + String(serie).padStart(nroDigitosSerie, '0'));
-    this.ReactiveIUForm.nroDocumento.setValue(this.ReactiveIUForm.serieFormat.value + '-' + String(Number(this.ReactiveIUForm.correlativo.value)).padStart(8, '0'));
+    // this.ReactiveIUForm.prefijo.setValue(prefijo);
+    // this.ReactiveIUForm.serie.setValue(serie);
+    // this.ReactiveIUForm.correlativo.setValue(String(correlativo === 99999999 ? 1 : correlativo + 1).padStart(8, '0'));
+    // this.ReactiveIUForm.serieFormat.setValue(prefijo + String(serie).padStart(nroDigitosSerie, '0'));
+    // this.ReactiveIUForm.nroDocumento.setValue(this.ReactiveIUForm.serieFormat.value + '-' + String(Number(this.ReactiveIUForm.correlativo.value)).padStart(8, '0'));
     this.utilsService.blockUIStop();
   }
 
@@ -612,6 +612,7 @@ export class DocumentosComponent implements OnInit {
   onFirmarPublicarDeclarar(cab: LiquidacionDocumentoCab): void {
     this.utilsService.blockUIStart("Enviando información...");
     cab.idEmpresa = this.currentUser.idEmpresa;
+    cab.idUsuarioAud = this.currentUser.idUsuario;
     this.documentosService.firmaPublicacionDeclaracion(cab).subscribe((response: any) => {
       switch (response.tipo) {
         case 1:
@@ -741,8 +742,8 @@ export class DocumentosComponent implements OnInit {
     this.utilsService.blockUIStart('Obteniendo información de maestros...');
     this.idTipoDocumento = $event;
     if ($event === 1) {
-      if (!this.edicion)
-        await this.onRefrescarCorrelativo($event);
+      // if (!this.edicion)
+      //   await this.onRefrescarCorrelativo($event);
 
       this.tipoOperacion = await this.onListarMaestros(17, 0);
       this.tipoNota = [];
@@ -755,8 +756,8 @@ export class DocumentosComponent implements OnInit {
       this.idTipoDocumentoReferencia = 0;
       this.nroDocumentoReferencia = '';
     } else if ($event === 3) {
-      if (!this.edicion)
-        await this.onRefrescarCorrelativo($event);
+      // if (!this.edicion)
+      //   await this.onRefrescarCorrelativo($event);
       this.tipoNota = await this.onListarMaestros(18, 0);
       this.tipoOperacion = [];
 
@@ -766,8 +767,8 @@ export class DocumentosComponent implements OnInit {
       this.ReactiveIUForm.fechaVencimiento.setValue(null);
       this.ReactiveIUForm.medioPago.setValue(0);
     } else if ($event === 4) {
-      if (!this.edicion)
-        await this.onRefrescarCorrelativo($event);
+      // if (!this.edicion)
+      //   await this.onRefrescarCorrelativo($event);
       this.tipoNota = await this.onListarMaestros(19, 0);
       this.tipoOperacion = [];
 

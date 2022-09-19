@@ -341,14 +341,14 @@
                     <div class="input-group">
                       <input class="form-control" formControlName="correlativo" type="number"
                              (ngModelChange)="onCambioCorrelativo($event)"
-                             [readOnly]="ReactiveIUForm.idLiquidacionDocumentoCab.value > 0 ? true : null"
+                             [readOnly]="true"
                              [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.correlativo.errors }"/>
-                      <div *ngIf="ver" class="input-group-append">
-                        <button class="btn btn-outline-secondary feather icon-refresh-cw" *ngIf="idTipoDocumento != 0"
-                                [disabled]="ReactiveIUForm.idLiquidacionDocumentoCab.value > 0 ? true : null"
-                                type="button" rippleEffect (click)="onRefrescarCorrelativo(idTipoDocumento)">
-                        </button>
-                      </div>
+<!--                      <div *ngIf="ver" class="input-group-append">-->
+<!--                        <button class="btn btn-outline-secondary feather icon-refresh-cw" *ngIf="idTipoDocumento != 0"-->
+<!--                                [disabled]="ReactiveIUForm.idLiquidacionDocumentoCab.value > 0 ? true : null"-->
+<!--                                type="button" rippleEffect (click)="onRefrescarCorrelativo(idTipoDocumento)">-->
+<!--                        </button>-->
+<!--                      </div>-->
                       <div *ngIf="ReactiveIUForm.correlativo.errors" class="invalid-feedback">
                         <div *ngIf="ReactiveIUForm.correlativo.errors?.required">* Campo obligatorio</div>
                         <div *ngIf="ReactiveIUForm.correlativo.errors?.min">* Valor mínimo requerido es 1</div>
@@ -392,7 +392,6 @@
                   <div class="form-group">
                     <label>Dirección (Cliente)</label>
                     <input class="form-control" formControlName="direccionCliente" type="text"
-                           [readonly]="this.ReactiveIUForm.idCliente.value != 0 ? true: null"
                            [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.direccionCliente.errors }"/>
                     <div *ngIf="ReactiveIUForm.direccionCliente.errors" class="invalid-feedback">
                       <div *ngIf="ReactiveIUForm.direccionCliente.errors?.required">* Campo obligatorio</div>
