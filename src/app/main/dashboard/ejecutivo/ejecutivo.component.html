@@ -1,23 +1,27 @@
-
 <div class="content-wrapper">
-    <div class="content-body">
-      <app-content-header [contentHeader]="contentHeader"></app-content-header>
-      <core-card #coreCard [actions]="['collapse', 'reload']">
-        <h4 class="card-title">Buscar por ejecutivo</h4>
-        <div class="card-body">
-          <!-- <form [formGroup]="filtroForm"> -->
-            <div class="d-flex flex-wrap mb-0">
-              <div class="pt-1 pb-1 pr-1" *ngFor="let item of ejecutivoFilter">
-                <button type="submit" rippleEffect class="btn btn-outline-info"
-                (click)="onEjecutivo(item.idEjecutivo)">{{item.usuarioNombreCompleto}}
-                  <!-- <i class="mr-0 mr-sm-1" data-feather="refresh-cw"
+  <div class="content-body">
+    <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <core-card #coreCard [actions]="['collapse', 'reload']">
+      <h4 class="card-title">Buscar por ejecutivo ({{ejectutivo}})</h4>
+      <div class="card-body">
+        <!-- <form [formGroup]="filtroForm"> -->
+        <div class="d-flex flex-wrap mb-0">
+          <div class="pt-1 pb-1 pr-1">
+            <button type="submit" rippleEffect class="btn btn-outline-success"
+            (click)="onListarSaldo(0)">Todos
+            </button>
+          </div>
+          <div class="pt-1 pb-1 pr-1" *ngFor="let item of ejecutivoFilter">
+            <button type="submit" rippleEffect class="btn btn-outline-info"
+              (click)="onListarSaldo(item.value, item.name)">{{item.name}}
+              <!-- <i class="mr-0 mr-sm-1" data-feather="refresh-cw"
                   (click)="onEjecutivo(item.idEjecutivo)"></i>
                   <span class="d-none d-sm-inline-block">{{item.usuarioNombreCompleto}}</span> -->
-                </button>
-              </div>
-             
-            </div>
-            <!-- <div class="row">
+            </button>
+          </div>
+
+        </div>
+        <!-- <div class="row">
               <div class="col-md-2 col-12" *ngFor="let item of ejecutivoFilter">
                 <div class="form-group">
                   <button type="button" class="btn btn-outline-info" rippleEffect
@@ -26,50 +30,39 @@
                 </div>
               </div>
             </div> -->
-          <!-- </form> -->
-        </div>
-      </core-card>
-      <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-12">
-                    <div class="table-responsive">
-                        <table class="table table-hover min-width-table">
-                            <thead class="centerall-header">
-                                <tr>
-                                  <th>YEAR</th>
-                                    <th *ngFor="let item of columnaAnio3" [attr.colspan]="item.cant"
-                                        style="border-right: 1px solid;">{{item.anio}}
-                                      
-                                    </th>
-                                </tr>
-                                <tr>
-                                  <th>Nombre Deudor</th>
-                                  <ng-template let-cab ngFor [ngForOf]="columnaAnio3">
-                                    <!--  <th>{{cab.anio}}</th> -->
-                                    <th *ngFor="let item of cab.det">
-                                       {{idMes(item.mes)}}
-                                    </th>
-                                  </ng-template>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <ng-template let-cab ngFor [ngForOf]="pagadorCab">
-                                    <tr>
-                                        <td>{{cab.razonSocialCliente}}</td>
-                                        <!-- <td>{{cab.monto}}</td>
-                                        <td>{{cab.porcentaje}}</td> -->
-                                    </tr>
-                                </ng-template>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <!-- </form> -->
+      </div>
+    </core-card>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table table-hover min-width-table">
+                <thead class="centerall-header">
+                  <tr>
+                    <th *ngFor="let item of columnaAnio" [attr.colspan]="1" style="border-right: 1px solid;">
+                      {{item.anio}}
+
+                    </th>
+                  </tr>
+                  <tr>
+                    <th *ngFor="let item of columnaAnio" [attr.colspan]="1" style="border-right: 1px solid;">
+                      {{item.descripcion}}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let cab of data">
+                    <td *ngFor="let row of cab | ObjToArray">{{row}}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+          </div>
         </div>
       </div>
-      <block-ui></block-ui>
     </div>
+    <block-ui></block-ui>
   </div>
-  
+</div>

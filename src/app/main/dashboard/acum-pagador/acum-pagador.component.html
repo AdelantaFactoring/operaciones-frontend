@@ -1,0 +1,82 @@
+<div class="content-wrapper">
+    <div class="content-body">
+        <app-content-header [contentHeader]="contentHeader"></app-content-header>
+        <core-card #coreCard [actions]="['collapse', 'reload']">
+            <h4 class="card-title">Buscar por</h4>
+            <div class="card-body">
+                <form [formGroup]="filtroForm">
+                    <div class="row">
+                        <div class="col-md-4 col-12">
+                            <div class="form-group">
+                                <label>Fecha Hasta</label>
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaHasta"
+                                        container="body" [(ngModel)]="filterFecha.hasta" ngbDatepicker
+                                        #basicDPHas="ngbDatepicker" (ngModelChange)="onListar()">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary feather icon-calendar"
+                                            (click)="basicDPHas.toggle()" type="button" rippleEffect></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </core-card>
+        <div class="row">
+            <div class="col-sm-6 col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div echarts [options]="pagadorBar" (chartClick)="onClickDash($event, 2)" class="barra_P"
+                        [ngClass]="{
+                            'barra_P': cantOperador <= 10,
+                            'barra_M': cantOperador > 10 && cantOperador < 30,
+                            'barra_L': cantOperador >= 30 && cantOperador <= 50
+                            
+                        }" ></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-6 col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="echarts__demo" echarts [options]="ejecutivoPie"
+                            (chartClick)="onClickDash($event, 1)">
+                        </div><br>
+                        <h1 class="posicion">{{acumulado | number: '1.2-2'}}</h1>
+                        <h3 class="posicion2">Acumulado</h3>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <div class="echarts__demo" echarts [options]="ejecutivoPie" (chartClick)="onPruebaPie($event, 1)">
+                    </div>
+                </div>
+                <div class="col-md-6 col-12">
+                    <h1 class="posicion">{{acumulado | number: '1.2-2'}}</h1>
+                    <h3 class="posicion2">Acumulado</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="echarts__demo" echarts [options]="ejecutivoBar" (chartClick)="onPruebaPie($event, 2)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <block-ui></block-ui>
+</div>
+<!-- </div> -->

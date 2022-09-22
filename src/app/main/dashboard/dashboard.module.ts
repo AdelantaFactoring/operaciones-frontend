@@ -13,6 +13,13 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { EjecutivoComponent } from './ejecutivo/ejecutivo.component';
 import { ProyectadoComponent } from './proyectado/proyectado.component';
 import { AcumEjecutivoComponent } from './acum-ejecutivo/acum-ejecutivo.component';
+import { AcumPagadorComponent } from './acum-pagador/acum-pagador.component';
+import { SectorComponent } from './sector/sector.component';
+import { VigenteComponent } from './vigente/vigente.component';
+import { VencidoComponent } from './vencido/vencido.component';
+import { CoreCommonModule } from '@core/common.module';
+import { ConfirmingComponent } from './confirming/confirming.component';
+import { ObjToArrayPipe } from './prueba.pipe';
 
 const routes: Routes = [
   {
@@ -33,6 +40,26 @@ const routes: Routes = [
       {
         path: 'acumEjecutivo',
         component: AcumEjecutivoComponent
+      },
+      {
+        path: 'acumPagador',
+        component: AcumPagadorComponent
+      },
+      {
+        path: 'sector',
+        component: SectorComponent
+      },
+      {
+        path: 'vigente',
+        component: VigenteComponent
+      },
+      {
+        path: 'vencido',
+        component: VencidoComponent
+      },
+      {
+        path: 'confirming',
+        component: ConfirmingComponent
       }
     ]
   },
@@ -44,7 +71,13 @@ const routes: Routes = [
     NavContentComponent,
     EjecutivoComponent,
     ProyectadoComponent,
-    AcumEjecutivoComponent
+    AcumEjecutivoComponent,
+    AcumPagadorComponent,
+    SectorComponent,
+    VigenteComponent,
+    VencidoComponent,
+    ConfirmingComponent,
+    ObjToArrayPipe
   ],
   imports: [
     CommonModule,
@@ -59,7 +92,13 @@ const routes: Routes = [
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts')
     }),
-    
+    CoreCommonModule,
+    // CoreTouchspinModule,
+    // NgxMaskModule.forRoot(),
+    // FileUploadModule,
+    // CardSnippetModule,
+    // CoreDirectivesModule,
+    // PerfectScrollbarModule,
   ]
 })
 export class DashboardModule { }

@@ -14,11 +14,21 @@ export class AcumEjecutivoService {
   constructor() { }
 
   
-  listar2(payload): Observable<any> {
+  // listar2(payload): Observable<any> {
+  //   return this.requestMethod.get(
+  //     `${environment.apiUrl}${DASHBOARD.listar2}`,
+  //     `?idConsulta=${payload.idConsulta}&cliente=${payload.cliente}&pagProv=${payload.pagProv}&moneda=${payload.moneda}` +
+  //     `&pagProvDet=${payload.pagProvDet}&fechaDesde=${payload.fechaDesde}&fechaHasta=${payload.fechaHasta}`,
+  //     {
+  //       'Content-Type': CONTENT_TYPE.json
+  //     }
+  //   );
+  // }
+
+  listarDash(payload): Observable<any> {
     return this.requestMethod.get(
-      `${environment.apiUrl}${DASHBOARD.listar2}`,
-      `?idConsulta=${payload.idConsulta}&cliente=${payload.cliente}&pagProv=${payload.pagProv}&moneda=${payload.moneda}` +
-      `&pagProvDet=${payload.pagProvDet}&fechaDesde=${payload.fechaDesde}&fechaHasta=${payload.fechaHasta}`,
+      `${environment.apiUrl}${DASHBOARD.listarDash}`,
+      `?idMoneda=${payload.idMoneda}&idEjecutivo=${payload.idEjecutivo}&fechaHasta=${payload.fechaHasta}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

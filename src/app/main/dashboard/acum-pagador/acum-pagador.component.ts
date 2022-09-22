@@ -5,40 +5,39 @@ import { DataBarra } from 'app/shared/models/dashboard/DashBarra';
 import { Dashboard } from 'app/shared/models/dashboard/dashboard';
 import { UtilsService } from 'app/shared/services/utils.service';
 import { EChartsOption } from 'echarts';
-import { AcumEjecutivoService } from './acum-ejecutivo.service';
-
-// class dataBar {
-//   ejecutivo: string;
-//   dataPen: any;
-//   dataUsd: any;
-// }
+import { AcumPagadorService } from './acum-pagador.service';
 
 @Component({
-  selector: 'app-acum-ejecutivo',
-  templateUrl: './acum-ejecutivo.component.html',
-  styleUrls: ['./acum-ejecutivo.component.scss']
+  selector: 'app-acum-pagador',
+  templateUrl: './acum-pagador.component.html',
+  styleUrls: ['./acum-pagador.component.scss']
 })
-export class AcumEjecutivoComponent implements OnInit {
+export class AcumPagadorComponent implements OnInit {
 
   public contentHeader: object;
   public filtroForm: FormGroup;
-  ejecutivoPie: EChartsOption;
-  ejecutivoBar: EChartsOption;
-  seleccionado: boolean = false;
+  public ejecutivoPie: EChartsOption;
+  public pagadorBar: EChartsOption;
+  public dataB: DataBarra[] = [];
+
   public acumulado: number;
   public oldAcumulado: number;
-  public lista: Dashboard[] = [];
-
-  public moneda = [];
-  public dataB: DataBarra[] = [];
-  public dataUsd = [];
+  
   public filterFecha: any;
-  constructor(private utilsService: UtilsService,
-    private acumEjecutivo: AcumEjecutivoService,
+  public moneda = [];
+  public lista: Dashboard[] = [];
+  seleccionado: boolean = false;
+
+  public cantOperador: number = 11;
+  constructor(
+    private formBuilder: FormBuilder,
     private calendar: NgbCalendar,
-    private formBuilder: FormBuilder) {
+    private utilsService: UtilsService,
+    private acumPagadorService: AcumPagadorService
+  ) 
+  { 
     this.contentHeader = {
-      headerTitle: 'Acumulado por ejecutivo',
+      headerTitle: 'Acumulado por pagador',
       actionButton: true,
       breadcrumb: {
         type: '',
@@ -53,13 +52,12 @@ export class AcumEjecutivoComponent implements OnInit {
             isLink: false
           },
           {
-            name: 'Acum. Ejecutivo',
+            name: 'Acum. pagador',
             isLink: false
           }
         ]
       }
     };
-
     let fecha = new Date();
     fecha.setDate(fecha.getDate() - Number(5));
     this.filterFecha = {
@@ -85,7 +83,7 @@ export class AcumEjecutivoComponent implements OnInit {
 
     this.utilsService.blockUIStart('Obteniendo información...');
 
-    const response = await this.acumEjecutivo.listarDash({
+    const response = await this.acumPagadorService.listarDash({
       idMoneda: 0,
       idEjecutivo: 0,
       fechaHasta: this.utilsService.formatoFecha_YYYYMM(this.filterFecha.hasta),
@@ -114,6 +112,10 @@ export class AcumEjecutivoComponent implements OnInit {
     }
 
     this.utilsService.blockUIStop();
+  }
+
+  onClickDash(event, tipo: number): void {
+
   }
 
   async onPie(moneda, velor = 0): Promise<void> {
@@ -194,18 +196,21 @@ export class AcumEjecutivoComponent implements OnInit {
     // this.dataPen = [];
     // this.dataUsd = [];
     this.dataB = [];
+    this.cantOperador = 0;
 
     for (const item of data) {
-      if (this.dataB.find(x => x.ejecutivo.toLowerCase() === item.usuario.toLowerCase()) === undefined) {
+      if (this.dataB.find(x => x.pagador.toLowerCase() === item.pagador.toLowerCase()) === undefined) {
         this.dataB.push({
-          ejecutivo: item.usuario,
+          ejecutivo: '',
           dataPen: [],
           dataUsd: [],
-          pagador: '',
-          rucPagador : ''
+          pagador: item.pagador,
+          rucPagador: item.rucPagador
         });
       }
     }
+
+    this.cantOperador = this.dataB.length;
 
     let valorPen: number = 0;
     let valorUsd: number = 0;
@@ -214,7 +219,7 @@ export class AcumEjecutivoComponent implements OnInit {
       valorPen = 0;
       valorUsd = 0;
       for (const item of data) {
-        if (item.usuario == el.ejecutivo) {
+        if (item.pagador == el.pagador) {
           valorPen = item.codMoneda == 'PEN' ? valorPen + item.saldoTotal : valorPen + 0;
           valorUsd = item.codMoneda == 'USD' ? valorUsd + item.saldoTotal : valorUsd + 0;
         }
@@ -225,15 +230,15 @@ export class AcumEjecutivoComponent implements OnInit {
 
     let pen = [];
     let usd = [];
-    let ejecutivo = [];
+    let pagador = [];
 
     for (const item of this.dataB) {
-      ejecutivo.push(item.ejecutivo);
+      pagador.push(item.rucPagador);
       pen.push(item.dataPen[0]);
       usd.push(item.dataUsd[0])
     }
     
-    this.ejecutivoBar = {
+    this.pagadorBar = {
       toolbox: {
         feature: {
           dataView: { show: true, readOnly: false },
@@ -243,7 +248,7 @@ export class AcumEjecutivoComponent implements OnInit {
         }
       },
       title: {
-        text: '%TG Acumulado por Ejecutivo'
+        text: '%TG Acumulado por Pagador'
       },
       tooltip: {
         trigger: 'axis',
@@ -274,7 +279,7 @@ export class AcumEjecutivoComponent implements OnInit {
       },
       yAxis: {
         type: 'category',
-        data: ejecutivo
+        data: pagador
       },
       series: [
         {
@@ -292,18 +297,6 @@ export class AcumEjecutivoComponent implements OnInit {
 
       ],
     };
-  }
-
-  onPruebaPie(event, tipo): void {
-   if (tipo == 1) {
-    event.data.selected = event.data.selected ? false : true;
-    this.acumulado = event.data.selected ? event.value : this.oldAcumulado;
-    for (const item of this.ejecutivoPie.series[0].data) {
-      if (item.name !== event.data.name) {
-        item.selected = false;
-      }
-    }
-   } 
   }
 
   onSuma(moneda: string): Number {

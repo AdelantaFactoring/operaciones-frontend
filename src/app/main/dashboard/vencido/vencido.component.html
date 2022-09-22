@@ -1,0 +1,213 @@
+<div class="content-wrapper">
+    <div class="content-body">
+        <app-content-header [contentHeader]="contentHeader"></app-content-header>
+        <core-card #coreCard [actions]="['collapse', 'reload']">
+            <h4 class="card-title">Buscar por</h4>
+            <div class="card-body">
+                <form [formGroup]="filtroForm">
+                    <div class="row">
+                        <div class="col-md-4 col-12">
+                            <div class="form-group">
+                                <label>Fecha Hasta</label>
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaHasta"
+                                        container="body" [(ngModel)]="filterFecha.hasta" ngbDatepicker
+                                        #basicDPHas="ngbDatepicker" (ngModelChange)="onListar()">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary feather icon-calendar"
+                                            (click)="basicDPHas.toggle()" type="button" rippleEffect></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </core-card>
+        <div class="row">
+            <div class="col-sm-6 col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>PEN</h1>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive table-wrapper">
+                            <table class="table table-hover min-width-table">
+                                <thead class="centerall-header">
+                                    <tr>
+                                        <th>
+                                            <div class="d-flex align-items-center">
+                                                <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                                                    (click)="onCambiarVisibilidadDetalleTodo(1)">
+                                                    <div *ngIf="!cambiarIconoPen">
+                                                        <i class="text-primary cursor-pointer"
+                                                            data-feather="chevron-right"></i>
+                                                    </div>
+                                                    <div *ngIf="cambiarIconoPen"><i class="text-primary cursor-pointer"
+                                                            data-feather="chevron-down"></i>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </th>
+                                        <th>Ejecutivo</th>
+                                        <th>Monto por Cobrar</th>
+                                        <th>Importe Recaudado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ng-template let-cab ngFor [ngForOf]="ejecutivoPen">
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                                                        (click)="onCambiarVisibilidadDetalle(cab)">
+                                                        <div *ngIf="!cab.cambiarIcono">
+                                                            <i class="text-primary cursor-pointer"
+                                                                data-feather="chevron-right"></i>
+                                                        </div>
+                                                        <div *ngIf="cab.cambiarIcono"><i
+                                                                class="text-primary cursor-pointer"
+                                                                data-feather="chevron-down"></i>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td>{{cab.ejecutivo}}</td>
+                                            <td>{{cab.confirmadoTot | number: '1.2-2'}}</td>
+                                            <td>{{cab.pagoTot | number: '1.2-2'}}</td>
+                                        </tr>
+                                        <tr id="{{ 'trPEN' + cab.idEjecutivo}}" style="visibility: collapse">
+                                            <td [colSpan]="4">
+                                                <div class="table-responsive"
+                                                    style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
+                                                    id="{{ 'detailPEN' + cab.idEjecutivo}}">
+                                                    <table class="table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="detail-th-color">Pagador</th>
+                                                                <th>Monto por Cobrar</th>
+                                                                <th>Importe Recaudado</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr *ngFor="let item of cab.detalle">
+                                                                <td>{{item.pagador}}</td>
+                                                                <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                                                                <td>{{item.pagoTotal | number: '1.2-2'}}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2">Total</td>
+                                        <td>{{onSuma('PEN', 1) | number: '1.2-2'}}</td>
+                                        <td>{{onSuma('PEN', 2) | number: '1.2-2'}}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-6 col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>USD</h1>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive table-wrapper">
+                            <table class="table table-striped">
+                                <thead class="centerall-header">
+                                    <tr>
+                                        <th>
+                                            <div class="d-flex align-items-center">
+                                                <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                                                    (click)="onCambiarVisibilidadDetalleTodo(2)">
+                                                    <div *ngIf="!cambiarIconoUsd">
+                                                        <i class="text-primary cursor-pointer"
+                                                            data-feather="chevron-right"></i>
+                                                    </div>
+                                                    <div *ngIf="cambiarIconoUsd"><i class="text-primary cursor-pointer"
+                                                            data-feather="chevron-down"></i>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </th>
+                                        <th>Ejecutivo</th>
+                                        <th>Monto por Cobrar</th>
+                                        <th>Importe Recaudado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ng-template let-cab ngFor [ngForOf]="ejecutivoUsd">
+                                        <!-- <tr *ngIf="cab.codMoneda == 'USD'"> -->
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <a href="javascript:void(0)" title="Ocultar / Mostrar"
+                                                        (click)="onCambiarVisibilidadDetalle(cab)">
+                                                        <div *ngIf="!cab.cambiarIcono">
+                                                            <i class="text-primary cursor-pointer"
+                                                                data-feather="chevron-right"></i>
+                                                        </div>
+                                                        <div *ngIf="cab.cambiarIcono"><i
+                                                                class="text-primary cursor-pointer"
+                                                                data-feather="chevron-down"></i>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td>{{cab.ejecutivo}}</td>
+                                            <td>{{cab.confirmadoTot | number: '1.2-2'}}</td>
+                                            <td>{{cab.pagoTot | number: '1.2-2'}}</td>
+                                            <!-- <td>{{cab.importeRecaudado | number: '1.2-2'}}</td> -->
+                                        </tr>
+                                        <tr id="{{ 'trUSD' + cab.idEjecutivo}}" style="visibility: collapse">
+                                            <td [colSpan]="4">
+                                                <div class="table-responsive"
+                                                    style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
+                                                    id="{{ 'detailUSD' + cab.idEjecutivo}}">
+                                                    <table class="table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="detail-th-color">Pagadora</th>
+                                                                <th class="detail-th-color">Monto</th>
+                                                                <th class="detail-th-color">Importe</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr *ngFor="let item of cab.detalle">
+                                                                <td>{{item.pagador}}</td>
+                                                                <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                                                                <td>{{item.pagoTotal | number: '1.2-2'}}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2">Total</td>
+                                        <td>{{onSuma('USD', 1) | number: '1.2-2'}}</td>
+                                        <td>{{onSuma('USD', 2) | number: '1.2-2'}}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <block-ui></block-ui>
+</div>

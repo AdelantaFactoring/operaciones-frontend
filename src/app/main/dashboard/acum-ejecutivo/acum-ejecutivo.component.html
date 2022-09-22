@@ -1,33 +1,28 @@
 <div class="content-wrapper">
   <div class="content-body">
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
-    <!-- <core-card #coreCard [actions]="['collapse', 'reload']">
-          <h4 class="card-title">Buscar por</h4>
-          <div class="card-body">
-            <form [formGroup]="filtroForm">
-              <div class="row">
-                <div class="col-md-4 col-12">
-                  <div class="form-group">
-                    <label>Deudor (Pagador)</label>
-                    <ng-select appendTo="body" [clearable]="false" [items]="optUsuario" bindLabel="nombreCompleto"
-                               placeholder="Pagador" bindValue="idUsuario" formControlName="pagador"
-                               >
-                    </ng-select>
-                  </div>
-                </div>
-                <div class="col-md-4 col-12">
-                  <div class="form-group">
-                    <label>Usuario (Ejecutivo)</label>
-                    <ng-select appendTo="body" [clearable]="false" [items]="optUsuario" bindLabel="nombreCompleto"
-                               placeholder="Ejecutivo" bindValue="idUsuario" formControlName="usuario"
-                               >
-                    </ng-select>
+    <core-card #coreCard [actions]="['collapse', 'reload']">
+      <h4 class="card-title">Buscar por</h4>
+      <div class="card-body">
+        <form [formGroup]="filtroForm">
+          <div class="row">
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Fecha Hasta</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaHasta" container="body"
+                    [(ngModel)]="filterFecha.hasta" ngbDatepicker #basicDPHas="ngbDatepicker" (ngModelChange)="onListar()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar" (click)="basicDPHas.toggle()"
+                      type="button" rippleEffect></button>
                   </div>
                 </div>
               </div>
-            </form>
+            </div>
           </div>
-        </core-card> -->
+        </form>
+      </div>
+    </core-card>
     <div class="card">
       <div class="card-body">
         <div class="row">

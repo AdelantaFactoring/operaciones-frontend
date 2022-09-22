@@ -8,21 +8,10 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class PendientePagoService {
+export class SectorService {
   private requestMethod = new RequestMethod();
 
   constructor() { }
-
-  listar(payload): Observable<any> {
-    return this.requestMethod.get(
-      `${environment.apiUrl}${DASHBOARD.listar}`,
-      `?idConsulta=${payload.idConsulta}&cliente=${payload.cliente}&pagProv=${payload.pagProv}&moneda=${payload.moneda}` +
-      `&pagProvDet=${payload.pagProvDet}&fechaDesde=${payload.fechaDesde}&fechaHasta=${payload.fechaHasta}`,
-      {
-        'Content-Type': CONTENT_TYPE.json
-      }
-    );
-  }
 
   listarDash(payload): Observable<any> {
     return this.requestMethod.get(

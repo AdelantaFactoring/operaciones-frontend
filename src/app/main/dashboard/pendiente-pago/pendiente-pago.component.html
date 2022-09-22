@@ -1,82 +1,32 @@
 <div class="content-wrapper">
   <div class="content-body">
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
-    <!-- <core-card #coreCard [actions]="['collapse', 'reload']">
-        <h4 class="card-title">Buscar por</h4>
-        <div class="card-body">
-          <form [formGroup]="filtroForm">
-            <div class="row">
-              <div class="col-md-4 col-12">
-                <div class="form-group">
-                  <label>Deudor (Pagador)</label>
-                  <ng-select appendTo="body" [clearable]="false" [items]="optUsuario" bindLabel="nombreCompleto"
-                             placeholder="Pagador" bindValue="idUsuario" formControlName="pagador"
-                             >
-                  </ng-select>
-                </div>
-              </div>
-              <div class="col-md-4 col-12">
-                <div class="form-group">
-                  <label>Usuario (Ejecutivo)</label>
-                  <ng-select appendTo="body" [clearable]="false" [items]="optUsuario" bindLabel="nombreCompleto"
-                             placeholder="Ejecutivo" bindValue="idUsuario" formControlName="usuario"
-                             >
-                  </ng-select>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </core-card> -->
-      <div class="row">
-        <div class="col-md-6 col-12">
-          <div class="card">
-            <div class="card-body">
-              <div class="table-responsive table-wrapper">
-                <table class="table table-hover">
-                  <thead class="centerall-header">
-                    <tr>
-                      <th>Nombre Deudor(Pagador)</th>
-                      <th>Monto Negociado</th>
-                      <th>%</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <ng-template let-cab ngFor [ngForOf]="pagadorLista">
-                      <tr (click)="onRowClick(cab)" [ngClass]="{'rowColor': cab.flagSeleccionado}">
-                        <td>{{cab.razonSocialPagProv}}</td>
-                        <td>{{cab.saldoTotal | number: '1.2-2'}}</td>
-                        <td>{{cab.porcentajePagoTotal | number: '1.2-2'}}%</td>
-                      </tr>
-                    </ng-template>
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td>Total</td>
-                      <td>{{total | number: '1.2-2'}}</td>
-                      <td>100%</td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-12">
-          <div class="card">
-            <div class="card-body">
-              <div class="echarts__demo" echarts [options]="ejecutivoPie"
-              (chartClick)="onPruebaPie($event, 'chartClick')">
-            </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    <!-- <div class="card">
+    <core-card #coreCard [actions]="['collapse', 'reload']">
+      <h4 class="card-title">Buscar por</h4>
       <div class="card-body">
-
-        <div class="row">
-          <div class="col-md-6 col-12">
+        <form [formGroup]="filtroForm">
+          <div class="row">
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Fecha Hasta</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaHasta" container="body"
+                    [(ngModel)]="filterFecha.hasta" ngbDatepicker #basicDPHas="ngbDatepicker" (ngModelChange)="onListar()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar" (click)="basicDPHas.toggle()"
+                      type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </core-card>
+    <div class="row">
+      <div class="col-md-6 col-12">
+        <div class="card">
+          <div class="card-body">
             <div class="table-responsive table-wrapper">
               <table class="table table-hover">
                 <thead class="centerall-header">
@@ -89,7 +39,7 @@
                 <tbody>
                   <ng-template let-cab ngFor [ngForOf]="pagadorLista">
                     <tr (click)="onRowClick(cab)" [ngClass]="{'rowColor': cab.flagSeleccionado}">
-                      <td>{{cab.razonSocialPagProv}}</td>
+                      <td>{{cab.pagador}}</td>
                       <td>{{cab.saldoTotal | number: '1.2-2'}}</td>
                       <td>{{cab.porcentajePagoTotal | number: '1.2-2'}}%</td>
                     </tr>
@@ -105,14 +55,18 @@
               </table>
             </div>
           </div>
-          <div class="col-md-6 col-12">
+        </div>
+      </div>
+      <div class="col-md-6 col-12">
+        <div class="card">
+          <div class="card-body">
             <div class="echarts__demo" echarts [options]="ejecutivoPie"
               (chartClick)="onPruebaPie($event, 'chartClick')">
             </div>
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
     <block-ui></block-ui>
   </div>
 </div>

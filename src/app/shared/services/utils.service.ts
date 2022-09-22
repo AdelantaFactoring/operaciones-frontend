@@ -129,6 +129,13 @@ export class UtilsService {
     return `${$event.year}${String($event.month).padStart(2, "0")}${String($event.day).padStart(2, "0")}`;
   }
 
+  formatoFecha_YYYYMM($event: any): string {
+    if ($event === null)
+      return null;
+
+    return `${$event.year}${String($event.month).padStart(2, "0")}`;
+  }
+
   getAccess(idMenu): Menu {// '/module/component/'
     //const url = router.routerState.snapshot.url;
     let router: Router;

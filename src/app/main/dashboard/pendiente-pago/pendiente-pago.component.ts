@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { Dashboard } from 'app/shared/models/dashboard/dashboard';
 import { LiquidacionCab } from 'app/shared/models/operaciones/liquidacion-cab';
 import { UtilsService } from 'app/shared/services/utils.service';
 import { EChartsOption } from 'echarts';
@@ -13,7 +15,7 @@ import { PendientePagoService } from './pendiente-pago.service';
 })
 export class PendientePagoComponent implements OnInit {
 
-  public moneda: string = 'PEN';
+  public moneda: number;
   public contentHeader: object;
   public filtroForm: FormGroup;
 
@@ -23,16 +25,19 @@ export class PendientePagoComponent implements OnInit {
 
   columnaAnio = [];
   columnaMes = [];
-  public pagadorLista: LiquidacionCab[] = [];
-  public pagadorLista2: LiquidacionCab[] = [];
-  public pagadorLista3: LiquidacionCab[] = [];
-  public pagadorLista4: LiquidacionCab[] = [];
+  public pagadorLista: Dashboard[] = [];
+  public pagadorLista2: Dashboard[] = [];
+  public pagadorLista3: Dashboard[] = [];
+  public pagadorLista4: Dashboard[] = [];
   public total: number = 0;
   public selectedRowIds: number[] = [];
 
+  
+  public filterFecha: any;
   constructor(private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private utilsService: UtilsService,
+    private calendar: NgbCalendar,
     private pendientePagoService: PendientePagoService) 
   { 
     this.contentHeader = {
@@ -57,9 +62,19 @@ export class PendientePagoComponent implements OnInit {
         ]
       }
     };
-
+    
+    let fecha = new Date();
+    fecha.setDate(fecha.getDate() - Number(5));
+    this.filterFecha = {
+      desde: {
+        year: fecha.getFullYear(),
+        month: fecha.getMonth() + 1,
+        day: fecha.getDate()
+      },
+      hasta: this.calendar.getToday()
+    };
     this.filtroForm = this.formBuilder.group({
-      pagador: [],
+      fechaHasta: [],
       usuario: []
     });
   }
@@ -67,7 +82,9 @@ export class PendientePagoComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.route.params.subscribe(s => {
       this.moneda = s.moneda;
-      this.onListarCobranza();
+      
+      // this.onListarCobranza();
+      this.onListar();
       // this.onListarLiquidaciones();
       
       this.contentHeader = {
@@ -103,19 +120,6 @@ export class PendientePagoComponent implements OnInit {
 
     const response = await this.pendientePagoService.listar({
       idConsulta: 3,
-      // codigoLiquidacion: this.filtroForm.controls.codigoLiquidacion.value,
-      // codigoSolicitud: this.filtroForm.controls.codigoSolicitud.value,
-      // cliente: this.filtroForm.controls.cliente.value,
-      // pagProv: this.filtroForm.controls.pagadorProveedor.value,
-      // moneda: this.filtroForm.controls.moneda.value,
-      // idTipoOperacion: this.filtroForm.controls.tipoOperacion.value,
-      // idEstado: this.filtroForm.controls.estado.value,
-      // pagProvDet: this.filtroForm.controls.pagadorProveedorDet.value,
-      // nroDocumento: this.filtroForm.controls.nroDocumento.value,
-      // fechaOperacion: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaOperacion.value) ?? "",
-      // search: this.search,
-      // pageIndex: this.page,
-      // pageSize: this.pageSize
       cliente: 0,
       pagProv: '',
       moneda: this.moneda,
@@ -140,7 +144,7 @@ export class PendientePagoComponent implements OnInit {
       }
       
       this.pagadorLista.forEach(element => {
-        if (this.pagadorLista2.find(p => p.usuarioCreacion.toLowerCase() === element.usuarioCreacion.toLowerCase()) == undefined) {
+        if (this.pagadorLista2.find(p => p.usuario.toLowerCase() === element.usuario.toLowerCase()) == undefined) {
           element.flagSeleccionado = false;
           this.pagadorLista2.push(element);
           this.pagadorLista4.push(element);
@@ -164,12 +168,57 @@ export class PendientePagoComponent implements OnInit {
     // });
   }
 
+  async onListar(): Promise<void> {
+    this.pagadorLista2 = [];
+    this.pagadorLista4 = [];
+    this.total = 0;
+
+    this.utilsService.blockUIStart('Obteniendo información...');
+
+    const response = await this.pendientePagoService.listarDash({
+      idMoneda: this.moneda,
+      idEjecutivo: 0,
+      fechaHasta: this.utilsService.formatoFecha_YYYYMM(this.filterFecha.hasta),
+    }).toPromise().catch(error => {
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+
+    if (response) {
+      this.pagadorLista = response;
+      this.pagadorLista3 = response;
+      
+      for (const item of this.pagadorLista) {
+        this.total += item.saldoTotal;
+      }
+
+      for (const item of this.pagadorLista) {
+        item.flagSeleccionado = false;
+        item.porcentajePagoTotal = (item.saldoTotal * 100) / this.total;
+      }
+      
+      this.pagadorLista.forEach(element => {
+        if (this.pagadorLista2.find(p => p.usuario.toLowerCase() === element.usuario.toLowerCase()) == undefined) {
+          element.flagSeleccionado = false;
+          this.pagadorLista2.push(element);
+          this.pagadorLista4.push(element);
+        }
+      });
+
+      // this.collectionSize = response.length > 0 ? response[0].totalRows : 0; porcentajePagoTotal
+      
+      this.onPie(this.pagadorLista2);
+    }
+
+    this.utilsService.blockUIStop();
+    
+  }
+
   async onPie(data, tool: boolean = false, valor: string = '', id: number = 0): Promise<void> {
     let data2 = [];
     for (const item of data) {
       let suma = 0;
       for (const row of this.pagadorLista) {
-        if (row.usuarioNombreCompleto === item.usuarioNombreCompleto) {
+        if (row.usuario === item.usuario) {
           suma += row.saldoTotal;
         }
         if (row.idLiquidacionCab !== id) {
@@ -179,7 +228,7 @@ export class PendientePagoComponent implements OnInit {
 
       data2.push({
         value: parseFloat(suma.toString()).toFixed(2),
-        name: item.usuarioNombreCompleto,
+        name: item.usuario,
         selected: item.flagSeleccionado
       })
     } 
@@ -189,7 +238,13 @@ export class PendientePagoComponent implements OnInit {
                       '{a} <br/> Ejecutivo: {b} <br/> Monto por Cobrar: {c} ({d}%) <br/> Resaltado: ' + valor
 
     this.ejecutivoPie = {
-      
+      toolbox: {
+        feature: {
+          dataView: { show: true, readOnly: false },
+          restore: { show: true },
+          saveAsImage: { show: true }
+        }
+      },
       title: {
         text: 'Ejecutivo Pie',
         // subtext: 'Fake Data',
@@ -262,7 +317,7 @@ export class PendientePagoComponent implements OnInit {
 
     // Filter Our Data
     const temp = this.pagadorLista3.filter(function (d) {
-      return d.usuarioNombreCompleto.toLowerCase().indexOf(val) !== -1 || !val;
+      return d.usuario.toLowerCase().indexOf(val) !== -1 || !val;
     });
 
     // Update The Rows
@@ -294,7 +349,7 @@ export class PendientePagoComponent implements OnInit {
       if (it.idEjecutivo === item.idEjecutivo) {
         //it.flagSeleccionado = item.flagSeleccionado;
         data.push({
-          usuarioNombreCompleto: it.usuarioNombreCompleto,
+          usuario: it.usuario,
           flagSeleccionado: item.flagSeleccionado
         });
       }
@@ -302,7 +357,7 @@ export class PendientePagoComponent implements OnInit {
       {
         //it.flagSeleccionado = false;
         data.push({
-          usuarioNombreCompleto: it.usuarioNombreCompleto,
+          usuario: it.usuario,
           flagSeleccionado: false
         });
       }

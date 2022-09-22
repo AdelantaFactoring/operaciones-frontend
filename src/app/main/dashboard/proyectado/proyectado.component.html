@@ -1,77 +1,86 @@
-
 <div class="content-wrapper">
-    <div class="content-body">
-      <app-content-header [contentHeader]="contentHeader"></app-content-header>
-      <core-card #coreCard [actions]="['collapse', 'reload']">
-        <h4 class="card-title">Buscar por</h4>
-        <div class="card-body">
-          <form [formGroup]="filtroForm">
-            <div class="row">
-              <div class="col-md-4 col-12">
-                <div class="form-group">
-                  <label>Fecha Desde</label>
-                  <div class="input-group">
-                    <input class="form-control" placeholder="yyyy-mm-dd"
-                           formControlName="fechaDesde" container="body" [(ngModel)]="filterFecha.desde"
-                           ngbDatepicker #basicDPDes="ngbDatepicker">
-                    <div class="input-group-append">
-                      <button class="btn btn-outline-secondary feather icon-calendar"
-                              (click)="basicDPDes.toggle()"
-                              type="button" rippleEffect></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4 col-12">
-                <div class="form-group">
-                  <label>Fecha Hasta</label>
-                  <div class="input-group">
-                    <input class="form-control" placeholder="yyyy-mm-dd"
-                           formControlName="fechaHasta" container="body" [(ngModel)]="filterFecha.hasta"
-                           ngbDatepicker #basicDPHas="ngbDatepicker">
-                    <div class="input-group-append">
-                      <button class="btn btn-outline-secondary feather icon-calendar"
-                              (click)="basicDPHas.toggle()"
-                              type="button" rippleEffect></button>
-                    </div>
+  <div class="content-body">
+    <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <core-card #coreCard [actions]="['collapse', 'reload']">
+      <h4 class="card-title">Buscar por ({{ejectutivo}})</h4>
+      <div class="card-body">
+        <form [formGroup]="filtroForm">
+          <div class="row">
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Fecha Desde</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaDesde" container="body"
+                    [(ngModel)]="filterFecha.desde" ngbDatepicker #basicDPDes="ngbDatepicker"
+                    (ngModelChange)="onListarSaldo()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar" (click)="basicDPDes.toggle()"
+                      type="button" rippleEffect></button>
                   </div>
                 </div>
               </div>
             </div>
-          </form>
-        </div>
-      </core-card>
-      <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-12">
-                    <div class="table-responsive">
-                        <table class="table table-hover min-width-table">
-                            <thead class="centerall-header">
-                                <tr>
-                                    <!-- <th *ngFor="let item of columnaAnio" [attr.colspan]="item.cant"
-                                        style="border-right: 1px solid;">{{item.anio}}</th> -->
-                                </tr>
-                                <tr>
-                                    <!-- <th *ngFor="let item of columnaMes">{{item.columna}}</th> -->
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- <ng-template let-cab ngFor [ngForOf]="solicitudes">
-                                    <tr>
-                                        <td>{{cab.pagador}}</td>
-                                        <td>{{cab.monto}}</td>
-                                        <td>{{cab.porcentaje}}</td>
-                                    </tr>
-                                </ng-template> -->
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Fecha Hasta</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaHasta" container="body"
+                    [(ngModel)]="filterFecha.hasta" ngbDatepicker #basicDPHas="ngbDatepicker"
+                    (ngModelChange)="onListarSaldo()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar" (click)="basicDPHas.toggle()"
+                      type="button" rippleEffect></button>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
+          <div class="row"></div>
+          <div class="d-flex flex-wrap mb-0">
+            <div class="pt-1 pb-1 pr-1">
+              <button type="submit" rippleEffect class="btn btn-outline-success" (click)="onListarSaldo(0)">Todos
+              </button>
+            </div>
+            <div class="pt-1 pb-1 pr-1" *ngFor="let item of ejecutivoFilter">
+              <button type="submit" rippleEffect class="btn btn-outline-info"
+                (click)="onListarSaldo(item.value, item.name)">{{item.name}}
+              </button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </core-card>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table table-hover min-width-table">
+                <thead class="centerall-header">
+                  <tr>
+                    <th *ngFor="let item of columnaAnio" [attr.colspan]="1" style="border-right: 1px solid;">
+                      {{item.mes}}
+
+                    </th>
+                  </tr>
+                  <tr>
+                    <th *ngFor="let item of columnaAnio" [attr.colspan]="1" style="border-right: 1px solid;">
+                      {{item.diaText}} {{item.descripcion}}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let cab of data">
+                    <td *ngFor="let row of cab | ObjToArray">{{row}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
-      <block-ui></block-ui>
     </div>
+    <block-ui></block-ui>
   </div>
-  
+</div>

@@ -4,6 +4,7 @@ import { Dashboard } from 'app/shared/models/dashboard/dashboard';
 import { LiquidacionCab } from 'app/shared/models/operaciones/liquidacion-cab';
 import { LiquidacionDet } from 'app/shared/models/operaciones/liquidacion-det';
 import { UtilsService } from 'app/shared/services/utils.service';
+import { DashboardService } from '../dashboard.service';
 import { EjecutivoService } from './ejecutivo.service';
 
 class Anio {
@@ -12,6 +13,10 @@ class Anio {
   det: any;
 }
 
+class Data {
+  columna: string;
+  descripcion: string;
+}
 @Component({
   selector: 'app-ejecutivo',
   templateUrl: './ejecutivo.component.html',
@@ -30,68 +35,25 @@ export class EjecutivoComponent implements OnInit {
   columnaAnio2: Anio[] = [];
   columnaAnio3: Anio[] = [];
   columnaMes2 = [];
-  public moneda: string = 'PEN';
+  data = [];
+
+  public moneda: number = 0;
+  public ejectutivo: string = 'Todos';
 
   constructor(
     private route: ActivatedRoute,
     private ejecutivoService: EjecutivoService,
-    private utilsService: UtilsService) {
+    private utilsService: UtilsService,
+    private dashboardService: DashboardService) {
 
   }
 
   ngOnInit(): void {
-    this.columnaMes.push({
-      id: 1,
-      columna: 'Prueba',
-      anio: '2020',
-      cant: 3
-    },
-      {
-        id: 2,
-        columna: 'Prueba 2',
-        anio: '2020',
-        cant: 3
-      },
-      {
-        id: 3,
-        columna: 'Prueba 3',
-        anio: '2022',
-        cant: 2
-      },
-      {
-        id: 4,
-        columna: 'Prueba 4',
-        anio: '2022',
-        cant: 2
-      },
-      {
-        id: 5,
-        columna: 'Prueba 5',
-        anio: '2023',
-        cant: 2
-      },
-      {
-        id: 6,
-        columna: 'Prueba 6',
-        anio: '2023',
-        cant: 2
-      },
-      {
-        id: 7,
-        columna: 'Prueba 7',
-        anio: '2020',
-        cant: 3
-      });
-
-    this.columnaMes.forEach(element => {
-      if (this.columnaAnio.find(p => p.anio.toLowerCase() === element.anio.toLowerCase()) == undefined) {
-        this.columnaAnio.push(element)
-      }
-    });
-
     this.route.params.subscribe(s => {
       this.moneda = s.moneda;
-      this.onListarCobranza();
+      // this.onListarCobranza();
+      this.onListar();
+      this.onListarSaldo();
       this.contentHeader = {
         headerTitle: 'Ejecutivo',
         actionButton: true,
@@ -117,161 +79,185 @@ export class EjecutivoComponent implements OnInit {
     });
   }
 
-  async onListarCobranza(): Promise<void> {
-    // this.pagadorLista2 = [];
-    // this.pagadorLista4 = [];
+  onListarSaldo(idEjecutivo: number = 0, nombre: string = 'Todos'): void {
+    this.ejectutivo = nombre;
+    this.columnaAnio = [];
+    this.data = [];
+    this.utilsService.blockUIStart('Obteniendo información...');
+
+    this.dashboardService.listarDashSaldo({
+      idMoneda: this.moneda,
+      idEjecutivo: idEjecutivo,
+      fechaHasta: 1
+    }).subscribe((response) => {
+      this.data = response;
+
+      for (var key in response) {
+        let dataTempo;
+        dataTempo = response[key];
+        for (let item in dataTempo) {
+          let column;
+          if (!item.includes('Col')) {
+            this.columnaAnio.push({
+              anio: 'YEAR',
+              mes: '',
+              descripcion: item,
+              columna: item
+            })
+          }
+          else {
+            // column = item.split('#');
+            column = item.split('Col');
+            this.columnaAnio.push({
+              anio: column[1],
+              mes: column[2],
+              descripcion: column[3],
+              columna: item
+            });
+          }
+
+        }
+        break;
+      }
+
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+
+  }
+
+  async onListar(): Promise<void> {
 
     this.utilsService.blockUIStart('Obteniendo información...');
 
-    const response = await this.ejecutivoService.listar2({
-      idConsulta: 3,
-      cliente: '',
-      pagProv: '',
-      moneda: this.moneda,
-      pagProvDet: '',
-      fechaDesde: '',
-      fechaHasta: ''
+    const response: Dashboard[] = await this.dashboardService.listarDash({
+      idMoneda: 0,
+      idEjecutivo: 0,
+      // fechaHasta: this.utilsService.formatoFecha_YYYYMM(this.filterFecha.hasta),
+      fechaHasta: 207010
     }).toPromise().catch(error => {
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
 
     if (response) {
-      this.pagadorCab = response.liquidacionCab;
-      this.pagadorDet = response.liquidacionDet;
-      this.onEjecutivoFilter(this.pagadorCab);
-      this.onGenerarData();
-      // this.pagadorLista3 = response;
+      for (const item of response) {
 
-      // for (const item of this.pagadorLista) {
-      //   this.total += item.saldoTotal;
-      // }
-
-      // for (const item of this.pagadorLista) {
-      //   item.flagSeleccionado = false;
-      //   item.porcentajePagoTotal = (item.saldoTotal * 100) / this.total;
-      // }
-
-      // this.pagadorLista.forEach(element => {
-      //   if (this.pagadorLista2.find(p => p.usuarioCreacion.toLowerCase() === element.usuarioCreacion.toLowerCase()) == undefined) {
-      //     element.flagSeleccionado = false;
-      //     this.pagadorLista2.push(element);
-      //     this.pagadorLista4.push(element);
-      //   }
-      // });
-
-
-      // this.onPie(this.pagadorLista2);
+        if (this.ejecutivoFilter.find(x => x.name.toLowerCase() === item.usuario.toLowerCase()) === undefined) {
+          this.ejecutivoFilter.push({
+            name: item.usuario,
+            value: item.idEjecutivo,
+            selected: false
+          });
+        }
+      }
     }
 
     this.utilsService.blockUIStop();
-
-    //   .subscribe((response: LiquidacionCab[]) => {
-    //   this.cobranza = response;
-    //   this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
-    //   this.utilsService.blockUIStop();
-    // }, error => {
-    //   this.utilsService.blockUIStop();
-    //   this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
-    // });
   }
 
-  onGenerarData(): void {
-    // this.pagadorLista
-    let data = [];
-    // for (const cab of this.pagadorLista[0].liquidacionDet) {
-    for (const det of this.pagadorDet) {
-      // this.columnaMes2.push({
-      //   anio: det.anio.toString(),
-      //   mes: det.mes
-      // });
-      det.anio = det.anio.toString();
-      if (this.columnaAnio2.find(p => p.anio.toLowerCase() === det.anio.toLowerCase()) == undefined) {
-        this.columnaAnio2.push({
-          anio: det.anio,
-          cant: 0,
-          det: ''
-        })
-      }
+  // async onListarCobranza(): Promise<void> {
+  //   this.utilsService.blockUIStart('Obteniendo información...');
 
-    }
+  //   const response = await this.ejecutivoService.listar2({
+  //     idConsulta: 3,
+  //     cliente: '',
+  //     pagProv: '',
+  //     moneda: this.moneda,
+  //     pagProvDet: '',
+  //     fechaDesde: '',
+  //     fechaHasta: ''
+  //   }).toPromise().catch(error => {
+  //     this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+  //   });
 
-    for (const item of this.columnaAnio2) {
-      item.det = this.pagadorDet.filter(x => x.anio.toString() === item.anio.toString());
-      for (const mes of item.det) {
-        mes.mes = mes.mes.toString();
-       if (data.find(x => x.anio.toLowerCase() === mes.anio.toLowerCase() && x.mes.toLowerCase() === mes.mes.toLowerCase()) === undefined) {
-        data.push({
-          anio: item.anio.toString(),
-          mes: mes.mes.toString()
-        });
-       }
-      }
-    }
+  //   if (response) {
+  //     this.pagadorCab = response.liquidacionCab;
+  //     this.pagadorDet = response.liquidacionDet;
+  //     this.onEjecutivoFilter(this.pagadorCab);
+  //     // this.onGenerarData();
+  //   }
 
-    for (const item of data) {
-      if (this.columnaAnio3.find(x => x.anio.toLowerCase() === item.anio.toLowerCase()) === undefined)
-      {
-        this.columnaAnio3.push({
-          anio: item.anio,
-          cant: data.filter(x => x.anio.toString() === item.anio.toString()).length,
-          det: data.filter(x => x.anio.toString() === item.anio.toString())
-        });
-      }
-     
-    }
-  }
+  //   this.utilsService.blockUIStop();
+  // }
 
-  idMes(value: number): string {
-    if (value == 1) {
-      return 'Enero'
-    }
-    else if (value == 2) {
-      return 'Febrero'
-    }
-    else if (value == 3) {
-      return 'Marzo'
-    }
-    else if (value == 4) {
-      return 'Abril'
-    }
-    else if (value == 5) {
-      return 'Mayo'
-    }
-    else if (value == 6) {
-      return 'Junio'
-    }
-    else if (value == 7) {
-      return 'Julio'
-    }
-    else if (value == 8) {
-      return 'Agosto'
-    }
-    else if (value == 9) {
-      return 'Setiembre'
-    }
-    else if (value == 10) {
-      return 'Octubre'
-    }
-    else if (value == 11) {
-      return 'Noviembre'
-    }
-    else if (value == 12) {
-      return 'Diciembre'
-    }
-  }
+  // onGenerarData(): void {
+  //   // this.pagadorLista
+  //   let data = [];
+  //   // for (const cab of this.pagadorLista[0].liquidacionDet) {
+  //   for (const det of this.pagadorDet) {
+  //     // this.columnaMes2.push({
+  //     //   anio: det.anio.toString(),
+  //     //   mes: det.mes
+  //     // });
+  //     det.anio = det.anio.toString();
+  //     if (this.columnaAnio2.find(p => p.anio.toLowerCase() === det.anio.toLowerCase()) == undefined) {
+  //       this.columnaAnio2.push({
+  //         anio: det.anio,
+  //         cant: 0,
+  //         det: ''
+  //       })
+  //     }
 
-  onEjecutivo(idEjecutivo): void {
-    
-  }
+  //   }
+
+  //   for (const item of this.columnaAnio2) {
+  //     item.det = this.pagadorDet.filter(x => x.anio.toString() === item.anio.toString());
+  //     for (const mes of item.det) {
+  //       mes.mes = mes.mes.toString();
+  //      if (data.find(x => x.anio.toLowerCase() === mes.anio.toLowerCase() && x.mes.toLowerCase() === mes.mes.toLowerCase()) === undefined) {
+  //       data.push({
+  //         anio: item.anio.toString(),
+  //         mes: mes.mes.toString()
+  //       });
+  //      }
+  //     }
+  //   }
+
+  //   for (const item of data) {
+  //     if (this.columnaAnio3.find(x => x.anio.toLowerCase() === item.anio.toLowerCase()) === undefined)
+  //     {
+  //       this.columnaAnio3.push({
+  //         anio: item.anio,
+  //         cant: data.filter(x => x.anio.toString() === item.anio.toString()).length,
+  //         det: data.filter(x => x.anio.toString() === item.anio.toString())
+  //       });
+  //     }
+
+  //   }
+  // }
 
   onEjecutivoFilter(data): void {
     data.forEach(element => {
       if (this.ejecutivoFilter.find(p => p.usuarioCreacion.toLowerCase() === element.usuarioCreacion.toLowerCase()) == undefined) {
-        
+
         this.ejecutivoFilter.push(element);
       }
     });
 
-    
+
+  }
+
+  onSuma(parametro: string, tipo: number): Number {
+    let monto = [];
+    let valor: number = 0;
+    let convertido: string;
+
+    if (tipo == 1) {
+      // // monto = this.data.filter(x => x.pagadorSector === parametro);
+      // for (const item of monto) {
+      //   valor += item.saldoTotal
+      // }
+      for (const item of this.data) {
+        for (const row of item) {
+          console.log('row', row);
+
+        }
+      }
+    }
+    convertido = parseFloat(valor.toString()).toFixed(2);
+    valor = Number(convertido);
+    return valor;
   }
 }
