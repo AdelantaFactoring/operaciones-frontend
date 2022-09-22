@@ -67,6 +67,7 @@
                     </div>
                   </th>
                   <th rowspan="2">Acción</th>
+                  <th rowspan="2">N° Liquidación</th>
                   <th rowspan="2">Tipo Documento</th>
                   <th rowspan="2">N° Documento</th>
                   <th style="min-width: 300px !important;" rowspan="2">Cliente</th>
@@ -149,6 +150,7 @@
                         </div>
                       </div>
                     </td>
+                    <td>{{cab.codigo}}</td>
                     <td>{{cab.tipoDocumento}}</td>
                     <td>{{cab.nroDocumento === "" ? "[Pendiente a Generar]" : cab.nroDocumento }}</td>
                     <td>{{cab.razonSocialCliente}}</td>

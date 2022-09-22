@@ -48,7 +48,7 @@ export class LiquidacionesDetalleComponent implements OnInit {
     det.gastosDiversosConIGV = Math.round((det.gastosDiversos + det.gastosDiversosIGV) * 100) / 100;
     det.montoTotalFacturado = Math.round((det.gastosDiversosConIGV + det.interesConIGV) * 100) / 100;
     if (cab.idTipoCT != 1)
-      det.montoDesembolso = Math.round(((det.montoCobrar - det.montoTotalFacturado - det.comisionEstructuracionConIGV) + det.montoNotaCreditoDevolucion) * 100) / 100;
+      det.montoDesembolso = (cab.idTipoOperacion != 3) ? Math.round(((det.montoCobrar - det.montoTotalFacturado - det.comisionEstructuracionConIGV) + det.montoNotaCreditoDevolucion) * 100) / 100 : det.montoDesembolso;
 
     det.editado = true;
   }
