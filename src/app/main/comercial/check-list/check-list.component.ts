@@ -275,6 +275,7 @@ export class CheckListComponent implements OnInit {
     this.nombreContacto = item.nombreContacto;
     this.telefonoContacto = item.telefonoContacto;
     this.correoContacto = item.correoContacto;
+    this.solicitudForm.controls.conCopiaContacto.setValue(item.conCopiaContacto);
     this.solicitudForm.controls.titularCuentaBancariaDestino.setValue(item.titularCuentaBancariaDestino);
     this.solicitudForm.controls.monedaCuentaBancariaDestino.setValue(item.monedaCuentaBancariaDestino);
     this.solicitudForm.controls.bancoDestino.setValue(item.bancoDestino);

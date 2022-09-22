@@ -130,7 +130,7 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
       nuevoMontoTotal: [{value: 0, disabled: true}],
       //observacion: [''],
       flagPagoInteresAdelantado: false,
-      observacionSolicitud: [{value: '', disabled: true}],
+      observacionSolicitud: [{value: ''}],
     });
     this.oldLiquidacionForm = this.liquidacionForm.value;
     this.filtroForm = this.formBuilder.group({

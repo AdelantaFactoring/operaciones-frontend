@@ -405,7 +405,7 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
 
     this.solicitudForm.controls.flagPagoInteresAdelantado.setValue(item.flagPagoInteresAdelantado);
 
-    this.solicitudForm.controls.montoTotal.setValue(item.nuevoMontoTotal);
+    this.solicitudForm.controls.montoTotal.setValue(item.montoTotal);
     this.solicitudForm.controls.deudaAnterior.setValue(item.deudaAnterior);
     this.solicitudForm.controls.nuevoMontoTotal.setValue(item.nuevoMontoTotal);
     this.solicitudForm.controls.titularCuentaBancariaDestino.setValue(item.titularCuentaBancariaDestino);
