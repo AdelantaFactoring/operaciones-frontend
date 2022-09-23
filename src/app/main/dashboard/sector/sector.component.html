@@ -5,48 +5,44 @@
         <core-card #coreCard [actions]="['collapse', 'reload']">
             <h4 class="card-title">Buscar por</h4>
             <div class="card-body">
-                <div class="d-flex flex-wrap mb-0">
-                    <div class="pt-1 pb-1 pr-1">
-                        <button type="submit" rippleEffect class="btn btn-outline-success"
-                        (click)="onListar(0)">Todos
-                        </button>
-                      </div>
-                    <div class="pt-1 pb-1 pr-1" *ngFor="let item of ejecutivoFilter">
-                      <button type="submit" rippleEffect class="btn btn-outline-info"
-                      (click)="onListar(item.value)">{{item.name}}
-                        <!-- <i class="mr-0 mr-sm-1" data-feather="refresh-cw"
-                        (click)="onEjecutivo(item.idEjecutivo)"></i>
-                        <span class="d-none d-sm-inline-block">{{item.usuarioNombreCompleto}}</span> -->
-                      </button>
-                    </div>
-                   
-                  </div>
-               <!--  <form [formGroup]="filtroForm">
-                    <div class="row">
-                        <div class="col-md-4 col-12">
-                            <div class="form-group">
-                                <label>Fecha Hasta</label>
-                                <div class="input-group">
-                                    <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaHasta"
-                                        container="body" [(ngModel)]="filterFecha.hasta" ngbDatepicker
-                                        #basicDPHas="ngbDatepicker" (ngModelChange)="onListar()">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary feather icon-calendar"
-                                            (click)="basicDPHas.toggle()" type="button" rippleEffect></button>
-                                    </div>
+                <form [formGroup]="filtroForm">
+                <div class="row">
+                    <div class="col-md-4 col-12">
+                        <div class="form-group">
+                            <label>Fecha Hasta</label>
+                            <div class="input-group">
+                                <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaHasta"
+                                    container="body" [(ngModel)]="filterFecha.hasta" ngbDatepicker
+                                    #basicDPHas="ngbDatepicker" (ngModelChange)="onListar()">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary feather icon-calendar"
+                                        (click)="basicDPHas.toggle()" type="button" rippleEffect></button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </form> -->
+                </div>
+                </form>
+                <div class="d-flex flex-wrap mb-0">
+                    <div class="pt-1 pb-1 pr-1">
+                        <button type="submit" rippleEffect class="btn btn-outline-success" (click)="onListar(0)">Todos
+                        </button>
+                    </div>
+                    <div class="pt-1 pb-1 pr-1" *ngFor="let item of ejecutivoFilter">
+                        <button type="submit" rippleEffect class="btn btn-outline-info"
+                            (click)="onListar(item.value)">{{item.name}}
+                        </button>
+                    </div>
+
+                </div>
             </div>
         </core-card>
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div echarts [options]="sectorBar" (chartClick)="onClickDash($event, 2)"
-                        class="echarts__demo"></div>
+                        <div echarts [options]="sectorBar" (chartClick)="onClickDash($event, 2)" class="echarts__demo">
+                        </div>
                     </div>
                 </div>
 
@@ -56,14 +52,14 @@
             <div class="col-sm-6 col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div echarts [options]="monedaBar" (chartClick)="onClickDash($event, 2)"
-                        class="echarts__demo"></div>
+                        <div echarts [options]="monedaBar" (chartClick)="onClickDash($event, 2)" class="echarts__demo">
+                        </div>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
                         <div echarts [options]="tipoOperacionBar" (chartClick)="onClickDash($event, 2)"
-                        class="echarts__demo"></div>
+                            class="echarts__demo"></div>
                     </div>
                 </div>
             </div>
@@ -72,28 +68,28 @@
                     <div class="card-body">
                         <div class="table-responsive table-wrapper">
                             <table class="table table-striped">
-                              <thead class="centerall-header">
-                                <tr>
-                                  <th>Nombre Deudor(Pagador)</th>
-                                  <th>Monto por Cobrar</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <ng-template let-cab ngFor [ngForOf]="lista">
-                                  <tr (click)="onRowClick(cab)" [ngClass]="{'rowColor': cab.flagSeleccionado}">
-                                    <td>{{cab.pagador}}</td>
-                                    <td>{{cab.saldoTotal | number: '1.2-2'}}</td>
-                                  </tr>
-                                </ng-template>
-                              </tbody>
-                              <tfoot>
-                                <tr>
-                                  <td>Total</td>
-                                  <td>{{onSuma('', 4) | number: '1.2-2'}}</td>
-                                </tr>
-                              </tfoot>
+                                <thead class="centerall-header">
+                                    <tr>
+                                        <th>Nombre Deudor(Pagador)</th>
+                                        <th>Monto por Cobrar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ng-template let-cab ngFor [ngForOf]="data">
+                                        <tr (click)="onRowClick(cab)" [ngClass]="{'rowColor': cab.flagSeleccionado}">
+                                            <td>{{cab.pagador}}</td>
+                                            <td>{{cab.saldoTotal | number: '1.2-2'}}</td>
+                                        </tr>
+                                    </ng-template>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>Total</td>
+                                        <td>{{onSuma('', 4) | number: '1.2-2'}}</td>
+                                    </tr>
+                                </tfoot>
                             </table>
-                          </div>
+                        </div>
                     </div>
                 </div>
 

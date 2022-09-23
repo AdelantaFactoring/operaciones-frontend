@@ -25,7 +25,8 @@ export class PendientePagoComponent implements OnInit {
 
   columnaAnio = [];
   columnaMes = [];
-  public pagadorLista: Dashboard[] = [];
+  public data: Dashboard[] = [];
+  public pagadorLista = [];
   public pagadorLista2: Dashboard[] = [];
   public pagadorLista3: Dashboard[] = [];
   public pagadorLista4: Dashboard[] = [];
@@ -34,6 +35,7 @@ export class PendientePagoComponent implements OnInit {
 
   
   public filterFecha: any;
+  public flagSeleccionadoPai: boolean = false;
   constructor(private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private utilsService: UtilsService,
@@ -112,63 +114,64 @@ export class PendientePagoComponent implements OnInit {
     });
   }
 
-  async onListarCobranza(): Promise<void> {
-    this.pagadorLista2 = [];
-    this.pagadorLista4 = [];
+  // async onListarCobranza(): Promise<void> {
+  //   this.pagadorLista2 = [];
+  //   this.pagadorLista4 = [];
     
-    this.utilsService.blockUIStart('Obteniendo información...');
+  //   this.utilsService.blockUIStart('Obteniendo información...');
 
-    const response = await this.pendientePagoService.listar({
-      idConsulta: 3,
-      cliente: 0,
-      pagProv: '',
-      moneda: this.moneda,
-      pagProvDet: '',
-      fechaDesde: '',
-      fechaHasta: ''
-    }).toPromise().catch(error => {
-      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
-    });
+  //   const response = await this.pendientePagoService.listar({
+  //     idConsulta: 3,
+  //     cliente: 0,
+  //     pagProv: '',
+  //     moneda: this.moneda,
+  //     pagProvDet: '',
+  //     fechaDesde: '',
+  //     fechaHasta: ''
+  //   }).toPromise().catch(error => {
+  //     this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+  //   });
 
-    if (response) {
-      this.pagadorLista = response;
-      this.pagadorLista3 = response;
+  //   if (response) {
+  //     this.pagadorLista = response;
+  //     this.pagadorLista3 = response;
       
-      for (const item of this.pagadorLista) {
-        this.total += item.saldoTotal;
-      }
+  //     for (const item of this.pagadorLista) {
+  //       this.total += item.saldoTotal;
+  //     }
 
-      for (const item of this.pagadorLista) {
-        item.flagSeleccionado = false;
-        item.porcentajePagoTotal = (item.saldoTotal * 100) / this.total;
-      }
+  //     for (const item of this.pagadorLista) {
+  //       item.flagSeleccionado = false;
+  //       item.porcentajePagoTotal = (item.saldoTotal * 100) / this.total;
+  //     }
       
-      this.pagadorLista.forEach(element => {
-        if (this.pagadorLista2.find(p => p.usuario.toLowerCase() === element.usuario.toLowerCase()) == undefined) {
-          element.flagSeleccionado = false;
-          this.pagadorLista2.push(element);
-          this.pagadorLista4.push(element);
-        }
-      });
+  //     this.pagadorLista.forEach(element => {
+  //       if (this.pagadorLista2.find(p => p.usuario.toLowerCase() === element.usuario.toLowerCase()) == undefined) {
+  //         element.flagSeleccionado = false;
+  //         this.pagadorLista2.push(element);
+  //         this.pagadorLista4.push(element);
+  //       }
+  //     });
 
-      // this.collectionSize = response.length > 0 ? response[0].totalRows : 0; porcentajePagoTotal
+  //     // this.collectionSize = response.length > 0 ? response[0].totalRows : 0; porcentajePagoTotal
       
-      this.onPie(this.pagadorLista2);
-    }
+  //     this.onPie(this.pagadorLista2);
+  //   }
 
-    this.utilsService.blockUIStop();
+  //   this.utilsService.blockUIStop();
 
-    //   .subscribe((response: LiquidacionCab[]) => {
-    //   this.cobranza = response;
-    //   this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
-    //   this.utilsService.blockUIStop();
-    // }, error => {
-    //   this.utilsService.blockUIStop();
-    //   this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
-    // });
-  }
+  //   //   .subscribe((response: LiquidacionCab[]) => {
+  //   //   this.cobranza = response;
+  //   //   this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
+  //   //   this.utilsService.blockUIStop();
+  //   // }, error => {
+  //   //   this.utilsService.blockUIStop();
+  //   //   this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+  //   // });
+  // }
 
   async onListar(): Promise<void> {
+    this.pagadorLista = [];
     this.pagadorLista2 = [];
     this.pagadorLista4 = [];
     this.total = 0;
@@ -184,7 +187,24 @@ export class PendientePagoComponent implements OnInit {
     });
 
     if (response) {
-      this.pagadorLista = response;
+      
+      this.data = response;
+      this.data.forEach(e => {
+        if (this.pagadorLista.find(x => x.rucPagador.toLowerCase() === e.rucPagador.toLowerCase()) === undefined) {
+          this.pagadorLista.push({
+            idLiquidacionCab: e.idLiquidacionCab,
+            flagSeleccionado: false,
+            rucPagador: e.rucPagador,
+            pagador: e.pagador,
+            saldoTotal: this.onSuma(e.rucPagador.toString(), 1),
+            porcentajePagoTotal: e.porcentajePagoTotal,
+            idEjecutivo: e.idEjecutivo,
+            usuario: e.usuario
+          })
+        }
+      });
+
+      // this.pagadorLista = response;
       this.pagadorLista3 = response;
       
       for (const item of this.pagadorLista) {
@@ -196,7 +216,7 @@ export class PendientePagoComponent implements OnInit {
         item.porcentajePagoTotal = (item.saldoTotal * 100) / this.total;
       }
       
-      this.pagadorLista.forEach(element => {
+      this.data.forEach(element => {
         if (this.pagadorLista2.find(p => p.usuario.toLowerCase() === element.usuario.toLowerCase()) == undefined) {
           element.flagSeleccionado = false;
           this.pagadorLista2.push(element);
@@ -215,6 +235,7 @@ export class PendientePagoComponent implements OnInit {
 
   async onPie(data, tool: boolean = false, valor: string = '', id: number = 0): Promise<void> {
     let data2 = [];
+    
     for (const item of data) {
       let suma = 0;
       for (const row of this.pagadorLista) {
@@ -316,12 +337,32 @@ export class PendientePagoComponent implements OnInit {
     const val = event.data.selected ? event.name.toLowerCase() : '';
 
     // Filter Our Data
-    const temp = this.pagadorLista3.filter(function (d) {
-      return d.usuario.toLowerCase().indexOf(val) !== -1 || !val;
-    });
+    let temp = [];
+    this.flagSeleccionadoPai = val !== '' ? true : false;
+    if (val !== '') {
+      temp = this.pagadorLista3.filter(function (d) {
+        return d.usuario.toLowerCase().indexOf(val) !== -1 || !val;
+      });
 
-    // Update The Rows
+    } else {
+      this.data.forEach(e => {
+        if (temp.find(x => x.rucPagador.toLowerCase() === e.rucPagador.toLowerCase()) === undefined) {
+          temp.push({
+            idLiquidacionCab: e.idLiquidacionCab,
+            flagSeleccionado: false,
+            rucPagador: e.rucPagador,
+            pagador: e.pagador,
+            saldoTotal: this.onSuma(e.rucPagador.toString(), 1),
+            porcentajePagoTotal: e.porcentajePagoTotal,
+            idEjecutivo: e.idEjecutivo,
+            usuario: e.usuario
+          })
+        }
+      });
+    }
+
     this.pagadorLista = temp;
+    // Update The Rows
     this.total = 0;
     for (const item of temp) {
       this.total += item.saldoTotal;
@@ -339,33 +380,49 @@ export class PendientePagoComponent implements OnInit {
   }
 
   async onRowClick(item): Promise<void> {
-    
-    let tool: boolean = false;
-    let data = [];
-    tool = item.flagSeleccionado ? false : true;
-    item.flagSeleccionado = tool;
-    
-    for (const it of this.pagadorLista4) {
-      if (it.idEjecutivo === item.idEjecutivo) {
-        //it.flagSeleccionado = item.flagSeleccionado;
-        data.push({
-          usuario: it.usuario,
-          flagSeleccionado: item.flagSeleccionado
-        });
+        
+    if (!this.flagSeleccionadoPai) {
+      let tool: boolean = false;
+      let data = [];
+      tool = item.flagSeleccionado == true ? false : true;
+      
+      item.flagSeleccionado = tool;
+      for (const it of this.pagadorLista4) {
+        if (it.idEjecutivo === item.idEjecutivo) {
+          //it.flagSeleccionado = item.flagSeleccionado;
+          data.push({
+            usuario: it.usuario,
+            flagSeleccionado: item.flagSeleccionado
+          });
+        }
+        else
+        {
+          //it.flagSeleccionado = false;
+          data.push({
+            usuario: it.usuario,
+            flagSeleccionado: false
+          });
+        }
       }
-      else
-      {
-        //it.flagSeleccionado = false;
-        data.push({
-          usuario: it.usuario,
-          flagSeleccionado: false
-        });
-      }
+      
+      await this.onPie(data, tool, item.saldoTotal + ' (' + parseFloat(item.porcentajePagoTotal.toString()).toFixed(2) + '%)', item.idLiquidacionCab);
     }
-    
-    // console.log('data', data, '\n pag4', this.pagadorLista4, '\n item', item);
-    
-    await this.onPie(data, tool, item.saldoTotal + ' (' + parseFloat(item.porcentajePagoTotal.toString()).toFixed(2) + '%)', item.idLiquidacionCab);
   }
 
+  onSuma(parametro: string, tipo: number, moneda: string = ''): Number {
+    let monto = [];
+    let valor: number = 0;
+    let convertido: string;
+
+    if (tipo == 1) {
+      monto = this.data.filter(x => x.rucPagador === parametro);
+      for (const item of monto) {
+        valor += item.saldoTotal
+      }
+    }
+
+    convertido = parseFloat(valor.toString()).toFixed(2);
+    valor = Number(convertido);
+    return valor;
+  }
 }

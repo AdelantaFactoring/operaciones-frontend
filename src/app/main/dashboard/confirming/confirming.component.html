@@ -4,19 +4,7 @@
         <core-card #coreCard [actions]="['collapse', 'reload']">
             <h4 class="card-title">Buscar por</h4>
             <div class="card-body">
-                <!-- <div class="d-flex flex-wrap mb-0">
-                    <div class="pt-1 pb-1 pr-1">
-                        <button type="submit" rippleEffect class="btn btn-outline-success" (click)="onListar(0)">Todos
-                        </button>
-                    </div>
-                    <div class="pt-1 pb-1 pr-1" *ngFor="let item of ejecutivoFilter">
-                        <button type="submit" rippleEffect class="btn btn-outline-info"
-                            (click)="onListar(item.value)">{{item.name}}
-                        </button>
-                    </div>
-
-                </div> -->
-                <!--  <form [formGroup]="filtroForm">
+                <form [formGroup]="filtroForm">
                     <div class="row">
                         <div class="col-md-4 col-12">
                             <div class="form-group">
@@ -33,7 +21,7 @@
                             </div>
                         </div>
                     </div>
-                </form> -->
+                </form>
             </div>
         </core-card>
         <div class="row">
@@ -45,25 +33,25 @@
                     <div class="card-body">
                         <div class="table-responsive table-wrapper">
                             <table class="table table-striped">
-                                <thead class="centerall-header">
+                                <thead>
                                     <tr>
                                         <th>Nombre Deudor(Pagador)</th>
                                         <th>Total Facturado al Desembolso INC IGV</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <ng-template let-cab ngFor [ngForOf]="lista">
-                                        <tr (click)="onRowClick(cab)" [ngClass]="{'rowColor': cab.flagSeleccionado}"
-                                        *ngIf="cab.codMoneda == 'PEN'">
+                                    <ng-template let-cab ngFor [ngForOf]="data">
+                                        <tr 
+                                            *ngIf="cab.codMoneda == 'PEN'">
                                             <td>{{cab.pagador}}</td>
-                                            <td>{{cab.saldoTotal | number: '1.2-2'}}</td>
+                                            <td>{{cab.montoFacturado | number: '1.2-2'}}</td>
                                         </tr>
                                     </ng-template>
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <td>Total</td>
-                                        <td>{{onSuma('PEN', 2) | number: '1.2-2'}}</td>
+                                        <td>{{onSuma('PEN', 5) | number: '1.2-2'}}</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -80,25 +68,25 @@
                     <div class="card-body">
                         <div class="table-responsive table-wrapper">
                             <table class="table table-striped">
-                                <thead class="centerall-header">
+                                <thead>
                                     <tr>
                                         <th>Nombre Deudor(Pagador)</th>
                                         <th>Total Facturado al Desembolso INC IGV</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <ng-template let-cab ngFor [ngForOf]="lista">
-                                        <tr (click)="onRowClick(cab)" [ngClass]="{'rowColor': cab.flagSeleccionado}"
-                                        *ngIf="cab.codMoneda == 'USD'">
+                                    <ng-template let-cab ngFor [ngForOf]="data">
+                                        <tr 
+                                            *ngIf="cab.codMoneda == 'USD'">
                                             <td>{{cab.pagador}}</td>
-                                            <td>{{cab.saldoTotal | number: '1.2-2'}}</td>
+                                            <td>{{cab.montoFacturado | number: '1.2-2'}}</td>
                                         </tr>
                                     </ng-template>
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <td>Total</td>
-                                        <td>{{onSuma('USD', 2) | number: '1.2-2'}}</td>
+                                        <td>{{onSuma('USD', 5) | number: '1.2-2'}}</td>
                                     </tr>
                                 </tfoot>
                             </table>

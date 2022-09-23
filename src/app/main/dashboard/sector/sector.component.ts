@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { Dashboard } from 'app/shared/models/dashboard/dashboard';
 import { UtilsService } from 'app/shared/services/utils.service';
 import { color, EChartsOption } from 'echarts';
@@ -23,10 +24,13 @@ export class SectorComponent implements OnInit {
   public moneda = [];
   public tipoOperacion = [];
   public ejecutivoFilter = [];
+  public data = [];
+  public filterFecha: any;
   constructor(
     private formBuilder: FormBuilder,
     private utilsService: UtilsService,
-    private sectorService: SectorService
+    private sectorService: SectorService,
+    private calendar: NgbCalendar
   ) {
     this.contentHeader = {
       headerTitle: 'Sector',
@@ -55,6 +59,19 @@ export class SectorComponent implements OnInit {
       fechaHasta: [],
       usuario: []
     });
+    let fecha = new Date();
+    fecha.setDate(fecha.getDate() - Number(5));
+    this.filterFecha = {
+      desde: {
+        year: fecha.getFullYear(),
+        month: fecha.getMonth() + 1,
+        day: fecha.getDate()
+      },
+      hasta: this.calendar.getToday()
+    };
+    this.filtroForm = this.formBuilder.group({
+      fechaHasta: [],
+    });
   }
 
   ngOnInit(): void {
@@ -66,21 +83,22 @@ export class SectorComponent implements OnInit {
     this.moneda = [];
     this.dataSector = [];
     this.tipoOperacion = [];
+    this.data = [];
 
     this.utilsService.blockUIStart('Obteniendo información...');
 
     const response: Dashboard[] = await this.sectorService.listarDash({
       idMoneda: 0,
       idEjecutivo: idEjecutivo,
-      // fechaHasta: this.utilsService.formatoFecha_YYYYMM(this.filterFecha.hasta),
-      fechaHasta: 202210
+      fechaHasta: this.utilsService.formatoFecha_YYYYMM(this.filterFecha.hasta),
+      // fechaHasta: 202210
     }).toPromise().catch(error => {
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
 
     if (response) {
 
-      this.lista = response;
+     this.lista = response;
       for (const item of response) {
 
         if (this.ejecutivoFilter.find(x => x.name.toLowerCase() === item.usuario.toLowerCase()) === undefined) {
@@ -114,6 +132,14 @@ export class SectorComponent implements OnInit {
             value: this.onSuma(item.idTipoOperacion.toString(), 3),
             selected: false,
             color: item.idTipoOperacion == 1 ? '#E675F6' : item.idTipoOperacion == 2 ? '#75F675' : '#75DBF6'
+          });
+        }
+
+        if (this.data.find(x => x.rucPagador.toLowerCase() == item.rucPagador.toLowerCase()) == undefined) {
+          this.data.push({
+            rucPagador: item.rucPagador,
+            pagador: item.pagador,
+            saldoTotal: this.onSuma(item.rucPagador, 5)
           });
         }
       }
@@ -323,10 +349,16 @@ export class SectorComponent implements OnInit {
         valor += item.saldoTotal
       }
     }
-    else 
+    else if (tipo == 4)
     {
       for (const item of this.lista) {
         valor += item.saldoTotal 
+      }
+    }
+    else if (tipo == 5) {
+      monto = this.lista.filter(x => x.rucPagador.toString() === parametro);
+      for (const item of monto) {
+        valor += item.saldoTotal
       }
     }
 

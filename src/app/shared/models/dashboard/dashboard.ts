@@ -33,6 +33,12 @@ export class Dashboard {
 
   netoConfirmado: number;
   pagoTotal: number;
+
+  
+  flagPagoInteresAdelantado: boolean;
+  interesConIGV_Total: number;
+  gastosDiversosConIGV_Total: number;
+  montoFacturado_Total: number;
 }
 
 export class Detalle {

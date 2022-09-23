@@ -16,7 +16,7 @@
                     </div>
 
                 </div> -->
-                <!--  <form [formGroup]="filtroForm">
+                 <form [formGroup]="filtroForm">
                     <div class="row">
                         <div class="col-md-4 col-12">
                             <div class="form-group">
@@ -33,7 +33,7 @@
                             </div>
                         </div>
                     </div>
-                </form> -->
+                </form>
             </div>
         </core-card>
         <div class="row">
@@ -52,7 +52,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <ng-template let-cab ngFor [ngForOf]="lista">
+                                    <ng-template let-cab ngFor [ngForOf]="data">
                                         <tr (click)="onRowClick(cab)" [ngClass]="{'rowColor': cab.flagSeleccionado}"
                                         *ngIf="cab.codMoneda == 'PEN'">
                                             <td>{{cab.pagador}}</td>
@@ -87,7 +87,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <ng-template let-cab ngFor [ngForOf]="lista">
+                                    <ng-template let-cab ngFor [ngForOf]="data">
                                         <tr (click)="onRowClick(cab)" [ngClass]="{'rowColor': cab.flagSeleccionado}"
                                         *ngIf="cab.codMoneda == 'USD'">
                                             <td>{{cab.pagador}}</td>

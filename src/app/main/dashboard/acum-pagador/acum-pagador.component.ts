@@ -115,7 +115,15 @@ export class AcumPagadorComponent implements OnInit {
   }
 
   onClickDash(event, tipo: number): void {
-
+    if (tipo == 1) {
+      event.data.selected = event.data.selected ? false : true;
+      this.acumulado = event.data.selected ? event.value : this.oldAcumulado;
+      for (const item of this.ejecutivoPie.series[0].data) {
+        if (item.name !== event.data.name) {
+          item.selected = false;
+        }
+      }
+     } 
   }
 
   async onPie(moneda, velor = 0): Promise<void> {

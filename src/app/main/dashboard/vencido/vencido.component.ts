@@ -190,8 +190,6 @@ export class VencidoComponent implements OnInit {
     let detalle: EjecutivoDet[] = [];
     let dataFilter = [];
     dataFilter = this.lista.filter(x => x.usuario === parametro && x.codMoneda == moenda);
-
-    console.log('lis', dataFilter);
     
     for (const item of dataFilter) {
       if (detalle.find(x => x.pagador.toLocaleLowerCase() == item.pagador.toLocaleLowerCase()) === undefined) {
