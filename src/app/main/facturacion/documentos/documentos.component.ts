@@ -350,8 +350,8 @@ export class DocumentosComponent implements OnInit {
     this.ReactiveIUForm.tipoDocumento.setValue(cab.idTipoDocumento);
     this.ReactiveIUForm.prefijo.setValue(cab.prefijo);
     this.ReactiveIUForm.serie.setValue(cab.serie);
-    this.ReactiveIUForm.serieFormat.setValue(cab.nroDocumento.split('-')[0]);
-    this.ReactiveIUForm.correlativo.setValue(cab.nroDocumento.split('-')[1]);
+    this.ReactiveIUForm.serieFormat.setValue(cab.nroDocumento != '' ? cab.nroDocumento.split('-')[0] : '');
+    this.ReactiveIUForm.correlativo.setValue(cab.nroDocumento != '' ? cab.nroDocumento.split('-')[1] : 0);
     this.ReactiveIUForm.nroDocumento.setValue(cab.nroDocumento);
     this.idTipoOperacion = cab.idTipoOperacion;
     this.idTipoNota = cab.idTipoNota;
@@ -453,7 +453,7 @@ export class DocumentosComponent implements OnInit {
       idTipoDocumento: this.documentoForm.controls.tipoDocumento.value,
       prefijo: this.documentoForm.controls.prefijo.value,
       serie: this.documentoForm.controls.serie.value,
-      correlativo: Number(this.documentoForm.controls.correlativo.value),
+      correlativo: Number(this.documentoForm.controls.correlativo.value) ?? 0,
       nroDocumento: this.documentoForm.controls.nroDocumento.value,
       idTipoOperacion: this.idTipoOperacion,
       idTipoNota: this.idTipoNota,
@@ -642,6 +642,8 @@ export class DocumentosComponent implements OnInit {
       switch (response.tipo) {
         case 1:
           this.utilsService.showNotification('Información actualizada', 'Confirmación', 1);
+          if (response.mensaje.length > 0)
+            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
           this.utilsService.blockUIStop();
           this.onCancelar();
           break;
