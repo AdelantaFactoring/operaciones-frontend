@@ -4,7 +4,7 @@
       <label class="d-flex align-items-center"
       >Mostrar
         <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
-                (change)="onRefrescar()">
+                (change)="onRefrescar(idUsuario)">
           <option value="10">10</option>
           <option value="25">25</option>
           <option value="50">50</option>
@@ -21,7 +21,7 @@
         type="search"
         placeholder="Buscar"
         class="form-control ml-25"
-        [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" (change)="onRefrescar()"
+        [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" (change)="onRefrescar(idUsuario)"
       /></label>
     </div>
   </div>
@@ -402,7 +402,7 @@
 </div>
 <div class="row">
   <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
-    <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onRefrescar()"
+    <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onRefrescar(idUsuario)"
            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize" [ellipses]="false">
            <ng-template ngbPaginationFirst>
              <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
