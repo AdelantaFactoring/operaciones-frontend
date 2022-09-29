@@ -53,6 +53,7 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
 
   public codigo: string = '';
   public idTipoOperacion: number = 0;
+  public idEstado: number = 0;
   public nroCuentaBancariaDestino: string;
   public cciDestino: string;
   public codigoMonedaCab: string = '';
@@ -72,8 +73,13 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
     isHTML5: true
   });
 
+  public detalleForm: FormGroup;
+
   sundayDate = null;
   public activeId: any = 2;
+  public proveedor: string = "";
+  public infoBanco: LiquidacionDet[];
+  public infoBancoOld: LiquidacionDet[];
 
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;
@@ -173,6 +179,16 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
       fechaOperacion: [null]
     });
     this.oldFiltroForm = this.filtroForm.value;
+
+    this.detalleForm = this.formBuilder.group({
+      idLiquidacionCab: [0],
+      idLiquidacionDet: [0],
+      monedaCuentaBancariaDestino: ['', Validators.required],
+      bancoDestino: ['', Validators.required],
+      // nroCuentaBancariaDestino: [''],
+      // cciDestino: [''],
+      tipoCuentaBancariaDestino: ['', Validators.required]
+    });
   };
 
   async ngOnInit(): Promise<void> {
@@ -387,6 +403,7 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
     //this.idCliente = item.idCliente;
     this.solicitudForm.controls.idTipoOperacion.setValue(item.idTipoOperacion);
     this.idTipoOperacion = item.idTipoOperacion;
+    this.idEstado = item.idEstado;
     this.solicitudForm.controls.codigo.setValue(item.codigo);
     this.codigo = item.codigo;
     this.solicitudForm.controls.rucCliente.setValue(item.rucCliente);
@@ -400,8 +417,6 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
     this.solicitudForm.controls.tipoCambioMoneda.setValue(item.tipoCambioMoneda);
 
     this.tipoCambioMoneda = item.tipoCambioMoneda;
-
-    console.log(item)
 
     this.solicitudForm.controls.flagPagoInteresAdelantado.setValue(item.flagPagoInteresAdelantado);
 
@@ -793,5 +808,69 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
     if ($event === 'reload') {
       this.filtroForm.reset(this.oldFiltroForm);
     }
+  }
+
+  onEditarInfoBancaria(prov: any, modal): void {
+    this.proveedor = `(${prov.rucPagProv}) ${prov.razonSocialPagProv}`;
+    this.infoBanco = this.desembolsoDet.filter(f => f.rucPagProv === prov.rucPagProv);
+    this.infoBancoOld = this.infoBanco.map(obj => ({...obj}));
+
+    setTimeout(() => {
+      this.modalService.open(modal, {
+        scrollable: true,
+        //size: 'lg',
+        windowClass: 'my-class',
+        animation: true,
+        centered: false,
+        backdrop: "static",
+        beforeDismiss: () => {
+          return true;
+        }
+      });
+    }, 0);
+  }
+
+  onCancelarInfoBanco(modal): void {
+    this.infoBanco.forEach(el => {
+      el.monedaCuentaBancariaDestino = this.infoBancoOld.find(f => f.idLiquidacionDet === el.idLiquidacionDet).monedaCuentaBancariaDestino;
+      el.bancoDestino = this.infoBancoOld.find(f => f.idLiquidacionDet === el.idLiquidacionDet).bancoDestino;
+      el.nroCuentaBancariaDestino = this.infoBancoOld.find(f => f.idLiquidacionDet === el.idLiquidacionDet).nroCuentaBancariaDestino;
+      el.cciDestino = this.infoBancoOld.find(f => f.idLiquidacionDet === el.idLiquidacionDet).cciDestino;
+      el.tipoCuentaBancariaDestino = this.infoBancoOld.find(f => f.idLiquidacionDet === el.idLiquidacionDet).tipoCuentaBancariaDestino;
+    });
+
+    modal.dismiss();
+  }
+
+  onGuardarInfoBanco(modal: any): void {
+    if (this.detalleForm.invalid)
+      return;
+
+    this.utilsService.blockUIStart("Guardando...");
+
+    this.infoBanco.forEach(el => {
+      el.idUsuarioAud = this.currentUser.idUsuario;
+    });
+
+    this.desembolsoService.actualizarInfoBanco(this.infoBanco).subscribe((response: any) => {
+      switch (response.tipo) {
+        case 1:
+          this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+          this.utilsService.blockUIStop();
+          modal.dismiss();
+          break;
+        case 2:
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          this.utilsService.blockUIStop();
+          break;
+        default:
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          this.utilsService.blockUIStop();
+          break;
+      }
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
   }
 }

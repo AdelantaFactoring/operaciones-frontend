@@ -15,6 +15,7 @@ import { CardSnippetModule } from '@core/components/card-snippet/card-snippet.mo
 import { CoreDirectivesModule } from '@core/directives/directives';
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 import {CoreCardModule} from "../../../@core/components/core-card/core-card.module";
+import { AprobacionDetalleComponent } from './aprobacion/aprobacion-detalle/aprobacion-detalle.component';
 
 const routes: Routes = [
   {
@@ -30,7 +31,8 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    AprobacionComponent
+    AprobacionComponent,
+    AprobacionDetalleComponent
   ],
     imports: [
         CommonModule,

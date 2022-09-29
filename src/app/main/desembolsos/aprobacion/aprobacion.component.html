@@ -527,6 +527,12 @@
                       <ng-template let-prov ngFor [ngForOf]="onProveedorDet(desembolsoDet)">
                         <tr>
                           <td class="detail-td-color" colspan="13" style="text-align: left">
+                            <a href="javascript:void(0)" title="Editar Información Bancaria"
+                               class="btn btn-raised btn-outline-success btn-sm" [class.disabled]="idEstado > 4 ? true : null"
+                               (click)="onEditarInfoBancaria(prov, modalINFOBANCO)">
+                              <i class="text-success cursor-pointer" data-feather="edit"></i>
+                            </a>
+                            &nbsp;
                             <i>Proveedor:</i>&nbsp;<b>{{prov.rucPagProv}} - {{prov.razonSocialPagProv}}</b> &nbsp;
                             &nbsp;
                             <i>Subtotal
@@ -784,6 +790,33 @@
                   </button>
                   <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()" *ngIf="ver">
                     <span [data-feather]="'x-circle'"></span> Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template #modalINFOBANCO let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Proveedor: {{proveedor}}</h4>
+            <button aria-label="Close" class="close" type="button" (click)="onCancelarInfoBanco(modal)">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" ngbAutofocus tabindex="0">
+            <app-aprobacion-detalle [infoBanco]="infoBanco" [detalleForm]="detalleForm"></app-aprobacion-detalle>
+          </div>
+          <div class="modal-footer" style="display: block !important;">
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div style="float: right">
+                  <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardarInfoBanco(modal)">
+                    <span [data-feather]="'save'"></span> Guardar
+                  </button>
+                  &nbsp;
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelarInfoBanco(modal)">
+                    <span [data-feather]="'x-circle'"></span> Cancelar
                   </button>
                 </div>
               </div>
