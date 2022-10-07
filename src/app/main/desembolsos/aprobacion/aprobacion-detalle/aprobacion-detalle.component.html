@@ -1,0 +1,70 @@
+<form [formGroup]="detalleForm">
+  <div class="row">
+    <div class="col-12">
+      <div class="divider divider-warning">
+        <div class="divider-text">Información de Cuenta Bancaria</div>
+      </div>
+    </div>
+    <div class="col-md-6 col-12">
+      <div class="form-group">
+        <label>Moneda</label>
+        <input class="form-control" formControlName="monedaCuentaBancariaDestino" type="text"
+               [ngClass]="{ 'is-invalid': ReactiveIUForm.monedaCuentaBancariaDestino.errors }"
+               (ngModelChange)="onCambio()"/>
+        <div *ngIf="ReactiveIUForm.monedaCuentaBancariaDestino.errors" class="invalid-feedback">
+          <div *ngIf="ReactiveIUForm.monedaCuentaBancariaDestino.errors.required">* Campo obligatorio</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-12">
+      <div class="form-group">
+        <label>Banco</label>
+        <input class="form-control" formControlName="bancoDestino" type="text"
+               [ngClass]="{ 'is-invalid': ReactiveIUForm.bancoDestino.errors }"
+               (ngModelChange)="onCambio()"/>
+        <div *ngIf="ReactiveIUForm.bancoDestino.errors" class="invalid-feedback">
+          <div *ngIf="ReactiveIUForm.bancoDestino.errors.required">* Campo obligatorio</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-12">
+      <div class="form-group">
+        <label>N° Cuenta</label>
+        <input class="form-control" type="text"
+               [ngClass]="{ 'is-invalid': nroCuentaBancariaDestino === '' }"
+               [(ngModel)]="nroCuentaBancariaDestino" [ngModelOptions]="{standalone: true}"
+               (ngModelChange)="onCambio()"/>
+        <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''" class="invalid-feedback">
+          <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''">* Campo obligatorio solo si no
+            existe un valor en CCI
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-12">
+      <div class="form-group">
+        <label>CCI</label>
+        <input class="form-control" type="text"
+               [ngClass]="{ 'is-invalid': nroCuentaBancariaDestino === '' }"
+               [(ngModel)]="cciDestino" [ngModelOptions]="{standalone: true}"
+               (ngModelChange)="onCambio()"/>
+        <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''" class="invalid-feedback">
+          <div *ngIf="nroCuentaBancariaDestino === '' && cciDestino === ''">* Campo obligatorio solo si no
+            existe un valor en N° Cuenta
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-12">
+      <div class="form-group">
+        <label>Tipo de Cuenta</label>
+        <input class="form-control" formControlName="tipoCuentaBancariaDestino" type="text"
+               [ngClass]="{ 'is-invalid': ReactiveIUForm.tipoCuentaBancariaDestino.errors }"
+               (ngModelChange)="onCambio()"/>
+        <div *ngIf="ReactiveIUForm.tipoCuentaBancariaDestino.errors" class="invalid-feedback">
+          <div *ngIf="ReactiveIUForm.tipoCuentaBancariaDestino.errors.required">* Campo obligatorio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
