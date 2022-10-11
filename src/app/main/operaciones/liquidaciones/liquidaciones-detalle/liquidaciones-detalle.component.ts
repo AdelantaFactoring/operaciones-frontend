@@ -14,6 +14,7 @@ export class LiquidacionesDetalleComponent implements OnInit {
   @Input() dataDet: LiquidacionDet;
 
   public detalleForm: FormGroup;
+  public fechaMinima: any = { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() };
 
   constructor(private formBuilder: FormBuilder) { }
 

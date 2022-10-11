@@ -85,6 +85,7 @@
                [(ngModel)]="dataDet.fechaOperacion" container="body"
                (ngModelChange)="onCambiarFechaOperacion($event, dataCab, dataDet)"
                [ngModelOptions]="{standalone: true}"
+               [minDate]="fechaMinima"
                ngbDatepicker #basicDP="ngbDatepicker">
         <div class="input-group-append">
           <button class="btn btn-outline-secondary feather icon-calendar"
