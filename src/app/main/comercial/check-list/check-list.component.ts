@@ -569,7 +569,7 @@ export class CheckListComponent implements OnInit {
     if (e === false) {
       let cola = this.archivosSustento.queue;
       let nombres = cola.map(item => item?.file?.name)
-        .filter((value, index, self) => self.indexOf(value) === index)
+        .filter((value, index, self) => self.indexOf(value) === index);
       let sinDuplicado = [];
       for (let el of cola) {
         let duplicado = cola.filter(f => f?.file?.name === el.file.name);

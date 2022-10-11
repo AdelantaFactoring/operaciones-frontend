@@ -16,7 +16,7 @@ export class CavaliService {
   listar(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${SOLICITUD_CAVALI.listar}`,
-      `?nroDocumento=${payload.nroDocumento}&idTipoProceso=${payload.idTipoProceso}&fechaDesde=${payload.fechaDesde}&fechaHasta=${payload.fechaHasta}` +
+      `?codigoSolicitud=${payload.codigoSolicitud}&nroDocumento=${payload.nroDocumento}&idTipoProceso=${payload.idTipoProceso}&fechaDesde=${payload.fechaDesde}&fechaHasta=${payload.fechaHasta}` +
       `&idEstado=${payload.idEstado}&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
       {
         'Content-Type': CONTENT_TYPE.json
@@ -32,5 +32,15 @@ export class CavaliService {
         'Content-Type': CONTENT_TYPE.json
       }
     )
+  }
+
+  revertirEstado(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${SOLICITUD_CAVALI.revertirEstado}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
   }
 }

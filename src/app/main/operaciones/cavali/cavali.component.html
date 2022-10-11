@@ -8,6 +8,13 @@
           <div class="row">
             <div class="col-md-4 col-12">
               <div class="form-group">
+                <label>Código Solicitud</label>
+                <input class="form-control" formControlName="codigoSolicitud" type="text"
+                       (ngModelChange)="onListarCavali()"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
                 <label>N° Documento</label>
                 <input class="form-control" formControlName="nroDocumento" type="text"
                        (ngModelChange)="onListarCavali()"/>
@@ -120,6 +127,8 @@
               <table class="table table-hover min-width-table">
                 <thead class="centerall-header">
                 <tr>
+                  <!--                  <th rowspan="2">Código Solicitud</th>-->
+                  <th rowspan="2">Acción</th>
                   <th rowspan="2">N° Documento</th>
                   <th rowspan="2">Tipo Proceso</th>
                   <th rowspan="2">Id. Proceso</th>
@@ -136,18 +145,31 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of solicitudes">
-                  <td>{{item.nroDocumento}}</td>
-                  <td>{{item.tipoProceso}}</td>
-                  <td>{{item.idProceso}}</td>
-                  <td>{{item.codigo}}</td>
-                  <td>{{item.mensaje}}</td>
-                  <td>{{item.estado}}</td>
-                  <td>{{item.usuarioCreacion}}</td>
-                  <td>{{item.fechaCreacion}}</td>
-                  <td>{{item.usuarioModificacion}}</td>
-                  <td>{{item.fechaModificacion}}</td>
-                </tr>
+                <ng-template let-cod ngFor [ngForOf]="onCodigos(solicitudes)">
+                  <tr>
+                    <td class="detail-td-color" colspan="11" style="text-align: left"><i>Código Solicitud:</i>&nbsp;<b>{{cod}}</b></td>
+                  </tr>
+                  <tr *ngFor="let item of onSolicitudPorCodigo(solicitudes, cod)">
+                    <!--                    <td>{{item.codigoSolicitud}}</td>-->
+                    <td>
+                      <a href="javascript:void(0)" title="Reintentar"
+                         class="btn btn-raised btn-outline-warning btn-sm" [class.disabled]="item.idEstado === 1 || item.idTipoProceso > 3 || item.anotacionCavali"
+                      (click)="onReintentar(item)">
+                        <i class="text-warning cursor-pointer" data-feather="repeat"></i>
+                      </a>
+                    </td>
+                    <td>{{item.nroDocumento}}</td>
+                    <td>{{item.tipoProceso}}</td>
+                    <td>{{item.idProceso}}</td>
+                    <td>{{item.codigo}}</td>
+                    <td>{{item.mensaje}}</td>
+                    <td>{{item.estado}}</td>
+                    <td>{{item.usuarioCreacion}}</td>
+                    <td>{{item.fechaCreacion}}</td>
+                    <td>{{item.usuarioModificacion}}</td>
+                    <td>{{item.fechaModificacion}}</td>
+                  </tr>
+                </ng-template>
                 </tbody>
               </table>
             </div>

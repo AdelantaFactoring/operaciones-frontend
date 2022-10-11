@@ -163,7 +163,8 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
       totDesembolsarConIGVCT: [{value: 0, disabled: true}],
       tipoCambioMoneda: [{value: 0, disabled: false}],
       montoConvertido: [{value: 0, disabled: true}, Validators.required],
-
+      observacion: [{value: ''}],
+      observacionSolicitud: [{value: ''}],
       flagPagoInteresAdelantado: [{value: false, disabled: true}]
     });
     this.filtroForm = this.formBuilder.group({
@@ -430,7 +431,8 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
     this.cciDestino = item.cciDestino;
     this.solicitudForm.controls.tipoCuentaBancariaDestino.setValue(item.tipoCuentaBancariaDestino);
     this.solicitudForm.controls.idTipoCT.setValue(item.idTipoCT);
-
+    this.solicitudForm.controls.observacion.setValue(item.observacion);
+    this.solicitudForm.controls.observacionSolicitud.setValue(item.observacionSolicitud);
     // this.detalle = item.solicitudDet;
     this.sustentos = item.liquidacionCabSustento.filter(x => x.idTipoSustento === 2);
     // this.onCalcularCT(item);

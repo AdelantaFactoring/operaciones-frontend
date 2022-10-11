@@ -481,7 +481,18 @@
                     <!--                [checked]="row.valor > 0" (change)="setValor($event.currentTarget.checked ? 1 : 0, row)-->
                   </div>
                 </div>
-
+                <div class="col-12">
+                  <div class="form-group">
+                    <label>Observación de Descuento</label>
+                    <textarea class="form-control" type="text" formControlName="observacion" readonly></textarea>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label>Observación de Solicitud</label>
+                    <textarea class="form-control" style="font-weight: bold; color: red" readonly type="text" formControlName="observacionSolicitud"></textarea>
+                  </div>
+                </div>
                 <div class="col-12">
                   <div class="divider divider-success">
                     <div class="divider-text">Información del Desembolso</div>

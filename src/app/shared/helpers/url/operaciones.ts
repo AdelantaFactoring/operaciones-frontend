@@ -9,5 +9,6 @@ export const LIQUIDACIONES = {
 }
 
 export const SOLICITUD_CAVALI = {
-  listar: '/solicitudCavali/listar'
+  listar: '/solicitudCavali/listar',
+  revertirEstado: '/solicitudCavali/revertirEstado'
 }

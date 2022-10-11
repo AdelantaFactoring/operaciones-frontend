@@ -1,6 +1,7 @@
 export class SolicitudCavali {
   idSolicitudCavali: number;
   idSolicitudDet: number;
+  codigoSolicitud: string;
   nroDocumento: string;
   idTipoProceso: number;
   tipoProceso: string;
@@ -9,6 +10,7 @@ export class SolicitudCavali {
   mensaje: string;
   idEstado: number;
   estado: string;
+  anotacionCavali: boolean;
   usuarioCreacion: string;
   fechaCreacion: string;
   usuarioModificacion: string;

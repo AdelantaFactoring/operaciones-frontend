@@ -8,6 +8,7 @@ import {CavaliService} from "./cavali.service";
 import {SolicitudCavali} from "../../../shared/models/operaciones/solicitud-cavali";
 import { User } from 'app/shared/models/auth/user';
 import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-cavali',
@@ -19,7 +20,7 @@ export class CavaliComponent implements OnInit {
   public contentHeader: ContentHeader;
   public filtroForm: FormGroup;
   public oldFiltroForm: FormGroup;
-  public solicitudes: SolicitudCavali[];
+  public solicitudes: SolicitudCavali[] = [];
 
   public operationType: TablaMaestra[] = [];
   public state: TablaMaestra[] = [];
@@ -58,6 +59,7 @@ export class CavaliComponent implements OnInit {
       }
     };
     this.filtroForm = formBuilder.group({
+      codigoSolicitud: [''],
       nroDocumento: [''],
       tipoProceso: [0],
       estado: [0],
@@ -98,6 +100,7 @@ export class CavaliComponent implements OnInit {
   onListarCavali(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.cavaliService.listar({
+      codigoSolicitud: this.filtroForm.controls.codigoSolicitud.value,
       nroDocumento: this.filtroForm.controls.nroDocumento.value,
       idTipoProceso: this.filtroForm.controls.tipoProceso.value,
       fechaDesde: this.utilsService.formatoFecha_YYYYMMDD(this.filterFecha.desde),
@@ -140,6 +143,53 @@ export class CavaliComponent implements OnInit {
     }, error => {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();
+    });
+  }
+
+  onCodigos(sol: SolicitudCavali[]): string[] {
+    if (sol.length === 0) return [];
+
+    return sol.map(m => m.codigoSolicitud).filter((value, index, self) => self.indexOf(value) === index);
+  }
+
+  onSolicitudPorCodigo(sol: SolicitudCavali[], codigo: string): SolicitudCavali[] {
+    return sol.filter(f => f.codigoSolicitud === codigo);
+  }
+
+  onReintentar(item: SolicitudCavali) {
+    Swal.fire({
+      title: 'Advertencia',
+      text: `Se volverá a consultar el estado del proceso "${item.tipoProceso}" del documento "${item.nroDocumento}". Esto puede generar nuevos registros dependiendo de la respuesta del estado. ¿Desea continuar?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: '<i class="fa fa-check"></i> Sí',
+      cancelButtonText: '<i class="fa fa-times-circle"></i> No',
+      customClass: {
+        confirmButton: 'btn btn-warning',
+        cancelButton: 'btn btn-danger'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart("Revirtiendo estado...");
+        this.cavaliService.revertirEstado({
+          idSolicitudCavali: item.idSolicitudCavali,
+          idUsuarioAud: this.currentUser.idUsuario
+        }).subscribe(response => {
+          if (response.tipo === 1) {
+            this.onListarCavali();
+            this.utilsService.showNotification('Reversión Satisfactoria', 'Confirmación', 1);
+            this.utilsService.blockUIStop();
+          } else if (response.tipo === 2) {
+            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          } else {
+            this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          }
+          this.utilsService.blockUIStop();
+        }, error => {
+          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+          this.utilsService.blockUIStop();
+        });
+      }
     });
   }
 }
