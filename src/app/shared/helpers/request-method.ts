@@ -35,4 +35,10 @@ export class RequestMethod {
     // let _params = this._checkQueryGet(body);
      window.open(url, body, '_blank');
   }
+
+  getFile(url: string, params: string): Observable<Blob> {
+    return this.http.get(url + ((params) ? params : ''), {
+      responseType: 'blob'
+    });
+  }
 }

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnChanges, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnChanges, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
@@ -18,7 +18,9 @@ import {LiquidacionCabSustento} from "../../../shared/models/operaciones/Liquida
 import {ActivatedRoute} from "@angular/router";
 import {User} from 'app/shared/models/auth/user';
 import {Audit} from "../../../shared/models/shared/audit";
+import * as fileSaver from 'file-saver';
 import {ContentHeader} from "../../../layout/components/content-header/content-header.component";
+import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-liquidaciones',
@@ -28,6 +30,7 @@ import {ContentHeader} from "../../../layout/components/content-header/content-h
 })
 export class LiquidacionesComponent implements OnInit, AfterViewInit {
   @ViewChild('coreCard') coreCard;
+  @ViewChild('desdeFC') desdeFC: ElementRef;
 
   public currentUser: User;
   public mostrar: string = 'false';
@@ -79,11 +82,17 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
   public dataCabecera: LiquidacionCab;
   public dataDetalle: LiquidacionDet;
 
+  public mostrarFiltroExportacion: boolean = false;
+
   get ReactiveIUForm(): any {
     return this.liquidacionForm.controls;
   }
 
-  public fechaMinima: any = { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() };
+  public fechaMinima: any = {
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+    day: new Date().getDate()
+  };
   public activeId: any = 2;
 
   constructor(
@@ -93,7 +102,8 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     private solicitudesService: SolicitudesService,
     private liquidacionesService: LiquidacionesService,
     private tablaMaestraService: TablaMaestraService,
-    private formBuilder: FormBuilder,) {
+    private formBuilder: FormBuilder,
+    private calendar: NgbCalendar) {
     this.contentHeader = {
       headerTitle: 'Aprobación',
       actionButton: true,
@@ -143,7 +153,9 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
       estado: [0],
       pagadorProveedorDet: [''],
       nroDocumento: [''],
-      fechaOperacion: [null]
+      fechaOperacion: [null],
+      desdeFC: this.calendar.getToday(),
+      hastaFC: this.calendar.getToday()
     });
     this.oldFiltroForm = this.filtroForm.value;
   }
@@ -200,6 +212,12 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
       pageIndex: this.page,
       pageSize: this.pageSize
     }).subscribe((response: LiquidacionCab[]) => {
+      for (const row of response) {
+        row.sumTotalInteres = row.liquidacionDet.reduce((sum, current) => sum + current.interesConIGV, 0);
+        row.sumTotalGastos = row.liquidacionDet.reduce((sum, current) => sum + current.gastosDiversosConIGV, 0);
+        row.sumTotalFacturado = row.liquidacionDet.reduce((sum, current) => sum + current.montoTotalFacturado, 0);
+      }
+      this.mostrarFiltroExportacion = false;
       this.liquidaciones = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
 
@@ -902,5 +920,54 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     let fechaOperacionGlobalModFormatted = `${cab.fechaOperacion_Global_MOD.day.toString().padStart(2, '0')}/${cab.fechaOperacion_Global_MOD.month.toString().padStart(2, '0')}/${cab.fechaOperacion_Global_MOD.year.toString()}`;
 
     return fechaOperacionGlobalModFormatted == cab.fechaOperacion_Global_ORG;
+  }
+
+  onExportar(tipo: number): void {
+    switch (tipo) {
+      case 1:
+        this.mostrarFiltroExportacion = false;
+        let desde = this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.desdeFC.value);
+        let hasta = this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.hastaFC.value);
+
+        this.utilsService.blockUIStart('Exportando archivo...');
+        this.liquidacionesService.exportar({
+          idConsulta: this.mostrar === 'true' ? 1 : 0,
+          codigoLiquidacion: this.filtroForm.controls.codigoLiquidacion.value,
+          codigoSolicitud: this.filtroForm.controls.codigoSolicitud.value,
+          cliente: this.filtroForm.controls.cliente.value,
+          pagProv: this.filtroForm.controls.pagadorProveedor.value,
+          moneda: this.filtroForm.controls.moneda.value,
+          idTipoOperacion: this.filtroForm.controls.tipoOperacion.value,
+          idEstado: this.filtroForm.controls.estado.value,
+          pagProvDet: this.filtroForm.controls.pagadorProveedorDet.value,
+          nroDocumento: this.filtroForm.controls.nroDocumento.value,
+          fechaOperacion: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaOperacion.value) ?? "",
+          desde,
+          hasta,
+          search: this.search
+        }).subscribe(s => {
+          let blob: any = new Blob([s], {type: 'application/vnd.ms-excel'});
+          const url = window.URL.createObjectURL(blob);
+          fileSaver.saveAs(blob, `Liquidaciones_${desde}_${hasta}.xlsx`);
+          this.utilsService.showNotification('Exportación satisfactoria', 'Confirmación', 1);
+          this.utilsService.blockUIStop();
+        }, error => {
+          console.log(error)
+          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+          this.utilsService.blockUIStop();
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
+  onExpandirExportar():void {
+    this.mostrarFiltroExportacion = true;
+    setTimeout(() => {
+      this.coreCard.collapse();
+      this.coreCard.onclickEvent.collapseStatus = false;
+    }, 0);
+    setTimeout(() => this.desdeFC.nativeElement.focus(),500);
   }
 }

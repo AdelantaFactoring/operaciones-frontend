@@ -1,5 +1,6 @@
 export const LIQUIDACIONES = {
   listar: '/liquidacion/listar',
+  exportar: '/liquidacion/exportar',
   generar: '/liquidacion/generar',
   eliminar: '/liquidacion/eliminar',
   actualizar: '/liquidacion/actualizar',

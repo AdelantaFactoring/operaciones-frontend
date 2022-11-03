@@ -74,4 +74,8 @@ export class LiquidacionCab {
 
   idEjecutivo: number;
   usuarioNombreCompleto: string;
+
+  sumTotalInteres: number;
+  sumTotalGastos: number;
+  sumTotalFacturado: number;
 }

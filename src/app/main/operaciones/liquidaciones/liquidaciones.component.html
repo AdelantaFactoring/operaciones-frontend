@@ -105,6 +105,50 @@
                 </div>
               </div>
             </div>
+            <div class="col-12">
+              <div class="divider divider-secondary">
+                <div class="divider-text"><span [data-feather]="'chevrons-down'"></span> (Solo para Exportación)</div>
+              </div>
+            </div>
+            <div class="col-12" *ngIf="mostrarFiltroExportacion">
+              <div class="form-group">
+                <div class="text-warning">
+                  <i class="mr-0 mr-sm-1" data-feather="alert-circle"></i> Se está utilizando este rango de fechas, basado en el campo "Fecha Creación"
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Desde</label>
+                <div class="input-group">
+                  <input #desdeFC class="form-control" placeholder="yyyy-mm-dd"
+                         [ngClass]="{ 'warning': mostrarFiltroExportacion }"
+                         formControlName="desdeFC" container="body"
+                         ngbDatepicker #basicDPDes="ngbDatepicker">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDPDes.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Hasta</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         [ngClass]="{ 'warning': mostrarFiltroExportacion }"
+                         formControlName="hastaFC" container="body"
+                         ngbDatepicker #basicDPHas="ngbDatepicker">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDPHas.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </form>
       </div>
@@ -126,12 +170,41 @@
                 <span class="d-none d-sm-inline-block">Aprobar</span>
               </button>
             </div>
-            <div class="pt-1 pb-1" *ngIf="mostrar === 'true'">
+            <div class="pt-1 pb-1 pr-1" *ngIf="mostrar === 'true'">
               <button type="submit" rippleEffect class="btn btn-warning"
                       (click)="onEnviar(1, null)">
                 <i class="mr-0 mr-sm-1" data-feather="mail"></i>
                 <span class="d-none d-sm-inline-block">Enviar Correo(s)</span>
               </button>
+            </div>
+            <div class="pt-1 pb-1">
+              <div class="d-flex align-items-center">
+                <div ngbDropdown container="body">
+                  <a ngbDropdownToggle href="javascript:void(0);"
+                     class="btn btn-success" id="ddExport"
+                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                     title="Opciones" (click)="onExpandirExportar()">
+                    <i class="mr-0 mr-sm-1" data-feather="download"></i>
+                    <span class="d-none d-sm-inline-block">Exportar</span>
+                  </a>
+                  <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="ddExport">
+                    <a ngbDropdownItem href="javascript:void(0)" title="Exportar Liquidaciones"
+                       class="d-flex align-items-center" (click)="onExportar(1)">
+                      <i class="text-success cursor-pointer mr-50 fa fa-file-excel-o"></i> Exportar solo liquidaciones
+                    </a>
+                    <a ngbDropdownItem href="javascript:void(0)" title="Exportar Liquidaciones"
+                       class="d-flex align-items-center" disabled (click)="onExportar(2)">
+                      <i class="text-success cursor-pointer mr-50 fa fa-file-excel-o"></i> Exportar liquidaciones y<br>
+                      pagos
+                    </a>
+                    <a ngbDropdownItem href="javascript:void(0)" title="Exportar Liquidaciones"
+                       class="d-flex align-items-center" disabled (click)="onExportar(3)">
+                      <i class="text-success cursor-pointer mr-50 fa fa-file-excel-o"></i> Exportar liquidaciones<br>
+                      (Formato Contabilidad)
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -260,7 +333,8 @@
                                class="d-flex align-items-center">
                               <i class="text-success cursor-pointer mr-50" data-feather="edit"></i> Editar
                             </a>
-                            <a ngbDropdownItem href="javascript:void(0)" *ngIf="mostrar === 'false' || cab.idEstado !== 1" title="Ver"
+                            <a ngbDropdownItem href="javascript:void(0)"
+                               *ngIf="mostrar === 'false' || cab.idEstado !== 1" title="Ver"
                                (click)="onEditarCab(cab,  modalINFO)"
                                class="d-flex align-items-center">
                               <i class="text-info cursor-pointer mr-50" data-feather="eye"></i> Ver info. de descuento
@@ -399,7 +473,8 @@
                               <th class="detail-th-color">Monto a Financiar</th>
                               <!--                              <th class="detail-th-color">Interés</th>-->
                               <!--                              <th class="detail-th-color">Interés (IGV)</th>-->
-                              <th class="detail-th-color">Interés Total</th>
+                              <th class="detail-th-color">Interés Total ({{ cab.sumTotalInteres | number: '1.2-2' }})
+                              </th>
                               <!--                              <th class="detail-th-color">Gastos Contrato</th>-->
                               <!--                              <th class="detail-th-color">Gastos Vigencia Poder</th>-->
                               <!--                              <th class="detail-th-color">Servicio Custodia</th>-->
@@ -407,8 +482,12 @@
                               <!--                              <th class="detail-th-color">Comisión Carta Notarial</th>-->
                               <!--                              <th class="detail-th-color">Gastos Diversos</th>-->
                               <!--                              <th class="detail-th-color">Gastos Diversos (IGV)</th>-->
-                              <th class="detail-th-color">Total Gastos Diversos</th>
-                              <th class="detail-th-color">Monto Total Facturado</th>
+                              <th class="detail-th-color">Total Gastos Diversos
+                                ({{ cab.sumTotalGastos | number: '1.2-2' }})
+                              </th>
+                              <th class="detail-th-color">Monto Total Facturado
+                                ({{ cab.sumTotalFacturado | number: '1.2-2' }})
+                              </th>
                               <th class="detail-th-color">Nota Crédito por Dev.</th>
                               <th class="detail-th-color">Monto Desembolso</th>
                             </tr>
@@ -601,7 +680,8 @@
                 <div class="col-12">
                   <div class="form-group">
                     <label>Observación de Solicitud</label>
-                    <textarea class="form-control" style="font-weight: bold; color: red" readonly type="text" formControlName="observacionSolicitud"></textarea>
+                    <textarea class="form-control" style="font-weight: bold; color: red" readonly type="text"
+                              formControlName="observacionSolicitud"></textarea>
                   </div>
                 </div>
                 <div class="col-12">
