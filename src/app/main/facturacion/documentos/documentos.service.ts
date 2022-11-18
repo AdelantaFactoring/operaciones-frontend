@@ -58,6 +58,16 @@ export class DocumentosService {
     );
   }
 
+  anular(payload): Observable<any> {
+    return this.requestMethod.post(
+      `${environment.apiUrl}${DOCUMENTOS.anular}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
   eliminar(payload): Observable<any> {
     return this.requestMethod.delete(
       `${environment.apiUrl}${DOCUMENTOS.eliminar}`,

@@ -62,4 +62,6 @@ export class LiquidacionDocumentoCab {
   usuarioModificacion: string;
   fechaModificacion: string;
   correoClienteContacto: string;
+
+  motivoAnulacion: string;
 }

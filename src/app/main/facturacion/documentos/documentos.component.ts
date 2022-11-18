@@ -43,6 +43,8 @@ export class DocumentosComponent implements OnInit {
   public oldDocumentoForm: FormGroup;
   public detalleForm: FormGroup;
   public oldDetalleForm: FormGroup;
+  public anulacionForm: FormGroup;
+  public oldAnulacionForm: FormGroup;
   public cambiarIcono: boolean = false;
   public submitted: boolean = false;
   public submitted_Detalle: boolean = false;
@@ -75,6 +77,8 @@ export class DocumentosComponent implements OnInit {
   public nroCuentaBcoNacion: string = "";
   public idMedioPagoDetraccion: number = 0;
   public tipoCambioMoneda: number = 0;
+
+  public liquidacionDocCabActual: LiquidacionDocumentoCab;
 
   get ReactiveIUForm(): any {
     return this.documentoForm.controls;
@@ -146,18 +150,24 @@ export class DocumentosComponent implements OnInit {
       // nroDocumentoReferencia: [''],
     });
     this.oldDocumentoForm = this.documentoForm.value;
+
     this.detalleForm = this.formBuilder.group({
       tipoAfectacion: [null, Validators.required],
       codigo: ['', Validators.required],
       concepto: ['', Validators.required],
       um: ['ZZ', Validators.required],
       cantidad: [1, [Validators.required, Validators.min(1)]],
-      precioUnitario: [0, [Validators.required, Validators.min(1)]],
+      precioUnitario: [0, [Validators.required]], //, Validators.min(1)
       precioUnitarioIGV: [{value: 0, disabled: true}],
       montoTotal: [{value: 0, disabled: true}],
-      nroDocumentoReferencia: [{value: '', disabled: true}],
+      nroDocumentoReferencia: [''],
     });
     this.oldDetalleForm = this.detalleForm.value;
+
+    this.anulacionForm = this.formBuilder.group({
+      motivo: ['', Validators.required],
+    });
+    this.oldAnulacionForm = this.anulacionForm.value;
   }
 
   async ngOnInit(): Promise<void> {
@@ -812,5 +822,51 @@ export class DocumentosComponent implements OnInit {
     }
 
     this.onCalcularMonto();
+  }
+
+  onAnulacion(cab: LiquidacionDocumentoCab, modal): void {
+    this.liquidacionDocCabActual = cab;
+    this.anulacionForm.reset(this.oldAnulacionForm);
+    setTimeout(() => {
+      this.modalService.open(modal, {
+        scrollable: true,
+        backdrop: 'static',
+        windowClass: 'my-class1',
+        animation: true,
+        //size: 'lg',
+        beforeDismiss: () => {
+          return true;
+        }
+      });
+    }, 0);
+  }
+
+  onAnular(modal: any) {
+    if (this.anulacionForm.invalid) return;
+
+    this.utilsService.blockUIStart("Enviando a anular...");
+    this.liquidacionDocCabActual.idEmpresa = this.currentUser.idEmpresa;
+    this.liquidacionDocCabActual.motivoAnulacion = this.anulacionForm.controls.motivo.value;
+    this.documentosService.anular(this.liquidacionDocCabActual).subscribe((response: any) => {
+      switch (response.tipo) {
+        case 1:
+          this.utilsService.showNotification('Información enviada correctamente', 'Confirmación', 1);
+          this.utilsService.blockUIStop();
+          modal.dismiss();
+          this.onCancelar();
+          break;
+        case 2:
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          this.utilsService.blockUIStop();
+          break;
+        default:
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          this.utilsService.blockUIStop();
+          break;
+      }
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
   }
 }

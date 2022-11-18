@@ -146,6 +146,11 @@
                                class="d-flex align-items-center">
                               <i class="text-info fa fa-search mr-50"></i> Actualizar Estado
                             </a>
+                            <a ngbDropdownItem href="javascript:void(0)" title="Anular"
+                               (click)="onAnulacion(cab, modalANULACION)" [class.disabled]="cab.idEstado != 3 ? true : null"
+                               class="d-flex align-items-center">
+                              <i class="text-danger mr-50" data-feather="slash"></i> Anular
+                            </a>
                           </div>
                         </div>
                       </div>
@@ -199,7 +204,7 @@
                           <tr>
                             <th class="detail-th-color">Código</th>
                             <th class="detail-th-color">Concepto</th>
-                            <th class="detail-th-color" *ngIf="cab.idLiquidacionCab > 0">N° Documento Ref.</th>
+                            <th class="detail-th-color">N° Documento Ref.</th>
                             <th class="detail-th-color">U.M.</th>
                             <th class="detail-th-color">Cantidad</th>
                             <th class="detail-th-color">Precio Unitario</th>
@@ -209,7 +214,7 @@
                           <tr *ngFor="let item of cab.liquidacionDocumentoDet">
                             <td>{{item.codigo}}</td>
                             <td>{{item.concepto}}</td>
-                            <td *ngIf="cab.idLiquidacionCab > 0">{{item.nroDocumentoReferencia}}</td>
+                            <td>{{item.nroDocumentoReferencia}}</td>
                             <td>{{item.uM_Desc}}</td>
                             <td>{{item.cantidad | number: '1.0-0'}}</td>
                             <td>{{item.precioUnitario | number: '1.2-2'}}</td>
@@ -638,7 +643,7 @@
                           <th class="detail-th-color">Precio Unitario</th>
                           <th class="detail-th-color">P.U. IGV</th>
                           <th class="detail-th-color">Importe Total (sin IGV)</th>
-                          <th class="detail-th-color" *ngIf="this.ReactiveIUForm.idLiquidacionCab.value > 0">N°
+                          <th class="detail-th-color">N°
                             Documento Ref.
                           </th>
                         </tr>
@@ -703,6 +708,10 @@
                           <td>
                             <input class="form-control" type="text" placeholder="Monto Total"
                                    formControlName="montoTotal" mask="separator" thousandSeparator=","/>
+                          </td>
+                          <td>
+                            <input class="form-control" type="text" placeholder="N° Documento Ref."
+                                   formControlName="nroDocumentoReferencia"/>
                           </td>
                         </tr>
                         <tr *ngFor="let item of detalle">
@@ -802,7 +811,7 @@
                                    [disabled]="true"
                                    [ngModelOptions]="{standalone: true}"/>
                           </td>
-                          <td *ngIf="this.ReactiveIUForm.idLiquidacionCab.value > 0">
+                          <td>
                             {{item.nroDocumentoReferencia}}
                           </td>
                         </tr>
@@ -827,6 +836,43 @@
                   </button>
                   <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelar()" *ngIf="!ver">
                     <span [data-feather]="'x-circle'"></span> Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template #modalANULACION let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Motivo de anulación de documento</h4>
+            <button aria-label="Close" class="close" type="button" (click)="modal.dismiss()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" ngbAutofocus tabindex="0">
+            <form [formGroup]="anulacionForm">
+              <div class="row">
+                <div class="col-md-12 col-12">
+                  <div class="form-group">
+                    <label>Motivo</label>
+                    <textarea class="form-control" formControlName="motivo" type="text"
+                              minlength="1" maxlength="200" rows="3"></textarea>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer" style="display: block !important;">
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div style="float: right">
+                  <button class="btn btn-danger" rippleEffect type="button" (click)="onAnular(modal)">
+                    <span [data-feather]="'slash'"></span> Anular
+                  </button>
+                  &nbsp;
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="modal.dismiss()">
+                    <span [data-feather]="'x-circle'"></span> Cancelar
                   </button>
                 </div>
               </div>

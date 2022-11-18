@@ -3,5 +3,6 @@ export const DOCUMENTOS = {
   guardar: '/liquidacion/guardarDocumento',
   eliminar: '/liquidacion/eliminarDocumento',
   firmaPublicacionDeclaracion: '/liquidacion/firmaPublicacionDeclaracionDocumento',
-  consultarEstado: '/liquidacion/consultarEstadoDocumento'
+  consultarEstado: '/liquidacion/consultarEstadoDocumento',
+  anular: '/liquidacion/anulacionDocumento'
 }
