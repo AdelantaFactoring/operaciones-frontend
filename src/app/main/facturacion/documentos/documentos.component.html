@@ -811,8 +811,12 @@
                                    [disabled]="true"
                                    [ngModelOptions]="{standalone: true}"/>
                           </td>
-                          <td>
-                            {{item.nroDocumentoReferencia}}
+                          <td [ngClass]="{'row-edicion': item.editado}">
+                            <p [ngClass]="{ 'eliminado': !item.estado }"
+                               *ngIf="!item.edicion">{{item.nroDocumentoReferencia}}</p>
+                            <input *ngIf="item.edicion" class="form-control" type="text" placeholder="N° Doc. Ref"
+                                   [(ngModel)]="item.nroDocumentoReferencia"
+                                   [ngModelOptions]="{standalone: true}"/>
                           </td>
                         </tr>
                         </tbody>
