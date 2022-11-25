@@ -18,6 +18,7 @@ import {AprobacionService} from './aprobacion.service';
 import * as fileSaver from 'file-saver';
 import Swal from 'sweetalert2';
 import { User } from 'app/shared/models/auth/user';
+import {LiquidacionesService} from "../../operaciones/liquidaciones/liquidaciones.service";
 
 @Component({
   selector: 'app-aprobacion',
@@ -90,6 +91,7 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
     private desembolsoService: AprobacionService,
     private formBuilder: FormBuilder,
     private modalService: NgbModal,
+    private liquidacionesService: LiquidacionesService,
     private clienteService: ClientesService,
     private tablaMaestraService: TablaMaestraService
   ) {
@@ -873,6 +875,43 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
     }, error => {
       this.utilsService.blockUIStop();
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+  }
+
+  onEliminar(cab: LiquidacionCab): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea eliminar el registro '${cab.codigo}'?, esta acción no podrá revertirse`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-primary'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart('Eliminando...');
+        this.liquidacionesService.eliminar({
+          idLiquidacionCab: cab.idLiquidacionCab,
+          idUsuarioAud: this.currentUser.idUsuario
+        }).subscribe(response => {
+          if (response.tipo === 1) {
+            this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
+            this.utilsService.blockUIStop();
+            this.onListarDesembolso();
+          } else if (response.tipo === 2) {
+            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          } else {
+            this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          }
+          this.utilsService.blockUIStop();
+        }, error => {
+          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+          this.utilsService.blockUIStop();
+        });
+      }
     });
   }
 }

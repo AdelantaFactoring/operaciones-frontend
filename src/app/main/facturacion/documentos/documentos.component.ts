@@ -10,7 +10,7 @@ import {TablaMaestraService} from "../../../shared/services/tabla-maestra.servic
 import Swal from "sweetalert2";
 import {ClientesService} from "../../comercial/clientes/clientes.service";
 import {Cliente} from "../../../shared/models/comercial/cliente";
-import { User } from 'app/shared/models/auth/user';
+import {User} from 'app/shared/models/auth/user';
 
 @Component({
   selector: 'app-documentos',
@@ -47,6 +47,7 @@ export class DocumentosComponent implements OnInit {
   public oldAnulacionForm: FormGroup;
   public cambiarIcono: boolean = false;
   public submitted: boolean = false;
+  public submitted2: boolean = false;
   public submitted_Detalle: boolean = false;
   public igv: number = 0;
   public ver: boolean = true;
@@ -436,11 +437,11 @@ export class DocumentosComponent implements OnInit {
 
     if ((this.idTipoDocumento === 1 && this.onDetracciones(this.idTipoOperacion)) &&
       (this.idBienServicioDetraccion === 0 || this.tasaDetraccion <= 0 || this.montoDetraccion <= 0
-      || this.nroCuentaBcoNacion === "" || this.idMedioPagoDetraccion === 0))
+        || this.nroCuentaBcoNacion === "" || this.idMedioPagoDetraccion === 0))
       return;
 
     if ((this.idTipoDocumento === 1 && this.onDetracciones(this.idTipoOperacion)
-        && this.documentoForm.controls.moneda.value > 1) && this.tasaDetraccion <= 0)
+      && this.documentoForm.controls.moneda.value > 1) && this.tasaDetraccion <= 0)
       return;
 
     if (this.detalle.filter(f => f.estado).length === 0) {
@@ -864,6 +865,59 @@ export class DocumentosComponent implements OnInit {
           this.utilsService.blockUIStop();
           break;
       }
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+  }
+
+  onBuscarDocumento(): void {
+    this.submitted2 = true;
+    if (this.idTipoDocumentoReferencia === 0 || this.nroDocumentoReferencia === '')
+      return;
+
+    this.utilsService.blockUIStart("Buscando documento...");
+    this.documentosService.obtenerPorNroDocumento({
+      idTipoDocumento: this.idTipoDocumentoReferencia,
+      nroDocumento: this.nroDocumentoReferencia
+    }).subscribe((response: LiquidacionDocumentoCab) => {
+      if (response != null) {
+        this.documentoForm.controls.idCliente.setValue(response.idCliente);
+        this.documentoForm.controls.rucCliente.setValue(response.rucCliente);
+        this.documentoForm.controls.razonSocialCliente.setValue(response.razonSocialCliente);
+        this.documentoForm.controls.direccionCliente.setValue(response.direccionCliente);
+        this.documentoForm.controls.moneda.setValue(response.idMoneda);
+        this.documentoForm.controls.formaPago.setValue(response.idFormaPago),
+        this.documentoForm.controls.monto.setValue(response.monto);
+        this.documentoForm.controls.montoIGV.setValue(response.montoIGV);
+        this.documentoForm.controls.montoTotal.setValue(response.montoTotal);
+
+        this.detalle = [];
+        for (const item of response.liquidacionDocumentoDet) {
+          this.detalle.push({
+            idLiquidacionDocumentoDet: 0,
+            idLiquidacionDocumentoCab: 0,
+            idTipoAfectacion: item.idTipoAfectacion,
+            codigoTipoAfectacion: item.codigoTipoAfectacion,
+            tipoAfectacion: item.tipoAfectacion,
+            codigo: item.codigo,
+            concepto: item.concepto,
+            um: item.um,
+            uM_Desc: item.uM_Desc,
+            cantidad: item.cantidad,
+            precioUnitario: item.precioUnitario,
+            precioUnitarioIGV: item.precioUnitarioIGV,
+            montoTotal: item.montoTotal,
+            nroDocumentoReferencia: item.nroDocumentoReferencia,
+            estado: true,
+            idFila: this.utilsService.autoIncrement(this.detalle),
+            edicion: false,
+            editado: true
+          });
+        }
+      } else
+        this.utilsService.showNotification('No se encontró información asociado a este número de documento', 'Información', 4);
+      this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);

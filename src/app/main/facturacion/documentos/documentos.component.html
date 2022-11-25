@@ -313,15 +313,60 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6 col-12" *ngIf="idTipoDocumento != 1">
+                <div class="col-12" *ngIf="idTipoDocumento != 1">
                   <div class="form-group">
-                    <label>Motivo</label>
-                    <input class="form-control" type="text" [ngModelOptions]="{ standalone: true }"
-                           [(ngModel)]="motivo" [readonly]="idEstado != 1 ? true : null"
-                           [ngClass]="{ 'is-invalid': submitted && idTipoDocumento != 1 && motivo === '' }"/>
+                    <label for="motivo">Motivo</label>
+                    <textarea id="motivo" class="form-control" type="text" [ngModelOptions]="{ standalone: true }"
+                           [(ngModel)]="motivo" [readonly]="idEstado != 1 ? true : null" maxlength="200" rows="3"
+                           [ngClass]="{ 'is-invalid': submitted && idTipoDocumento != 1 && motivo === '' }"></textarea>
                     <div *ngIf="submitted && idTipoDocumento != 1 && motivo === ''" class="invalid-feedback">
                       <div *ngIf="motivo === ''">* Campo obligatorio</div>
                     </div>
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="idTipoDocumento != 1">
+                  <div class="divider divider-warning">
+                    <div class="divider-text">Documento de Referencia</div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="idTipoDocumento != 1">
+                  <div class="form-group">
+                    <label>Tipo Documento</label>
+                    <ng-select appendTo="body" [clearable]="false" [items]="tipoDocumento" bindLabel="descripcion"
+                               [ngModelOptions]="{ standalone: true }"
+                               [(ngModel)]="idTipoDocumentoReferencia" placeholder="Tipo de Documento"
+                               bindValue="idColumna" [readonly]="idEstado != 1 ? true : null"
+                               [ngClass]="{ 'is-invalid': (submitted || submitted2) && idTipoDocumento != 1 && idTipoDocumentoReferencia === 0 }">
+                    </ng-select>
+                    <div *ngIf="(submitted || submitted2) && idTipoDocumento != 1 && idTipoDocumentoReferencia === 0"
+                         class="invalid-feedback">
+                      <div *ngIf="idTipoDocumentoReferencia === 0">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="idTipoDocumento != 1">
+                  <label>N° Documento</label>
+                  <div class="input-group">
+                    <input class="form-control" type="text" [ngModelOptions]="{ standalone: true }"
+                           [(ngModel)]="nroDocumentoReferencia" placeholder="X###-########"
+                           [readonly]="idEstado != 1 ? true : null"
+                           [ngClass]="{ 'is-invalid': (submitted || submitted2) && idTipoDocumento != 1 && nroDocumentoReferencia === '' }"/>
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary feather"
+                              rippleEffect type="button" (click)="onBuscarDocumento()">
+                        <span ngbTooltip="Buscar Documento" placement="left"
+                              container="body" [data-feather]="'search'"></span>
+                      </button>
+                    </div>
+                    <div *ngIf="(submitted || submitted2) && idTipoDocumento != 1 && nroDocumentoReferencia === ''"
+                         class="invalid-feedback">
+                      <div *ngIf="nroDocumentoReferencia === ''">* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="idTipoDocumento != 1">
+                  <div class="divider divider-info">
+                    <div class="divider-text"><span [data-feather]="'chevrons-down'"></span></div>
                   </div>
                 </div>
                 <div class="col-md-12 col-12" hidden>
@@ -496,39 +541,6 @@
                     <label>Monto Total</label>
                     <input class="form-control" formControlName="montoTotal" type="text"
                            mask="separator" thousandSeparator=","/>
-                  </div>
-                </div>
-                <div class="col-12" *ngIf="idTipoDocumento != 1">
-                  <div class="divider divider-warning">
-                    <div class="divider-text">Documento de Referencia</div>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12" *ngIf="idTipoDocumento != 1">
-                  <div class="form-group">
-                    <label>Tipo Documento</label>
-                    <ng-select appendTo="body" [clearable]="false" [items]="tipoDocumento" bindLabel="descripcion"
-                               [ngModelOptions]="{ standalone: true }"
-                               [(ngModel)]="idTipoDocumentoReferencia" placeholder="Tipo de Documento"
-                               bindValue="idColumna" [readonly]="idEstado != 1 ? true : null"
-                               [ngClass]="{ 'is-invalid': submitted && idTipoDocumento != 1 && idTipoDocumentoReferencia === 0 }">
-                    </ng-select>
-                    <div *ngIf="submitted && idTipoDocumento != 1 && idTipoDocumentoReferencia === 0"
-                         class="invalid-feedback">
-                      <div *ngIf="idTipoDocumentoReferencia === 0">* Campo obligatorio</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12" *ngIf="idTipoDocumento != 1">
-                  <div class="form-group">
-                    <label>N° Documento</label>
-                    <input class="form-control" type="text" [ngModelOptions]="{ standalone: true }"
-                           [(ngModel)]="nroDocumentoReferencia" placeholder="X###-########"
-                           [readonly]="idEstado != 1 ? true : null"
-                           [ngClass]="{ 'is-invalid': submitted && idTipoDocumento != 1 && nroDocumentoReferencia === '' }"/>
-                    <div *ngIf="submitted && idTipoDocumento != 1 && nroDocumentoReferencia === ''"
-                         class="invalid-feedback">
-                      <div *ngIf="nroDocumentoReferencia === ''">* Campo obligatorio</div>
-                    </div>
                   </div>
                 </div>
                 <div class="col-12" *ngIf="onDetracciones(idTipoOperacion)">

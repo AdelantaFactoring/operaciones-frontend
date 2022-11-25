@@ -28,6 +28,16 @@ export class DocumentosService {
     );
   }
 
+  obtenerPorNroDocumento(payload): Observable<any> {
+    return this.requestMethod.get(
+      `${environment.apiUrl}${DOCUMENTOS.obtenerPorNroDocumento}`,
+      `?idTipoDocumento=${payload.idTipoDocumento}&nroDocumento=${payload.nroDocumento}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
   guardar(payload): Observable<any> {
     return this.requestMethod.post(
       `${environment.apiUrl}${DOCUMENTOS.guardar}`,

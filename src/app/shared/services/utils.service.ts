@@ -46,6 +46,12 @@ export class UtilsService {
         toastClass: 'toast ngx-toastr',
         closeButton: true
       });
+    } else if (idType === 4) {
+      this.toastr.info(message, title, {
+        progressBar: true,
+        toastClass: 'toast ngx-toastr',
+        closeButton: true
+      });
     }
   }
 
