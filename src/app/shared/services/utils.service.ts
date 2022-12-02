@@ -119,8 +119,7 @@ export class UtilsService {
   }
 
   autoIncrement(array: any[]): number {
-    const ids = array.map(m => m.idFila);
-
+    const ids = array.filter(f => f.idFila != null).map(m => m.idFila);
     if (ids.length > 0) {
       const sorted = ids.sort((a, b) => a - b);
       return sorted[sorted.length - 1] + 1;
@@ -191,7 +190,14 @@ export class UtilsService {
       idTabla: idTabla,
       idColumna: 0,
       valor: '',
-      descripcion: '(Todos)'
+      descripcion: '(Todos)',
+      totalRows: 0,
+      idTipoAfectacion: 0,
+      edicion: false,
+      editado: false,
+      idFila: 0,
+      asignar: false,
+      tipoAfectacion: ''
     });
 
     // @ts-ignore

@@ -118,6 +118,33 @@ export const menu: CoreMenu[] = [
     ]
   },
   {
+    id: 'maestros',
+    title: 'Catálogos',
+    // translate: 'MENU.DASHBOARD.COLLAPSIBLE',
+    type: 'section',
+    icon: 'package',
+    children: [
+      {
+        id: '19',
+        title: 'Maestros',
+        // translate: 'MENU.DASHBOARD.ANALYTICS',
+        type: 'collapsible',
+        icon: 'settings',
+        children: [
+          {
+            id: '19',
+            title: 'Concepto (C. Pago)',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'catalogos/maestros/conceptoComprobante',
+            icon: 'circle',
+            //openInNewTab: true
+          },
+        ]
+      }
+    ]
+  },
+  {
     id: 'comercial',
     title: 'Comercial',
     // translate: 'MENU.DASHBOARD.COLLAPSIBLE',

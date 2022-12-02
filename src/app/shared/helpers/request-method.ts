@@ -1,7 +1,11 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {InjectorInstance} from 'app/app.module';
+import {Injectable} from "@angular/core";
 
+@Injectable({
+  providedIn: 'root'
+})
 export class RequestMethod {
   private http: HttpClient;
   constructor() {
@@ -26,6 +30,10 @@ export class RequestMethod {
 
   put(url: string, body: string, headers: any): Observable<any> {
     return this.http.put(url, body, {headers: new HttpHeaders(headers)});
+  }
+
+  async putAsync(url: string, body: string, headers: any): Promise<any> {
+    return await this.http.put<any>(url, body, {headers: new HttpHeaders(headers)}).toPromise();
   }
   // postFile(url: string, body: FormData, headers: any): Observable<any> {
   //   return this.http.post(url, body, {headers: new HttpHeaders(headers)});

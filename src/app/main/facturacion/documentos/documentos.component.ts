@@ -180,6 +180,7 @@ export class DocumentosComponent implements OnInit {
     this.medioPago = await this.onListarMaestros(25, 0);
     this.formaPago = await this.onListarMaestros(20, 0);
     this.tipoAfectacion = await this.onListarMaestros(22, 0);
+    this.tipoAfectacion.forEach(f => f.descripcion = `${f.valor} - ${f.descripcion}`);
     this.inafectoIGV = (await this.onListarMaestros(1000, 6))[0];
     this.medioPagoSunat = await this.onListarMaestros(21, 0);
     this.bienesServicios = await this.onListarMaestros(26, 0);
