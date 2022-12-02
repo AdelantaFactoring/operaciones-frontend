@@ -20,11 +20,16 @@ import { VencidoComponent } from './vencido/vencido.component';
 import { CoreCommonModule } from '@core/common.module';
 import { ConfirmingComponent } from './confirming/confirming.component';
 import { ObjToArrayPipe } from './prueba.pipe';
+import { PowerBiComponent } from './power-bi/power-bi.component';
 
 const routes: Routes = [
   {
     path: '',
     children: [
+      {
+        path: 'powerbi',
+        component: PowerBiComponent
+      },
       {
         path: 'pendientepago/:moneda',
         component: PendientePagoComponent
@@ -77,7 +82,8 @@ const routes: Routes = [
     VigenteComponent,
     VencidoComponent,
     ConfirmingComponent,
-    ObjToArrayPipe
+    ObjToArrayPipe,
+    PowerBiComponent
   ],
   imports: [
     CommonModule,

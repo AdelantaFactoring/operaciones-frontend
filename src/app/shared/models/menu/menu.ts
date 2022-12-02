@@ -17,6 +17,15 @@ export const menu: CoreMenu[] = [
         //url: 'dashboard/pendientepago',
         children: [
           {
+            id: 'powerbi',
+            title: 'Power BI',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'dashboard/powerbi',
+            icon: 'circle',
+            //openInNewTab: true
+          },
+          {
             id: '18',
             title: 'Global PEN',
             //translate: 'MENU.PAGES.AUTH.LOGIN1',
