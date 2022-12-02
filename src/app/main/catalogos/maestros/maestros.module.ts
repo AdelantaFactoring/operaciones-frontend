@@ -25,7 +25,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    ConceptoComprobanteComponent
+    ConceptoComprobanteComponent    
   ],
   imports: [
     CommonModule,

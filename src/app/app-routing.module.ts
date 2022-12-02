@@ -14,6 +14,11 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'catalogos',
+    loadChildren: () => import('app/main/catalogos/catalogos.module').then(m => m.CatalogoModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'comercial',
     loadChildren: () => import('app/main/comercial/comercial.module').then(m => m.ComercialModule),
     canActivate: [AuthGuard]

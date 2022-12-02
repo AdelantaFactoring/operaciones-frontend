@@ -150,6 +150,14 @@ export const menu: CoreMenu[] = [
             //openInNewTab: true
           },
         ]
+      },
+      {
+        id: '20',
+        title: 'Tipo Cambio',
+        // translate: 'MENU.DASHBOARD.ANALYTICS',
+        type: 'item',
+        icon: 'file-text',
+        url: 'catalogos/tipo-cambio'        
       }
     ]
   },
