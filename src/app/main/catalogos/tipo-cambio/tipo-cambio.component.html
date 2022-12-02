@@ -1,0 +1,204 @@
+<div class="content-wrapper p-0">
+    <div class="content-body">
+        <app-content-header class="utble" [contentHeader]="contentHeader"></app-content-header>
+
+        <section id="body">
+            <core-card #coreCard [actions]="['collapse']">
+                <h4 class="card-title">Buscar por</h4>
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-md-3 col-12">
+                            <div class="form-group">
+                                <label for="desde" class="utble">Desde </label>
+                                <div class="input-group">
+                                    <input #basicDPFrom="ngbDatepicker" #i18nDP="ngbDatepicker" [(ngModel)]="fromDate"
+                                        (ngModelChange)="onSetTipoCambio    ()" class="form-control" ngbDatepicker
+                                        placeholder="dd/mm/yyyy" id="desde">
+                                    <div class="input-group-append">
+                                        <button (click)="basicDPFrom.toggle()"
+                                            class="btn btn-outline-secondary feather icon-calendar" rippleEffect
+                                            type="button"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-12">
+                            <div class="form-group">
+                                <label for="hasta" class="utble">Hasta </label>
+                                <div class="input-group">
+                                    <input #basicDPTo="ngbDatepicker" #i18nDP="ngbDatepicker" [(ngModel)]="toDate"
+                                        (ngModelChange)="onSetTipoCambio()" class="form-control" ngbDatepicker
+                                        placeholder="dd/mm/yyyy" id="hasta">
+                                    <div class="input-group-append">
+                                        <button (click)="basicDPTo.toggle()"
+                                            class="btn btn-outline-secondary feather icon-calendar" rippleEffect
+                                            type="button"></button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </core-card>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 col-12">
+                            <button (click)="onSetTipoCambio()" class="btn btn-secondary ml-1" style="margin-top: 5px;">
+                                <i class="mr-0 mr-sm-1" data-feather="refresh-cw"></i><span
+                                    class="d-none d-sm-inline-block">Refrescar</span>
+                            </button>
+                            <button (click)="Nuevo(NTC)" class="btn btn-primary ml-1" style="margin-top: 5px;">
+                                <i class="mr-0 mr-sm-1" data-feather="plus"></i><span
+                                    class="d-none d-sm-inline-block">Nuevo</span>
+                            </button>
+                        </div>
+                        <div class="col-md-12 col-12 mt-1 ml-2">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="d-flex align-items-center">Mostrar
+                                    <select class="form-control mx-25" [(ngModel)]="documentosSettings.pageSize"
+                                        [ngModelOptions]="{ standalone: true }" (change)="onSetTipoCambio()">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                    filas</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-12 mt-2">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="centerall-header">
+                                        <tr>
+                                            <th rowspan="2" class="utble text-nowrap" title="Acción">ACCIÓN</th>
+                                            <th rowspan="2" class="utble text-nowrap" title="FECHA">FECHA</th>
+                                            <th rowspan="2" class="utble text-nowrap" title="PRECIO COMPRA">PRECIO
+                                                COMPRA
+                                            </th>
+                                            <th rowspan="2" class="utble text-nowrap" title="PRECIO VENTA">PRECIO VENTA
+                                            </th>
+                                            <th colspan="4" class="audit-columns">Auditoría</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="audit-columns">Creado por</th>
+                                            <th class="audit-columns">Fecha creación</th>
+                                            <th class="audit-columns">Modificado por</th>
+                                            <th class="audit-columns">Fecha modificación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let row of rowsTipoCambio" class="cursor-pointer">
+                                            <td>
+                                                <div class="d-flex align-items-center justify-content-center">
+                                                    <button (click)="Edit(NTC, row)" class="btn" ngbTooltip="Editar"
+                                                        placement="top" class="btn btn-sm btn-outline-success">
+                                                        <i class="text-success cursor-pointer" data-feather="edit"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td class="utble">{{ row.fecha }}</td>
+                                            <td class="utble">{{ row.precioCompra}}</td>
+                                            <td class="utble">{{ row.precioVenta }}</td>
+                                            <td>{{row.usuarioCreacion}}</td>
+                                            <td>{{row.fechaCreacion}}</td>
+                                            <td>{{row.usuarioModificacion}}</td>
+                                            <td>{{row.fechaModificacion}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
+                                    <ngb-pagination [collectionSize]="documentosSettings.colletionSize"
+                                        [(page)]="documentosSettings.page" (pageChange)="onSetTipoCambio()"
+                                        [rotate]="true" [boundaryLinks]="true" [pageSize]="documentosSettings.pageSize"
+                                        class="d-flex justify-content-center">
+                                        <ng-template ngbPaginationFirst><span data-feather="chevrons-left"
+                                                [size]="18"></span>
+                                        </ng-template>
+                                        <ng-template ngbPaginationPrevious><span [data-feather]="'chevron-left'"
+                                                [class]="'font-weight-bolder'" [size]="18"></span>
+                                        </ng-template>
+                                        <ng-template ngbPaginationNext><span [data-feather]="'chevron-right'"
+                                                [class]="'font-weight-bolder'" [size]="18"></span>
+                                        </ng-template>
+                                        <ng-template ngbPaginationLast><span data-feather="chevrons-right"
+                                                [size]="18"></span>
+                                        </ng-template>
+                                    </ngb-pagination>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <ng-template #NTC let-modal>
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel1">
+                    {{ headertext }}</h4>
+                <button (click)="modal.dismiss('Cross click')" aria-label="Close" class="close" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" ngbAutofocus tabindex="0">
+                <form [formGroup]="TipoCambioForm">
+                    <div class="row">
+                        <div class="col-md-12 col-12">
+                            <div class="form-group">
+                                <label>Fecha Inicio:</label>
+                                <div class="input-group">
+                                    <input #basicDP="ngbDatepicker" #i18nDP="ngbDatepicker" [(ngModel)]="fechaInicio"
+                                        class="form-control" ngbDatepicker placeholder="dd/mm/yyyy"
+                                        formControlName="fecha">
+                                    <div class="input-group-append">
+                                        <button (click)="basicDP.toggle()"
+                                            class="btn btn-outline-secondary feather icon-calendar" rippleEffect
+                                            type="button"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="form-group">
+                                <label>Precio Compra:</label>
+                                <input type="number" class="form-control" formControlName="precioCompra">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="form-group">
+                                <label>Precio Venta:</label>
+                                <input type="number" class="form-control" formControlName="precioVenta">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="display: block !important;">
+                <div class="row">
+                    <div class="col-md-12 col-12">
+                        <div style="float: right">
+                            <button (click)="SaveTipoCambio()" class="btn btn-primary" rippleEffect type="submit">
+                                Aceptar
+                            </button>
+                            &nbsp;
+                            <button (click)="DismissModal()" class="btn btn-secondary" rippleEffect type="button">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+        <block-ui></block-ui>
+    </div>
+</div>
