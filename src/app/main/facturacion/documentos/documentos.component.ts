@@ -11,6 +11,8 @@ import Swal from "sweetalert2";
 import {ClientesService} from "../../comercial/clientes/clientes.service";
 import {Cliente} from "../../../shared/models/comercial/cliente";
 import {User} from 'app/shared/models/auth/user';
+import {MaestrosService} from "../../catalogos/maestros/maestros.service";
+import {TablaMaestraRelacion} from "../../../shared/models/shared/tabla-maestra-relacion";
 
 @Component({
   selector: 'app-documentos',
@@ -94,7 +96,8 @@ export class DocumentosComponent implements OnInit {
               private documentosService: DocumentosService,
               private formBuilder: FormBuilder,
               private tablaMaestraService: TablaMaestraService,
-              private clientesService: ClientesService,) {
+              private clientesService: ClientesService,
+              private maestrosService: MaestrosService) {
     this.contentHeader = {
       headerTitle: 'Documentos',
       actionButton: true,
@@ -740,13 +743,22 @@ export class DocumentosComponent implements OnInit {
     modal.dismiss("");
   }
 
-  onSeleccionarConcepto(tm: TablaMaestra, modal): void {
+  async onSeleccionarConcepto(tm: TablaMaestra, modal): Promise<void> {
+    let rel: TablaMaestraRelacion = await this.maestrosService.obtenerRelacionAsync({
+      idTabla1: 16,
+      idColumna1: tm.idColumna
+    }).then((response: TablaMaestraRelacion) => response).catch(error => null);
+
     if (this.fila === null) {
       this.ReactiveIUForm_Detalle.codigo.setValue(tm.valor);
       this.ReactiveIUForm_Detalle.concepto.setValue(tm.descripcion);
+
+      this.ReactiveIUForm_Detalle.tipoAfectacion.setValue(rel != null ? rel.idColumna_2 : null);
     } else {
       this.fila.codigo = tm.valor;
       this.fila.concepto = tm.descripcion;
+
+      this.fila.idTipoAfectacion = rel != null ? rel.idColumna_2 : 0
     }
 
     modal.dismiss("");
@@ -889,7 +901,7 @@ export class DocumentosComponent implements OnInit {
         this.documentoForm.controls.direccionCliente.setValue(response.direccionCliente);
         this.documentoForm.controls.moneda.setValue(response.idMoneda);
         this.documentoForm.controls.formaPago.setValue(response.idFormaPago),
-        this.documentoForm.controls.monto.setValue(response.monto);
+          this.documentoForm.controls.monto.setValue(response.monto);
         this.documentoForm.controls.montoIGV.setValue(response.montoIGV);
         this.documentoForm.controls.montoTotal.setValue(response.montoTotal);
 

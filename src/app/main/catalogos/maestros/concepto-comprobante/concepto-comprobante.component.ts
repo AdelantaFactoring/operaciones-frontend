@@ -5,6 +5,8 @@ import {MaestrosService} from "../maestros.service";
 import {TablaMaestraService} from "../../../../shared/services/tabla-maestra.service";
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import Swal from "sweetalert2";
+import {TablaMaestraRelacion} from 'app/shared/models/shared/tabla-maestra-relacion';
+import {User} from "../../../../shared/models/auth/user";
 
 @Component({
   selector: 'app-concepto-comprobante',
@@ -12,6 +14,7 @@ import Swal from "sweetalert2";
   styleUrls: ['./concepto-comprobante.component.scss']
 })
 export class ConceptoComprobanteComponent implements OnInit {
+  public currentUser: User;
   public contentHeader: any;
   public tablaMaestra: TablaMaestra[];
   public tipoAfectacion: TablaMaestra[];
@@ -69,11 +72,12 @@ export class ConceptoComprobanteComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.utilsService.blockUIStart('Obteniendo maestros...');
     this.tipoAfectacion = await this.onListarMaestros(22, 0);
     this.tipoAfectacion.forEach(f => f.descripcion = `${f.valor} - ${f.descripcion}`);
     this.utilsService.blockUIStop();
-    this.onListar();
+    await this.onListar();
   }
 
   async onListarMaestros(idTabla: number, idColumna: number): Promise<TablaMaestra[]> {
@@ -84,16 +88,28 @@ export class ConceptoComprobanteComponent implements OnInit {
       .catch(error => []);
   }
 
-  onListar(): void {
+  async onListar(): Promise<void> {
     this.utilsService.blockUIStart('Obteniendo información...');
-    this.maestrosService.listar({
+    await this.maestrosService.listarAsync({
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize,
       idTabla: this.idTabla
-    }).subscribe((response: TablaMaestra[]) => {
+    }).then(async (response: TablaMaestra[]) => {
       this.tablaMaestra = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
+
+      await this.maestrosService.listarRelacionAsync({
+        idTabla1: this.idTabla,
+        idTabla2: 22
+      }).then((response: TablaMaestraRelacion[]) => {
+        for (let el of this.tablaMaestra) {
+          let rel = response.find(f => f.idColumna_1 === el.idColumna);
+          el.idTipoAfectacion = rel != null ? rel.idColumna_2 : 0;
+          el.tipoAfectacion = rel != null ? rel.valor_2 + ' - ' + rel.descripcion_2 : '';
+        }
+      }).catch(error => []);
+
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -127,6 +143,11 @@ export class ConceptoComprobanteComponent implements OnInit {
   }
 
   onEditar(item: TablaMaestra): void {
+    if (this.tablaMaestra.filter(f => f.edicion).length > 0) {
+      this.utilsService.showNotification("Termine una edición primero.", 'alerta', 2);
+      return;
+    }
+
     this.oldMaestro = {...item};
     item.edicion = true;
   }
@@ -169,20 +190,26 @@ export class ConceptoComprobanteComponent implements OnInit {
 
   async onConfirmarCambio(item: TablaMaestra): Promise<void> {
     if (item.asignar) {
-      item.idTipoAfectacion = item.idTipoAfectacion;
-      item.tipoAfectacion = this.tipoAfectacion.find(f => f.idColumna === item.idTipoAfectacion).descripcion;
-      item.asignar = false;
+      if (item.idTipoAfectacion === 0) return;
+      if (await this.onGuardarRelacion(item)) {
+        item.tipoAfectacion = this.tipoAfectacion.find(f => f.idColumna === item.idTipoAfectacion).descripcion;
+        item.asignar = false;
+      }
     } else {
       if (this.onInvalido(item)) return;
       if (await this.onGuardar(item)) {
         item.edicion = false;
         item.editado = true;
-        this.onListar();
+        await this.onListar();
       }
     }
   }
 
   onAsignar(item: TablaMaestra): void {
+    if (this.tablaMaestra.filter(f => f.asignar).length > 0) {
+      this.utilsService.showNotification("Termine una asignación primero.", 'alerta', 2);
+      return;
+    }
     this.oldMaestro = {...item};
     item.asignar = true;
   }
@@ -192,6 +219,39 @@ export class ConceptoComprobanteComponent implements OnInit {
       return true;
 
     return false;
+  }
+
+  private async onGuardarRelacion(item: TablaMaestra): Promise<boolean> {
+    this.utilsService.blockUIStart("Guardando...");
+    let response = await this.maestrosService.guardarRelacionAsync({
+      idTabla_1: this.idTabla,
+      idColumna_1: item.idColumna,
+      idTabla_2: 22,
+      idColumna_2: item.idTipoAfectacion,
+      idUsuarioAud: this.currentUser.idUsuario
+    }).then((response: any) => response, error => null)
+      .catch(error => null);
+
+    let res = false;
+    switch (response.tipo) {
+      case 1:
+        this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+        this.utilsService.blockUIStop();
+        res = true;
+        break;
+      case 2:
+        this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+        this.utilsService.blockUIStop();
+        res = false;
+        break;
+      default:
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        this.utilsService.blockUIStop();
+        res = false;
+        break;
+    }
+
+    return res;
   }
 
   private async onGuardar(item: TablaMaestra): Promise<boolean> {
