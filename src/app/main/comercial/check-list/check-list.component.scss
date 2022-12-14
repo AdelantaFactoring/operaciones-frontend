@@ -33,3 +33,7 @@
   background-color: lightpink;
   font-weight: bold;
 }
+
+.dark-layout .divider .divider-text::before, .dark-layout .divider .divider-text::after {
+  border-color: purple !important;
+}

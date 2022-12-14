@@ -77,6 +77,7 @@ export class GenerarLiquidacionComponent implements OnInit {
       razonSocialPagProv: [{value: '', disabled: true}],
       moneda: [{value: '', disabled: true}],
       tipoOperacion: [{value: '', disabled: true}],
+      observacion: [''],
       tasaNominalMensual: [{value: 0, disabled: true}],
       tasaNominalAnual: [{value: 0, disabled: true}],
       tasaNominalMensualMora: [{value: 0, disabled: true}],
@@ -320,6 +321,7 @@ export class GenerarLiquidacionComponent implements OnInit {
     this.solicitudForm.controls.razonSocialPagProv.setValue(item.razonSocialPagProv);
     this.solicitudForm.controls.moneda.setValue(item.moneda);
     this.solicitudForm.controls.tipoOperacion.setValue(item.tipoOperacion);
+    this.solicitudForm.controls.observacion.setValue(item.observacion);
     this.solicitudForm.controls.tasaNominalMensual.setValue(item.tasaNominalMensual);
     this.solicitudForm.controls.tasaNominalAnual.setValue(item.tasaNominalAnual);
     this.solicitudForm.controls.tasaNominalMensualMora.setValue(item.tasaNominalMensualMora);

@@ -331,7 +331,8 @@
             <div class="col-12">
               <label for="obs">Observación</label>
               <fieldset class="form-group">
-                <textarea formControlName="observacion" class="form-control" id="obs" minlength="1" maxlength="200" rows="3"></textarea>
+                <textarea formControlName="observacion" class="form-control" id="obs" minlength="1" maxlength="200"
+                          rows="3"></textarea>
               </fieldset>
             </div>
             <div class="col-12">
@@ -565,6 +566,98 @@
                   </tbody>
                 </table>
               </div>
+            </div>
+            <div class="col-12" *ngIf="solicitudCabActual.solicitudDet.length === 1">
+              <div class="divider">
+                <div class="divider-text">Información de Adelanto</div>
+              </div>
+            </div>
+            <div class="col-12" *ngIf="solicitudCabActual.solicitudDet.length === 1">
+              <div class="form-group">
+                <div class="custom-control custom-switch custom-control-inline">
+                  <input type="checkbox" class="custom-control-input"
+                         id="adelanto" formControlName="adelanto"
+                         (ngModelChange)="onAdelantoCambiar()"
+                  />
+                  <label class="custom-control-label"
+                         for="adelanto">Adelanto</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-12" *ngIf="verAdelanto && solicitudCabActual.solicitudDet.length === 1">
+              <form [formGroup]="adelantoForm">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="centerall-header">
+                    <tr>
+                      <th>Acción</th>
+                      <th>N°</th>
+                      <th>Fecha Confirmado</th>
+                      <th>Neto Confirmado</th>
+                      <th>Días Efectivo</th>
+                      <th>Fondo Resguardo</th>
+                      <th>Monto a Financiar</th>
+                      <th>Interés</th>
+                      <th>Interés Total</th>
+                      <th>Gastos Diversos</th>
+                      <th>Total Gastos Diversos</th>
+                      <th>Monto Desembolso</th>
+                      <th>Fecha Desembolso</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>
+                        <a href="javascript:void(0)" title="Nuevo" (click)="onAgregarAdelanto()"
+                           class="btn btn-raised btn-outline-info btn-sm">
+                          <i class="text-info cursor-pointer" data-feather="plus-circle"></i>
+                        </a>
+                      </td>
+                      <td colspan="2">
+                        <div class="input-group">
+                          <input class="form-control" placeholder="Fecha" formControlName="fecha" container="body"
+                                 ngbDatepicker #basicDP="ngbDatepicker" readonly>
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary feather icon-calendar"
+                                    (click)="basicDP.toggle()" type="button" rippleEffect></button>
+                          </div>
+                        </div>
+                        <!--                               [ngClass]="{ 'is-invalid': submitted && maestroForm.controls.valor.errors }"/>-->
+                      </td>
+                      <td colspan="2">
+                        <input class="form-control" type="text" placeholder="Monto" formControlName="monto"
+                               mask="separator" thousandSeparator=","/>
+                        <!--                               [ngClass]="{ 'is-invalid': submitted && maestroForm.controls.descripcion.errors }"/>-->
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr *ngFor="let item of adelantos">
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <a href="javascript:void(0)" title="Eliminar"
+                             (click)="onEliminarAdelanto(item)"
+                             class="btn btn-raised btn-outline-danger btn-sm">
+                            <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                          </a>
+                        </div>
+                      </td>
+                      <td>{{item.nro}}</td>
+                      <td>{{item.fechaConfirmado}}</td>
+                      <td>{{item.netoConfirmado}}</td>
+                      <td>{{item.diasEfectivo}}</td>
+                      <td>{{item.fondoResguardo}}</td>
+                      <td>{{item.montoCobrar}}</td>
+                      <td>{{item.interes}}</td>
+                      <td>{{item.interesConIGV}}</td>
+                      <td>{{item.gastosDiversos}}</td>
+                      <td>{{item.gastosDiversosConIGV}}</td>
+                      <td>{{item.montoDesembolso}}</td>
+                      <td>{{item.fechaDesembolsoFormat}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </form>
             </div>
             <div class="col-12">
               <div class="divider divider-danger">

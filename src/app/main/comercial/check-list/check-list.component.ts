@@ -17,8 +17,9 @@ import Swal from "sweetalert2";
 import {ClientePagadorService} from "../cliente-pagador/cliente-pagador.service";
 import {ClientePagadorGastos} from "../../../shared/models/comercial/cliente-pagador-gastos";
 import {ClienteGastos} from "../../../shared/models/comercial/cliente-gastos";
-import { User } from 'app/shared/models/auth/user';
+import {User} from 'app/shared/models/auth/user';
 import {UsuarioService} from "../../seguridad/usuario/usuario.service";
+import {SolicitudCabAdelanto} from "../../../shared/models/comercial/solicitud-cab-adelanto";
 
 @Component({
   selector: 'app-check-list',
@@ -37,7 +38,10 @@ export class CheckListComponent implements OnInit {
   public gastos: ClienteGastos[] = [];
   public tiposArchivos: TablaMaestra[] = [];
   public tipoCT: TablaMaestra[] = [];
+  public adelantos: SolicitudCabAdelanto[];
   public solicitudForm: FormGroup;
+  public adelantoForm: FormGroup;
+  public oldAdelantoForm: FormGroup;
   public seleccionarTodo: boolean = false;
   public cambiarIcono: boolean = false;
   public search: string = '';
@@ -70,6 +74,7 @@ export class CheckListComponent implements OnInit {
   public filtroForm: FormGroup;
   public oldFiltroForm: FormGroup;
   public optUsuario = [];
+  public verAdelanto: boolean;
 
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;
@@ -148,20 +153,27 @@ export class CheckListComponent implements OnInit {
       gastosConIGVCT: [{value: 0, disabled: true}],
       totFacurarConIGVCT: [{value: 0, disabled: true}],
       totDesembolsarConIGVCT: [{value: 0, disabled: true}],
-      fondoResguardo:  [{value: 0, disabled: true}],
-      netoSolicitado:  [{value: 0, disabled: true}],
-      interesIncluidoIGV:  [{value: 0, disabled: true}],
-      gastosIncluidoIGV:  [{value: 0, disabled: true}],
-      totalFacturarIGV:  [{value: 0, disabled: true}],
-      totalDesembolso:  [{value: 0, disabled: true}],
+      fondoResguardo: [{value: 0, disabled: true}],
+      netoSolicitado: [{value: 0, disabled: true}],
+      interesIncluidoIGV: [{value: 0, disabled: true}],
+      gastosIncluidoIGV: [{value: 0, disabled: true}],
+      totalFacturarIGV: [{value: 0, disabled: true}],
+      totalDesembolso: [{value: 0, disabled: true}],
       flagPagoInteresAdelantado: false,
-      observacion: ['']
+      observacion: [''],
+      adelanto: [false]
     });
 
     this.filtroForm = this.formBuilder.group({
       usuario: [0]
     });
     this.oldFiltroForm = this.filtroForm.value;
+
+    this.adelantoForm = this.formBuilder.group({
+      fecha: [null],
+      monto: [null, [Validators.required, Validators.min(1)]]
+    });
+    this.oldAdelantoForm = this.adelantoForm.value;
   }
 
   async ngOnInit(): Promise<void> {
@@ -177,7 +189,7 @@ export class CheckListComponent implements OnInit {
     //this.onListarSolicitudes();
   }
 
-  onUsuarioCombo(): void{
+  onUsuarioCombo(): void {
     this.utilsService.blockUIStart('Obteniendo información...');
     this.usuarioService.combo({
       idEmpresa: this.currentUser.idEmpresa
@@ -245,6 +257,29 @@ export class CheckListComponent implements OnInit {
   }
 
   onEditar(item: SolicitudCab, modal: any): void {
+    this.adelantos = [];
+    this.adelantos.push({
+      idSolicitudCabAdelanto: 0,
+      idSolicitudCab: 0,
+      nro: 0,
+      igv: 0,
+      fechaConfirmado: '',
+      netoConfirmado: 0,
+      fondoResguardo: 0,
+      tasaNominalMensual: 0,
+      financiamiento: 0,
+      diasEfectivo: 0,
+      montoCobrar: 0,
+      interes: 0,
+      interesConIGV: 0,
+      gastosDiversos: 0,
+      gastosDiversosConIGV: 0,
+      montoDesembolso: 0,
+      fechaDesembolso: null,
+      fechaDesembolsoFormat: '',
+      saldo: 0
+    });
+
     this.solicitudCabActual = {...item};
     this.solicitudForm.controls.idSolicitudCab.setValue(item.idSolicitudCab);
     this.idCliente = item.idCliente;
@@ -443,8 +478,7 @@ export class CheckListComponent implements OnInit {
       return;
     if ((this.nombreContacto === "" || this.telefonoContacto === "" || this.correoContacto === ""))
       return;
-    if (this.sustentos.length === 0 && this.archivos.length === 0)
-    {
+    if (this.sustentos.length === 0 && this.archivos.length === 0) {
       this.utilsService.showNotification('Cargar un Documento de Sustento', 'Alerta', 2);
       return;
     }
@@ -456,7 +490,7 @@ export class CheckListComponent implements OnInit {
         }
       }
       if (item.idEstado == 4) {
-        this.utilsService.showNotification('Una de las Facturas tiene un estado de Disconformidad','Alerta', 2);
+        this.utilsService.showNotification('Una de las Facturas tiene un estado de Disconformidad', 'Alerta', 2);
         return;
       }
     }
@@ -648,7 +682,7 @@ export class CheckListComponent implements OnInit {
     modal.dismiss("Cross Click");
   }
 
-  onEliminarArchivo(item): void{
+  onEliminarArchivo(item): void {
     //item.remove();
     let archivo = item.nombre;
     let id = 0;
@@ -668,10 +702,10 @@ export class CheckListComponent implements OnInit {
     }
   }
 
-  onCalcularCT(item: SolicitudCab): void{
+  onCalcularCT(item: SolicitudCab): void {
     let TNM, TNA, nroDias, intereses, montoSolicitado, totFacturar, fondoResguardo = 0;
     let contrato, servicioCustodia, servicioCobranza, cartaNotarial, gDiversonsSIgv, gDiversonsCIgv, gastoIncluidoIGV;
-    let netoSolicitado = 0, igvCT,  financiamiento;
+    let netoSolicitado = 0, igvCT, financiamiento;
 
     contrato = this.solicitudForm.controls.gastosContrato.value;
     servicioCustodia = this.solicitudForm.controls.servicioCustodia.value;
@@ -691,15 +725,13 @@ export class CheckListComponent implements OnInit {
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
-      this.solicitudForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100)/100);
-      this.solicitudForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100)/100);
-      this.solicitudForm.controls.interesIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100)/100);
+      this.solicitudForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.interesIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.gastosIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totalFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totalDesembolso.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
-    }
-    else
-    {
+    } else {
       fondoResguardo = montoSolicitado - ((montoSolicitado * financiamiento) / 100);
       netoSolicitado = montoSolicitado - fondoResguardo;
 
@@ -708,8 +740,8 @@ export class CheckListComponent implements OnInit {
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;
       totFacturar = intereses + gastoIncluidoIGV;
 
-      this.solicitudForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100)/100);
-      this.solicitudForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100)/100);
+      this.solicitudForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100) / 100);
+      this.solicitudForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.interesIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.gastosIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
       this.solicitudForm.controls.totalFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
@@ -721,5 +753,49 @@ export class CheckListComponent implements OnInit {
     if ($event === 'reload') {
       this.filtroForm.reset(this.oldFiltroForm);
     }
+  }
+
+  async onAgregarAdelanto(): Promise<void> {
+    let igv = Number((await this.onListarMaestros(1000, 2))[0].valor) / 100;
+
+    //adelanto
+    let monto = this.adelantoForm.controls.monto.value;
+    let fecha: any = new Date(this.adelantoForm.controls.fecha.value.year,
+      this.adelantoForm.controls.fecha.value.month - 1,
+      this.adelantoForm.controls.fecha.value.day);
+
+    //solicitud
+    let det = this.solicitudCabActual.solicitudDet[0];
+    let fechaConfirmado: any = new Date(det.fechaConfirmado.year, det.fechaConfirmado.month - 1,
+      det.fechaConfirmado.day);
+    let diasEfectivo = Math.abs(fecha.getTime() - fechaConfirmado.getTime());
+    diasEfectivo = Math.ceil(diasEfectivo / (1000 * 60 * 60 * 24)) + 1;
+
+    let gastosDiversos = (this.solicitudCabActual.usarGastoVigenciaPoder ? this.solicitudCabActual.gastosContrato : 0) +
+      (this.solicitudCabActual.usarGastoVigenciaPoder ? this.solicitudCabActual.gastoVigenciaPoder : 0) +
+      this.solicitudCabActual.servicioCustodia +
+      this.solicitudCabActual.servicioCobranza +
+      this.solicitudCabActual.comisionCartaNotarial;
+    let gastosDiversosConIGV = gastosDiversos * (igv + 1);
+
+    let montoCobrar = ((360 * monto) + (360 * (gastosDiversos * (igv + 1)))) / (360 - ((diasEfectivo * ((this.solicitudCabActual.tasaNominalMensual / 100) * 12)) * (igv + 1)));
+    let interes = montoCobrar * ((this.solicitudCabActual.tasaNominalAnual / 100) / 360) * diasEfectivo;
+    let interesConIGV = interes * (igv + 1);
+    let montoTotalFacturado = interesConIGV + gastosDiversosConIGV;
+    let montoDesembolso = montoCobrar - montoTotalFacturado
+    // this.solicitudForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100) / 100);
+    // this.solicitudForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100) / 100);
+    // this.solicitudForm.controls.interesIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
+    // this.solicitudForm.controls.gastosIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
+    // this.solicitudForm.controls.totalFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
+    // this.solicitudForm.controls.totalDesembolso.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
+  }
+
+  onEliminarAdelanto(item: any): void {
+
+  }
+
+  onAdelantoCambiar(): void {
+    this.verAdelanto = !this.verAdelanto;
   }
 }
