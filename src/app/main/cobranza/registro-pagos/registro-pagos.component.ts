@@ -5,7 +5,6 @@ import {RegistroPagosService} from "./registro-pagos.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LiquidacionDet} from "../../../shared/models/operaciones/liquidacion-det";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
 import {LiquidacionPago} from 'app/shared/models/cobranza/liquidacion-pago';
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
@@ -54,6 +53,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   public page: number = 1;
 
   private liquidacionCabItem: LiquidacionCab;
+  private liquidacionDetItem: LiquidacionDet;
   private idsLiquidacionCab: number[] = [];
   private inicioPagosRows: any[] = [];
   private countPagador: number = 0;
@@ -127,7 +127,8 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       fechaPago: ['', Validators.required],
       montoPago: [0, [Validators.required, Validators.min(1)]],
       observacion: [''],
-
+      descuentoFR: [0],
+      excesoFR: [0],
       flagPagoInteresConfirming: false
     });
     this.oldPagoInfoForm = this.pagoInfoForm.value;
@@ -228,7 +229,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       for (const item of this.cobranza) {
         this.idsLiquidacionCab.push(item.idLiquidacionCab)
       }
-    };
+    }
 
     this.cambiarIcono = !this.cambiarIcono;
     this.cobranza.forEach(el => {
@@ -270,6 +271,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       this.pagoInfoForm.controls.interes.setValue(response.interes);
       this.pagoInfoForm.controls.gastos.setValue(response.gastos);
       this.pagoInfoForm.controls.saldoDeuda.setValue(response.saldoDeuda);
+      this.pagoInfoForm.controls.descuentoFR.setValue(this.utilsService.round(response.saldoDeuda - this.liquidacionDetItem.fondoResguardo));
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -360,6 +362,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.onListarPago(det.idLiquidacionDet);
 
     this.liquidacionCabItem = cab;
+    this.liquidacionDetItem = det;
 
     if (det.flagPagoInteresConfirming) {
       this.pagoInfoForm.controls.flagPagoInteresConfirming.disable();
@@ -689,5 +692,13 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
         this.modalService.dismissAll();
       }
     });
+  }
+
+  onMontoPagoCambiar($event: any): void {
+    let dif: number = this.utilsService.round(this.pagoInfoForm.controls.saldoDeuda.value - ($event + this.liquidacionDetItem.fondoResguardo));
+    if (dif <= 0)
+      this.pagoInfoForm.controls.excesoFR.setValue(this.utilsService.round(dif * -1));
+    else
+      this.pagoInfoForm.controls.excesoFR.setValue(0);
   }
 }

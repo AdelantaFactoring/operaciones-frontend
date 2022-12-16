@@ -215,4 +215,9 @@ export class UtilsService {
         a.click();
       })
   }
+
+  round(value: number): number {
+    console.log(Math.round((value + Number.EPSILON) * 100) / 100);
+    return Math.round((value + Number.EPSILON) * 100) / 100;
+  }
 }

@@ -183,7 +183,8 @@
                   <!--                  <th>Tipo Operación</th>-->
                   <th rowspan="2">Estado</th>
                   <th rowspan="2">¿Intereses y <br> gastos
-                    pagados? <br> (Confirming)</th>
+                    pagados? <br> (Confirming)
+                  </th>
                   <th colspan="4" class="audit-columns">Auditoría</th>
                 </tr>
                 <tr>
@@ -294,9 +295,9 @@
                               <th class="detail-th-color">Interés</th>
                               <th class="detail-th-color">Gastos</th>
                               <th class="detail-th-color">Saldo</th>
-<!--                              <th *ngIf="cab.idTipoOperacion == 3" class="detail-th-color">¿Intereses y <br> gastos-->
-<!--                                pagados? <br> (Confirming)-->
-<!--                              </th>-->
+                              <!--                              <th *ngIf="cab.idTipoOperacion == 3" class="detail-th-color">¿Intereses y <br> gastos-->
+                              <!--                                pagados? <br> (Confirming)-->
+                              <!--                              </th>-->
                             </tr>
                             </thead>
                             <tbody>
@@ -342,8 +343,8 @@
                                 [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.gastosPago | number: '1.2-2'}}</td>
                               <td
                                 [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{saldo(item.saldo) | number: '1.2-2'}}</td>
-<!--                              <td *ngIf="cab.idTipoOperacion == 3"-->
-<!--                                  [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{(item.flagPagoInteresConfirming) ? 'Sí' : 'No'}}</td>-->
+                              <!--                              <td *ngIf="cab.idTipoOperacion == 3"-->
+                              <!--                                  [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{(item.flagPagoInteresConfirming) ? 'Sí' : 'No'}}</td>-->
                             </tr>
                             </tbody>
                           </table>
@@ -360,7 +361,8 @@
         <div class="row">
           <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
             <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onListarCobranza()"
-                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize" [ellipses]="false">
+                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize"
+                            [ellipses]="false">
               <ng-template ngbPaginationFirst>
                 <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
               </ng-template>
@@ -520,13 +522,20 @@
                            mask="separator" thousandSeparator=","/>
                   </div>
                 </div>
+                <div class="col-md-4 col-12" *ngIf="liquidacionDetItem.fondoResguardo > 0">
+                  <div class="form-group">
+                    <label>Descuento de F.R.</label>
+                    <input class="form-control" disabled formControlName="descuentoFR" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
                 <div class="col-12 col-md-4">
                   <div class="form-group">
                     <label>Tipo de Pago</label>
                     <div class="form-control custom-control custom-switch custom-control-inline"
                          style="border: 0px; background-color: transparent">
                       <label style="padding-right: 0.5rem; line-height: 1.7rem">Parcial</label>
-                      <input type="checkbox" class="custom-control-input"
+                      <input type="checkbox" readonly class="custom-control-input"
                              id="tipoPago" formControlName="tipoPago" (ngModelChange)="onCambioTipoPago($event)"
                       />
                       <label class="custom-control-label"
@@ -591,21 +600,35 @@
                     <div class="divider-text"><span [data-feather]="'chevrons-down'"></span></div>
                   </div>
                 </div>
-<!--                <div class="col-12" *ngIf="liquidacionCabItem.idTipoOperacion == 3">-->
-<!--                  <div class="form-group">-->
-<!--                    <div class="form-control custom-control custom-switch custom-control-inline"-->
-<!--                         style="border: 0px; background-color: transparent">-->
-<!--                      <label style="padding-right: 0.5rem; line-height: 1.7rem">Regular</label>-->
-<!--                      <input type="checkbox" class="custom-control-input"-->
-<!--                             id="tipoPago2" formControlName="flagPagoInteresConfirming"-->
-<!--                             (ngModelChange)="onCambioTipoPago2($event)"-->
-<!--                      />-->
-<!--                      <label class="custom-control-label"-->
-<!--                             for="tipoPago2">Intereses y gastos (servicio)</label>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </div>-->
-                <div class="col-md-6 col-12">
+                <div class="col-12">
+                  <ngb-alert [type]="'info'" [dismissible]="false">
+                    <div class="alert-body" style="font-size: 13px !important;">
+                      * Al ingresar el valor de monto de pago, se incluye internamente el fondo de resguardo.
+                    </div>
+                  </ngb-alert>
+                </div>
+                <div class="col-12">
+                  <ngb-alert [type]="'info'" [dismissible]="false">
+                    <div class="alert-body" style="font-size: 13px !important;">
+                      * El campo Excedente contiene el valor que posteriormente se registrará como Devolución.
+                    </div>
+                  </ngb-alert>
+                </div>
+                <!--                <div class="col-12" *ngIf="liquidacionCabItem.idTipoOperacion == 3">-->
+                <!--                  <div class="form-group">-->
+                <!--                    <div class="form-control custom-control custom-switch custom-control-inline"-->
+                <!--                         style="border: 0px; background-color: transparent">-->
+                <!--                      <label style="padding-right: 0.5rem; line-height: 1.7rem">Regular</label>-->
+                <!--                      <input type="checkbox" class="custom-control-input"-->
+                <!--                             id="tipoPago2" formControlName="flagPagoInteresConfirming"-->
+                <!--                             (ngModelChange)="onCambioTipoPago2($event)"-->
+                <!--                      />-->
+                <!--                      <label class="custom-control-label"-->
+                <!--                             for="tipoPago2">Intereses y gastos (servicio)</label>-->
+                <!--                    </div>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <div class="col-md-4 col-12">
                   <div class="form-group">
                     <label>Fecha Pago</label>
                     <div class="input-group">
@@ -624,16 +647,23 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6 col-12">
+                <div class="col-md-4 col-12">
                   <div class="form-group">
                     <label>Monto Pago</label>
                     <input class="form-control" formControlName="montoPago" type="text"
                            [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.montoPago.errors }"
-                           mask="separator" thousandSeparator=","/>
+                           mask="separator" thousandSeparator="," (ngModelChange)="onMontoPagoCambiar($event)"/>
                     <div *ngIf="ReactiveIUForm.montoPago.errors" class="invalid-feedback">
                       <div *ngIf="ReactiveIUForm.montoPago.errors?.required">* Campo obligatorio</div>
                       <div *ngIf="ReactiveIUForm.montoPago.errors?.min">* El valor debe ser mayor a 0</div>
                     </div>
+                  </div>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="form-group">
+                    <label>Excedente</label>
+                    <input class="form-control" formControlName="excesoFR" type="text"
+                           mask="separator" thousandSeparator="," disabled/>
                   </div>
                 </div>
                 <div class="col-12">
@@ -643,30 +673,30 @@
                   </div>
                 </div>
                 <div class="col-12">
-                  <div class="d-flex flex-wrap mb-0">
-                    <div>
-                      <button
-                        [disabled]="(liquidacionCabItem.idTipoOperacion == 1 && !liquidacionCabItem.alterno) ? !pagoInfoForm.controls.flagPagoHabilitado.value : false"
-                        type="submit" rippleEffect class="btn btn-success" (click)="onGuardarPago()">
-                        <i class="mr-0 mr-sm-1" data-feather="save"></i>
-                        <span class="d-none d-sm-inline-block">Guardar</span>
-                      </button>
-                      <div *ngIf="liquidacionCabItem.idTipoOperacion == 1 && !liquidacionCabItem.alterno">
-                        <ngb-alert *ngIf="!pagoInfoForm.controls.flagPagoHabilitado.value" [type]="'danger'"
-                                   [dismissible]="false">
-                          <div class="alert-body" style="font-size: 13px !important;">
-                            * Aun no se puede iniciar con los pagos (debe indicar quién inicia los pagos en la opción de
-                            la grilla principal).
-                          </div>
-                        </ngb-alert>
-                        <ngb-alert *ngIf="pagoInfoForm.controls.flagPagoHabilitado.value" [type]="'success'"
-                                   [dismissible]="false">
-                          <div class="alert-body" style="font-size: 13px !important;">
-                            * Se puede iniciar / continuar con los pagos.
-                          </div>
-                        </ngb-alert>
+                  <div class="form-group">
+                    <button
+                      [disabled]="(liquidacionCabItem.idTipoOperacion == 1 && !liquidacionCabItem.alterno) ? !pagoInfoForm.controls.flagPagoHabilitado.value : false"
+                      type="submit" class="btn btn-success" (click)="onGuardarPago()">
+                      <i class="mr-0 mr-sm-1" data-feather="save"></i>
+                      <span class="d-none d-sm-inline-block">Guardar</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div *ngIf="liquidacionCabItem.idTipoOperacion == 1 && !liquidacionCabItem.alterno">
+                    <ngb-alert *ngIf="!pagoInfoForm.controls.flagPagoHabilitado.value" [type]="'danger'"
+                               [dismissible]="false">
+                      <div class="alert-body" style="font-size: 13px !important;">
+                        * Aun no se puede iniciar con los pagos (debe indicar quién inicia los pagos en la opción de
+                        la grilla principal).
                       </div>
-                    </div>
+                    </ngb-alert>
+                    <ngb-alert *ngIf="pagoInfoForm.controls.flagPagoHabilitado.value" [type]="'success'"
+                               [dismissible]="false">
+                      <div class="alert-body" style="font-size: 13px !important;">
+                        * Se puede iniciar / continuar con los pagos.
+                      </div>
+                    </ngb-alert>
                   </div>
                 </div>
               </div>
@@ -937,7 +967,8 @@
                 <div class="col-12">
                   <div class="form-group">
                     <label>Observación</label>
-                    <textarea class="form-control" type="text" formControlName="observacion_PAI" maxlength="200"></textarea>
+                    <textarea class="form-control" type="text" formControlName="observacion_PAI"
+                              maxlength="200"></textarea>
                   </div>
                 </div>
               </div>
@@ -947,19 +978,22 @@
             <div class="row">
               <div class="col-md-12 col-12" style="padding-left: 0px">
                 <div style="float: left">
-                  <ngb-alert *ngIf="!liquidacionCabItem.flagPagoInteresConfirming" [type]="'info'" [dismissible]="false">
+                  <ngb-alert *ngIf="!liquidacionCabItem.flagPagoInteresConfirming" [type]="'info'"
+                             [dismissible]="false">
                     <div class="alert-body" style="font-size: 13px !important;">
                       * Por confirmar
                     </div>
                   </ngb-alert>
-                  <ngb-alert *ngIf="liquidacionCabItem.flagPagoInteresConfirming" [type]="'success'" [dismissible]="false">
+                  <ngb-alert *ngIf="liquidacionCabItem.flagPagoInteresConfirming" [type]="'success'"
+                             [dismissible]="false">
                     <div class="alert-body" style="font-size: 13px !important;">
                       * Confirmado
                     </div>
                   </ngb-alert>
                 </div>
                 <div style="float: right">
-                  <button [disabled]="liquidacionCabItem.flagPagoInteresConfirming" class="btn btn-warning" rippleEffect type="button" (click)="onGuardarPAI()">
+                  <button [disabled]="liquidacionCabItem.flagPagoInteresConfirming" class="btn btn-warning" rippleEffect
+                          type="button" (click)="onGuardarPAI()">
                     <span [data-feather]="'save'"></span> Guardar
                   </button>
                   &nbsp;
