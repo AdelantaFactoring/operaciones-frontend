@@ -21,6 +21,7 @@ import { CoreCommonModule } from '@core/common.module';
 import { ConfirmingComponent } from './confirming/confirming.component';
 import { ObjToArrayPipe } from './prueba.pipe';
 import { PowerBiComponent } from './power-bi/power-bi.component';
+import { KPIComponent } from './kpi/kpi.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,10 @@ const routes: Routes = [
       {
         path: 'powerbi',
         component: PowerBiComponent
+      },
+      {
+        path: 'kpi',
+        component: KPIComponent
       },
       {
         path: 'pendientepago/:moneda',
@@ -83,7 +88,8 @@ const routes: Routes = [
     VencidoComponent,
     ConfirmingComponent,
     ObjToArrayPipe,
-    PowerBiComponent
+    PowerBiComponent,
+    KPIComponent
   ],
   imports: [
     CommonModule,

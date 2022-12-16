@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-power-bi',
-  templateUrl: './power-bi.component.html',
-  styleUrls: ['./power-bi.component.scss']
+  selector: 'app-kpi',
+  templateUrl: './kpi.component.html',
+  styleUrls: ['./kpi.component.scss']
 })
-export class PowerBiComponent implements OnInit {
+export class KPIComponent implements OnInit {
 
   public contentHeader: object;
   constructor() { 
@@ -23,7 +23,7 @@ export class PowerBiComponent implements OnInit {
             isLink: false
           },
           {
-            name: 'Power BI',
+            name: 'KPI',
             isLink: false
           }
         ]
@@ -38,7 +38,9 @@ export class PowerBiComponent implements OnInit {
   totalPantalla(): void {
     let height1 = document.body.clientHeight - 180;
 
-    const elem1 = document.getElementById('contenedorPB');
+    const elem1 = document.getElementById('contenedorKPI');
     elem1.style.height = height1.toString() + 'px';
+
   }
+
 }
