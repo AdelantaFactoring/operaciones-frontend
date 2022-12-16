@@ -720,6 +720,7 @@
                       <th rowspan="2">Día(s) Mora</th>
                       <th rowspan="2">Monto a Financiar</th>
                       <th rowspan="2">Monto Pago</th>
+                      <th rowspan="2">F.R. Usado</th>
                       <th rowspan="2">Interés</th>
                       <th rowspan="2">Gastos</th>
                       <th rowspan="2">Saldo (Deuda)</th>
@@ -753,6 +754,7 @@
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.diasMora | number: '1.0'}}</td>
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.montoCobrar | number: '1.2-2'}}</td>
                       <td>{{item.montoPago | number: '1.2-2'}}</td>
+                      <td>{{item.fondoResguardoUsado | number: '1.2-2'}}</td>
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.interes | number: '1.2-2'}}</td>
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.gastos | number: '1.2-2'}}</td>
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.saldoDeuda | number: '1.2-2'}}</td>
