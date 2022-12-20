@@ -6,7 +6,7 @@ export class LiquidacionPago {
   diasMora: number;
   montoCobrar: number;
   montoPago: number;
-  fondoReguardoUsado: number;
+  fondoResguardoUsado: number;
   tipoPago: string;
   interes: number;
   gastos: number;
