@@ -10,7 +10,9 @@ import {LiquidacionesService} from "../liquidaciones/liquidaciones.service";
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {SolicitudDet} from "../../../shared/models/comercial/solicitudDet";
 import {SolicitudCabSustento} from "../../../shared/models/comercial/solicitudCab-sustento";
-import { User } from 'app/shared/models/auth/user';
+import {User} from 'app/shared/models/auth/user';
+import {SolicitudCabAdelanto} from "../../../shared/models/comercial/solicitud-cab-adelanto";
+import {CheckListService} from "../../comercial/check-list/check-list.service";
 
 @Component({
   selector: 'app-generar-liquidacion',
@@ -30,6 +32,9 @@ export class GenerarLiquidacionComponent implements OnInit {
   public idTipoOperacion: number = 0;
   public detalleSolicitud: SolicitudDet[] = [];
   public sustentosSolicitud: SolicitudCabSustento[] = [];
+  public adelantos: SolicitudCabAdelanto[] = [];
+  public solicitudCabActual: SolicitudCab;
+  public verAdelanto: boolean;
 
   public searchSolicitud: string = '';
   public collectionSizeSolicitud: number = 0;
@@ -44,6 +49,7 @@ export class GenerarLiquidacionComponent implements OnInit {
               private solicitudesService: SolicitudesService,
               private liquidacionesService: LiquidacionesService,
               private tablaMaestraService: TablaMaestraService,
+              private checkListService: CheckListService,
               private formBuilder: FormBuilder,) {
     this.contentHeader = {
       headerTitle: 'Generar',
@@ -117,7 +123,8 @@ export class GenerarLiquidacionComponent implements OnInit {
       gastosIncluidoIGV: [{value: 0, disabled: true}],
       totalFacturarIGV: [{value: 0, disabled: true}],
       totalDesembolso: [{value: 0, disabled: true}],
-      flagPagoInteresAdelantado: false
+      flagPagoInteresAdelantado: [false],
+      flagAdelanto: [{value: false, disabled: true}]
     });
   }
 
@@ -310,6 +317,7 @@ export class GenerarLiquidacionComponent implements OnInit {
   }
 
   onVerDetalleSolicitud(item: SolicitudCab, modal: any) {
+    this.solicitudCabActual = {...item};
     this.solicitudForm.controls.idSolicitudCab.setValue(item.idSolicitudCab);
     this.solicitudForm.controls.idTipoOperacion.setValue(item.idTipoOperacion);
     this.idTipoOperacion = item.idTipoOperacion;
@@ -352,9 +360,12 @@ export class GenerarLiquidacionComponent implements OnInit {
     this.solicitudForm.controls.fechaPagoCT.setValue(item.fechaPagoCT);
 
     this.solicitudForm.controls.flagPagoInteresAdelantado.setValue(item.flagPagoInteresAdelantado);
+    this.solicitudForm.controls.flagAdelanto.setValue(item.flagAdelanto);
+    this.verAdelanto = item.flagAdelanto;
 
     this.detalleSolicitud = item.solicitudDet;
     this.sustentosSolicitud = item.solicitudCabSustento;
+    this.onListarAdelanto();
     this.onCalcularCT(item);
 
     setTimeout(() => {
@@ -370,6 +381,19 @@ export class GenerarLiquidacionComponent implements OnInit {
         }
       });
     }, 0);
+  }
+
+  onListarAdelanto(): void {
+    this.utilsService.blockUIStart("Obteniendo información...");
+    this.checkListService.listarAdelanto({
+      idSolicitudCab: this.solicitudForm.controls.idSolicitudCab.value
+    }).subscribe((response: SolicitudCabAdelanto[]) => {
+      this.adelantos = response;
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
   }
 
   onRechazarSolicitud(cab: SolicitudCab, modal: NgbModal): void {

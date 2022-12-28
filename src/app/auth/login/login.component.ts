@@ -5,11 +5,11 @@ import {CoreConfigService} from "../../../@core/services/config.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {takeUntil} from "rxjs/operators";
 import {User} from "../../shared/models/auth/user";
-import { UtilsService } from 'app/shared/services/utils.service';
-import { LoginService } from './login.service';
-import { menu } from 'app/shared/models/menu/menu';
-import { Menu } from 'app/shared/models/seguridad/menu';
-import { CoreMenuService } from '@core/components/core-menu/core-menu.service';
+import {UtilsService} from 'app/shared/services/utils.service';
+import {LoginService} from './login.service';
+import {menu} from 'app/shared/models/menu/menu';
+import {Menu} from 'app/shared/models/seguridad/menu';
+import {CoreMenuService} from '@core/components/core-menu/core-menu.service';
 
 @Component({
   selector: 'app-login',
@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
     private _router: Router,
     private utilsService: UtilsService,
     private loginService: LoginService,
-    private _coreMenuService: CoreMenuService,
+    private _coreMenuService: CoreMenuService
     //private _authenticationService: AuthenticationService
   ) {
     // redirect to home if already logged in
@@ -106,10 +106,25 @@ export class LoginComponent implements OnInit {
     }).subscribe((response: User[]) => {
 
       if (response.length > 0) {
-          sessionStorage.setItem('currentUser', JSON.stringify(response[0]));
-          sessionStorage.setItem('currentUserPermission', JSON.stringify(response[0].menu));
-
+        sessionStorage.setItem('currentUser', JSON.stringify(response[0]));
+        sessionStorage.setItem('currentUserPermission', JSON.stringify(response[0].menu));
+        if (response[0].menu.filter(f => f.idMenu === 5 && f.acceso).length > 0)
           this._router.navigate(['/comercial/solicitudes/']);
+        else if (response[0].menu.filter(f => f.acceso).length > 0) {
+          let menu = response[0].menu.filter(f => f.acceso)[0];
+          let _menu = this._coreMenuService.getCurrentMenu();
+          let find: boolean = false;
+          for (const m of _menu) {
+            if (m.children.filter(f => f.id === String(menu.idMenu)).length > 0) {
+              find = true;
+              this._router.navigate([`/${m.children.find(f => f.id === String(menu.idMenu)).url}/`]);
+              break;
+            }
+          }
+
+          if (!find)
+            this.error = "El usuario no tiene asignado ningún módulo del menú";
+        }
       } else {
         this.error = "Inicio de sesión incorrecto";
       }

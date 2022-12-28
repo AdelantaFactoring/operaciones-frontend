@@ -1,4 +1,5 @@
 export class SolicitudCabAdelanto {
+  idFila: number;
   idSolicitudCabAdelanto: number;
   idSolicitudCab: number;
   nro: number;
@@ -15,7 +16,7 @@ export class SolicitudCabAdelanto {
   gastosDiversos: number;
   gastosDiversosConIGV: number;
   montoDesembolso: number;
-  fechaDesembolso: any;
-  fechaDesembolsoFormat: string;
+  fechaDesembolso: string;
   saldo: number;
+  tipo: number;
 }

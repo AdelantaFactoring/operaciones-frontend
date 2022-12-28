@@ -113,7 +113,8 @@
             <div class="col-12" *ngIf="mostrarFiltroExportacion">
               <div class="form-group">
                 <div class="text-warning">
-                  <i class="mr-0 mr-sm-1" data-feather="alert-circle"></i> Se está utilizando este rango de fechas, basado en el campo "Fecha Creación"
+                  <i class="mr-0 mr-sm-1" data-feather="alert-circle"></i> Se está utilizando este rango de fechas,
+                  basado en el campo "Fecha Creación"
                 </div>
               </div>
             </div>
@@ -349,6 +350,12 @@
                                (click)="onEliminar(cab)"
                                class="d-flex align-items-center">
                               <i class="text-danger cursor-pointer mr-50" data-feather="trash-2"></i> Eliminar
+                            </a>
+                            <a ngbDropdownItem href="javascript:void(0)"
+                               *ngIf="cab.flagAdelanto" title="Ver"
+                               (click)="onVerAdelanto(cab,  modalADELANTO)"
+                               class="d-flex align-items-center">
+                              <i class="text-info cursor-pointer mr-50" data-feather="eye"></i> Ver Adelanto
                             </a>
                             <!--                            <a ngbDropdownItem href="javascript:void(0)" title="Auditoría"-->
                             <!--                               (click)="onAuditoria(cab, modalAUDIT)"-->
@@ -888,6 +895,61 @@
                   <button class="btn btn-secondary" rippleEffect type="button" (click)="modal.dismiss()">
                     <span [data-feather]="'x-circle'"></span> Cerrar
                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template #modalADELANTO let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Adelanto(s)</h4>
+            <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" ngbAutofocus tabindex="0">
+            <div class="row spaced">
+              <div class="col-md-12 col-12">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="centerall-header">
+                    <tr>
+                      <th>N°</th>
+                      <th>Fecha Confirmado</th>
+                      <th>Neto Confirmado</th>
+                      <th>Días Efectivo</th>
+                      <th>Fondo Resguardo</th>
+                      <th>Monto a Financiar</th>
+                      <th>Interés</th>
+                      <th>Interés Total</th>
+                      <th>Gastos Diversos</th>
+                      <th>Total Gastos Diversos</th>
+                      <th>Monto Total Facturado</th>
+                      <th>Monto Desembolso</th>
+                      <th>Fecha Desembolso</th>
+                      <th>Saldo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of adelantos">
+                      <td>{{ (item.tipo === 2) ? 'SALDO' : item.nro}}</td>
+                      <td>{{item.fechaConfirmado}}</td>
+                      <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                      <td>{{item.diasEfectivo}}</td>
+                      <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                      <td>{{item.montoCobrar | number: '1.2-2'}}</td>
+                      <td>{{item.interes | number: '1.2-2'}}</td>
+                      <td>{{item.interesConIGV | number: '1.2-2'}}</td>
+                      <td>{{item.gastosDiversos | number: '1.2-2'}}</td>
+                      <td>{{item.gastosDiversosConIGV | number: '1.2-2'}}</td>
+                      <td>{{(item.interesConIGV + item.gastosDiversosConIGV) | number: '1.2-2'}}</td>
+                      <td>{{item.montoDesembolso | number: '1.2-2'}}</td>
+                      <td>{{item.fechaDesembolso}}</td>
+                      <td>{{item.saldo | number: '1.2-2'}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>

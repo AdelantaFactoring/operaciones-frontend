@@ -127,18 +127,40 @@ export class UtilsService {
     return 1;
   }
 
-  formatoFecha_YYYYMMDD($event: any): string {
-    if ($event === null)
+  /**
+   * Convierte una fecha al formato YYYYMMDD
+   * @param obj recibe un objeto con la siguiente estructura: { year: ?, month: ?, day: ? }
+   * @returns La cadena con el formato de fecha especificado.
+   */
+  formatoFecha_YYYYMMDD(obj: any): string {
+    if (obj === null)
       return null;
 
-    return `${$event.year}${String($event.month).padStart(2, "0")}${String($event.day).padStart(2, "0")}`;
+    return `${obj.year}${String(obj.month).padStart(2, "0")}${String(obj.day).padStart(2, "0")}`;
   }
 
-  formatoFecha_YYYYMM($event: any): string {
-    if ($event === null)
+  /**
+   * Convierte una fecha al formato YYYYMM
+   * @param obj recibe un objeto con la siguiente estructura: { year: ?, month: ?, day: ? }
+   * @returns La cadena con el formato de fecha especificado.
+   */
+  formatoFecha_YYYYMM(obj: any): string {
+    if (obj === null)
       return null;
 
-    return `${$event.year}${String($event.month).padStart(2, "0")}`;
+    return `${obj.year}${String(obj.month).padStart(2, "0")}`;
+  }
+
+  /**
+   * Convierte una fecha al formato DD/MM/YYYY
+   * @param obj recibe un objeto con la siguiente estructura: { year: ?, month: ?, day: ? }
+   * @returns La cadena con el formato de fecha especificado.
+   */
+  formatoFecha_DDMMYYYY(obj: any): string {
+    if (obj === null)
+      return null;
+
+    return `${String(obj.day).padStart(2, "0")}/${String(obj.month).padStart(2, "0")}/${obj.year}`;
   }
 
   getAccess(idMenu): Menu {// '/module/component/'
@@ -217,7 +239,6 @@ export class UtilsService {
   }
 
   round(value: number): number {
-    console.log(Math.round((value + Number.EPSILON) * 100) / 100);
     return Math.round((value + Number.EPSILON) * 100) / 100;
   }
 }

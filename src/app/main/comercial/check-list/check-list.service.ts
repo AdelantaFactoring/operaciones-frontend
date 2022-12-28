@@ -41,4 +41,34 @@ export class CheckListService {
       }
     );
   }
+
+  listarAdelanto(payload): Observable<any> {
+    return this.requestMethod.get(
+      `${environment.apiUrl}${SOLICITUD.listarAdelanto}`,
+      `?idSolicitudCab=${payload.idSolicitudCab}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  guardarAdelanto(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${SOLICITUD.guardarAdelanto}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  eliminarAdelanto(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${SOLICITUD.eliminarAdelanto}`,
+      `?idSolicitudCabAdelanto=${payload.idSolicitudCabAdelanto}&idSolicitudCab=${payload.idSolicitudCab}&idUsuarioAud=${payload.idUsuarioAud}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }

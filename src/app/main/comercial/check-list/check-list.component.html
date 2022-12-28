@@ -572,11 +572,12 @@
                 <div class="divider-text">Información de Adelanto</div>
               </div>
             </div>
-            <div class="col-12" *ngIf="solicitudCabActual.solicitudDet.length === 1">
+            <div class="col-12" *ngIf="solicitudCabActual.solicitudDet.length === 1
+             && solicitudCabActual.idTipoOperacion === 1">
               <div class="form-group">
                 <div class="custom-control custom-switch custom-control-inline">
                   <input type="checkbox" class="custom-control-input"
-                         id="adelanto" formControlName="adelanto"
+                         id="adelanto" formControlName="flagAdelanto"
                          (ngModelChange)="onAdelantoCambiar()"
                   />
                   <label class="custom-control-label"
@@ -584,7 +585,9 @@
                 </div>
               </div>
             </div>
-            <div class="col-12" *ngIf="verAdelanto && solicitudCabActual.solicitudDet.length === 1">
+            <div class="col-12" *ngIf="verAdelanto
+             && solicitudCabActual.solicitudDet.length === 1
+             && solicitudCabActual.idTipoOperacion === 1">
               <form [formGroup]="adelantoForm">
                 <div class="table-responsive">
                   <table class="table table-hover">
@@ -601,8 +604,10 @@
                       <th>Interés Total</th>
                       <th>Gastos Diversos</th>
                       <th>Total Gastos Diversos</th>
+                      <th>Monto Total Facturado</th>
                       <th>Monto Desembolso</th>
                       <th>Fecha Desembolso</th>
+                      <th>Saldo</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -616,6 +621,7 @@
                       <td colspan="2">
                         <div class="input-group">
                           <input class="form-control" placeholder="Fecha" formControlName="fecha" container="body"
+                                 [ngClass]="{ 'is-invalid': verAdelanto && (adelantoForm.controls.fecha.errors || fechaInvalida) }"
                                  ngbDatepicker #basicDP="ngbDatepicker" readonly>
                           <div class="input-group-append">
                             <button class="btn btn-outline-secondary feather icon-calendar"
@@ -626,6 +632,7 @@
                       </td>
                       <td colspan="2">
                         <input class="form-control" type="text" placeholder="Monto" formControlName="monto"
+                               [ngClass]="{ 'is-invalid': verAdelanto && (adelantoForm.controls.monto.errors || montoInvalido) }"
                                mask="separator" thousandSeparator=","/>
                         <!--                               [ngClass]="{ 'is-invalid': submitted && maestroForm.controls.descripcion.errors }"/>-->
                       </td>
@@ -633,26 +640,28 @@
                     </tr>
                     <tr *ngFor="let item of adelantos">
                       <td>
-                        <div class="d-flex align-items-center">
+                        <div *ngIf="item.tipo === 1" class="d-flex align-items-center">
                           <a href="javascript:void(0)" title="Eliminar"
-                             (click)="onEliminarAdelanto(item)"
+                             (click)="onEliminarAdelanto(item)" [class.disabled]="onDeshabilitar(item.nro) ? true : null"
                              class="btn btn-raised btn-outline-danger btn-sm">
                             <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
                           </a>
                         </div>
                       </td>
-                      <td>{{item.nro}}</td>
+                      <td>{{ (item.tipo === 2) ? 'SALDO' : item.nro}}</td>
                       <td>{{item.fechaConfirmado}}</td>
-                      <td>{{item.netoConfirmado}}</td>
+                      <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
                       <td>{{item.diasEfectivo}}</td>
-                      <td>{{item.fondoResguardo}}</td>
-                      <td>{{item.montoCobrar}}</td>
-                      <td>{{item.interes}}</td>
-                      <td>{{item.interesConIGV}}</td>
-                      <td>{{item.gastosDiversos}}</td>
-                      <td>{{item.gastosDiversosConIGV}}</td>
-                      <td>{{item.montoDesembolso}}</td>
-                      <td>{{item.fechaDesembolsoFormat}}</td>
+                      <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                      <td>{{item.montoCobrar | number: '1.2-2'}}</td>
+                      <td>{{item.interes | number: '1.2-2'}}</td>
+                      <td>{{item.interesConIGV | number: '1.2-2'}}</td>
+                      <td>{{item.gastosDiversos | number: '1.2-2'}}</td>
+                      <td>{{item.gastosDiversosConIGV | number: '1.2-2'}}</td>
+                      <td>{{(item.interesConIGV + item.gastosDiversosConIGV) | number: '1.2-2'}}</td>
+                      <td>{{item.montoDesembolso | number: '1.2-2'}}</td>
+                      <td>{{item.fechaDesembolso}}</td>
+                      <td>{{item.saldo | number: '1.2-2'}}</td>
                     </tr>
                     </tbody>
                   </table>

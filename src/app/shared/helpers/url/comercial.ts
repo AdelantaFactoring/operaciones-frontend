@@ -24,7 +24,10 @@ export const SOLICITUD = {
   generarCarpeta: '/SolicitudCab/GenerarCarpeta',
   plantilla: '/SolicitudCab/PlantillaExcel',
   consutarFactura: '/solicitudCab/consultarFactura',
-  consultarConformidad: '/solicitudCab/consultarConformidad'
+  consultarConformidad: '/solicitudCab/consultarConformidad',
+  listarAdelanto: '/solicitudCabAdelanto/listar',
+  guardarAdelanto: '/solicitudCabAdelanto/guardar',
+  eliminarAdelanto: '/solicitudCabAdelanto/eliminar'
 };
 
 export const PAGADOR = {

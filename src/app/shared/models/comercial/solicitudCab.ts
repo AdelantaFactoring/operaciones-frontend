@@ -49,6 +49,7 @@ export class SolicitudCab {
   observacionRechazo: string;
   observacion: string;
   flagPagoInteresAdelantado: boolean;
+  flagAdelanto: boolean;
 
   usuarioCreacion: string;
   fechaCreacion: string;

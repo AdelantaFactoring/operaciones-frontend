@@ -21,6 +21,8 @@ import {Audit} from "../../../shared/models/shared/audit";
 import * as fileSaver from 'file-saver';
 import {ContentHeader} from "../../../layout/components/content-header/content-header.component";
 import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import {SolicitudCabAdelanto} from "../../../shared/models/comercial/solicitud-cab-adelanto";
+import {CheckListService} from "../../comercial/check-list/check-list.service";
 
 @Component({
   selector: 'app-liquidaciones',
@@ -94,6 +96,7 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     day: new Date().getDate()
   };
   public activeId: any = 2;
+  public adelantos: SolicitudCabAdelanto[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -102,6 +105,7 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     private solicitudesService: SolicitudesService,
     private liquidacionesService: LiquidacionesService,
     private tablaMaestraService: TablaMaestraService,
+    private checkListService: CheckListService,
     private formBuilder: FormBuilder,
     private calendar: NgbCalendar) {
     this.contentHeader = {
@@ -969,5 +973,32 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
       this.coreCard.onclickEvent.collapseStatus = false;
     }, 0);
     setTimeout(() => this.desdeFC.nativeElement.focus(),500);
+  }
+
+  onVerAdelanto(cab: LiquidacionCab, modal: any) {
+    this.utilsService.blockUIStart("Obteniendo información...");
+    this.checkListService.listarAdelanto({
+      idSolicitudCab: cab.idSolicitudCab
+    }).subscribe((response: SolicitudCabAdelanto[]) => {
+      this.adelantos = response;
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+
+    setTimeout(() => {
+      this.modalService.open(modal, {
+        scrollable: true,
+        //size: 'lg',
+        windowClass: 'my-class',
+        animation: true,
+        centered: false,
+        backdrop: "static",
+        beforeDismiss: () => {
+          return true;
+        }
+      });
+    }, 0);
   }
 }

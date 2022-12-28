@@ -6,6 +6,12 @@
         <div class="row">
           <div class="d-flex flex-wrap mb-0">
             <div class="p-1">
+              <button type="submit" rippleEffect class="btn btn-secondary" (click)="onListarSolicitudes()">
+                <i class="mr-0 mr-sm-1" data-feather="refresh-cw"></i>
+                <span class="d-none d-sm-inline-block">Refrescar</span>
+              </button>
+            </div>
+            <div class="pt-1 pb-1">
               <button type="submit" rippleEffect class="btn btn-success" (click)="onGenerar()">
                 <i class="mr-0 mr-sm-1" data-feather="layers"></i>
                 <span class="d-none d-sm-inline-block">Generar</span>
@@ -18,7 +24,8 @@
             <div class="d-flex justify-content-between align-items-center mb-1">
               <label class="d-flex align-items-center"
               >Mostrar
-                <select class="form-control mx-25" [(ngModel)]="pageSizeSolicitud" [ngModelOptions]="{ standalone: true }"
+                <select class="form-control mx-25" [(ngModel)]="pageSizeSolicitud"
+                        [ngModelOptions]="{ standalone: true }"
                         (change)="onListarSolicitudes()">
                   <option value="10">10</option>
                   <option value="25">25</option>
@@ -142,7 +149,8 @@
                   <tr id="{{ 'trS' + cab.idSolicitudCab }}" style="visibility: collapse"
                       *ngIf="cab.solicitudDet.length > 0">
                     <td [colSpan]="15">
-                      <div class="table-responsive" style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
+                      <div class="table-responsive"
+                           style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
                            id="{{ 'detailS' + cab.idSolicitudCab }}">
                         <table class="table table-hover">
                           <thead>
@@ -151,11 +159,11 @@
                             <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
                             <th class="detail-th-color">N° Documento</th>
                             <th class="detail-th-color">Forma Pago</th>
-<!--                            <th class="detail-th-color">Monto sin IGV</th>-->
-<!--                            <th class="detail-th-color">Monto con IGV</th>-->
+                            <!--                            <th class="detail-th-color">Monto sin IGV</th>-->
+                            <!--                            <th class="detail-th-color">Monto con IGV</th>-->
                             <th class="detail-th-color">Fecha Pago</th>
                             <th class="detail-th-color">Monto Pago Confirmado</th>
-<!--                            <th class="detail-th-color">Fondo Resguardo</th>-->
+                            <!--                            <th class="detail-th-color">Fondo Resguardo</th>-->
                             <th class="detail-th-color">Estado</th>
                           </tr>
                           </thead>
@@ -165,11 +173,11 @@
                             <td *ngIf="cab.idTipoOperacion === 3">{{item.rucPagProv}}</td>
                             <td>{{item.nroDocumento}}</td>
                             <td>{{item.formaPago}}</td>
-<!--                            <td>{{item.montoSinIGV | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.montoConIGV | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.montoSinIGV | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.montoConIGV | number: '1.2-2'}}</td>-->
                             <td>{{item.fechaConfirmadoFormat}}</td>
                             <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
-<!--                            <td>{{item.fondoResguardo | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.fondoResguardo | number: '1.2-2'}}</td>-->
                             <td>{{item.estado}}</td>
                           </tr>
                           </tbody>
@@ -185,8 +193,10 @@
         </div>
         <div class="row">
           <div class="col-12 col-md-12 d-flex justify-content-end pt-1">
-            <ngb-pagination [collectionSize]="collectionSizeSolicitud" [(page)]="pageSolicitud" (pageChange)="onListarSolicitudes()"
-                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSizeSolicitud" [ellipses]="false">
+            <ngb-pagination [collectionSize]="collectionSizeSolicitud" [(page)]="pageSolicitud"
+                            (pageChange)="onListarSolicitudes()"
+                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSizeSolicitud"
+                            [ellipses]="false">
               <ng-template ngbPaginationFirst>
                 <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
               </ng-template>
@@ -210,7 +220,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body" ngbAutofocus tabindex="0" >
+          <div class="modal-body" ngbAutofocus tabindex="0">
             <form [formGroup]="solicitudForm">
               <div class="row spaced">
                 <div class="col-12">
@@ -425,7 +435,7 @@
                     <div class="divider-text">Monto calculado</div>
                   </div>
                 </div>
-                <div class="col-md-6 col-12"  [hidden]="idTipoOperacion != 2">
+                <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
                   <div class="form-group">
                     <label>Fondo Resguardo</label>
                     <input class="form-control" formControlName="fondoResguardo" type="text" placeholder="0.00"
@@ -435,7 +445,7 @@
                 <div class="col-md-6 col-12" [hidden]="idTipoOperacion != 2">
                   <div class="form-group">
                     <label>Monto a financiar</label>
-                    <input class="form-control"  formControlName="netoSolicitado" type="text" placeholder="0.00"
+                    <input class="form-control" formControlName="netoSolicitado" type="text" placeholder="0.00"
                            mask="separator" thousandSeparator=","/>
                   </div>
                 </div>
@@ -470,12 +480,13 @@
                 </div>
                 <div class="col-12" [hidden]="idTipoOperacion === 2">
                   <div class="table-responsive" style="max-height: 300px;">
-                    <table class="table table-hover" [ngStyle]="{ 'min-width.px': idTipoOperacion === 3 ? 2400 : 'auto' }">
+                    <table class="table table-hover"
+                           [ngStyle]="{ 'min-width.px': idTipoOperacion === 3 ? 2400 : 'auto' }">
                       <thead>
-<!--                      <tr *ngIf="idTipoOperacion === 3">-->
-<!--                        <th colspan="12" class="detail-th-color">Información del Comprobante</th>-->
-<!--                        <th colspan="5" class="detail-th-color2">Información Bancaria</th>-->
-<!--                      </tr>-->
+                      <!--                      <tr *ngIf="idTipoOperacion === 3">-->
+                      <!--                        <th colspan="12" class="detail-th-color">Información del Comprobante</th>-->
+                      <!--                        <th colspan="5" class="detail-th-color2">Información Bancaria</th>-->
+                      <!--                      </tr>-->
                       <tr>
                         <th *ngIf="idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
                         <th *ngIf="idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
@@ -488,12 +499,7 @@
                         <th class="detail-th-color">Fondo Resguardo</th>
                         <th class="detail-th-color">Estado</th>
                         <th class="detail-th-color">Archivo PDF</th>
-                        <th class="detail-th-color">ARchivo XML</th>
-<!--                        <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">Moneda</th>-->
-<!--                        <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">Banco</th>-->
-<!--                        <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">N° Cuenta</th>-->
-<!--                        <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">CCI</th>-->
-<!--                        <th *ngIf="idTipoOperacion === 3" class="detail-th-color2">Tipo Cuenta</th>-->
+                        <th class="detail-th-color">Archivo XML</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -524,86 +530,142 @@
                             </a>
                           </div>
                         </td>
-<!--                        <td *ngIf="idTipoOperacion === 3">{{item.monedaCuentaBancariaDestino}}</td>-->
-<!--                        <td *ngIf="idTipoOperacion === 3">{{item.bancoDestino}}</td>-->
-<!--                        <td *ngIf="idTipoOperacion === 3">{{item.nroCuentaBancariaDestino}}</td>-->
-<!--                        <td *ngIf="idTipoOperacion === 3">{{item.cciDestino}}</td>-->
-<!--                        <td *ngIf="idTipoOperacion === 3">{{item.tipoCuentaBancariaDestino}}</td>-->
                       </tr>
                       </tbody>
                     </table>
                   </div>
                 </div>
-<!--                <div class="col-12">-->
-<!--                  <div class="divider divider-danger">-->
-<!--                    <div class="divider-text">Información del Contacto</div>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-12">-->
-<!--                  <div class="form-group">-->
-<!--                    <label>Nombre(s) y Apellidos</label>-->
-<!--                    <input class="form-control" formControlName="nombreContacto" type="text" readonly/>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-12">-->
-<!--                  <div class="form-group">-->
-<!--                    <label>Teléfono</label>-->
-<!--                    <input class="form-control" formControlName="telefonoContacto" type="text" readonly/>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-12">-->
-<!--                  <div class="form-group">-->
-<!--                    <label>Correo</label>-->
-<!--                    <input class="form-control" formControlName="correoContacto" type="text" readonly/>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-12">-->
-<!--                  <div class="form-group">-->
-<!--                    <label>Correo(s) a Copiar</label>-->
-<!--                    <input class="form-control" formControlName="conCopiaContacto" type="text"/>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="col-12" *ngIf="idTipoOperacion != 3">-->
-<!--                  <div class="divider divider-warning">-->
-<!--                    <div class="divider-text">Información de Cuenta Bancaria</div>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">-->
-<!--                  <div class="form-group">-->
-<!--                    <label>Titular</label>-->
-<!--                    <input class="form-control" formControlName="titularCuentaBancariaDestino" type="text" readonly/>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">-->
-<!--                  <div class="form-group">-->
-<!--                    <label>Moneda</label>-->
-<!--                    <input class="form-control" formControlName="monedaCuentaBancariaDestino" type="text" readonly/>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">-->
-<!--                  <div class="form-group">-->
-<!--                    <label>Banco</label>-->
-<!--                    <input class="form-control" formControlName="bancoDestino" type="text" readonly/>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">-->
-<!--                  <div class="form-group">-->
-<!--                    <label>N° Cuenta</label>-->
-<!--                    <input class="form-control" type="text" readonly formControlName="nroCuentaBancariaDestino"/>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">-->
-<!--                  <div class="form-group">-->
-<!--                    <label>CCI</label>-->
-<!--                    <input class="form-control" type="text" readonly formControlName="cciDestino"/>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">-->
-<!--                  <div class="form-group">-->
-<!--                    <label>Tipo de Cuenta</label>-->
-<!--                    <input class="form-control" formControlName="tipoCuentaBancariaDestino" type="text" readonly/>-->
-<!--                  </div>-->
-<!--                </div>-->
+                <div class="col-12" *ngIf="solicitudCabActual.solicitudDet.length === 1">
+                  <div class="divider">
+                    <div class="divider-text">Información de Adelanto</div>
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="solicitudCabActual.solicitudDet.length === 1
+             && solicitudCabActual.idTipoOperacion === 1">
+                  <div class="form-group">
+                    <div class="custom-control custom-switch custom-control-inline">
+                      <input type="checkbox" class="custom-control-input"
+                             id="adelanto" formControlName="flagAdelanto"
+                      />
+                      <label class="custom-control-label"
+                             for="adelanto">Adelanto</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="verAdelanto
+                   && solicitudCabActual.solicitudDet.length === 1
+                   && solicitudCabActual.idTipoOperacion === 1">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class="centerall-header">
+                      <tr>
+                        <th>N°</th>
+                        <th>Fecha Confirmado</th>
+                        <th>Neto Confirmado</th>
+                        <th>Días Efectivo</th>
+                        <th>Fondo Resguardo</th>
+                        <th>Monto a Financiar</th>
+                        <th>Interés</th>
+                        <th>Interés Total</th>
+                        <th>Gastos Diversos</th>
+                        <th>Total Gastos Diversos</th>
+                        <th>Monto Total Facturado</th>
+                        <th>Monto Desembolso</th>
+                        <th>Fecha Desembolso</th>
+                        <th>Saldo</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let item of adelantos">
+                        <td>{{ (item.tipo === 2) ? 'SALDO' : item.nro}}</td>
+                        <td>{{item.fechaConfirmado}}</td>
+                        <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                        <td>{{item.diasEfectivo}}</td>
+                        <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                        <td>{{item.montoCobrar | number: '1.2-2'}}</td>
+                        <td>{{item.interes | number: '1.2-2'}}</td>
+                        <td>{{item.interesConIGV | number: '1.2-2'}}</td>
+                        <td>{{item.gastosDiversos | number: '1.2-2'}}</td>
+                        <td>{{item.gastosDiversosConIGV | number: '1.2-2'}}</td>
+                        <td>{{(item.interesConIGV + item.gastosDiversosConIGV) | number: '1.2-2'}}</td>
+                        <td>{{item.montoDesembolso | number: '1.2-2'}}</td>
+                        <td>{{item.fechaDesembolso}}</td>
+                        <td>{{item.saldo | number: '1.2-2'}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!--                <div class="col-12">-->
+                <!--                  <div class="divider divider-danger">-->
+                <!--                    <div class="divider-text">Información del Contacto</div>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-md-6 col-12">-->
+                <!--                  <div class="form-group">-->
+                <!--                    <label>Nombre(s) y Apellidos</label>-->
+                <!--                    <input class="form-control" formControlName="nombreContacto" type="text" readonly/>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-md-6 col-12">-->
+                <!--                  <div class="form-group">-->
+                <!--                    <label>Teléfono</label>-->
+                <!--                    <input class="form-control" formControlName="telefonoContacto" type="text" readonly/>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-md-6 col-12">-->
+                <!--                  <div class="form-group">-->
+                <!--                    <label>Correo</label>-->
+                <!--                    <input class="form-control" formControlName="correoContacto" type="text" readonly/>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-md-6 col-12">-->
+                <!--                  <div class="form-group">-->
+                <!--                    <label>Correo(s) a Copiar</label>-->
+                <!--                    <input class="form-control" formControlName="conCopiaContacto" type="text"/>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-12" *ngIf="idTipoOperacion != 3">-->
+                <!--                  <div class="divider divider-warning">-->
+                <!--                    <div class="divider-text">Información de Cuenta Bancaria</div>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">-->
+                <!--                  <div class="form-group">-->
+                <!--                    <label>Titular</label>-->
+                <!--                    <input class="form-control" formControlName="titularCuentaBancariaDestino" type="text" readonly/>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">-->
+                <!--                  <div class="form-group">-->
+                <!--                    <label>Moneda</label>-->
+                <!--                    <input class="form-control" formControlName="monedaCuentaBancariaDestino" type="text" readonly/>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">-->
+                <!--                  <div class="form-group">-->
+                <!--                    <label>Banco</label>-->
+                <!--                    <input class="form-control" formControlName="bancoDestino" type="text" readonly/>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">-->
+                <!--                  <div class="form-group">-->
+                <!--                    <label>N° Cuenta</label>-->
+                <!--                    <input class="form-control" type="text" readonly formControlName="nroCuentaBancariaDestino"/>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">-->
+                <!--                  <div class="form-group">-->
+                <!--                    <label>CCI</label>-->
+                <!--                    <input class="form-control" type="text" readonly formControlName="cciDestino"/>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-md-6 col-12" *ngIf="idTipoOperacion != 3">-->
+                <!--                  <div class="form-group">-->
+                <!--                    <label>Tipo de Cuenta</label>-->
+                <!--                    <input class="form-control" formControlName="tipoCuentaBancariaDestino" type="text" readonly/>-->
+                <!--                  </div>-->
+                <!--                </div>-->
                 <div class="col-12">
                   <div class="divider divider-secondary">
                     <div class="divider-text">Documento(s) de Sustento</div>
@@ -657,12 +719,13 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body" ngbAutofocus tabindex="0" >
+          <div class="modal-body" ngbAutofocus tabindex="0">
             <div class="row">
               <div class="col-12">
                 <label for="basicTextarea">Motivo de rechazo</label>
                 <fieldset class="form-group">
-                  <textarea [(ngModel)]="motivoRechazo" class="form-control" id="basicTextarea" minlength="1" maxlength="100" rows="3" placeholder="Ingresar motivo de rechazo..."></textarea>
+                  <textarea [(ngModel)]="motivoRechazo" class="form-control" id="basicTextarea" minlength="1"
+                            maxlength="100" rows="3" placeholder="Ingresar motivo de rechazo..."></textarea>
                 </fieldset>
               </div>
             </div>

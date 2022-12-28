@@ -38,7 +38,7 @@ export class CheckListComponent implements OnInit {
   public gastos: ClienteGastos[] = [];
   public tiposArchivos: TablaMaestra[] = [];
   public tipoCT: TablaMaestra[] = [];
-  public adelantos: SolicitudCabAdelanto[];
+  public adelantos: SolicitudCabAdelanto[] = [];
   public solicitudForm: FormGroup;
   public adelantoForm: FormGroup;
   public oldAdelantoForm: FormGroup;
@@ -75,6 +75,9 @@ export class CheckListComponent implements OnInit {
   public oldFiltroForm: FormGroup;
   public optUsuario = [];
   public verAdelanto: boolean;
+
+  public fechaInvalida: boolean;
+  public montoInvalido: boolean;
 
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;
@@ -160,6 +163,7 @@ export class CheckListComponent implements OnInit {
       totalFacturarIGV: [{value: 0, disabled: true}],
       totalDesembolso: [{value: 0, disabled: true}],
       flagPagoInteresAdelantado: false,
+      flagAdelanto: false,
       observacion: [''],
       adelanto: [false]
     });
@@ -170,7 +174,7 @@ export class CheckListComponent implements OnInit {
     this.oldFiltroForm = this.filtroForm.value;
 
     this.adelantoForm = this.formBuilder.group({
-      fecha: [null],
+      fecha: [null, Validators.required],
       monto: [null, [Validators.required, Validators.min(1)]]
     });
     this.oldAdelantoForm = this.adelantoForm.value;
@@ -257,29 +261,6 @@ export class CheckListComponent implements OnInit {
   }
 
   onEditar(item: SolicitudCab, modal: any): void {
-    this.adelantos = [];
-    this.adelantos.push({
-      idSolicitudCabAdelanto: 0,
-      idSolicitudCab: 0,
-      nro: 0,
-      igv: 0,
-      fechaConfirmado: '',
-      netoConfirmado: 0,
-      fondoResguardo: 0,
-      tasaNominalMensual: 0,
-      financiamiento: 0,
-      diasEfectivo: 0,
-      montoCobrar: 0,
-      interes: 0,
-      interesConIGV: 0,
-      gastosDiversos: 0,
-      gastosDiversosConIGV: 0,
-      montoDesembolso: 0,
-      fechaDesembolso: null,
-      fechaDesembolsoFormat: '',
-      saldo: 0
-    });
-
     this.solicitudCabActual = {...item};
     this.solicitudForm.controls.idSolicitudCab.setValue(item.idSolicitudCab);
     this.idCliente = item.idCliente;
@@ -325,10 +306,13 @@ export class CheckListComponent implements OnInit {
     this.solicitudForm.controls.fechaPagoCT.setValue(item.fechaPagoCT);
 
     this.solicitudForm.controls.flagPagoInteresAdelantado.setValue(item.flagPagoInteresAdelantado);
+    this.solicitudForm.controls.flagAdelanto.setValue(item.flagAdelanto);
+    this.verAdelanto = item.flagAdelanto;
     this.solicitudForm.controls.observacion.setValue(item.observacion);
 
     this.detalle = item.solicitudDet;
     this.sustentos = item.solicitudCabSustento;
+    this.onListarAdelanto();
     this.onCalcularCT(item);
 
     this.utilsService.blockUIStart("Obteniendo información...");
@@ -479,13 +463,20 @@ export class CheckListComponent implements OnInit {
     if ((this.nombreContacto === "" || this.telefonoContacto === "" || this.correoContacto === ""))
       return;
     if (this.sustentos.length === 0 && this.archivos.length === 0) {
-      this.utilsService.showNotification('Cargar un Documento de Sustento', 'Alerta', 2);
+      this.utilsService.showNotification('Cargue un Documento de Sustento', 'Alerta', 2);
       return;
     }
+    if (this.solicitudForm.controls.flagAdelanto.value as boolean) {
+      if (this.archivos.filter(x => x.idTipo == 12).length == 0 && this.sustentos.filter(x => x.idTipo == 12 && x.estado == true).length == 0) {
+        this.utilsService.showNotification('Cargue un archivo de tipo Sustento de Adelanto', 'Alerta', 2);
+        return;
+      }
+    }
+
     for (const item of this.detalle) {
       if (item.idEstado == 1) {
         if (this.archivos.filter(x => x.idTipo == 10).length == 0 && this.sustentos.filter(x => x.idTipo == 10 && x.estado == true).length == 0) {
-          this.utilsService.showNotification('Cargar un archivo de tipo Sustento de Aprobación', 'Alerta', 2);
+          this.utilsService.showNotification('Cargue un archivo de tipo Sustento de Aprobación', 'Alerta', 2);
           return;
         }
       }
@@ -755,47 +746,167 @@ export class CheckListComponent implements OnInit {
     }
   }
 
-  async onAgregarAdelanto(): Promise<void> {
-    let igv = Number((await this.onListarMaestros(1000, 2))[0].valor) / 100;
-
-    //adelanto
-    let monto = this.adelantoForm.controls.monto.value;
-    let fecha: any = new Date(this.adelantoForm.controls.fecha.value.year,
-      this.adelantoForm.controls.fecha.value.month - 1,
-      this.adelantoForm.controls.fecha.value.day);
-
-    //solicitud
-    let det = this.solicitudCabActual.solicitudDet[0];
-    let fechaConfirmado: any = new Date(det.fechaConfirmado.year, det.fechaConfirmado.month - 1,
-      det.fechaConfirmado.day);
-    let diasEfectivo = Math.abs(fecha.getTime() - fechaConfirmado.getTime());
-    diasEfectivo = Math.ceil(diasEfectivo / (1000 * 60 * 60 * 24)) + 1;
-
-    let gastosDiversos = (this.solicitudCabActual.usarGastoVigenciaPoder ? this.solicitudCabActual.gastosContrato : 0) +
-      (this.solicitudCabActual.usarGastoVigenciaPoder ? this.solicitudCabActual.gastoVigenciaPoder : 0) +
-      this.solicitudCabActual.servicioCustodia +
-      this.solicitudCabActual.servicioCobranza +
-      this.solicitudCabActual.comisionCartaNotarial;
-    let gastosDiversosConIGV = gastosDiversos * (igv + 1);
-
-    let montoCobrar = ((360 * monto) + (360 * (gastosDiversos * (igv + 1)))) / (360 - ((diasEfectivo * ((this.solicitudCabActual.tasaNominalMensual / 100) * 12)) * (igv + 1)));
-    let interes = montoCobrar * ((this.solicitudCabActual.tasaNominalAnual / 100) / 360) * diasEfectivo;
-    let interesConIGV = interes * (igv + 1);
-    let montoTotalFacturado = interesConIGV + gastosDiversosConIGV;
-    let montoDesembolso = montoCobrar - montoTotalFacturado
-    // this.solicitudForm.controls.fondoResguardo.setValue(Math.round((fondoResguardo + Number.EPSILON) * 100) / 100);
-    // this.solicitudForm.controls.netoSolicitado.setValue(Math.round((netoSolicitado + Number.EPSILON) * 100) / 100);
-    // this.solicitudForm.controls.interesIncluidoIGV.setValue(Math.round((intereses + Number.EPSILON) * 100) / 100);
-    // this.solicitudForm.controls.gastosIncluidoIGV.setValue(Math.round((gastoIncluidoIGV + Number.EPSILON) * 100) / 100);
-    // this.solicitudForm.controls.totalFacturarIGV.setValue(Math.round((totFacturar + Number.EPSILON) * 100) / 100);
-    // this.solicitudForm.controls.totalDesembolso.setValue(Math.round((montoSolicitado + Number.EPSILON) * 100) / 100);
+  onListarAdelanto(): void {
+    this.utilsService.blockUIStart("Obteniendo información...");
+    this.checkListService.listarAdelanto({
+      idSolicitudCab: this.solicitudForm.controls.idSolicitudCab.value
+    }).subscribe((response: SolicitudCabAdelanto[]) => {
+      this.adelantos = response;
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
   }
 
-  onEliminarAdelanto(item: any): void {
+  onAgregarAdelanto(): Promise<void> {
+    if (this.adelantoForm.invalid) return;
+    this.utilsService.blockUIStart("Guardando...");
 
+    this.checkListService.guardarAdelanto({
+      idSolicitudCabAdelanto: 0,
+      idSolicitudCab: this.solicitudForm.controls.idSolicitudCab.value,
+      idSolicitudDet: this.solicitudCabActual.solicitudDet[0].idSolicitudDet,
+      fecha: this.utilsService.formatoFecha_YYYYMMDD(this.adelantoForm.controls.fecha.value),
+      monto: this.adelantoForm.controls.monto.value,
+      idUsuarioAud: this.currentUser.idUsuario
+    }).subscribe((response: any) => {
+      switch (response.tipo) {
+        case 1:
+          this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+          this.utilsService.blockUIStop();
+          this.onListarAdelanto();
+          this.adelantoForm.reset(this.oldAdelantoForm);
+          break;
+        case 2:
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          this.utilsService.blockUIStop();
+          break;
+        default:
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          this.utilsService.blockUIStop();
+          break;
+      }
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
+  }
+
+  // private _CalcularSaldo(igv: number, diasEfectivo: number): void {
+  //   const i = this.utilsService.autoIncrement(this.adelantos.filter(f => f.tipo != 2));
+  //   let det = this.solicitudCabActual.solicitudDet[0];
+  //   let sum = this.adelantos.filter(f => f.tipo === 1).reduce((sum, a) => sum + a.netoConfirmado, 0);
+  //   let gastosDiversos = 0;
+  //   let gastosDiversosConIGV = 0;
+  //   let netoConfirmado: number = det.netoConfirmado - sum;
+  //   let fondoResguardo: number = this.utilsService.round(netoConfirmado * ((100 - this.solicitudCabActual.financiamiento) / 100));
+  //   let montoCobrar: number = netoConfirmado - fondoResguardo;
+  //   let interes: number = this.utilsService.round(montoCobrar * ((this.solicitudCabActual.tasaNominalAnual / 100) / 360) * diasEfectivo);
+  //   let interesConIGV: number = this.utilsService.round(interes * (igv + 1));
+  //   let montoTotalFacturado: number = interesConIGV;// + gastosDiversosConIGV;
+  //   let montoDesembolso: number = montoCobrar - montoTotalFacturado;
+  //
+  //   if (this.adelantos.filter(f => f.tipo === 2).length > 0) {
+  //     let saldo = this.adelantos.find(f => f.tipo === 2);
+  //     saldo.idFila = i;
+  //     //saldo.idSolicitudCabAdelanto = 0;
+  //     //saldo.idSolicitudCab = this.solicitudCabActual.idSolicitudCab;
+  //     saldo.nro = i;
+  //     saldo.igv = igv;
+  //     //saldo.fechaConfirmado = this.utilsService.formatoFecha_YYYYMMDD(det.fechaConfirmado);
+  //     //saldo.fechaConfirmadoFormat = det.fechaConfirmadoFormat;
+  //     saldo.netoConfirmado = netoConfirmado;
+  //     saldo.fondoResguardo = fondoResguardo;
+  //     //saldo.tasaNominalMensual = this.solicitudCabActual.tasaNominalMensual;
+  //     //saldo.financiamiento = this.solicitudCabActual.financiamiento;
+  //     saldo.diasEfectivo = diasEfectivo;
+  //     saldo.montoCobrar = montoCobrar;
+  //     saldo.interes = interes;
+  //     saldo.interesConIGV = interesConIGV;
+  //     saldo.gastosDiversos = gastosDiversos;
+  //     saldo.gastosDiversosConIGV = gastosDiversosConIGV;
+  //     saldo.montoDesembolso = montoDesembolso;
+  //     //saldo.fechaDesembolso = '';
+  //     //saldo.fechaDesembolsoFormat = '';
+  //     //saldo.saldo = 0;
+  //     //saldo.tipo = 2
+  //   } else {
+  //     this.adelantos.push({
+  //       idFila: i,
+  //       idSolicitudCabAdelanto: 0,
+  //       idSolicitudCab: this.solicitudCabActual.idSolicitudCab,
+  //       nro: i,
+  //       igv,
+  //       fechaConfirmado: this.utilsService.formatoFecha_YYYYMMDD(det.fechaConfirmado),
+  //       fechaConfirmadoFormat: det.fechaConfirmadoFormat,
+  //       netoConfirmado,
+  //       fondoResguardo,
+  //       tasaNominalMensual: this.solicitudCabActual.tasaNominalMensual,
+  //       financiamiento: this.solicitudCabActual.financiamiento,
+  //       diasEfectivo,
+  //       montoCobrar,
+  //       interes,
+  //       interesConIGV,
+  //       gastosDiversos,
+  //       gastosDiversosConIGV,
+  //       montoDesembolso,
+  //       fechaDesembolso: '',//this.utilsService.formatoFecha_YYYYMMDD(this.adelantoForm.controls.fecha.value),
+  //       fechaDesembolsoFormat: '',//this.utilsService.formatoFecha_DDMMYYYY(this.adelantoForm.controls.fecha.value),
+  //       saldo: 0,
+  //       tipo: 2
+  //     });
+  //   }
+  // }
+
+  onEliminarAdelanto(item: SolicitudCabAdelanto): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea eliminar el adelanto #"${item.nro}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart("Eliminando...");
+        this.checkListService.eliminarAdelanto({
+          idSolicitudCabAdelanto: item.idSolicitudCabAdelanto,
+          idSolicitudCab: item.idSolicitudCab,
+          idUsuarioAud: this.currentUser.idUsuario
+        }).subscribe((response: any) => {
+          switch (response.tipo) {
+            case 1:
+              this.utilsService.showNotification('Adelanto eliminado.', 'Confirmación', 1);
+              this.utilsService.blockUIStop();
+              this.onListarAdelanto();
+              break;
+            case 2:
+              this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+              this.utilsService.blockUIStop();
+              break;
+            default:
+              this.utilsService.showNotification(response.mensaje, 'Error', 3);
+              this.utilsService.blockUIStop();
+              break;
+          }
+        }, error => {
+          this.utilsService.blockUIStop();
+          this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+        });
+      }
+    });
   }
 
   onAdelantoCambiar(): void {
     this.verAdelanto = !this.verAdelanto;
+  }
+
+  onDeshabilitar(nro: number): boolean {
+    return this.adelantos.filter(f => f.nro > nro).length > 0;
   }
 }
