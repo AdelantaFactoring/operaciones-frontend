@@ -1,0 +1,137 @@
+<div class="content-wrapper">
+  <div class="content-body">
+    <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="d-flex flex-wrap mb-0">
+            <div class="p-1">
+              <button type="submit" rippleEffect class="btn btn-secondary" (click)="onListar()">
+                <i class="mr-0 mr-sm-1" data-feather="refresh-cw"></i>
+                <span class="d-none d-sm-inline-block">Refrescar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label class="d-flex align-items-center"
+              >Mostrar
+                <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
+                        (change)="onListar()">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                filas</label
+              >
+            </div>
+          </div>
+          <div class="col-md-6 col-12 d-flex justify-content-md-end">
+            <div class="d-flex align-items-center justify-content-end mb-1">
+              <label class="d-flex align-items-center"
+              >Buscar<input
+                type="search"
+                placeholder="Buscar"
+                class="form-control ml-25"
+                [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" (change)="onListar()"
+              />
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-hover min-width-table">
+                  <thead class="centerall-header">
+                  <tr>
+                    <th>Acción</th>
+                    <th>Valor</th>
+                    <th>Descripción</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of tablaMaestra">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a *ngIf="!item.edicion && !item.asignar" href="javascript:void(0)" title="Editar"
+                           (click)="onEditar(item)"
+                           class="btn btn-raised btn-outline-success btn-sm">
+                          <i class="text-success cursor-pointer" data-feather="edit"></i>
+                        </a>
+                        <a *ngIf="item.edicion || item.asignar" href="javascript:void(0)" title="Cancelar"
+                           (click)="onCancelar(item)"
+                           class="btn btn-raised btn-outline-secondary btn-sm">
+                          <i class="text-secondary cursor-pointer" data-feather="corner-up-left"></i>
+                        </a>
+                        &nbsp;
+                        <a *ngIf="item.edicion || item.asignar" href="javascript:void(0)" title="Confirmar cambios"
+                           (click)="onConfirmarCambio(item)"
+                           class="btn btn-raised btn-outline-success btn-sm">
+                          <i class="text-success cursor-pointer" data-feather="save"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                      <p title="{{item.valor}}" *ngIf="!item.edicion && (validar(item.idColumna, 1) || validar(item.idColumna, 2))">{{ item.valor}}</p>
+                      <p title="{{item.valor}}" *ngIf="!item.edicion && validar(item.idColumna, 3)">{{ (item.valor === '1' ? 'Sí' : 'No') }}</p>
+                      <input *ngIf="item.edicion && validar(item.idColumna, 1)" class="form-control" type="text" placeholder="Valor"
+                             [(ngModel)]="item.valor" [ngModelOptions]="{standalone: true }"
+                             [ngClass]="{ 'is-invalid': item.valor === '' }" mask="separator" thousandSeparator=","/>
+                      <div *ngIf="item.edicion && validar(item.idColumna, 3)" class="custom-control custom-switch custom-control-inline">
+                        <input type="checkbox" class="custom-control-input"
+                               id="{{'valor' + item.idColumna}}" [(ngModel)]="bValor"
+                               [ngModelOptions]="{standalone: true}" (ngModelChange)="onCambioValor($event, item, 3)"/>
+                        <label class="custom-control-label" for="{{'valor' + item.idColumna}}"></label>
+                      </div>
+                      <ng-select *ngIf="item.edicion && validar(item.idColumna, 2)"
+                        [items]="correos"
+                        [addTag]="true"
+                        multiple="true"
+                        appendTo="body"
+                        bindLabel="name"
+                        placeholder="Select tag"
+                        [(ngModel)]="valores"
+                        (ngModelChange)="onCambioValor($event, item, 2)"
+                      >
+                        <ng-template ng-label-tmp let-item="item" let-clear="clear">
+                          <span class="ng-value-label"> {{ item.name }}</span>
+                          <span class="ng-value-icon right" (click)="clear(item)" aria-hidden="true">×</span>
+                        </ng-template>
+                      </ng-select>
+                    </td>
+                    <td>{{item.descripcion}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
+            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onListar()"
+                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize"
+                            [ellipses]="false">
+              <ng-template ngbPaginationFirst>
+                <span [data-feather]="'chevrons-left'" [size]="'18'" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationPrevious>
+                <span [data-feather]="'chevron-left'" [size]="'18'" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationNext>
+                <span [data-feather]="'chevron-right'" [size]="'18'" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationLast>
+                <span [data-feather]="'chevrons-right'" [size]="'18'" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+      <block-ui></block-ui>
+    </div>
+  </div>
+</div>
