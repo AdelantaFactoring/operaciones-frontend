@@ -10,8 +10,23 @@ import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 import {MiscellaneousModule} from "../../pages/miscellaneous/miscellaneous.module";
 import {CoreCardModule} from "../../../../@core/components/core-card/core-card.module";
 import {NgSelectModule} from "@ng-select/ng-select";
+import { ParametrosComponent } from './parametros/parametros.component';
+import {NgxMaskModule} from "ngx-mask";
+import { CorrelativoFacturaComponent } from './correlativo-factura/correlativo-factura.component';
+import { CorrelativoNCComponent } from './correlativo-nc/correlativo-nc.component';
+import { CorrelativoNDComponent } from './correlativo-nd/correlativo-nd.component';
+import { MonedaComponent } from './moneda/moneda.component';
 
 const routes: Routes = [
+  {
+    path: '',
+    children: [
+      {
+        path: 'moneda',
+        component: MonedaComponent
+      }
+    ]
+  },
   {
     path: '',
     children: [
@@ -21,23 +36,65 @@ const routes: Routes = [
       }
     ]
   },
+  {
+    path: '',
+    children: [
+      {
+        path: 'parametros',
+        component: ParametrosComponent
+      }
+    ]
+  },
+  {
+    path: '',
+    children: [
+      {
+        path: 'correlativoFactura',
+        component: CorrelativoFacturaComponent
+      }
+    ]
+  },
+  {
+    path: '',
+    children: [
+      {
+        path: 'correlativoNC',
+        component: CorrelativoNCComponent
+      }
+    ]
+  },
+  {
+    path: '',
+    children: [
+      {
+        path: 'correlativoND',
+        component: CorrelativoNDComponent
+      }
+    ]
+  },
 ]
 
 @NgModule({
   declarations: [
-    ConceptoComprobanteComponent    
+    ConceptoComprobanteComponent,
+    ParametrosComponent,
+    CorrelativoFacturaComponent,
+    CorrelativoNCComponent,
+    CorrelativoNDComponent,
+    MonedaComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    NgbModule,
-    CoreCommonModule,
-    BlockUIModule.forRoot(),
-    ContentHeaderModule,
-    NgxDatatableModule,
-    MiscellaneousModule,
-    CoreCardModule,
-    NgSelectModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        NgbModule,
+        CoreCommonModule,
+        BlockUIModule.forRoot(),
+        ContentHeaderModule,
+        NgxDatatableModule,
+        MiscellaneousModule,
+        CoreCardModule,
+        NgSelectModule,
+        NgxMaskModule.forRoot()
+    ]
 })
 export class MaestrosModule { }

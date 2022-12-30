@@ -151,10 +151,55 @@ export const menu: CoreMenu[] = [
         children: [
           {
             id: '19',
+            title: 'Moneda',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'catalogos/maestros/moneda',
+            icon: 'circle',
+            //openInNewTab: true
+          },
+          {
+            id: '19',
             title: 'Concepto (C. Pago)',
             //translate: 'MENU.PAGES.AUTH.LOGIN1',
             type: 'item',
             url: 'catalogos/maestros/conceptoComprobante',
+            icon: 'circle',
+            //openInNewTab: true
+          },
+          {
+            id: '19',
+            title: 'Parámetros Generales',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'catalogos/maestros/parametros',
+            icon: 'circle',
+            //openInNewTab: true
+          },
+          {
+            id: '19',
+            title: 'N° Comprobante (Factura)',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'catalogos/maestros/correlativoFactura',
+            icon: 'circle',
+            //openInNewTab: true
+          },
+          {
+            id: '19',
+            title: 'N° Comprobante (N. Crédito)',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'catalogos/maestros/correlativoNC',
+            icon: 'circle',
+            //openInNewTab: true
+          },
+          {
+            id: '19',
+            title: 'N° Comprobante (N. Débito)',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'catalogos/maestros/correlativoND',
             icon: 'circle',
             //openInNewTab: true
           },
@@ -165,8 +210,8 @@ export const menu: CoreMenu[] = [
         title: 'Tipo Cambio',
         // translate: 'MENU.DASHBOARD.ANALYTICS',
         type: 'item',
-        icon: 'file-text',
-        url: 'catalogos/tipo-cambio'        
+        icon: 'refresh-cw',
+        url: 'catalogos/tipo-cambio'
       }
     ]
   },

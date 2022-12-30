@@ -136,7 +136,7 @@ export class TipoCambioComponent implements OnInit {
     this.tipoCambioService.listar({
       startDate: this.fromDate.year.toString() + this.fromDate.month.toString().padStart(2, '0') + this.fromDate.day.toString().padStart(2, '0'),
       endDate: this.toDate.year.toString() + this.toDate.month.toString().padStart(2, '0') + this.toDate.day.toString().padStart(2, '0'),
-      idUsuario: 1,
+      idUsuario: this.currentUser.idUsuario,
       pageIndex: this.documentosSettings.page,
       pageSize: this.documentosSettings.pageSize
     }).subscribe(response => {
@@ -198,7 +198,7 @@ export class TipoCambioComponent implements OnInit {
         this.utilsService.showNotification('Informacion guardada correctamente', 'Confirmación', 1);
         this.utilsService.blockUIStop();
         this.onSetTipoCambio();
-        this.DismissModal();}    
+        this.DismissModal();}
     }, error => {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();
