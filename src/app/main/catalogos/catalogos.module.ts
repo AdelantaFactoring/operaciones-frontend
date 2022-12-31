@@ -17,6 +17,7 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { BlockUIModule } from 'ng-block-ui';
 
 import { TipoCambioComponent } from './tipo-cambio/tipo-cambio.component';
+import { GastosMoraComponent } from './gastos-mora/gastos-mora.component';
 
 const routes: Routes = [
     {
@@ -28,11 +29,21 @@ const routes: Routes = [
             }
         ]
     },
+  {
+    path: '',
+    children: [
+      {
+        path: 'gastosMora',
+        component: GastosMoraComponent
+      }
+    ]
+  },
 ]
 
 @NgModule({
     declarations: [
-        TipoCambioComponent
+        TipoCambioComponent,
+        GastosMoraComponent
     ],
     imports: [
         CommonModule,
@@ -41,12 +52,12 @@ const routes: Routes = [
         TranslateModule,
         CoreCommonModule,
         CoreCardModule,
-        ContentHeaderModule,                
+        ContentHeaderModule,
         CoreTouchspinModule,
         CoreSidebarModule,
         NgxDatatableModule,
         Ng2FlatpickrModule,
-        NgSelectModule,                
+        NgSelectModule,
         PerfectScrollbarModule,
         NgxMaskModule.forRoot(),
         SweetAlert2Module.forRoot(),

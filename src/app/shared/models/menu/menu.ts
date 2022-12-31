@@ -212,6 +212,14 @@ export const menu: CoreMenu[] = [
         type: 'item',
         icon: 'refresh-cw',
         url: 'catalogos/tipo-cambio'
+      },
+      {
+        id: '20',
+        title: 'Gastos por Mora',
+        // translate: 'MENU.DASHBOARD.ANALYTICS',
+        type: 'item',
+        icon: 'refresh-cw',
+        url: 'catalogos/gastosMora'
       }
     ]
   },

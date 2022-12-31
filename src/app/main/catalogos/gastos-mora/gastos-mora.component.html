@@ -1,0 +1,162 @@
+<div class="content-wrapper">
+  <div class="content-body">
+    <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="d-flex flex-wrap mb-0">
+            <div class="p-1">
+              <button type="submit" rippleEffect class="btn btn-secondary" (click)="onListar()">
+                <i class="mr-0 mr-sm-1" data-feather="refresh-cw"></i>
+                <span class="d-none d-sm-inline-block">Refrescar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label class="d-flex align-items-center"
+              >Mostrar
+                <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
+                        (change)="onListar()">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                filas</label
+              >
+            </div>
+          </div>
+          <div class="col-md-6 col-12 d-flex justify-content-md-end">
+            <div class="d-flex align-items-center justify-content-end mb-1">
+              <label class="d-flex align-items-center"
+              >Buscar<input
+                type="search"
+                placeholder="Buscar"
+                class="form-control ml-25"
+                [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" (change)="onListar()"
+              />
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <form [formGroup]="gastosMoraForm">
+              <div class="table-responsive">
+                <table class="table table-hover min-width-table">
+                  <thead class="centerall-header">
+                  <tr>
+                    <th>Acción</th>
+                    <th>Moneda</th>
+                    <th>Día(s)</th>
+                    <th>Monto</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>
+                      <a href="javascript:void(0)" title="Nuevo" (click)="onAgregar()"
+                         class="btn btn-raised btn-outline-info btn-sm">
+                        <i class="text-info cursor-pointer" data-feather="plus-circle"></i>
+                      </a>
+                    </td>
+                    <td>
+                      <ng-select appendTo="body" [clearable]="false" [items]="moneda"
+                                 bindLabel="descripcion" formControlName="moneda"
+                                 placeholder="Moneda" bindValue="idColumna">
+                      </ng-select>
+                    </td>
+                    <td>
+                      <input class="form-control" type="text" placeholder="Día(s)" formControlName="dias"
+                             [ngClass]="{ 'is-invalid': submitted && gastosMoraForm.controls.dias.errors }"
+                             mask="separator.0" thousandSeparator=","/>
+                    </td>
+                    <td>
+                      <input class="form-control" type="text" placeholder="Monto" formControlName="monto"
+                             [ngClass]="{ 'is-invalid': submitted && gastosMoraForm.controls.monto.errors }"
+                             mask="separator.2" thousandSeparator=","/>
+                    </td>
+                  </tr>
+                  <tr *ngFor="let item of gastosMora">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <a *ngIf="!item.edicion" href="javascript:void(0)" title="Editar"
+                           (click)="onEditar(item)"
+                           class="btn btn-raised btn-outline-success btn-sm">
+                          <i class="text-success cursor-pointer" data-feather="edit"></i>
+                        </a>
+                        <a *ngIf="item.edicion" href="javascript:void(0)" title="Cancelar"
+                           (click)="onCancelar(item)"
+                           class="btn btn-raised btn-outline-secondary btn-sm">
+                          <i class="text-secondary cursor-pointer" data-feather="corner-up-left"></i>
+                        </a>
+                        &nbsp;
+                        <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar"
+                           (click)="onEliminar(item)"
+                           class="btn btn-raised btn-outline-danger btn-sm">
+                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                        </a>
+                        <a *ngIf="item.edicion" href="javascript:void(0)" title="Confirmar cambios"
+                           (click)="onConfirmarCambio(item)"
+                           class="btn btn-raised btn-outline-success btn-sm">
+                          <i class="text-success cursor-pointer" data-feather="save"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <p *ngIf="!item.edicion">{{item.moneda}}</p>
+                      <ng-select *ngIf="item.edicion" appendTo="body" [clearable]="false" [items]="moneda"
+                                 bindLabel="descripcion" [(ngModel)]="item.idMoneda" [ngModelOptions]="{standalone: true }"
+                                 placeholder="Moneda" bindValue="idColumna">
+                      </ng-select>
+                    </td>
+                    <td>
+                      <p *ngIf="!item.edicion">{{item.dias | number: '1.0-0'}}</p>
+                      <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Día(s)"
+                             [(ngModel)]="item.dias" [ngModelOptions]="{standalone: true }"
+                             [ngClass]="{ 'is-invalid': item.dias === null }"
+                             mask="separator.0" thousandSeparator=","/>
+                    </td>
+                    <td>
+                      <p *ngIf="!item.edicion">{{item.monto | number: '1.2-2'}}</p>
+                      <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Monto" formControlName="monto"
+                             [ngClass]="{ 'is-invalid': submitted && item.monto === null }"
+                             [(ngModel)]="item.monto" [ngModelOptions]="{standalone: true }"
+                             mask="separator.2" thousandSeparator=","/>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
+            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onListar()"
+                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize"
+                            [ellipses]="false">
+              <ng-template ngbPaginationFirst>
+                <span [data-feather]="'chevrons-left'" [size]="'18'" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationPrevious>
+                <span [data-feather]="'chevron-left'" [size]="'18'" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationNext>
+                <span [data-feather]="'chevron-right'" [size]="'18'" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationLast>
+                <span [data-feather]="'chevrons-right'" [size]="'18'" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+
+      <block-ui></block-ui>
+    </div>
+  </div>
+</div>

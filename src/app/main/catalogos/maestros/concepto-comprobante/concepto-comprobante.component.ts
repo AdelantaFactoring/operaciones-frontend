@@ -165,27 +165,22 @@ export class ConceptoComprobanteComponent implements OnInit {
   }
 
   onEliminar(item: TablaMaestra): void {
-    if (item.idColumna == 0) {
-      this.tablaMaestra = this.tablaMaestra.filter(f => f.idFila != item.idFila);
-    } else {
-      Swal.fire({
-        title: 'Confirmación',
-        text: `¿Desea eliminar el registro "${item.valor}"?, esta acción no podrá revertirse`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí',
-        cancelButtonText: 'No',
-        customClass: {
-          confirmButton: 'btn btn-success',
-          cancelButton: 'btn btn-danger'
-        }
-      }).then(result => {
-        if (result.value) {
-          // item.estado = false;
-          // item.editado = true;
-        }
-      });
-    }
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea eliminar el registro "${item.valor}"?, esta acción no podrá revertirse`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      }
+    }).then(result => {
+      if (result.value) {
+
+      }
+    });
   }
 
   async onConfirmarCambio(item: TablaMaestra): Promise<void> {
