@@ -4,6 +4,7 @@ import {TablaMaestra} from "../../../../shared/models/shared/tabla-maestra";
 import {UtilsService} from "../../../../shared/services/utils.service";
 import {MaestrosService} from "../maestros.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-moneda',
@@ -158,5 +159,48 @@ export class MonedaComponent implements OnInit {
       this.submitted = false;
       this.monedaForm.reset(this.oldMonedaForm);
     }
+  }
+
+  onEliminar(item: TablaMaestra): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea eliminar el registro "${item.valor}"?, esta acción no podrá revertirse`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart("Eliminando...");
+        this.maestrosService.eliminar({
+          idTabla: item.idTabla,
+          idColumna: item.idColumna,
+          idUsuarioAud: 0
+        }).subscribe((response: any) => {
+          switch (response.tipo) {
+            case 1:
+              this.utilsService.blockUIStop();
+              this.utilsService.showNotification("Eliminación satisfactoria", "", 1);
+              this.onListar();
+              break;
+            case 2:
+              this.utilsService.blockUIStop();
+              this.utilsService.showNotification(response.mensaje, "Validación", 2);
+              break;
+            case 0:
+              this.utilsService.blockUIStop();
+              this.utilsService.showNotification(response.mensaje, "", 3);
+              break;
+          }
+        }, error => {
+          this.utilsService.blockUIStop();
+          this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+        });
+      }
+    });
   }
 }

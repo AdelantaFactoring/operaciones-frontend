@@ -4,5 +4,6 @@ export const TABLAMAESTRA = {
   listarRelacion: '/tablamaestrarelacion/listar',
   obtenerRelacion: '/tablamaestrarelacion/obtener',
   guardar: '/tablamaestra/guardar',
-  guardarRelacion: '/tablamaestrarelacion/guardar'
+  guardarRelacion: '/tablamaestrarelacion/guardar',
+  eliminar: '/tablaMaestra/eliminar'
 }

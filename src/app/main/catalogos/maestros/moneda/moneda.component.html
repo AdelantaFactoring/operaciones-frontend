@@ -85,6 +85,11 @@
                           <i class="text-secondary cursor-pointer" data-feather="corner-up-left"></i>
                         </a>
                         &nbsp;
+                        <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar"
+                           (click)="onEliminar(item)"
+                           class="btn btn-raised btn-outline-danger btn-sm">
+                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                        </a>
                         <a *ngIf="item.edicion || item.asignar" href="javascript:void(0)" title="Confirmar cambios"
                            (click)="onConfirmarCambio(item)"
                            class="btn btn-raised btn-outline-success btn-sm">

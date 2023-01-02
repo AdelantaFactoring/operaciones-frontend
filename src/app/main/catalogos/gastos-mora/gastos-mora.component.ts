@@ -168,7 +168,30 @@ export class GastosMoraComponent implements OnInit {
       }
     }).then(result => {
       if (result.value) {
-
+        this.utilsService.blockUIStart("Eliminando...");
+        this.gastosMoraService.eliminar({
+          idGastosMora: item.idGastosMora,
+          idUsuarioAud: this.currentUser.idUsuario
+        }).subscribe((response: any) => {
+          switch (response.tipo) {
+            case 1:
+              this.utilsService.blockUIStop();
+              this.utilsService.showNotification("Eliminación satisfactoria", "", 1);
+              this.onListar();
+              break;
+            case 2:
+              this.utilsService.blockUIStop();
+              this.utilsService.showNotification(response.mensaje, "Validación", 2);
+              break;
+            case 0:
+              this.utilsService.blockUIStop();
+              this.utilsService.showNotification(response.mensaje, "", 3);
+              break;
+          }
+        }, error => {
+          this.utilsService.blockUIStop();
+          this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+        });
       }
     });
   }

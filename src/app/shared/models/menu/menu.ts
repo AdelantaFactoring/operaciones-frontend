@@ -218,7 +218,7 @@ export const menu: CoreMenu[] = [
         title: 'Gastos por Mora',
         // translate: 'MENU.DASHBOARD.ANALYTICS',
         type: 'item',
-        icon: 'refresh-cw',
+        icon: 'dollar-sign',
         url: 'catalogos/gastosMora'
       }
     ]

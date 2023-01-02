@@ -32,9 +32,9 @@ export class GastosMoraService {
   }
 
   eliminar(payload): Observable<any> {
-    return this.requestMethod.put(
+    return this.requestMethod.delete(
       `${environment.apiUrl}${GASTOSMORA.eliminar}`,
-      payload,
+      `?idGastosMora=${payload.idGastosMora}&idUsuarioAud=${payload.idUsuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

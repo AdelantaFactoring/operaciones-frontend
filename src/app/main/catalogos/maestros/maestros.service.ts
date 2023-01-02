@@ -70,4 +70,14 @@ export class MaestrosService {
       }
     )
   }
+
+  eliminar(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${TABLAMAESTRA.eliminar}`,
+      `?idTabla=${payload.idTabla}&idColumna=${payload.idColumna}&idUsuarioAud:${payload.idUsuarioAud}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }
