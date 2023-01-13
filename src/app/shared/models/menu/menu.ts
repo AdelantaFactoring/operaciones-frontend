@@ -214,7 +214,7 @@ export const menu: CoreMenu[] = [
         url: 'catalogos/tipo-cambio'
       },
       {
-        id: '20',
+        id: '21',
         title: 'Gastos por Mora',
         // translate: 'MENU.DASHBOARD.ANALYTICS',
         type: 'item',
