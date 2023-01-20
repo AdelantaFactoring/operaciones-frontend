@@ -60,6 +60,7 @@
               <div class="form-group">
                 <label>Estado</label>
                 <ng-select appendTo="body" [clearable]="false" [items]="state" bindLabel="descripcion"
+                           [disabled]="(mostrar === 'false' ? true : null)"
                            placeholder="Estado" bindValue="idColumna" formControlName="estado"
                            (ngModelChange)="onListarCobranza()">
                 </ng-select>
@@ -70,21 +71,21 @@
                 <div class="divider-text">Liquidación - Detalle</div>
               </div>
             </div>
-            <div class="col-md-4 col-12">
+            <div class="col-md-3 col-12">
               <div class="form-group">
                 <label>Pag. / Prov. (RUC o Razón Social)</label>
                 <input class="form-control" formControlName="pagadorProveedorDet" type="text"
                        (ngModelChange)="onListarCobranza()"/>
               </div>
             </div>
-            <div class="col-md-4 col-12">
+            <div class="col-md-3 col-12">
               <div class="form-group">
                 <label>N° Documento</label>
                 <input class="form-control" formControlName="nroDocumento" type="text"
                        (ngModelChange)="onListarCobranza()"/>
               </div>
             </div>
-            <div class="col-md-4 col-12">
+            <div class="col-md-3 col-12">
               <div class="form-group">
                 <label>Fecha Operación</label>
                 <div class="input-group">
@@ -102,6 +103,13 @@
                             type="button" rippleEffect></button>
                   </div>
                 </div>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Neto Confirmado</label>
+                <input class="form-control" formControlName="netoConfirmado" type="text"
+                       mask="separator" thousandSeparator="," (ngModelChange)="onListarCobranza()"/>
               </div>
             </div>
           </div>
@@ -167,7 +175,7 @@
                       </a>
                     </div>
                   </th>
-                  <th rowspan="2" tyle="width: 5px">Acción</th>
+                  <th rowspan="2" style="width: 5px">Acción</th>
                   <th rowspan="2">N° Liquidación</th>
                   <th rowspan="2">N° Solicitud</th>
                   <th rowspan="2">Cliente</th>
@@ -178,7 +186,7 @@
                   <th rowspan="2">Neto Confirmado Total</th>
                   <th rowspan="2">IGV restante total (servicio)</th>
                   <th rowspan="2">Pago Total</th>
-                  <th rowspan="2">Saldo Total</th>
+                  <th rowspan="2">Saldo Total (Capital)</th>
                   <!--                  <th>Progreso Pago Total</th>-->
                   <!--                  <th>Tipo Operación</th>-->
                   <th rowspan="2">Estado</th>
@@ -276,12 +284,33 @@
                   </tr>
                   <tr id="{{ 'trL' + cab.idLiquidacionCab }}" style="visibility: collapse">
                     <td [colSpan]="20">
+                      <div class="row" *ngIf="mostrar === 'true'">
+                        <div class="d-flex flex-wrap mb-0">
+                          <div class="p-1">
+                            <button type="submit" rippleEffect class="btn btn-success" (click)="onPagoMasivo(cab)">
+                              <i class="mr-0 mr-sm-1" data-feather="save"></i>
+                              <span class="d-none d-sm-inline-block">Iniciar Pago Masivo</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                       <div class="row">
-                        <div class="table-responsive" style="padding-left: 20px; display: none;"
+                        <div class="table-responsive" style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
                              id="{{ 'detailL' + cab.idLiquidacionCab }}">
                           <table class="table table-hover">
                             <thead>
                             <tr>
+                              <th *ngIf="mostrar === 'true'" class="detail-th-color" style="width: 81px">
+                                <div class="custom-control custom-checkbox">
+                                  <input type="checkbox" class="custom-control-input"
+                                         id="{{'customCheck' + cab.idLiquidacionCab}}" unchecked
+                                         [(ngModel)]="cab.seleccionarTodo" (ngModelChange)="onSeleccionarTodo(cab)"/>
+                                  <label class="custom-control-label"
+                                         for="{{'customCheck' + cab.idLiquidacionCab}}"></label>
+                                </div>
+                              </th>
+                              <th *ngIf="cab.verOpcionesPagoDetalle && mostrar === 'true'" style="width: 220px" class="detail-th-color">Fecha Pago</th>
+                              <th *ngIf="cab.verOpcionesPagoDetalle && mostrar === 'true'" style="width: 206px" class="detail-th-color">Monto Pago</th>
                               <th class="detail-th-color">Acción</th>
                               <th class="detail-th-color">Progreso Pago</th>
                               <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
@@ -291,10 +320,10 @@
                               <th class="detail-th-color">Neto Confirmado</th>
                               <th class="detail-th-color">IGV restante (servicio)</th>
                               <th class="detail-th-color">Día(s) Mora</th>
-                              <th class="detail-th-color">Pago</th>
+                              <th class="detail-th-color">Pago (C + I + G)</th>
                               <th class="detail-th-color">Interés</th>
                               <th class="detail-th-color">Gastos</th>
-                              <th class="detail-th-color">Saldo</th>
+                              <th class="detail-th-color">Saldo (Capital)</th>
                               <!--                              <th *ngIf="cab.idTipoOperacion == 3" class="detail-th-color">¿Intereses y <br> gastos-->
                               <!--                                pagados? <br> (Confirming)-->
                               <!--                              </th>-->
@@ -302,14 +331,43 @@
                             </thead>
                             <tbody>
                             <tr *ngFor="let item of cab.liquidacionDet">
+                              <td *ngIf="mostrar === 'true'">
+                                <div class="custom-control custom-checkbox">
+                                  <input type="checkbox" class="custom-control-input"
+                                         id="{{'customCheck' + item.idLiquidacionDet}}"
+                                         [disabled]="item.pagoTotal || (cab.idTipoOperacion == 1 && !cab.alterno && !item.flagPagoHabilitado)
+                                                    || (cab.idTipoOperacion == 3 && !cab.flagPagoInteresConfirming)"
+                                         [(ngModel)]="item.seleccionado" (ngModelOptions)="{ standalone: true }"
+                                         (ngModelChange)="onSeleccionado(cab, item)"/>
+                                  <label class="custom-control-label"
+                                         for="{{'customCheck' + item.idLiquidacionDet}}"></label>
+                                </div>
+                              </td>
+                              <td *ngIf="mostrar === 'true' && cab.verOpcionesPagoDetalle">
+                                <div *ngIf="item.verOpcionesPago" class="input-group">
+                                  <input class="form-control" placeholder="yyyy-mm-dd" container="body" style="width: 50px"
+                                         [(ngModel)]="item.fechaPago" [ngClass]="{ 'is-invalid': item.fechaPago === null }"
+                                         ngbDatepicker #basicDP2="ngbDatepicker">
+                                  <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary feather icon-calendar"
+                                            (click)="basicDP2.toggle()"
+                                            type="button" rippleEffect></button>
+                                  </div>
+                                </div>
+                              </td>
+                              <td *ngIf="mostrar === 'true' && cab.verOpcionesPagoDetalle">
+                                <input *ngIf="item.verOpcionesPago" class="form-control" type="text" [(ngModel)]="item.montoPago" placeholder="0.00" style="width: 150px"
+                                       [ngClass]="{ 'is-invalid': item.montoPago <= 0 }" mask="separator" thousandSeparator=","/>
+                              </td>
                               <td>
                                 <div class="d-flex align-items-center">
-                                  <a *ngIf="cab.idEstado != 7" href="javascript:void(0)" title="Pagar"
+                                  <a *ngIf="cab.idEstado != 7 && !item.pagoTotal" href="javascript:void(0)" title="Pagar"
+                                     [class.disabled]="cab.verOpcionesPagoDetalle ? true : null"
                                      (click)="onPagar(modalINFO, cab, item)"
                                      class="btn btn-raised btn-outline-success btn-sm">
                                     <i class="text-success cursor-pointer" data-feather="edit"></i>
                                   </a>
-                                  <a *ngIf="cab.idEstado === 7" href="javascript:void(0)" title="Ver Pagos"
+                                  <a *ngIf="cab.idEstado === 7 || item.pagoTotal" href="javascript:void(0)" title="Ver Pagos"
                                      (click)="onPagar(modalINFO, cab, item)"
                                      class="btn btn-raised btn-outline-info btn-sm">
                                     <i class="text-info cursor-pointer" data-feather="eye"></i>
@@ -633,7 +691,7 @@
                     <label>Fecha Pago</label>
                     <div class="input-group">
                       <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaPago"
-                             [maxDate]="fechaMaxima"
+                             [minDate]="fechaMinima" [maxDate]="fechaMaxima"
                              [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.fechaPago.errors }"
                              container="body" ngbDatepicker #basicDP1="ngbDatepicker">
                       <div class="input-group-append">
@@ -675,7 +733,7 @@
                 <div class="col-12">
                   <div class="form-group">
                     <button
-                      [disabled]="(liquidacionCabItem.idTipoOperacion == 1 && !liquidacionCabItem.alterno) ? !pagoInfoForm.controls.flagPagoHabilitado.value : false"
+                      [disabled]="((liquidacionCabItem.idTipoOperacion == 1 && !liquidacionCabItem.alterno) ? !pagoInfoForm.controls.flagPagoHabilitado.value : false) || (liquidacionCabItem.idTipoOperacion == 3 && !liquidacionCabItem.flagPagoInteresConfirming)"
                       type="submit" class="btn btn-success" (click)="onGuardarPago()">
                       <i class="mr-0 mr-sm-1" data-feather="save"></i>
                       <span class="d-none d-sm-inline-block">Guardar</span>
@@ -683,6 +741,21 @@
                   </div>
                 </div>
                 <div class="col-12">
+                  <div *ngIf="liquidacionCabItem.idTipoOperacion == 3">
+                    <ngb-alert *ngIf="!liquidacionCabItem.flagPagoInteresConfirming" [type]="'danger'"
+                               [dismissible]="false">
+                      <div class="alert-body" style="font-size: 13px !important;">
+                        * Aun no se puede iniciar con los pagos (debe confirmar si se pagó los intereses y gastos
+                        (servicio)).
+                      </div>
+                    </ngb-alert>
+                    <ngb-alert *ngIf="liquidacionCabItem.flagPagoInteresConfirming" [type]="'success'"
+                               [dismissible]="false">
+                      <div class="alert-body" style="font-size: 13px !important;">
+                        * Se puede iniciar / continuar con los pagos.
+                      </div>
+                    </ngb-alert>
+                  </div>
                   <div *ngIf="liquidacionCabItem.idTipoOperacion == 1 && !liquidacionCabItem.alterno">
                     <ngb-alert *ngIf="!pagoInfoForm.controls.flagPagoHabilitado.value" [type]="'danger'"
                                [dismissible]="false">
@@ -885,7 +958,7 @@
                   <span style="font-weight: bold"> Total por pagador: {{countPagador | number}} </span><br>
                   <span style="font-weight: bold" class="mb-1"> Total por cliente: {{countCliente | number}} </span>
                 </div>
-                <div style="float: right">
+                <div style="float: right" *ngIf="mostrar === 'true'">
                   <button class="btn btn-warning" rippleEffect type="button" (click)="onGuardarEstados()">
                     <span
                       [data-feather]="'settings'"></span> {{(countClienteSeleccionado > 0) ? 'Guardar estados y generar comprobante(s)' : 'Guardar estados'}}
@@ -993,7 +1066,7 @@
                     </div>
                   </ngb-alert>
                 </div>
-                <div style="float: right">
+                <div style="float: right" *ngIf="mostrar === 'true'">
                   <button [disabled]="liquidacionCabItem.flagPagoInteresConfirming" class="btn btn-warning" rippleEffect
                           type="button" (click)="onGuardarPAI()">
                     <span [data-feather]="'save'"></span> Guardar

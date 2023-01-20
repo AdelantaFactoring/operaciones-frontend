@@ -350,7 +350,14 @@ export const menu: CoreMenu[] = [
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',
       icon: 'file-plus',
-      url: 'cobranza/registroPagos'
+      url: 'cobranza/registroPagos/true'
+    }, {
+      id: '22',
+      title: 'Historial de Pagos',
+      // translate: 'MENU.DASHBOARD.ANALYTICS',
+      type: 'item',
+      icon: 'archive',
+      url: 'cobranza/registroPagos/false'
     }, {
       id: '12',
       title: 'Devoluciones',

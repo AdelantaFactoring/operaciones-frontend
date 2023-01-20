@@ -12,6 +12,7 @@ export class LiquidacionDocumentoDet {
   precioUnitario: number;
   precioUnitarioIGV: number;
   montoTotal: number;
+  total: number = 0;
   nroDocumentoReferencia: string;
   estado: boolean;
 

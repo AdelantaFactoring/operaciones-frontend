@@ -386,6 +386,11 @@ export class DocumentosComponent implements OnInit {
     this.idTipoDocumentoReferencia = cab.idTipoDocumentoReferencia;
     this.nroDocumentoReferencia = cab.nroDocumentoReferencia;
     this.detalle = cab.liquidacionDocumentoDet;
+
+    for (const det of this.detalle) {
+      det.total = (det.precioUnitario * det.cantidad) + det.precioUnitarioIGV;
+    }
+
     this.idBienServicioDetraccion = cab.idBienServicioDetraccion;
     this.tasaDetraccion = cab.tasaDetraccion;
     this.montoDetraccion = cab.montoDetraccion;
@@ -539,6 +544,7 @@ export class DocumentosComponent implements OnInit {
       precioUnitario: this.ReactiveIUForm_Detalle.precioUnitario.value,
       precioUnitarioIGV: this.ReactiveIUForm_Detalle.precioUnitarioIGV.value,
       montoTotal: this.ReactiveIUForm_Detalle.montoTotal.value,
+      total: (this.ReactiveIUForm_Detalle.precioUnitario.value * this.ReactiveIUForm_Detalle.cantidad.value) + this.ReactiveIUForm_Detalle.precioUnitarioIGV.value,
       nroDocumentoReferencia: this.ReactiveIUForm_Detalle.nroDocumentoReferencia.value,
       estado: true,
       idFila: this.utilsService.autoIncrement(this.detalle),
@@ -582,6 +588,7 @@ export class DocumentosComponent implements OnInit {
     item.precioUnitario = this.oldDetalle.precioUnitario;
     item.precioUnitarioIGV = this.oldDetalle.precioUnitarioIGV;
     item.montoTotal = this.oldDetalle.montoTotal;
+    item.total = this.oldDetalle.total;
     item.nroDocumentoReferencia = this.oldDetalle.nroDocumentoReferencia;
     item.estado = this.oldDetalle.estado;
     item.idFila = this.oldDetalle.idFila;
@@ -921,6 +928,7 @@ export class DocumentosComponent implements OnInit {
             precioUnitario: item.precioUnitario,
             precioUnitarioIGV: item.precioUnitarioIGV,
             montoTotal: item.montoTotal,
+            total: (item.precioUnitario * item.cantidad) + item.precioUnitarioIGV,
             nroDocumentoReferencia: item.nroDocumentoReferencia,
             estado: true,
             idFila: this.utilsService.autoIncrement(this.detalle),

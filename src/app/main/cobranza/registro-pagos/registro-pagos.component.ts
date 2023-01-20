@@ -8,11 +8,12 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {LiquidacionPago} from 'app/shared/models/cobranza/liquidacion-pago';
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
-import { User } from 'app/shared/models/auth/user';
+import {User} from 'app/shared/models/auth/user';
 import {
   LiquidacionObtenerestadopagoFactoringregular
 } from "../../../shared/models/cobranza/liquidacion-obtenerestadopago-factoringregular";
 import Swal from "sweetalert2";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-registro-pagos',
@@ -23,6 +24,8 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   @ViewChild('coreCard') coreCard;
 
   public currentUser: User;
+  public mostrar: string = 'false';
+
   public contentHeader: object;
   public cambiarIcono: boolean = false;
   public cobranza: LiquidacionCab[] = [];
@@ -36,6 +39,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   public submitted: boolean = false;
   public ocultarPagoForm: boolean = false;
   public fechaMaxima: any;
+  public fechaMinima: any;
 
   public idLiquidacionCab: number = 0;
   public idLiquidacionDet: number = 0;
@@ -69,7 +73,8 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     return this.paiForm.controls;
   }
 
-  constructor(private modalService: NgbModal,
+  constructor(private route: ActivatedRoute,
+              private modalService: NgbModal,
               private utilsService: UtilsService,
               private registroPagosService: RegistroPagosService,
               private formBuilder: FormBuilder,
@@ -115,7 +120,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     });
     this.pagoInfoForm = this.formBuilder.group({
       nuevaFechaConfirmada: [{value: '', disabled: true}],
-      fecha: [{ year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() }],
+      fecha: [{year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate()}],
       diasMora: [{value: 0, disabled: true}],
       interes: [{value: 0, disabled: true}],
       gastos: [{value: 0, disabled: true}],
@@ -142,7 +147,8 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       estado: [0],
       pagadorProveedorDet: [''],
       nroDocumento: [''],
-      fechaOperacion: [null]
+      fechaOperacion: [null],
+      netoConfirmado: [0]
     });
     this.oldFiltroForm = this.filtroForm.value;
 
@@ -166,7 +172,15 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.operationType = this.utilsService.agregarTodos(4, this.operationType);
     this.state = this.utilsService.agregarTodos(7, this.state);
     this.utilsService.blockUIStop();
-    this.onListarCobranza();
+    this.route.params.subscribe(s => {
+      this.mostrar = s.mostrar;
+      this.filtroForm.controls.estado.setValue((this.mostrar === 'false' ? 7 : 0));
+      if (this.mostrar === 'false')
+        this.filtroForm.controls.estado.disable();
+      else
+        this.filtroForm.controls.estado.enable();
+      this.onListarCobranza();
+    });
   }
 
   ngAfterViewInit() {
@@ -188,7 +202,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.utilsService.blockUIStart('Obteniendo información...');
 
     const response = await this.registroPagosService.listar({
-      idConsulta: 3,
+      idConsulta: this.mostrar === 'true' ? 3 : 4,
       codigoLiquidacion: this.filtroForm.controls.codigoLiquidacion.value,
       codigoSolicitud: this.filtroForm.controls.codigoSolicitud.value,
       cliente: this.filtroForm.controls.cliente.value,
@@ -196,9 +210,11 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       moneda: this.filtroForm.controls.moneda.value,
       idTipoOperacion: this.filtroForm.controls.tipoOperacion.value,
       idEstado: this.filtroForm.controls.estado.value,
+      netoConfirmadoTotal: 0,
       pagProvDet: this.filtroForm.controls.pagadorProveedorDet.value,
       nroDocumento: this.filtroForm.controls.nroDocumento.value,
       fechaOperacion: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaOperacion.value) ?? "",
+      netoConfirmado: this.filtroForm.controls.netoConfirmado.value === '' ? 0 : this.filtroForm.controls.netoConfirmado.value,
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
@@ -285,7 +301,17 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       idLiquidacionDet: idLiquidacionDet,
     }).subscribe((response: LiquidacionPago[]) => {
       this.pagos = response;
-      this.ocultarPagoForm = response.filter(f => f.tipoPago == "Total").length > 0;
+      this.ocultarPagoForm = response.filter(f => f.tipoPago == "Total").length > 0 || this.mostrar === 'false';
+      if (response.length > 0) {
+        let first = response.sort((a, b) => b.idLiquidacionPago - a.idLiquidacionPago)[0];
+        this.fechaMinima = {
+          year: parseInt(first.fechaPago.split('/')[2]),
+          month: parseInt(first.fechaPago.split('/')[1]),
+          day: parseInt(first.fechaPago.split('/')[0]),
+        };
+      } else {
+        this.fechaMinima = null;
+      }
       this.utilsService.blockUIStop();
     }, error => {
       this.utilsService.blockUIStop();
@@ -337,7 +363,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   // }
 
   async onPagar(modal: any, cab: LiquidacionCab, det: LiquidacionDet): Promise<void> {
-    this.fechaMaxima = { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() };
+    this.fechaMaxima = {year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate()};
     this.liquidacionForm.controls.idLiquidacionCab.setValue(cab.idLiquidacionCab);
     this.codigo = cab.codigo;
     this.nroDocumento = det.nroDocumento;
@@ -402,7 +428,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     }, 0);
   }
 
-  onCheckPagoInteresConfirming() : void {
+  onCheckPagoInteresConfirming(): void {
     if (this.pagos.filter(a => a.flagPagoInteresConfirming).length > 0) {
       this.pagoInfoForm.controls.flagPagoInteresConfirming.disable();
     } else {
@@ -435,7 +461,11 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
 
           this.utilsService.blockUIStop();
           this.pagoInfoForm.reset(this.oldPagoInfoForm);
-          this.pagoInfoForm.controls.fecha.setValue({ year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() });
+          this.pagoInfoForm.controls.fecha.setValue({
+            year: new Date().getFullYear(),
+            month: new Date().getMonth() + 1,
+            day: new Date().getDate()
+          });
           this.onInfoPago(this.idLiquidacionDet, '', true);
           this.onListarPago(this.idLiquidacionDet);
           this.submitted = false;
@@ -531,7 +561,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   }
 
   onShowPAI(modal: NgbModal, cab: LiquidacionCab): void {
-    this.fechaMaxima = { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() };
+    this.fechaMaxima = {year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate()};
     this.codigo = cab.codigo;
     this.idLiquidacionCab = cab.idLiquidacionCab;
 
@@ -654,7 +684,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
 
   onSeleccionarTodoInicioPagos(): void {
     this.inicioPagosRows.forEach(el => {
-        el.seleccionado = this.seleccionarTodoInicioPagos;
+      el.seleccionado = this.seleccionarTodoInicioPagos;
     });
   }
 
@@ -700,5 +730,94 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       this.pagoInfoForm.controls.excesoFR.setValue(this.utilsService.round(dif * -1));
     else
       this.pagoInfoForm.controls.excesoFR.setValue(0);
+  }
+
+  onSeleccionarTodo(cab: LiquidacionCab): void {
+    cab.verOpcionesPagoDetalle = cab.seleccionarTodo;
+    for (let el of cab.liquidacionDet) {
+      if (el.pagoTotal
+        || (cab.idTipoOperacion == 1 && !cab.alterno && !el.flagPagoHabilitado)
+        || (cab.idTipoOperacion == 3 && !cab.flagPagoInteresConfirming)) continue;
+      el.fechaPago = {
+        year: parseInt(el.fechaConfirmado.split('/')[2]),
+        month: parseInt(el.fechaConfirmado.split('/')[1]),
+        day: parseInt(el.fechaConfirmado.split('/')[0]),
+      }
+      el.montoPago = el.saldo > 0 ? el.saldo : el.netoConfirmado;
+      el.verOpcionesPago = el.seleccionado = cab.seleccionarTodo;
+    }
+  }
+
+  onSeleccionado(cab: LiquidacionCab, item: LiquidacionDet): void {
+    cab.verOpcionesPagoDetalle = cab.liquidacionDet.filter(f => f.seleccionado).length > 0;
+    item.fechaPago = {
+      year: parseInt(item.fechaConfirmado.split('/')[2]),
+      month: parseInt(item.fechaConfirmado.split('/')[1]),
+      day: parseInt(item.fechaConfirmado.split('/')[0]),
+    }
+    item.montoPago = item.saldo > 0 ? item.saldo : item.netoConfirmado;
+    item.verOpcionesPago = item.seleccionado;
+  }
+
+  onPagoMasivo(cab: LiquidacionCab): void {
+    if (cab.liquidacionDet.filter(f => f.seleccionado).length === 0) {
+      this.utilsService.showNotification("Seleccione al menos una fila", "Advertencia", 2);
+      return;
+    }
+
+    for (const el of cab.liquidacionDet) {
+      if (el.seleccionado) {
+        if (el.fechaPago === null) {
+          this.utilsService.showNotification(`Seleccione una fecha de pago. (Doc. ${el.nroDocumento})`, "Advertencia", 2);
+          return;
+        } else if (el.montoPago <= 0) {
+          this.utilsService.showNotification(`El monto de pago debe ser mayor a cero. (Doc. ${el.nroDocumento})`, "Advertencia", 2);
+          return;
+        }
+
+        el.fechaPagoFormat = this.utilsService.formatoFecha_YYYYMMDD(el.fechaPago);
+      }
+    }
+
+    const pagos = {...cab};
+    let liqDet: LiquidacionDet[] = [];
+    for (const det of cab.liquidacionDet.filter(f => f.seleccionado)) {
+      const newDet = { ...det };
+      newDet.fechaPago = "";
+      liqDet.push(newDet);
+    }
+    // pagos.liquidacionCabSustento = null;
+    // // @ts-ignore
+    // pagos.liquidacionDet = [...cab.liquidacionDet.filter(f => f.seleccionado)]
+    // pagos.idEmpresa = this.currentUser.idEmpresa;
+    // pagos.idUsuarioAud = this.currentUser.idUsuario;
+
+    this.utilsService.blockUIStart('Guardando...');
+    // @ts-ignore
+    this.registroPagosService.insertarPagoMasivo({
+      idEmpresa: this.currentUser.idEmpresa,
+      idLiquidacionCab: pagos.idLiquidacionCab,
+      liquidacionDet: liqDet,
+      idUsuarioAud: this.currentUser.idUsuario
+    }).subscribe((response: any) => {
+        switch (response.tipo) {
+          case 1:
+            this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+            this.utilsService.blockUIStop();
+            this.onListarCobranza();
+            break;
+          case 2:
+            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+            this.utilsService.blockUIStop();
+            break;
+          default:
+            this.utilsService.showNotification(response.mensaje, 'Error', 3);
+            this.utilsService.blockUIStop();
+            break;
+        }
+      }, error => {
+        this.utilsService.blockUIStop();
+        this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+      });
   }
 }

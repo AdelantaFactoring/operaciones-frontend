@@ -654,7 +654,7 @@
                           <th class="detail-th-color">Cantidad</th>
                           <th class="detail-th-color">Precio Unitario</th>
                           <th class="detail-th-color">P.U. IGV</th>
-                          <th class="detail-th-color">Importe Total (sin IGV)</th>
+                          <th class="detail-th-color">Total</th>
                           <th class="detail-th-color">N°
                             Documento Ref.
                           </th>
@@ -816,12 +816,13 @@
                                    [ngModelOptions]="{standalone: true}"/>
                           </td>
                           <td [ngClass]="{'row-edicion': item.editado}">
-                            <p [ngClass]="{ 'eliminado': !item.estado }"
-                               *ngIf="!item.edicion">{{item.montoTotal | number: '1.2-2'}}</p>
-                            <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Monto Total"
-                                   [(ngModel)]="item.montoTotal" mask="separator" thousandSeparator=","
-                                   [disabled]="true"
-                                   [ngModelOptions]="{standalone: true}"/>
+                            <p [ngClass]="{ 'eliminado': !item.estado }">{{item.total | number:'1.2-2'}}</p>
+<!--                            <p [ngClass]="{ 'eliminado': !item.estado }"-->
+<!--                               *ngIf="!item.edicion">{{item.montoTotal | number: '1.2-2'}}</p>-->
+<!--                            <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Monto Total"-->
+<!--                                   [(ngModel)]="item.montoTotal" mask="separator" thousandSeparator=","-->
+<!--                                   [disabled]="true"-->
+<!--                                   [ngModelOptions]="{standalone: true}"/>-->
                           </td>
                           <td [ngClass]="{'row-edicion': item.editado}">
                             <p [ngClass]="{ 'eliminado': !item.estado }"

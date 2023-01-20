@@ -14,25 +14,29 @@
             <div class="col-md-3 col-12">
               <div class="form-group">
                 <label>N° Liquidación</label>
-                <input class="form-control" formControlName="codigoLiquidacion" type="text" (ngModelChange)="onListarDesembolso()"/>
+                <input class="form-control" formControlName="codigoLiquidacion" type="text"
+                       (ngModelChange)="onListarDesembolso()"/>
               </div>
             </div>
             <div class="col-md-3 col-12">
               <div class="form-group">
                 <label>N° Solicitud</label>
-                <input class="form-control" formControlName="codigoSolicitud" type="text" (ngModelChange)="onListarDesembolso()"/>
+                <input class="form-control" formControlName="codigoSolicitud" type="text"
+                       (ngModelChange)="onListarDesembolso()"/>
               </div>
             </div>
             <div class="col-md-3 col-12">
               <div class="form-group">
                 <label>Cliente (RUC o Razón Social)</label>
-                <input class="form-control" formControlName="cliente" type="text" (ngModelChange)="onListarDesembolso()"/>
+                <input class="form-control" formControlName="cliente" type="text"
+                       (ngModelChange)="onListarDesembolso()"/>
               </div>
             </div>
             <div class="col-md-3 col-12">
               <div class="form-group">
                 <label>Pag. / Prov. (RUC o Razón Social)</label>
-                <input class="form-control" formControlName="pagadorProveedor" type="text" (ngModelChange)="onListarDesembolso()"/>
+                <input class="form-control" formControlName="pagadorProveedor" type="text"
+                       (ngModelChange)="onListarDesembolso()"/>
               </div>
             </div>
             <div class="col-md-4 col-12">
@@ -70,13 +74,15 @@
             <div class="col-md-4 col-12">
               <div class="form-group">
                 <label>Pag. / Prov. (RUC o Razón Social)</label>
-                <input class="form-control" formControlName="pagadorProveedorDet" type="text" (ngModelChange)="onListarDesembolso()"/>
+                <input class="form-control" formControlName="pagadorProveedorDet" type="text"
+                       (ngModelChange)="onListarDesembolso()"/>
               </div>
             </div>
             <div class="col-md-4 col-12">
               <div class="form-group">
                 <label>N° Documento</label>
-                <input class="form-control" formControlName="nroDocumento" type="text" (ngModelChange)="onListarDesembolso()"/>
+                <input class="form-control" formControlName="nroDocumento" type="text"
+                       (ngModelChange)="onListarDesembolso()"/>
               </div>
             </div>
             <div class="col-md-4 col-12">
@@ -191,7 +197,7 @@
                   <th rowspan="2">Acción</th>
                   <th rowspan="2">N° Liquidación</th>
                   <th rowspan="2">N° Solicitud</th>
-                  <th rowspan="2">Tipo Operación</th>
+                  <th rowspan="2">Fecha operación</th>
                   <th rowspan="2">Cliente</th>
                   <th rowspan="2">Cliente RUC</th>
                   <th rowspan="2">Pagador / Proveedor</th>
@@ -237,7 +243,8 @@
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <a href="javascript:void(0)" title="Enviar Correo" *ngIf="cab.idTipoOperacion === 1 && !cab.alterno"
+                        <a href="javascript:void(0)" title="Enviar Correo"
+                           *ngIf="cab.idTipoOperacion === 1 && !cab.alterno"
                            [class.disabled]="cab.idEstado != 5 || cab.idTipoOperacion != 1 ? true: null"
                            (click)="onEnviar(2, cab)"
                            class="btn btn-raised btn-outline-warning btn-sm">
@@ -264,8 +271,15 @@
                       </div>
                     </td>
                     <td>{{cab.codigo}}</td>
-                    <td>{{cab.codigoSolicitud}}</td>
-                    <td>{{cab.tipoOperacion}}</td>
+                    <td>
+                      <div class="cell-line-height">
+                        <p class="mb-25">
+                          {{cab.codigoSolicitud}}
+                        </p>
+                        <span class="text-muted font-small-3">{{cab.tipoOperacion}}</span>
+                      </div>
+                    </td>
+                    <td>{{cab.fechaOperacion_Global_ORG}}</td>
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
                     <td>{{cab.razonSocialPagProv}}</td>
@@ -291,29 +305,29 @@
                             <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
                             <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
                             <th class="detail-th-color">N° Documento</th>
-<!--                            <th class="detail-th-color">T.N.M (%)</th>-->
-<!--                            <th class="detail-th-color">T.N.A (%)</th>-->
-<!--                            <th class="detail-th-color">Financiamiento (%)</th>-->
-<!--                            <th class="detail-th-color">Fecha Confirmada</th>-->
-<!--                            <th class="detail-th-color">Fecha Operación</th>-->
-<!--                            <th class="detail-th-color">Día(s) Efectivo</th>-->
-<!--                            <th class="detail-th-color">Neto Confirmado</th>-->
-<!--                            <th class="detail-th-color">Comisión Estructuración (%)</th>-->
-<!--                            <th class="detail-th-color">Monto Comisión E.</th>-->
-<!--                            <th class="detail-th-color">Comisión E. (IGV)</th>-->
+                            <!--                            <th class="detail-th-color">T.N.M (%)</th>-->
+                            <!--                            <th class="detail-th-color">T.N.A (%)</th>-->
+                            <!--                            <th class="detail-th-color">Financiamiento (%)</th>-->
+                            <!--                            <th class="detail-th-color">Fecha Confirmada</th>-->
+                            <!--                            <th class="detail-th-color">Fecha Operación</th>-->
+                            <!--                            <th class="detail-th-color">Día(s) Efectivo</th>-->
+                            <!--                            <th class="detail-th-color">Neto Confirmado</th>-->
+                            <!--                            <th class="detail-th-color">Comisión Estructuración (%)</th>-->
+                            <!--                            <th class="detail-th-color">Monto Comisión E.</th>-->
+                            <!--                            <th class="detail-th-color">Comisión E. (IGV)</th>-->
                             <th class="detail-th-color">Monto Total Comisión E.</th>
                             <th class="detail-th-color">Fondo Resguardo</th>
                             <th class="detail-th-color">Monto a Financiar</th>
-<!--                            <th class="detail-th-color">Interés</th>-->
-<!--                            <th class="detail-th-color">Interés (IGV)</th>-->
+                            <!--                            <th class="detail-th-color">Interés</th>-->
+                            <!--                            <th class="detail-th-color">Interés (IGV)</th>-->
                             <th class="detail-th-color">Interés Total</th>
-<!--                            <th class="detail-th-color">Gastos Contrato</th>-->
-<!--                            <th class="detail-th-color">Gastos Vigencia Poder</th>-->
-<!--                            <th class="detail-th-color">Servicio Custodia</th>-->
-<!--                            <th class="detail-th-color">Servicio Cobranza</th>-->
-<!--                            <th class="detail-th-color">Comisión Carta Notarial</th>-->
-<!--                            <th class="detail-th-color">Gastos Diversos</th>-->
-<!--                            <th class="detail-th-color">Gastos Diversos (IGV)</th>-->
+                            <!--                            <th class="detail-th-color">Gastos Contrato</th>-->
+                            <!--                            <th class="detail-th-color">Gastos Vigencia Poder</th>-->
+                            <!--                            <th class="detail-th-color">Servicio Custodia</th>-->
+                            <!--                            <th class="detail-th-color">Servicio Cobranza</th>-->
+                            <!--                            <th class="detail-th-color">Comisión Carta Notarial</th>-->
+                            <!--                            <th class="detail-th-color">Gastos Diversos</th>-->
+                            <!--                            <th class="detail-th-color">Gastos Diversos (IGV)</th>-->
                             <th class="detail-th-color">Total Gastos Diversos</th>
                             <th class="detail-th-color">Monto Total Facturado</th>
                             <th class="detail-th-color">Nota Crédito por Dev.</th>
@@ -325,29 +339,29 @@
                             <td *ngIf="cab.idTipoOperacion === 3">{{item.razonSocialPagProv}}</td>
                             <td *ngIf="cab.idTipoOperacion === 3">{{item.rucPagProv}}</td>
                             <td>{{item.nroDocumento}}</td>
-<!--                            <td>{{item.tasaNominalMensual | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.tasaNominalAnual | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.financiamiento | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.fechaConfirmado}}</td>-->
-<!--                            <td>{{item.fechaOperacionFormat}}</td>-->
-<!--                            <td>{{item.diasEfectivo | number: '1.0-0'}}</td>-->
-<!--                            <td>{{item.netoConfirmado | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.comisionEstructuracion | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.montoComisionEstructuracion | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.comisionEstructuracionIGV | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.tasaNominalMensual | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.tasaNominalAnual | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.financiamiento | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.fechaConfirmado}}</td>-->
+                            <!--                            <td>{{item.fechaOperacionFormat}}</td>-->
+                            <!--                            <td>{{item.diasEfectivo | number: '1.0-0'}}</td>-->
+                            <!--                            <td>{{item.netoConfirmado | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.comisionEstructuracion | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.montoComisionEstructuracion | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.comisionEstructuracionIGV | number: '1.2-2'}}</td>-->
                             <td>{{item.comisionEstructuracionConIGV | number: '1.2-2'}}</td>
                             <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
                             <td>{{item.montoCobrar | number: '1.2-2'}}</td>
-<!--                            <td>{{item.interes | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.interesIGV | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.interes | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.interesIGV | number: '1.2-2'}}</td>-->
                             <td>{{item.interesConIGV | number: '1.2-2'}}</td>
-<!--                            <td>{{item.gastosContrato | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.gastoVigenciaPoder | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.servicioCustodia | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.servicioCobranza | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.comisionCartaNotarial | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.gastosDiversos | number: '1.2-2'}}</td>-->
-<!--                            <td>{{item.gastosDiversosIGV | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.gastosContrato | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.gastoVigenciaPoder | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.servicioCustodia | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.servicioCobranza | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.comisionCartaNotarial | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.gastosDiversos | number: '1.2-2'}}</td>-->
+                            <!--                            <td>{{item.gastosDiversosIGV | number: '1.2-2'}}</td>-->
                             <td>{{item.gastosDiversosConIGV | number: '1.2-2'}}</td>
                             <td>{{item.montoTotalFacturado | number: '1.2-2'}}</td>
                             <td>{{item.montoNotaCreditoDevolucion | number: '1.2-2'}}</td>
@@ -367,7 +381,8 @@
         <div class="row">
           <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
             <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onListarDesembolso()"
-                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize" [ellipses]="false">
+                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize"
+                            [ellipses]="false">
               <ng-template ngbPaginationFirst>
                 <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
               </ng-template>
@@ -391,7 +406,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body" ngbAutofocus tabindex="0" >
+          <div class="modal-body" ngbAutofocus tabindex="0">
             <form [formGroup]="solicitudForm">
               <div class="row spaced">
                 <div class="col-12">
@@ -497,7 +512,8 @@
                 <div class="col-12">
                   <div class="form-group">
                     <label>Observación de Solicitud</label>
-                    <textarea class="form-control" style="font-weight: bold; color: red" readonly type="text" formControlName="observacionSolicitud"></textarea>
+                    <textarea class="form-control" style="font-weight: bold; color: red" readonly type="text"
+                              formControlName="observacionSolicitud"></textarea>
                   </div>
                 </div>
                 <div class="col-12">
@@ -546,7 +562,8 @@
                         <tr>
                           <td class="detail-td-color" colspan="13" style="text-align: left">
                             <a href="javascript:void(0)" title="Editar Información Bancaria"
-                               class="btn btn-raised btn-outline-success btn-sm" [class.disabled]="idEstado > 4 ? true : null"
+                               class="btn btn-raised btn-outline-success btn-sm"
+                               [class.disabled]="idEstado > 4 ? true : null"
                                (click)="onEditarInfoBancaria(prov, modalINFOBANCO)">
                               <i class="text-success cursor-pointer" data-feather="edit"></i>
                             </a>
@@ -575,7 +592,8 @@
                       </ng-template>
                       </tbody>
                       <tfoot>
-                      <td class="detail-td-color" colspan="7" style="text-align: right"><i>Total Monto a Desembolsar:</i></td>
+                      <td class="detail-td-color" colspan="7" style="text-align: right"><i>Total Monto a
+                        Desembolsar:</i></td>
                       <td class="detail-td-color"><b>{{totalMontoDescembolso | number: '1.2-2'}}</b></td>
                       <td class="detail-td-color" colspan="5" *ngIf="idTipoOperacion === 3"></td>
                       </tfoot>
@@ -694,16 +712,16 @@
                     <li [ngbNavItem]="2">
                       <a ngbNavLink>Arrastar y Soltar</a>
                       <ng-template ngbNavContent>
-                  <div
-                    ng2FileDrop
-                    [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
-                    (fileOver)="fileOverBase($event)"
-                    [uploader]="archivosSustento"
+                        <div
+                          ng2FileDrop
+                          [ngClass]="{ 'file-drop-over': hasBaseDropZoneOver }"
+                          (fileOver)="fileOverBase($event)"
+                          [uploader]="archivosSustento"
 
-                    class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
-                  >
-                    Arrastre aquí los archivos
-                  </div>
+                          class="py-5 mb-3 text-center font-medium-5 text-uppercase file-drop-zone"
+                        >
+                          Arrastre aquí los archivos
+                        </div>
                       </ng-template>
                     </li>
                   </ul>
@@ -849,7 +867,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body" ngbAutofocus tabindex="0" >
+          <div class="modal-body" ngbAutofocus tabindex="0">
             <div class="row spaced">
               <div class="col-md-12 col-12">
                 <div class="form-group">

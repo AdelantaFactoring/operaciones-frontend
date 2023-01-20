@@ -21,7 +21,7 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: 'registroPagos',
+        path: 'registroPagos/:mostrar',
         component: RegistroPagosComponent
       }
     ]

@@ -37,6 +37,7 @@ export class LiquidacionCab {
   //liquidacionCabSeleccionados: LiquidacionCabSeleccionados[];
   cambiarIcono: boolean = false;
   seleccionado: boolean = false;
+  seleccionarTodo: boolean = false;
   tipoCambioMoneda: number;
   montoTotalConversion: number;
   netoConfirmadoTotal: number;
@@ -79,4 +80,6 @@ export class LiquidacionCab {
   sumTotalInteres: number;
   sumTotalGastos: number;
   sumTotalFacturado: number;
+
+  verOpcionesPagoDetalle: boolean = false;
 }
