@@ -580,13 +580,13 @@
                            mask="separator" thousandSeparator=","/>
                   </div>
                 </div>
-                <div class="col-md-4 col-12" *ngIf="liquidacionDetItem.fondoResguardo > 0">
-                  <div class="form-group">
-                    <label>Descuento de F.R.</label>
-                    <input class="form-control" disabled formControlName="descuentoFR" type="text"
-                           mask="separator" thousandSeparator=","/>
-                  </div>
-                </div>
+<!--                <div class="col-md-4 col-12" *ngIf="liquidacionDetItem.fondoResguardo > 0">-->
+<!--                  <div class="form-group">-->
+<!--                    <label>Descuento de F.R.</label>-->
+<!--                    <input class="form-control" disabled formControlName="descuentoFR" type="text"-->
+<!--                           mask="separator" thousandSeparator=","/>-->
+<!--                  </div>-->
+<!--                </div>-->
                 <div class="col-12 col-md-4">
                   <div class="form-group">
                     <label>Tipo de Pago</label>
@@ -658,20 +658,20 @@
                     <div class="divider-text"><span [data-feather]="'chevrons-down'"></span></div>
                   </div>
                 </div>
-                <div class="col-12">
-                  <ngb-alert [type]="'info'" [dismissible]="false">
-                    <div class="alert-body" style="font-size: 13px !important;">
-                      * Al ingresar el valor de monto de pago, se incluye internamente el fondo de resguardo.
-                    </div>
-                  </ngb-alert>
-                </div>
-                <div class="col-12">
-                  <ngb-alert [type]="'info'" [dismissible]="false">
-                    <div class="alert-body" style="font-size: 13px !important;">
-                      * El campo Excedente contiene el valor que posteriormente se registrará como Devolución.
-                    </div>
-                  </ngb-alert>
-                </div>
+<!--                <div class="col-12">-->
+<!--                  <ngb-alert [type]="'info'" [dismissible]="false">-->
+<!--                    <div class="alert-body" style="font-size: 13px !important;">-->
+<!--                      * Al ingresar el valor de monto de pago, se incluye internamente el fondo de resguardo.-->
+<!--                    </div>-->
+<!--                  </ngb-alert>-->
+<!--                </div>-->
+<!--                <div class="col-12">-->
+<!--                  <ngb-alert [type]="'info'" [dismissible]="false">-->
+<!--                    <div class="alert-body" style="font-size: 13px !important;">-->
+<!--                      * El campo Excedente contiene el valor que posteriormente se registrará como Devolución.-->
+<!--                    </div>-->
+<!--                  </ngb-alert>-->
+<!--                </div>-->
                 <!--                <div class="col-12" *ngIf="liquidacionCabItem.idTipoOperacion == 3">-->
                 <!--                  <div class="form-group">-->
                 <!--                    <div class="form-control custom-control custom-switch custom-control-inline"-->
@@ -686,7 +686,7 @@
                 <!--                    </div>-->
                 <!--                  </div>-->
                 <!--                </div>-->
-                <div class="col-md-4 col-12">
+                <div class="col-md-6 col-12">
                   <div class="form-group">
                     <label>Fecha Pago</label>
                     <div class="input-group">
@@ -705,7 +705,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-4 col-12">
+                <div class="col-md-6 col-12">
                   <div class="form-group">
                     <label>Monto Pago</label>
                     <input class="form-control" formControlName="montoPago" type="text"
@@ -717,13 +717,13 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-4 col-12">
-                  <div class="form-group">
-                    <label>Excedente</label>
-                    <input class="form-control" formControlName="excesoFR" type="text"
-                           mask="separator" thousandSeparator="," disabled/>
-                  </div>
-                </div>
+<!--                <div class="col-md-4 col-12">-->
+<!--                  <div class="form-group">-->
+<!--                    <label>Excedente</label>-->
+<!--                    <input class="form-control" formControlName="excesoFR" type="text"-->
+<!--                           mask="separator" thousandSeparator="," disabled/>-->
+<!--                  </div>-->
+<!--                </div>-->
                 <div class="col-12">
                   <div class="form-group">
                     <label>Observación</label>
@@ -793,10 +793,10 @@
                       <th rowspan="2">Día(s) Mora</th>
                       <th rowspan="2">Monto a Financiar</th>
                       <th rowspan="2">Monto Pago</th>
-                      <th rowspan="2">F.R. Usado</th>
                       <th rowspan="2">Interés</th>
                       <th rowspan="2">Gastos</th>
                       <th rowspan="2">Saldo (Deuda)</th>
+                      <th rowspan="2">Exceso</th>
                       <th rowspan="2">Tipo de Pago</th>
                       <th rowspan="2">Observación</th>
                       <th rowspan="2">¿FACTURA GENERADA? (INTERÉS MORA)</th>
@@ -827,10 +827,11 @@
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.diasMora | number: '1.0'}}</td>
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.montoCobrar | number: '1.2-2'}}</td>
                       <td>{{item.montoPago | number: '1.2-2'}}</td>
-                      <td>{{item.fondoResguardoUsado | number: '1.2-2'}}</td>
+<!--                      <td>{{item.fondoResguardoUsado | number: '1.2-2'}}</td>-->
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.interes | number: '1.2-2'}}</td>
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.gastos | number: '1.2-2'}}</td>
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.saldoDeuda | number: '1.2-2'}}</td>
+                      <td>{{item.exceso | number: '1.2-2'}}</td>
                       <td>{{item.tipoPago}}</td>
                       <td>{{item.observacion}}</td>
                       <td>

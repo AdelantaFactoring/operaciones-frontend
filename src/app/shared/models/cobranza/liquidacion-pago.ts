@@ -11,6 +11,7 @@ export class LiquidacionPago {
   interes: number;
   gastos: number;
   saldoDeuda: number;
+  exceso: number;
   observacion: string;
   comprobanteGenerado1: number;
   comprobanteGenerado2: number;
