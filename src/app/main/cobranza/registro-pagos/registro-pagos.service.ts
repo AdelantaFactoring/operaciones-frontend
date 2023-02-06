@@ -91,6 +91,16 @@ export class RegistroPagosService {
     );
   }
 
+  eliminarPago(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${REGISTROPAGOS.eliminarPago}`,
+      `?idLiquidacionPago=${payload.idLiquidacionPago}&idLiquidacionDet=${payload.idLiquidacionDet}&idUsuarioAud=${payload.idUsuarioAud}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
   getPAI(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${REGISTROPAGOS.getPAI}`,

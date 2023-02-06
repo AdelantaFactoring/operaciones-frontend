@@ -1,4 +1,5 @@
 export class LiquidacionPago {
+  nro: number;
   idLiquidacionPago: number;
   idLiquidacionDet: number;
   fechaConfirmada: string;

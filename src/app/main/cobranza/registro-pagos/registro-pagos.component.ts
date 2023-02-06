@@ -172,6 +172,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.operationType = this.utilsService.agregarTodos(4, this.operationType);
     this.state = this.utilsService.agregarTodos(7, this.state);
     this.utilsService.blockUIStop();
+    this.fechaMaxima = {year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate()};
     this.route.params.subscribe(s => {
       this.mostrar = s.mostrar;
       this.filtroForm.controls.estado.setValue((this.mostrar === 'false' ? 7 : 0));
@@ -819,5 +820,53 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
         this.utilsService.blockUIStop();
         this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
       });
+  }
+
+  onEliminarPago(item: LiquidacionPago): void {
+    Swal.fire({
+      title: 'Advertencia',
+      html: `Está intentando eliminar un pago. Tenga en cuenta que, esta acción no podrá revertise y no eliminará comprobantes de pago y/o devoluciones generados que estén asociados a este pago.<br>¿Está seguro de eliminar el pago N° ${item.nro}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart("Eliminando...");
+        this.registroPagosService.eliminarPago({
+          idLiquidacionPago: item.idLiquidacionPago,
+          idLiquidacionDet: item.idLiquidacionDet,
+          idUsuarioAud: this.currentUser.idUsuario
+        }).subscribe((response: any) => {
+          switch (response.tipo) {
+            case 1:
+              this.utilsService.showNotification('Pago eliminado.', 'Confirmación', 1);
+              this.utilsService.blockUIStop();
+              this.onListarPago(item.idLiquidacionDet);
+              this.onInfoPago(this.idLiquidacionDet, this.utilsService.formatoFecha_YYYYMMDD(this.pagoInfoForm.controls.fecha.value), this.pagoInfoForm.controls.tipoPago.value);
+              break;
+            case 2:
+              this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+              this.utilsService.blockUIStop();
+              break;
+            default:
+              this.utilsService.showNotification(response.mensaje, 'Error', 3);
+              this.utilsService.blockUIStop();
+              break;
+          }
+        }, error => {
+          this.utilsService.blockUIStop();
+          this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+        });
+      }
+    });
+  }
+
+  onDeshabilitar(nro: number): boolean {
+    return this.pagos.filter(f => f.nro > nro).length > 0;
   }
 }

@@ -6,6 +6,7 @@ export const REGISTROPAGOS = {
   infoPago: '/liquidacion/infoPago',
   insertarPago: '/liquidacion/insertarPago',
   insertarPagoMasivo: '/liquidacion/InsertarPagoMasivo',
+  eliminarPago: '/liquidacion/eliminarPago',
   getPAI: '/liquidacion/getPAI',
   updatePAI: '/liquidacion/updatePAI'
   }

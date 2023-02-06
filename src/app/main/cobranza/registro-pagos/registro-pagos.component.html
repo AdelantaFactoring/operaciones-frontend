@@ -295,7 +295,8 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="table-responsive" style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
+                        <div class="table-responsive"
+                             style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
                              id="{{ 'detailL' + cab.idLiquidacionCab }}">
                           <table class="table table-hover">
                             <thead>
@@ -309,8 +310,12 @@
                                          for="{{'customCheck' + cab.idLiquidacionCab}}"></label>
                                 </div>
                               </th>
-                              <th *ngIf="cab.verOpcionesPagoDetalle && mostrar === 'true'" style="width: 220px" class="detail-th-color">Fecha Pago</th>
-                              <th *ngIf="cab.verOpcionesPagoDetalle && mostrar === 'true'" style="width: 206px" class="detail-th-color">Monto Pago</th>
+                              <th *ngIf="cab.verOpcionesPagoDetalle && mostrar === 'true'" style="width: 220px"
+                                  class="detail-th-color">Fecha Pago
+                              </th>
+                              <th *ngIf="cab.verOpcionesPagoDetalle && mostrar === 'true'" style="width: 206px"
+                                  class="detail-th-color">Monto Pago
+                              </th>
                               <th class="detail-th-color">Acción</th>
                               <th class="detail-th-color">Progreso Pago</th>
                               <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
@@ -345,8 +350,11 @@
                               </td>
                               <td *ngIf="mostrar === 'true' && cab.verOpcionesPagoDetalle">
                                 <div *ngIf="item.verOpcionesPago" class="input-group">
-                                  <input class="form-control" placeholder="yyyy-mm-dd" container="body" style="width: 50px"
-                                         [(ngModel)]="item.fechaPago" [ngClass]="{ 'is-invalid': item.fechaPago === null }"
+                                  <input class="form-control" placeholder="yyyy-mm-dd" container="body"
+                                         style="width: 50px"
+                                         [maxDate]="fechaMaxima"
+                                         [(ngModel)]="item.fechaPago"
+                                         [ngClass]="{ 'is-invalid': item.fechaPago === null }"
                                          ngbDatepicker #basicDP2="ngbDatepicker">
                                   <div class="input-group-append">
                                     <button class="btn btn-outline-secondary feather icon-calendar"
@@ -356,18 +364,22 @@
                                 </div>
                               </td>
                               <td *ngIf="mostrar === 'true' && cab.verOpcionesPagoDetalle">
-                                <input *ngIf="item.verOpcionesPago" class="form-control" type="text" [(ngModel)]="item.montoPago" placeholder="0.00" style="width: 150px"
-                                       [ngClass]="{ 'is-invalid': item.montoPago <= 0 }" mask="separator" thousandSeparator=","/>
+                                <input *ngIf="item.verOpcionesPago" class="form-control" type="text"
+                                       [(ngModel)]="item.montoPago" placeholder="0.00" style="width: 150px"
+                                       [ngClass]="{ 'is-invalid': item.montoPago <= 0 }" mask="separator"
+                                       thousandSeparator=","/>
                               </td>
                               <td>
                                 <div class="d-flex align-items-center">
-                                  <a *ngIf="cab.idEstado != 7 && !item.pagoTotal" href="javascript:void(0)" title="Pagar"
+                                  <a *ngIf="cab.idEstado != 7 && !item.pagoTotal" href="javascript:void(0)"
+                                     title="Pagar"
                                      [class.disabled]="cab.verOpcionesPagoDetalle ? true : null"
                                      (click)="onPagar(modalINFO, cab, item)"
                                      class="btn btn-raised btn-outline-success btn-sm">
                                     <i class="text-success cursor-pointer" data-feather="edit"></i>
                                   </a>
-                                  <a *ngIf="cab.idEstado === 7 || item.pagoTotal" href="javascript:void(0)" title="Ver Pagos"
+                                  <a *ngIf="cab.idEstado === 7 || item.pagoTotal" href="javascript:void(0)"
+                                     title="Ver Pagos"
                                      (click)="onPagar(modalINFO, cab, item)"
                                      class="btn btn-raised btn-outline-info btn-sm">
                                     <i class="text-info cursor-pointer" data-feather="eye"></i>
@@ -580,13 +592,13 @@
                            mask="separator" thousandSeparator=","/>
                   </div>
                 </div>
-<!--                <div class="col-md-4 col-12" *ngIf="liquidacionDetItem.fondoResguardo > 0">-->
-<!--                  <div class="form-group">-->
-<!--                    <label>Descuento de F.R.</label>-->
-<!--                    <input class="form-control" disabled formControlName="descuentoFR" type="text"-->
-<!--                           mask="separator" thousandSeparator=","/>-->
-<!--                  </div>-->
-<!--                </div>-->
+                <!--                <div class="col-md-4 col-12" *ngIf="liquidacionDetItem.fondoResguardo > 0">-->
+                <!--                  <div class="form-group">-->
+                <!--                    <label>Descuento de F.R.</label>-->
+                <!--                    <input class="form-control" disabled formControlName="descuentoFR" type="text"-->
+                <!--                           mask="separator" thousandSeparator=","/>-->
+                <!--                  </div>-->
+                <!--                </div>-->
                 <div class="col-12 col-md-4">
                   <div class="form-group">
                     <label>Tipo de Pago</label>
@@ -658,20 +670,20 @@
                     <div class="divider-text"><span [data-feather]="'chevrons-down'"></span></div>
                   </div>
                 </div>
-<!--                <div class="col-12">-->
-<!--                  <ngb-alert [type]="'info'" [dismissible]="false">-->
-<!--                    <div class="alert-body" style="font-size: 13px !important;">-->
-<!--                      * Al ingresar el valor de monto de pago, se incluye internamente el fondo de resguardo.-->
-<!--                    </div>-->
-<!--                  </ngb-alert>-->
-<!--                </div>-->
-<!--                <div class="col-12">-->
-<!--                  <ngb-alert [type]="'info'" [dismissible]="false">-->
-<!--                    <div class="alert-body" style="font-size: 13px !important;">-->
-<!--                      * El campo Excedente contiene el valor que posteriormente se registrará como Devolución.-->
-<!--                    </div>-->
-<!--                  </ngb-alert>-->
-<!--                </div>-->
+                <!--                <div class="col-12">-->
+                <!--                  <ngb-alert [type]="'info'" [dismissible]="false">-->
+                <!--                    <div class="alert-body" style="font-size: 13px !important;">-->
+                <!--                      * Al ingresar el valor de monto de pago, se incluye internamente el fondo de resguardo.-->
+                <!--                    </div>-->
+                <!--                  </ngb-alert>-->
+                <!--                </div>-->
+                <!--                <div class="col-12">-->
+                <!--                  <ngb-alert [type]="'info'" [dismissible]="false">-->
+                <!--                    <div class="alert-body" style="font-size: 13px !important;">-->
+                <!--                      * El campo Excedente contiene el valor que posteriormente se registrará como Devolución.-->
+                <!--                    </div>-->
+                <!--                  </ngb-alert>-->
+                <!--                </div>-->
                 <!--                <div class="col-12" *ngIf="liquidacionCabItem.idTipoOperacion == 3">-->
                 <!--                  <div class="form-group">-->
                 <!--                    <div class="form-control custom-control custom-switch custom-control-inline"-->
@@ -717,13 +729,13 @@
                     </div>
                   </div>
                 </div>
-<!--                <div class="col-md-4 col-12">-->
-<!--                  <div class="form-group">-->
-<!--                    <label>Excedente</label>-->
-<!--                    <input class="form-control" formControlName="excesoFR" type="text"-->
-<!--                           mask="separator" thousandSeparator="," disabled/>-->
-<!--                  </div>-->
-<!--                </div>-->
+                <!--                <div class="col-md-4 col-12">-->
+                <!--                  <div class="form-group">-->
+                <!--                    <label>Excedente</label>-->
+                <!--                    <input class="form-control" formControlName="excesoFR" type="text"-->
+                <!--                           mask="separator" thousandSeparator="," disabled/>-->
+                <!--                  </div>-->
+                <!--                </div>-->
                 <div class="col-12">
                   <div class="form-group">
                     <label>Observación</label>
@@ -788,6 +800,8 @@
                   <table class="table table-hover">
                     <thead class="centerall-header">
                     <tr>
+                      <th rowspan="2">Acción</th>
+                      <th rowspan="2">N°</th>
                       <th rowspan="2">Fecha Confirmada</th>
                       <th rowspan="2">Fecha Pago</th>
                       <th rowspan="2">Día(s) Mora</th>
@@ -810,6 +824,14 @@
                     </thead>
                     <tbody>
                     <tr *ngFor="let item of pagos">
+                      <td>
+                        <a href="javascript:void(0)" title="Eliminar"
+                           (click)="onEliminarPago(item)" [class.disabled]="onDeshabilitar(item.nro) ? true : null"
+                           class="btn btn-raised btn-outline-danger btn-sm">
+                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                        </a>
+                      </td>
+                      <td>{{item.nro}}</td>
                       <td>{{item.fechaConfirmada}}</td>
                       <td>
                         <div *ngIf="!item.flagPagoInteresConfirming">
@@ -827,7 +849,7 @@
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.diasMora | number: '1.0'}}</td>
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.montoCobrar | number: '1.2-2'}}</td>
                       <td>{{item.montoPago | number: '1.2-2'}}</td>
-<!--                      <td>{{item.fondoResguardoUsado | number: '1.2-2'}}</td>-->
+                      <!--                      <td>{{item.fondoResguardoUsado | number: '1.2-2'}}</td>-->
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.interes | number: '1.2-2'}}</td>
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.gastos | number: '1.2-2'}}</td>
                       <td>{{(item.flagPagoInteresConfirming) ? '-' : item.saldoDeuda | number: '1.2-2'}}</td>
