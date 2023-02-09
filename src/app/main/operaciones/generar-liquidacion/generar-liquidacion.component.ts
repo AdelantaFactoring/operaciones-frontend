@@ -286,7 +286,10 @@ export class GenerarLiquidacionComponent implements OnInit {
     igvCT = item.igvct / 100;
     financiamiento = item.financiamiento;
     if (item.idTipoCT == 1) {
-      netoSolicitado = ((360 * montoSolicitado) + (360 * (gDiversonsSIgv * (igvCT + 1)))) / (360 - ((nroDias * ((TNM / 100) * 12)) * (igvCT + 1)));
+      let a = (nroDias * (((TNM / 100) * 12) / 360) * (igvCT + 1));
+      let netoConfirmado = (montoSolicitado + (gDiversonsSIgv * (igvCT + 1))) / (1 - ((100 - financiamiento) / 100) - a - ((item.comisionEstructuracion / 100) * (igvCT + 1)) + (a * ((100 - financiamiento) / 100)));
+      fondoResguardo = netoConfirmado - ((netoConfirmado * financiamiento) / 100);
+      netoSolicitado = netoConfirmado - fondoResguardo; //((360 * montoSolicitado) + (360 * (gDiversonsSIgv * (IGV + 1)))) / (360 - ((nroDias * ((TNM / 100) * 12)) * (IGV + 1)));
       intereses = netoSolicitado * ((TNA / 100) / 360) * nroDias * (igvCT + 1);
       gDiversonsCIgv = gDiversonsSIgv * igvCT;
       gastoIncluidoIGV = gDiversonsSIgv + gDiversonsCIgv;

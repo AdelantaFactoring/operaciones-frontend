@@ -948,7 +948,10 @@ export class SolicitudesFormComponent implements OnInit {
     comisionEstructuracionCIGV = (montoSolicitado * (comisionEstructuracion / 100)) * (IGV + 1);
 
     if (this.idTipo == 1) {
-      netoSolicitado = ((360 * montoSolicitado) + (360 * (gDiversonsSIgv * (IGV + 1)))) / (360 - ((nroDias * ((TNM / 100) * 12)) * (IGV + 1)));
+      let a = (nroDias * (((TNM / 100) * 12) / 360) * (IGV + 1));
+      let netoConfirmado = (montoSolicitado + (gDiversonsSIgv * (IGV + 1))) / (1 - ((100 - this.financiamiento) / 100) - a - ((comisionEstructuracion / 100) * (IGV + 1)) + (a * ((100 - this.financiamiento) / 100)));
+      fondoResguardo = netoConfirmado - ((netoConfirmado * this.financiamiento) / 100);
+      netoSolicitado = netoConfirmado - fondoResguardo; //((360 * montoSolicitado) + (360 * (gDiversonsSIgv * (IGV + 1)))) / (360 - ((nroDias * ((TNM / 100) * 12)) * (IGV + 1)));
       mDescontar = ((360 * netoSolicitado) + (360 * gDiversonsSIgv)) / (360 - ((nroDias * (TNM * 12)) * (IGV + 1)));
       intereses = netoSolicitado * ((TNA / 100) / 360) * nroDias * (IGV + 1);
       gDiversonsCIgv = gDiversonsSIgv * IGV;
