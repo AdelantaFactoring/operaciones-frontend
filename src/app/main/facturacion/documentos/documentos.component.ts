@@ -646,6 +646,11 @@ export class DocumentosComponent implements OnInit {
           this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
           this.utilsService.blockUIStop();
           break;
+        case 3:
+          this.utilsService.showNotification(response.mensaje, 'Atención', 2);
+          this.utilsService.blockUIStop();
+          this.onCancelar();
+          break;
         default:
           this.utilsService.showNotification(response.mensaje, 'Error', 3);
           this.utilsService.blockUIStop();
@@ -907,8 +912,8 @@ export class DocumentosComponent implements OnInit {
         this.documentoForm.controls.razonSocialCliente.setValue(response.razonSocialCliente);
         this.documentoForm.controls.direccionCliente.setValue(response.direccionCliente);
         this.documentoForm.controls.moneda.setValue(response.idMoneda);
-        this.documentoForm.controls.formaPago.setValue(response.idFormaPago),
-          this.documentoForm.controls.monto.setValue(response.monto);
+        this.documentoForm.controls.formaPago.setValue(response.idFormaPago);
+        this.documentoForm.controls.monto.setValue(response.monto);
         this.documentoForm.controls.montoIGV.setValue(response.montoIGV);
         this.documentoForm.controls.montoTotal.setValue(response.montoTotal);
 
