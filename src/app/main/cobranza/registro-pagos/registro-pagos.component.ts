@@ -65,6 +65,8 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   private countClienteSeleccionado: number = 0;
   private seleccionarTodoInicioPagos: boolean = false;
 
+  public pagoPersonalizado: boolean = false;
+
   get ReactiveIUForm() {
     return this.pagoInfoForm.controls;
   }
@@ -129,8 +131,11 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       flagInicioCliente: [false],
       flagForzarGeneracion: [false],
       flagPagoHabilitado: [false],
+      tipoRegistro: [false],
       fechaPago: ['', Validators.required],
       montoPago: [0, [Validators.required, Validators.min(1)]],
+      interesPago: [0, [Validators.required, Validators.min(0)]],
+      gastosPago: [0, [Validators.required, Validators.min(0)]],
       observacion: [''],
       descuentoFR: [0],
       excesoFR: [0],
@@ -417,6 +422,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   async onCancelarPago(): Promise<void> {
     this.pagoInfoForm.reset(this.oldPagoInfoForm);
     this.modalService.dismissAll();
+    this.pagoPersonalizado = false;
 
     await this.onListarCobranza();
     setTimeout(() => {
@@ -449,8 +455,11 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       idLiquidacionCab: this.idLiquidacionCab,
       idLiquidacionDet: this.idLiquidacionDet,
       idSolicitudDet: this.idSolicitudDet,
+      tipoRegistro: this.pagoInfoForm.controls.tipoRegistro.value,
       fechaPago: this.utilsService.formatoFecha_YYYYMMDD(this.pagoInfoForm.controls.fechaPago.value),
       montoPago: this.pagoInfoForm.controls.montoPago.value,
+      interesPago: this.pagoInfoForm.controls.interesPago.value,
+      gastosPago: this.pagoInfoForm.controls.gastosPago.value,
       _TipoPago: this.pagoInfoForm.controls.tipoPago.value,
       observacion: this.pagoInfoForm.controls.observacion.value,
       flagPagoInteresConfirming: this.pagoInfoForm.controls.flagPagoInteresConfirming.value,
@@ -868,5 +877,9 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
 
   onDeshabilitar(nro: number): boolean {
     return this.pagos.filter(f => f.nro > nro).length > 0;
+  }
+
+  onCambioTipoRegistro($event: any): void {
+    this.pagoPersonalizado = !this.pagoPersonalizado
   }
 }

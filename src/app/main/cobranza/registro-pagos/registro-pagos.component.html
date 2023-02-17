@@ -633,36 +633,6 @@
                         </div>
                       </div>
                     </div>
-                    <!--                    <div hidden class="col-12">-->
-                    <!--                      <div class="form-control custom-control custom-switch custom-control-inline"-->
-                    <!--                           style="border: 0px; background-color: transparent">-->
-                    <!--                        <label style="padding-right: 0.5rem; line-height: 1.7rem">No</label>-->
-                    <!--                        <input type="checkbox" class="custom-control-input"-->
-                    <!--                               id="flagForzarGeneracion" formControlName="flagForzarGeneracion"/>-->
-                    <!--                        <label class="custom-control-label"-->
-                    <!--                               for="flagForzarGeneracion">Sí</label>-->
-                    <!--                      </div>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="col-12" *ngIf="pagoInfoForm.controls.flagInicioCliente.value">-->
-                    <!--                      <ngb-alert *ngIf="pagoInfoForm.controls.flagForzarGeneracion.value" [type]="'info'" [dismissible]="false">-->
-                    <!--                        <div class="alert-body">-->
-                    <!--                          * Se debe generar una NOTA DE CRÉDITO que esté vinculada a la factura de los intereses sin IGV del servicio.<br>-->
-                    <!--                          * Se debe generar una NUEVA FACTURA por los intereses con IGV del servicio.<br>-->
-                    <!--                          * La DIFERENCIA en base a los nuevos intereses generados se AGREGARÁ A LA DEUDA.-->
-                    <!--                        </div>-->
-                    <!--                      </ngb-alert>-->
-                    <!--                      <ngb-alert *ngIf="!pagoInfoForm.controls.flagForzarGeneracion.value" [type]="'success'" [dismissible]="false">-->
-                    <!--                        <div class="alert-body">-->
-                    <!--                          * Generación culminada correctamente. Se puede proceder con los pagos.-->
-                    <!--                        </div>-->
-                    <!--                      </ngb-alert>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="col-12" *ngIf="pagoInfoForm.controls.flagInicioCliente.value">-->
-                    <!--                      <button [disabled]="!pagoInfoForm.controls.flagForzarGeneracion.value" (click)="onGenerar()" rippleEffect class="btn btn-warning">-->
-                    <!--                        <i class="mr-0 mr-sm-1" data-feather="settings"></i>-->
-                    <!--                        <span class="d-none d-sm-inline-block">Generar</span>-->
-                    <!--                      </button>-->
-                    <!--                    </div>-->
                   </div>
                 </div>
                 <div class="col-12">
@@ -670,37 +640,34 @@
                     <div class="divider-text"><span [data-feather]="'chevrons-down'"></span></div>
                   </div>
                 </div>
-                <!--                <div class="col-12">-->
-                <!--                  <ngb-alert [type]="'info'" [dismissible]="false">-->
-                <!--                    <div class="alert-body" style="font-size: 13px !important;">-->
-                <!--                      * Al ingresar el valor de monto de pago, se incluye internamente el fondo de resguardo.-->
-                <!--                    </div>-->
-                <!--                  </ngb-alert>-->
-                <!--                </div>-->
-                <!--                <div class="col-12">-->
-                <!--                  <ngb-alert [type]="'info'" [dismissible]="false">-->
-                <!--                    <div class="alert-body" style="font-size: 13px !important;">-->
-                <!--                      * El campo Excedente contiene el valor que posteriormente se registrará como Devolución.-->
-                <!--                    </div>-->
-                <!--                  </ngb-alert>-->
-                <!--                </div>-->
-                <!--                <div class="col-12" *ngIf="liquidacionCabItem.idTipoOperacion == 3">-->
-                <!--                  <div class="form-group">-->
-                <!--                    <div class="form-control custom-control custom-switch custom-control-inline"-->
-                <!--                         style="border: 0px; background-color: transparent">-->
-                <!--                      <label style="padding-right: 0.5rem; line-height: 1.7rem">Regular</label>-->
-                <!--                      <input type="checkbox" class="custom-control-input"-->
-                <!--                             id="tipoPago2" formControlName="flagPagoInteresConfirming"-->
-                <!--                             (ngModelChange)="onCambioTipoPago2($event)"-->
-                <!--                      />-->
-                <!--                      <label class="custom-control-label"-->
-                <!--                             for="tipoPago2">Intereses y gastos (servicio)</label>-->
-                <!--                    </div>-->
-                <!--                  </div>-->
-                <!--                </div>-->
+                <div class="col-12">
+                  <div class="form-group">
+                    <label>Tipo de Registro</label>
+                    <div class="form-control custom-control custom-switch custom-control-inline"
+                         style="border: 0px; background-color: transparent">
+                      <label style="padding-right: 0.5rem; line-height: 1.7rem">Estándar</label>
+                      <input type="checkbox" readonly class="custom-control-input"
+                             id="tipoRegistro" formControlName="tipoRegistro"
+                             (ngModelChange)="onCambioTipoRegistro($event)"
+                      />
+                      <label class="custom-control-label"
+                             for="tipoRegistro">Personalizado</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div *ngIf="pagoPersonalizado">
+                    <ngb-alert [type]="'warning'"
+                               [dismissible]="false">
+                      <div class="alert-body" style="font-size: 13px !important;">
+                        <i [data-feather]="'alert-triangle'"></i> El pago personalizado es considerado como pago final, no permite registrar pago parcial.
+                      </div>
+                    </ngb-alert>
+                  </div>
+                </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
-                    <label>Fecha Pago</label>
+                    <label>Fecha de Pago</label>
                     <div class="input-group">
                       <input class="form-control" placeholder="yyyy-mm-dd" formControlName="fechaPago"
                              [minDate]="fechaMinima" [maxDate]="fechaMaxima"
@@ -719,27 +686,48 @@
                 </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
-                    <label>Monto Pago</label>
+                    <label>Monto a Pagar</label>
                     <input class="form-control" formControlName="montoPago" type="text"
                            [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.montoPago.errors }"
-                           mask="separator" thousandSeparator="," (ngModelChange)="onMontoPagoCambiar($event)"/>
+                           mask="separator" thousandSeparator=","
+                           (ngModelChange)="onMontoPagoCambiar($event)"/>
                     <div *ngIf="ReactiveIUForm.montoPago.errors" class="invalid-feedback">
                       <div *ngIf="ReactiveIUForm.montoPago.errors?.required">* Campo obligatorio</div>
                       <div *ngIf="ReactiveIUForm.montoPago.errors?.min">* El valor debe ser mayor a 0</div>
                     </div>
                   </div>
                 </div>
-                <!--                <div class="col-md-4 col-12">-->
-                <!--                  <div class="form-group">-->
-                <!--                    <label>Excedente</label>-->
-                <!--                    <input class="form-control" formControlName="excesoFR" type="text"-->
-                <!--                           mask="separator" thousandSeparator="," disabled/>-->
-                <!--                  </div>-->
-                <!--                </div>-->
+                <div class="col-md-6 col-12" *ngIf="pagoPersonalizado">
+                  <div class="form-group">
+                    <label>Interés a Pagar</label>
+                    <input class="form-control" formControlName="interesPago" type="text"
+                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.interesPago.errors }"
+                           mask="separator" thousandSeparator=","
+                           (ngModelChange)="onMontoPagoCambiar($event)"/>
+                    <div *ngIf="ReactiveIUForm.interesPago.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.interesPago.errors?.required">* Campo obligatorio</div>
+                      <div *ngIf="ReactiveIUForm.interesPago.errors?.min">* El valor debe ser mayor o igual a 0</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="pagoPersonalizado">
+                  <div class="form-group">
+                    <label>Gastos a Pagar</label>
+                    <input class="form-control" formControlName="gastosPago" type="text"
+                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.gastosPago.errors }"
+                           mask="separator" thousandSeparator=","
+                           (ngModelChange)="onMontoPagoCambiar($event)"/>
+                    <div *ngIf="ReactiveIUForm.gastosPago.errors" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.gastosPago.errors?.required">* Campo obligatorio</div>
+                      <div *ngIf="ReactiveIUForm.gastosPago.errors?.min">* El valor debe ser mayor o igual a 0</div>
+                    </div>
+                  </div>
+                </div>
                 <div class="col-12">
                   <div class="form-group">
                     <label>Observación</label>
-                    <textarea class="form-control" type="text" formControlName="observacion" maxlength="200"></textarea>
+                    <textarea class="form-control" type="text" formControlName="observacion"
+                              maxlength="200"></textarea>
                   </div>
                 </div>
                 <div class="col-12">
@@ -757,7 +745,8 @@
                     <ngb-alert *ngIf="!liquidacionCabItem.flagPagoInteresConfirming" [type]="'danger'"
                                [dismissible]="false">
                       <div class="alert-body" style="font-size: 13px !important;">
-                        * Aun no se puede iniciar con los pagos (debe confirmar si se pagó los intereses y gastos
+                        * Aun no se puede iniciar con los pagos (debe confirmar si se pagó los intereses y
+                        gastos
                         (servicio)).
                       </div>
                     </ngb-alert>
@@ -772,7 +761,8 @@
                     <ngb-alert *ngIf="!pagoInfoForm.controls.flagPagoHabilitado.value" [type]="'danger'"
                                [dismissible]="false">
                       <div class="alert-body" style="font-size: 13px !important;">
-                        * Aun no se puede iniciar con los pagos (debe indicar quién inicia los pagos en la opción de
+                        * Aun no se puede iniciar con los pagos (debe indicar quién inicia los pagos en la
+                        opción de
                         la grilla principal).
                       </div>
                     </ngb-alert>
