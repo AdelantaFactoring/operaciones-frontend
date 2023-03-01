@@ -142,7 +142,7 @@
                               <i class="text-warning cursor-pointer mr-50" data-feather="send"></i>Declarar
                             </a>
                             <a ngbDropdownItem href="javascript:void(0)" title="Consultar y Actualizar el estado"
-                               (click)="onConsultarEstado(cab)" [class.disabled]="cab.idEstado === 1 ? true : null"
+                               (click)="onConsultarEstado(cab)" [class.disabled]="cab.nroDocumento === '' ? true : null"
                                class="d-flex align-items-center">
                               <i class="text-info fa fa-search mr-50"></i> Actualizar Estado
                             </a>

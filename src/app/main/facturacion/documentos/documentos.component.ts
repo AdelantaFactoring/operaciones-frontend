@@ -638,7 +638,7 @@ export class DocumentosComponent implements OnInit {
     this.documentosService.firmaPublicacionDeclaracion(cab).subscribe((response: any) => {
       switch (response.tipo) {
         case 1:
-          this.utilsService.showNotification('Información enviada correctamente', 'Confirmación', 1);
+          this.utilsService.showNotification(`Información enviada correctamente${response.mensaje}`, 'Confirmación', 1);
           this.utilsService.blockUIStop();
           this.onCancelar();
           break;
