@@ -113,8 +113,10 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       nroDocumento: [{value: '', disabled: true}],
       fechaConfirmada: [{value: '', disabled: true}],
       netoConfirmado: [{value: 0, disabled: true}],
+      netoConfirmadoOriginal: [{value: 0, disabled: true}],
       interesRestanteServicio: [{value: 0, disabled: true}],
       fondoResguardo: [{value: 0, disabled: true}],
+      fondoResguardoOriginal: [{value: 0, disabled: true}],
 
       interesServicio: [{value: 0, disabled: true}],
       gastosServicio: [{value: 0, disabled: true}],
@@ -380,8 +382,10 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.liquidacionForm.controls.nroDocumento.setValue(det.nroDocumento);
     this.liquidacionForm.controls.fechaConfirmada.setValue(det.fechaConfirmado);
     this.liquidacionForm.controls.netoConfirmado.setValue(det.netoConfirmado);
+    this.liquidacionForm.controls.netoConfirmadoOriginal.setValue(det.netoConfirmadoOriginal);
     this.liquidacionForm.controls.interesRestanteServicio.setValue(det.interesRestanteServicio);
     this.liquidacionForm.controls.fondoResguardo.setValue(det.fondoResguardo);
+    this.liquidacionForm.controls.fondoResguardoOriginal.setValue(det.fondoResguardoOriginal);
 
     this.liquidacionForm.controls.interesServicio.setValue(det.interesConIGV);
     this.liquidacionForm.controls.gastosServicio.setValue(det.gastosDiversosConIGV);
@@ -753,7 +757,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
         month: parseInt(el.fechaConfirmado.split('/')[1]),
         day: parseInt(el.fechaConfirmado.split('/')[0]),
       }
-      el.montoPago = el.saldo > 0 ? el.saldo : el.netoConfirmado;
+      el.montoPago = el.saldo > 0 ? el.saldo : cab.flagAdelanto ? el.netoConfirmadoOriginal : el.netoConfirmado;
       el.verOpcionesPago = el.seleccionado = cab.seleccionarTodo;
     }
   }
@@ -765,7 +769,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       month: parseInt(item.fechaConfirmado.split('/')[1]),
       day: parseInt(item.fechaConfirmado.split('/')[0]),
     }
-    item.montoPago = item.saldo > 0 ? item.saldo : item.netoConfirmado;
+    item.montoPago = item.saldo > 0 ? item.saldo : cab.flagAdelanto ? item.netoConfirmadoOriginal : item.netoConfirmado;
     item.verOpcionesPago = item.seleccionado;
   }
 

@@ -323,6 +323,7 @@
                               <th class="detail-th-color">N° Documento</th>
                               <th class="detail-th-color">Fecha Confirmada</th>
                               <th class="detail-th-color">Neto Confirmado</th>
+                              <th *ngIf="cab.flagAdelanto" class="detail-th-color">Neto Confirmado Total</th>
                               <th class="detail-th-color">IGV restante (servicio)</th>
                               <th class="detail-th-color">Día(s) Mora</th>
                               <th class="detail-th-color">Pago (C + I + G)</th>
@@ -402,6 +403,8 @@
                                 [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.fechaConfirmado}}</td>
                               <td
                                 [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.netoConfirmado | number: '1.2-2'}}</td>
+                              <td *ngIf="cab.flagAdelanto"
+                                [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.netoConfirmadoOriginal | number: '1.2-2'}}</td>
                               <td
                                 [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.interesRestanteServicio | number: '1.2-2'}}</td>
                               <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.diasMora}}</td>
@@ -519,6 +522,13 @@
                            mask="separator" thousandSeparator=","/>
                   </div>
                 </div>
+                <div class="col-md-6 col-12" *ngIf="liquidacionCabItem.flagAdelanto">
+                  <div class="form-group">
+                    <label>Neto Confirmado Total</label>
+                    <input class="form-control" formControlName="netoConfirmadoOriginal" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
                 <div class="col-md-6 col-12"
                      *ngIf="liquidacionCabItem.idTipoOperacion == 1 && !liquidacionCabItem.alterno">
                   <div class="form-group">
@@ -531,6 +541,13 @@
                   <div class="form-group">
                     <label>Fondo Resguardo</label>
                     <input class="form-control" formControlName="fondoResguardo" type="text"
+                           mask="separator" thousandSeparator=","/>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="liquidacionCabItem.flagAdelanto">
+                  <div class="form-group">
+                    <label>Fondo Resguardo Total</label>
+                    <input class="form-control" formControlName="fondoResguardoOriginal" type="text"
                            mask="separator" thousandSeparator=","/>
                   </div>
                 </div>

@@ -565,8 +565,8 @@ export class DocumentosComponent implements OnInit {
   }
 
   onEditarDetalle(item: LiquidacionDocumentoDet): void {
-    if (this.detalle.filter(f => f.edicion && f.idFila != item.idFila).length > 0) {
-      this.utilsService.showNotification("Guarda o confirma los cambios primero", "Advertencia", 2);
+    if (this.detalle.filter(f => f.edicion).length > 0) {
+      this.utilsService.showNotification("Confirme los cambios de la fila actual primero", "Advertencia", 2);
       return;
     }
 
