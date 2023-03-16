@@ -553,12 +553,12 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     if (e === false) {
       let cola = this.archivosSustento.queue;
 
-      for (const item of this.archivosSustento.queue) {
-        if (!item?.file?.name.includes(".eml")) {
-          item.remove();
-          this.utilsService.showNotification("Solo se permite archivos de correo con extensión '.eml'", "Advertencia", 2);
-        }
-      }
+      // for (const item of this.archivosSustento.queue) {
+      //   if (!item?.file?.name.includes(".eml")) {
+      //     item.remove();
+      //     this.utilsService.showNotification("Solo se permite archivos de correo con extensión '.eml'", "Advertencia", 2);
+      //   }
+      // }
 
       let nombres = cola.map(item => item?.file?.name)
         .filter((value, index, self) => self.indexOf(value) === index)
