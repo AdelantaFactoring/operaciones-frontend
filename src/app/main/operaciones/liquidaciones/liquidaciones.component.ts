@@ -305,7 +305,7 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      if (el.flagPagoInteresAdelantado && el.liquidacionCabSustento.filter(f => f.idTipoSustento === 1 && (f.idTipo === 3 || f.idTipo === 4)).length != 2) {
+      if (el.flagPagoInteresAdelantado && el.liquidacionCabSustento.filter(f => f.idTipoSustento === 1 && (f.idTipo === 3 || f.idTipo === 4)).length === 0) {
         this.utilsService.showNotification(`(Pago de intereses y gastos adelantados) Debe subir la confirmación del cliente y del pago`, "Advertencia", 2);
         return;
       }
