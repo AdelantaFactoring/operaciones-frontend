@@ -179,6 +179,7 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     this.utilsService.blockUIStop();
     this.route.params.subscribe(s => {
       this.mostrar = s.mostrar;
+      this.contentHeader.headerTitle = this.contentHeader.breadcrumb.links[2].name = this.mostrar === 'false' ? 'Historial' : "Aprobación";
       this.onListarLiquidaciones();
     });
   }

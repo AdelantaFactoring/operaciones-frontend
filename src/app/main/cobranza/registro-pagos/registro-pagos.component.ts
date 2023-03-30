@@ -14,6 +14,7 @@ import {
 } from "../../../shared/models/cobranza/liquidacion-obtenerestadopago-factoringregular";
 import Swal from "sweetalert2";
 import {ActivatedRoute} from "@angular/router";
+import {ContentHeader} from "../../../layout/components/content-header/content-header.component";
 
 @Component({
   selector: 'app-registro-pagos',
@@ -26,7 +27,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   public currentUser: User;
   public mostrar: string = 'false';
 
-  public contentHeader: object;
+  public contentHeader: ContentHeader;
   public cambiarIcono: boolean = false;
   public cobranza: LiquidacionCab[] = [];
   public pagos: LiquidacionPago[] = [];
@@ -183,10 +184,13 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.route.params.subscribe(s => {
       this.mostrar = s.mostrar;
       this.filtroForm.controls.estado.setValue((this.mostrar === 'false' ? 7 : 0));
-      if (this.mostrar === 'false')
+      if (this.mostrar === 'false') {
+        this.contentHeader.headerTitle = this.contentHeader.breadcrumb.links[2].name = 'Historial de Pagos';
         this.filtroForm.controls.estado.disable();
-      else
+      } else {
+        this.contentHeader.headerTitle = this.contentHeader.breadcrumb.links[2].name = 'Registro de Pagos';
         this.filtroForm.controls.estado.enable();
+      }
       this.onListarCobranza();
     });
   }
@@ -796,7 +800,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     const pagos = {...cab};
     let liqDet: LiquidacionDet[] = [];
     for (const det of cab.liquidacionDet.filter(f => f.seleccionado)) {
-      const newDet = { ...det };
+      const newDet = {...det};
       newDet.fechaPago = "";
       liqDet.push(newDet);
     }
@@ -814,25 +818,25 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       liquidacionDet: liqDet,
       idUsuarioAud: this.currentUser.idUsuario
     }).subscribe((response: any) => {
-        switch (response.tipo) {
-          case 1:
-            this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
-            this.utilsService.blockUIStop();
-            this.onListarCobranza();
-            break;
-          case 2:
-            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
-            this.utilsService.blockUIStop();
-            break;
-          default:
-            this.utilsService.showNotification(response.mensaje, 'Error', 3);
-            this.utilsService.blockUIStop();
-            break;
-        }
-      }, error => {
-        this.utilsService.blockUIStop();
-        this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
-      });
+      switch (response.tipo) {
+        case 1:
+          this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+          this.utilsService.blockUIStop();
+          this.onListarCobranza();
+          break;
+        case 2:
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          this.utilsService.blockUIStop();
+          break;
+        default:
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          this.utilsService.blockUIStop();
+          break;
+      }
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+    });
   }
 
   onEliminarPago(item: LiquidacionPago): void {
