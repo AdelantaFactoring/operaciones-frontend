@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {RequestMethod} from "../../../shared/helpers/request-method";
 import {HttpClient} from "@angular/common/http";
 import {InjectorInstance} from "../../../app.module";
@@ -21,7 +21,11 @@ export class DocumentosService {
   listar(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${DOCUMENTOS.listar}`,
-      `?search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
+      `?search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}` +
+        `&codigoLiquidacion=${payload.codigoLiquidacion}&codigoSolicitud=${payload.codigoSolicitud}` +
+        `&cliente=${payload.cliente}&idMoneda=${payload.idMoneda}&fechaEmisionDesde=${payload.fechaEmisionDesde}` +
+        `&fechaEmisionHasta=${payload.fechaEmisionHasta}&idTipoDocumento=${payload.idTipoDocumento}` +
+        `&nroDocumento=${payload.nroDocumento}&montoTotal=${payload.montoTotal}&idsEstados=${payload.idsEstados}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

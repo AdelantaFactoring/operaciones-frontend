@@ -13,4 +13,8 @@ export class TablaMaestra {
   //extras
   idTipoAfectacion: number = 0;
   tipoAfectacion: string = '';
+
+  constructor(params: Partial<TablaMaestra>) {
+    Object.assign(this, params);
+  }
 }

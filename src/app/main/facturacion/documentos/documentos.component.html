@@ -1,6 +1,171 @@
 <div class="content-wrapper">
   <div class="content-body">
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <core-card #coreCard [actions]="['collapse', 'reload']" (events)="onLimpiarFiltro($event)">
+      <div class="card-title">Buscar por <small><i>(click aquí para expandir)</i></small></div>
+      <div class="card-body">
+        <form [formGroup]="filtroForm">
+          <div class="row">
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>N° Liquidación</label>
+                <input class="form-control" formControlName="codigoLiquidacion" type="text"
+                       (ngModelChange)="onListarDocumentos()"/>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>N° Solicitud</label>
+                <input class="form-control" formControlName="codigoSolicitud" type="text"
+                       (ngModelChange)="onListarDocumentos()"/>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Cliente (RUC o Razón Social)</label>
+                <input class="form-control" formControlName="cliente" type="text"
+                       (ngModelChange)="onListarDocumentos()"/>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Moneda</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="monedaFiltro" bindLabel="descripcion"
+                           placeholder="Moneda" bindValue="idColumna" formControlName="moneda"
+                           (ngModelChange)="onListarDocumentos()">
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Desde (F. Emisión)</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         formControlName="fechaEmisionDesde" container="body"
+                         ngbDatepicker #basicDP_FED="ngbDatepicker" (ngModelChange)="onListarDocumentos()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-x"
+                            type="button" rippleEffect (click)="onLimpiarFechaFiltro(false)"></button>
+                  </div>
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDP_FED.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Hasta (F. Emisión)</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         formControlName="fechaEmisionHasta" container="body"
+                         ngbDatepicker #basicDP_FEH="ngbDatepicker" (ngModelChange)="onListarDocumentos()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-x"
+                            type="button" rippleEffect (click)="onLimpiarFechaFiltro(true)"></button>
+                  </div>
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDP_FEH.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Tipo Documento</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="tipoDocumentoFiltro" bindLabel="descripcion"
+                           placeholder="Tipo Documento" bindValue="idColumna" formControlName="tipoDocumento"
+                           (ngModelChange)="onListarDocumentos()">
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>N° Documento</label>
+                <input class="form-control" formControlName="nroDocumento" type="text"
+                       (ngModelChange)="onListarDocumentos()"/>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Monto Total</label>
+                <input class="form-control" formControlName="montoTotal" type="text"
+                       mask="separator" thousandSeparator="," (ngModelChange)="onListarDocumentos()"/>
+              </div>
+            </div>
+            <div class="col-md-9 col-12">
+              <div class="form-group">
+                <label>Estado</label>
+                <ng-select
+                  [items]="estado"
+                  [multiple]="true"
+                  [closeOnSelect]="false"
+                  [searchable]="false"
+                  bindLabel="descripcion"
+                  placeholder="Estado"
+                  formControlName="estado"
+                  (ngModelChange)="onListarDocumentos()"
+                >
+                  <ng-template ng-label-tmp let-item="item" let-clear="clear">
+                    <span class="ng-value-label"> {{ item.descripcion }}</span>
+                    <span class="ng-value-icon right" (click)="clear(item)" aria-hidden="true">×</span>
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+<!--            <div class="col-12">-->
+<!--              <div class="divider divider-secondary">-->
+<!--                <div class="divider-text"><span [data-feather]="'chevrons-down'"></span> (Solo para Exportación)</div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="col-12" *ngIf="mostrarFiltroExportacion">-->
+<!--              <div class="form-group">-->
+<!--                <div class="text-warning">-->
+<!--                  <i class="mr-0 mr-sm-1" data-feather="alert-circle"></i> Se está utilizando este rango de fechas,-->
+<!--                  basado en el campo "Fecha Creación"-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-4 col-12">-->
+<!--              <div class="form-group">-->
+<!--                <label>Desde</label>-->
+<!--                <div class="input-group">-->
+<!--                  <input #desdeFC class="form-control" placeholder="yyyy-mm-dd"-->
+<!--                         [ngClass]="{ 'warning': mostrarFiltroExportacion }"-->
+<!--                         formControlName="desdeFC" container="body"-->
+<!--                         ngbDatepicker #basicDPDes="ngbDatepicker">-->
+<!--                  <div class="input-group-append">-->
+<!--                    <button class="btn btn-outline-secondary feather icon-calendar"-->
+<!--                            (click)="basicDPDes.toggle()"-->
+<!--                            type="button" rippleEffect></button>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-4 col-12">-->
+<!--              <div class="form-group">-->
+<!--                <label>Hasta</label>-->
+<!--                <div class="input-group">-->
+<!--                  <input class="form-control" placeholder="yyyy-mm-dd"-->
+<!--                         [ngClass]="{ 'warning': mostrarFiltroExportacion }"-->
+<!--                         formControlName="hastaFC" container="body"-->
+<!--                         ngbDatepicker #basicDPHas="ngbDatepicker">-->
+<!--                  <div class="input-group-append">-->
+<!--                    <button class="btn btn-outline-secondary feather icon-calendar"-->
+<!--                            (click)="basicDPHas.toggle()"-->
+<!--                            type="button" rippleEffect></button>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+          </div>
+        </form>
+      </div>
+    </core-card>
     <div class="card">
       <div class="card-body">
         <div class="row">

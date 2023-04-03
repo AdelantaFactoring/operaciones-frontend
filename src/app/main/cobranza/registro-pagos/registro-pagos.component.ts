@@ -761,7 +761,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
         month: parseInt(el.fechaConfirmado.split('/')[1]),
         day: parseInt(el.fechaConfirmado.split('/')[0]),
       }
-      el.montoPago = el.saldo > 0 ? el.saldo : cab.flagAdelanto ? el.netoConfirmadoOriginal : el.netoConfirmado;
+      el.montoPago = el.porcentajePago > 0 ? el.saldo : cab.flagAdelanto ? el.netoConfirmadoOriginal : el.netoConfirmado;
       el.verOpcionesPago = el.seleccionado = cab.seleccionarTodo;
     }
   }
@@ -773,7 +773,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       month: parseInt(item.fechaConfirmado.split('/')[1]),
       day: parseInt(item.fechaConfirmado.split('/')[0]),
     }
-    item.montoPago = item.saldo > 0 ? item.saldo : cab.flagAdelanto ? item.netoConfirmadoOriginal : item.netoConfirmado;
+    item.montoPago = item.porcentajePago > 0 ? item.saldo : cab.flagAdelanto ? item.netoConfirmadoOriginal : item.netoConfirmado;
     item.verOpcionesPago = item.seleccionado;
   }
 

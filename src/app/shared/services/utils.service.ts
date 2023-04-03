@@ -134,7 +134,7 @@ export class UtilsService {
    */
   formatoFecha_YYYYMMDD(obj: any): string {
     if (obj === null)
-      return null;
+      return '';
 
     return `${obj.year}${String(obj.month).padStart(2, "0")}${String(obj.day).padStart(2, "0")}`;
   }

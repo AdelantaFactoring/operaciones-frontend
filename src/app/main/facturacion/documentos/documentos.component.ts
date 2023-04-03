@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
 import {DocumentosService} from "./documentos.service";
 import {LiquidacionDocumentoCab} from "../../../shared/models/facturacion/liquidaciondocumento-cab";
@@ -13,6 +13,8 @@ import {Cliente} from "../../../shared/models/comercial/cliente";
 import {User} from 'app/shared/models/auth/user';
 import {MaestrosService} from "../../catalogos/maestros/maestros.service";
 import {TablaMaestraRelacion} from "../../../shared/models/shared/tabla-maestra-relacion";
+import {ContentHeader} from "../../../layout/components/content-header/content-header.component";
+import { __spreadArray } from 'tslib';
 
 @Component({
   selector: 'app-documentos',
@@ -20,15 +22,18 @@ import {TablaMaestraRelacion} from "../../../shared/models/shared/tabla-maestra-
   styleUrls: ['./documentos.component.scss']
 })
 export class DocumentosComponent implements OnInit {
+  @ViewChild('coreCard') coreCard;
   public currentUser: User;
-  public contentHeader: object;
+  public contentHeader: ContentHeader;
   public documentos: LiquidacionDocumentoCab[] = [];
   public clientes: Cliente[] = [];
   public detalle: LiquidacionDocumentoDet[] = [];
   public detalleOld: LiquidacionDocumentoDet[] = [];
   public oldDetalle: LiquidacionDocumentoDet;
   public tipoDocumento: TablaMaestra[] = [];
+  public tipoDocumentoFiltro: TablaMaestra[] = [];
   public moneda: TablaMaestra[] = [];
+  public monedaFiltro: TablaMaestra[] = [];
   public nroComprobante: TablaMaestra[] = [];
   public unidadMedida: TablaMaestra[] = [];
   public conceptosComprobante: TablaMaestra[] = [];
@@ -39,6 +44,7 @@ export class DocumentosComponent implements OnInit {
   public tipoAfectacion: TablaMaestra[] = [];
   public medioPagoSunat: TablaMaestra[] = [];
   public bienesServicios: TablaMaestra[] = [];
+  public estado: TablaMaestra[] = [];
   public inafectoIGV: TablaMaestra;
   public detracciones: TablaMaestra;
   public documentoForm: FormGroup;
@@ -47,6 +53,8 @@ export class DocumentosComponent implements OnInit {
   public oldDetalleForm: FormGroup;
   public anulacionForm: FormGroup;
   public oldAnulacionForm: FormGroup;
+  public filtroForm: FormGroup;
+  public oldFiltroForm: FormGroup;
   public cambiarIcono: boolean = false;
   public submitted: boolean = false;
   public submitted2: boolean = false;
@@ -80,6 +88,8 @@ export class DocumentosComponent implements OnInit {
   public nroCuentaBcoNacion: string = "";
   public idMedioPagoDetraccion: number = 0;
   public tipoCambioMoneda: number = 0;
+
+  public clearingForm: boolean = false;
 
   public liquidacionDocCabActual: LiquidacionDocumentoCab;
 
@@ -172,6 +182,30 @@ export class DocumentosComponent implements OnInit {
       motivo: ['', Validators.required],
     });
     this.oldAnulacionForm = this.anulacionForm.value;
+
+    this.filtroForm = this.formBuilder.group({
+      codigoLiquidacion: [''],
+      codigoSolicitud: [''],
+      cliente: [''],
+      moneda: [0],
+      fechaEmisionDesde: [null],
+      fechaEmisionHasta: [null],
+      tipoDocumento: [0],
+      nroDocumento: [''],
+      estado: [[new TablaMaestra({idColumna: 1, descripcion: 'Pendiente'}),
+        new TablaMaestra({idColumna: 2, descripcion: 'Enviado a Declarar'})]],
+      montoTotal: [0]
+    });
+    this.oldFiltroForm = this.filtroForm.value;
+  }
+
+  onLimpiarFiltro($event): void {
+    if ($event === 'reload') {
+      this.clearingForm = true;
+      this.filtroForm.reset(this.oldFiltroForm);
+      this.clearingForm = false;
+      this.onListarDocumentos();
+    }
   }
 
   async ngOnInit(): Promise<void> {
@@ -188,16 +222,40 @@ export class DocumentosComponent implements OnInit {
     this.medioPagoSunat = await this.onListarMaestros(21, 0);
     this.bienesServicios = await this.onListarMaestros(26, 0);
     this.detracciones = (await this.onListarMaestros(1000, 10))[0];
+    this.estado = await this.onListarMaestros(13, 0);
+    this.tipoDocumentoFiltro = __spreadArray([], this.tipoDocumento);
+    this.tipoDocumentoFiltro = this.utilsService.agregarTodos(12, this.tipoDocumentoFiltro);
+    this.monedaFiltro = __spreadArray([], this.moneda);
+    this.monedaFiltro = this.utilsService.agregarTodos(1, this.monedaFiltro);
+
     this.utilsService.blockUIStop();
     this.onListarDocumentos();
   }
 
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.coreCard.collapse();
+      this.coreCard.onclickEvent.collapseStatus = true;
+    }, 0);
+  }
+
   onListarDocumentos(): void {
+    if (this.clearingForm) return;
     this.utilsService.blockUIStart('Obteniendo información...');
     this.documentosService.listar({
       search: this.search,
       pageIndex: this.page,
-      pageSize: this.pageSize
+      pageSize: this.pageSize,
+      codigoLiquidacion: this.filtroForm.get("codigoLiquidacion").value,
+      codigoSolicitud: this.filtroForm.get("codigoSolicitud").value,
+      cliente: this.filtroForm.get("cliente").value,
+      idMoneda: this.filtroForm.get("moneda").value,
+      fechaEmisionDesde: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.get("fechaEmisionDesde").value),
+      fechaEmisionHasta: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.get("fechaEmisionHasta").value),
+      idTipoDocumento: this.filtroForm.get("tipoDocumento").value,
+      nroDocumento: this.filtroForm.get("nroDocumento").value,
+      montoTotal: Number(this.filtroForm.get("montoTotal").value),
+      idsEstados: this.filtroForm.get("estado").value.map(m => String(m.idColumna)).join(',')
     }).subscribe((response: LiquidacionDocumentoCab[]) => {
       this.documentos = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
@@ -949,4 +1007,12 @@ export class DocumentosComponent implements OnInit {
       this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
   }
+
+  onLimpiarFechaFiltro(hasta: boolean) {
+    if (hasta)
+      this.filtroForm.get("fechaEmisionHasta").setValue(null);
+    else
+      this.filtroForm.get("fechaEmisionDesde").setValue(null);
+  }
 }
+
