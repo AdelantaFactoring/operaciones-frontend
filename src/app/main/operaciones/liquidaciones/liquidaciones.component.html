@@ -189,17 +189,17 @@
                     <span class="d-none d-sm-inline-block">Exportar</span>
                   </a>
                   <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="ddExport">
+<!--                    <a ngbDropdownItem href="javascript:void(0)" title="Exportar Liquidaciones"-->
+<!--                       class="d-flex align-items-center" (click)="onExportar(1)">-->
+<!--                      <i class="text-success cursor-pointer mr-50 fa fa-file-excel-o"></i> Exportar solo liquidaciones-->
+<!--                    </a>-->
                     <a ngbDropdownItem href="javascript:void(0)" title="Exportar Liquidaciones"
                        class="d-flex align-items-center" (click)="onExportar(1)">
-                      <i class="text-success cursor-pointer mr-50 fa fa-file-excel-o"></i> Exportar solo liquidaciones
-                    </a>
-                    <a ngbDropdownItem href="javascript:void(0)" title="Exportar Liquidaciones"
-                       class="d-flex align-items-center" disabled (click)="onExportar(2)">
                       <i class="text-success cursor-pointer mr-50 fa fa-file-excel-o"></i> Exportar liquidaciones y<br>
                       pagos
                     </a>
                     <a ngbDropdownItem href="javascript:void(0)" title="Exportar Liquidaciones"
-                       class="d-flex align-items-center" disabled (click)="onExportar(3)">
+                       class="d-flex align-items-center" (click)="onExportar(2)">
                       <i class="text-success cursor-pointer mr-50 fa fa-file-excel-o"></i> Exportar liquidaciones<br>
                       (Formato Contabilidad)
                     </a>

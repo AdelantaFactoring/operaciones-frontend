@@ -20,7 +20,7 @@ import {User} from 'app/shared/models/auth/user';
 import {Audit} from "../../../shared/models/shared/audit";
 import * as fileSaver from 'file-saver';
 import {ContentHeader} from "../../../layout/components/content-header/content-header.component";
-import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import {NgbCalendar} from '@ng-bootstrap/ng-bootstrap';
 import {SolicitudCabAdelanto} from "../../../shared/models/comercial/solicitud-cab-adelanto";
 import {CheckListService} from "../../comercial/check-list/check-list.service";
 
@@ -928,12 +928,12 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
   }
 
   onExportar(tipo: number): void {
+    const desde = this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.desdeFC.value);
+    const hasta = this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.hastaFC.value);
+
     switch (tipo) {
       case 1:
         this.mostrarFiltroExportacion = false;
-        let desde = this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.desdeFC.value);
-        let hasta = this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.hastaFC.value);
-
         this.utilsService.blockUIStart('Exportando archivo...');
         this.liquidacionesService.exportar({
           idConsulta: this.mostrar === 'true' ? 1 : 0,
@@ -957,7 +957,35 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
           this.utilsService.showNotification('Exportación satisfactoria', 'Confirmación', 1);
           this.utilsService.blockUIStop();
         }, error => {
-          console.log(error)
+          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+          this.utilsService.blockUIStop();
+        });
+        break;
+      case 2:
+        this.mostrarFiltroExportacion = false;
+        this.utilsService.blockUIStart('Exportando archivo...');
+        this.liquidacionesService.exportarFC({
+          idConsulta: this.mostrar === 'true' ? 1 : 0,
+          codigoLiquidacion: this.filtroForm.controls.codigoLiquidacion.value,
+          codigoSolicitud: this.filtroForm.controls.codigoSolicitud.value,
+          cliente: this.filtroForm.controls.cliente.value,
+          pagProv: this.filtroForm.controls.pagadorProveedor.value,
+          moneda: this.filtroForm.controls.moneda.value,
+          idTipoOperacion: this.filtroForm.controls.tipoOperacion.value,
+          idEstado: this.filtroForm.controls.estado.value,
+          pagProvDet: this.filtroForm.controls.pagadorProveedorDet.value,
+          nroDocumento: this.filtroForm.controls.nroDocumento.value,
+          fechaOperacion: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaOperacion.value) ?? "",
+          desde,
+          hasta,
+          search: this.search
+        }).subscribe(s => {
+          let blob: any = new Blob([s], {type: 'application/vnd.ms-excel'});
+          const url = window.URL.createObjectURL(blob);
+          fileSaver.saveAs(blob, `Liquidaciones_FC_${desde}_${hasta}.xlsx`);
+          this.utilsService.showNotification('Exportación satisfactoria', 'Confirmación', 1);
+          this.utilsService.blockUIStop();
+        }, error => {
           this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
           this.utilsService.blockUIStop();
         });
@@ -967,13 +995,13 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onExpandirExportar():void {
+  onExpandirExportar(): void {
     this.mostrarFiltroExportacion = true;
     setTimeout(() => {
       this.coreCard.collapse();
       this.coreCard.onclickEvent.collapseStatus = false;
     }, 0);
-    setTimeout(() => this.desdeFC.nativeElement.focus(),500);
+    setTimeout(() => this.desdeFC.nativeElement.focus(), 500);
   }
 
   onVerAdelanto(cab: LiquidacionCab, modal: any) {

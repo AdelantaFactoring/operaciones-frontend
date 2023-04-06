@@ -36,6 +36,16 @@ export class LiquidacionesService {
     );
   }
 
+  exportarFC(payload): Observable<Blob> {
+    return this.requestMethod.getFile(
+      `${environment.apiUrl}${LIQUIDACIONES.exportarFC}`,
+      `?idConsulta=${payload.idConsulta}&codigoLiquidacion=${payload.codigoLiquidacion}&codigoSolicitud=${payload.codigoSolicitud}` +
+      `&cliente=${payload.cliente}&pagProv=${payload.pagProv}&moneda=${payload.moneda}&idTipoOperacion=${payload.idTipoOperacion}&idEstado=${payload.idEstado}` +
+      `&pagProvDet=${payload.pagProvDet}&nroDocumento=${payload.nroDocumento}&fechaOperacion=${payload.fechaOperacion}` +
+      `&desde=${payload.desde}&hasta=${payload.hasta}&search=${payload.search}`
+    );
+  }
+
   generar(payload): Observable<any> {
     return this.requestMethod.post(
       `${environment.apiUrl}${LIQUIDACIONES.generar}`,
