@@ -625,7 +625,10 @@
                             <td>{{item.rucDet}}</td>
                             <td>{{item.razonSocialDet}}</td>
                             <td>{{item.tipoMoneda}}</td>
-                            <td>{{item.netoPendienteOld | number: '1.2-2'}}</td>
+                            <!-- <td>{{item.netoPendienteOld | number: '1.2-2'}}</td> -->
+                            <td><input class="form-control" type="text" [(ngModel)]="item.netoPendienteOld" mask="separator" thousandSeparator=","
+                              [ngModelOptions]="{ standalone: true }"/>
+                            </td>
                             <td
                               [ngClass]="{validacionRow: item.netoPendiente > item.netoPendienteOld, success: item.netoPendiente <= item.netoPendienteOld}">
                               <p
