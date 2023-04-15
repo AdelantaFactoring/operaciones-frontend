@@ -44,86 +44,31 @@
         </div>
         <div class="row">
           <div class="col-12">
-            <form [formGroup]="maestroForm">
+            <form [formGroup]="tipoOperacionForm">
               <div class="table-responsive">
                 <table class="table table-hover min-width-table">
                   <thead class="centerall-header">
                   <tr>
-                    <th>Acción</th>
-                    <th>Código</th>
+                    <th style="width: 50px">Acción</th>
                     <th>Descripción</th>
-                    <th>Tipo Afectación</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td>
-                      <a href="javascript:void(0)" title="Nuevo" (click)="onAgregar()"
-                         class="btn btn-raised btn-outline-info btn-sm">
-                        <i class="text-info cursor-pointer" data-feather="plus-circle"></i>
-                      </a>
-                    </td>
-                    <td>
-                      <input class="form-control" type="text" placeholder="Código" formControlName="valor"
-                             [ngClass]="{ 'is-invalid': submitted && maestroForm.controls.valor.errors }"/>
-                    </td>
-                    <td>
-                      <input class="form-control" type="text" placeholder="Descripción" formControlName="descripcion"
-                             [ngClass]="{ 'is-invalid': submitted && maestroForm.controls.descripcion.errors }"/>
-                    </td>
-                    <td></td>
-                  </tr>
                   <tr *ngFor="let item of tablaMaestra">
                     <td>
                       <div class="d-flex align-items-center">
-                        <a *ngIf="!item.edicion && !item.asignar" href="javascript:void(0)" title="Asignar"
-                           (click)="onAsignar(item)"
+                        <a *ngIf="!item.asignar" href="javascript:void(0)" title="Asignar"
+                           (click)="onAsignar(item, modalASIGNACION)"
                            class="btn btn-raised btn-outline-warning btn-sm">
                           <i class="text-warning cursor-pointer" data-feather="link"></i>
-                        </a>
-                        <ng-template [ngIf]="!item.edicion && !item.asignar">&nbsp;</ng-template>
-                        <a *ngIf="!item.edicion && !item.asignar" href="javascript:void(0)" title="Editar"
-                           (click)="onEditar(item)"
-                           class="btn btn-raised btn-outline-success btn-sm">
-                          <i class="text-success cursor-pointer" data-feather="edit"></i>
-                        </a>
-                        <a *ngIf="item.edicion || item.asignar" href="javascript:void(0)" title="Cancelar"
-                           (click)="onCancelar(item)"
-                           class="btn btn-raised btn-outline-secondary btn-sm">
-                          <i class="text-secondary cursor-pointer" data-feather="corner-up-left"></i>
-                        </a>
-                        &nbsp;
-                        <a *ngIf="!item.edicion && !item.asignar" href="javascript:void(0)" title="Eliminar"
-                           (click)="onEliminar(item)"
-                           class="btn btn-raised btn-outline-danger btn-sm">
-                          <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
-                        </a>
-                        <a *ngIf="item.edicion || item.asignar" href="javascript:void(0)" title="Confirmar cambios"
-                           (click)="onConfirmarCambio(item)"
-                           class="btn btn-raised btn-outline-success btn-sm">
-                          <i class="text-success cursor-pointer" data-feather="save"></i>
                         </a>
                       </div>
                     </td>
                     <td>
-                      <p *ngIf="!item.edicion">{{item.valor}}</p>
-                      <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Código"
-                             [(ngModel)]="item.valor" [ngModelOptions]="{standalone: true }"
-                             [ngClass]="{ 'is-invalid': item.valor === '' }"/>
-                    </td>
-                    <td>
-                      <p *ngIf="!item.edicion">{{item.descripcion}}</p>
+                      <p title="{{item.descripcion}}" *ngIf="!item.edicion">{{item.descripcion}}</p>
                       <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Descripción"
                              [(ngModel)]="item.descripcion" [ngModelOptions]="{standalone: true }"
                              [ngClass]="{ 'is-invalid': item.descripcion === '' }"/>
-                    </td>
-                    <td>
-                      <p *ngIf="!item.asignar">{{item.descripcion2}}</p>
-                      <ng-select *ngIf="item.asignar" appendTo="body" [clearable]="false" [items]="tipoAfectacion"
-                                 bindLabel="descripcion" [(ngModel)]="item.idColumna2"
-                                 [ngModelOptions]="{standalone: true }"
-                                 placeholder="Tipo Afectación" bindValue="idColumna">
-                      </ng-select>
                     </td>
                   </tr>
                   </tbody>
@@ -153,6 +98,35 @@
           </div>
         </div>
       </div>
+
+      <ng-template #modalASIGNACION let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title">Asignación</h4>
+          <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <app-asignacion [asignaciones]="tablaMaestraRelacion" [concepto]="concepto"
+            [mostrarSubTipo]="mostrarSubTipo"></app-asignacion>
+        </div>
+        <div class="modal-footer">
+          <div class="row">
+            <div class="col-md-12 col-12">
+              <div style="float: right">
+                <button id="declare" class="btn btn-success" rippleEffect type="button"
+                        (click)="onGuardarAsignacion(modal)">
+                    <span [data-feather]="'save'"></span> Guardar
+                </button>
+                &nbsp;
+                <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelarAsignacion(modal)">
+                  <span [data-feather]="'x-circle'"></span> Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
 
       <block-ui></block-ui>
     </div>

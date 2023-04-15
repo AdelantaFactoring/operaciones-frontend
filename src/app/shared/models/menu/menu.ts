@@ -169,6 +169,15 @@ export const menu: CoreMenu[] = [
           },
           {
             id: '19',
+            title: 'Tipo Operación',
+            //translate: 'MENU.PAGES.AUTH.LOGIN1',
+            type: 'item',
+            url: 'catalogos/maestros/tipoOperacion',
+            icon: 'circle',
+            //openInNewTab: true
+          },
+          {
+            id: '19',
             title: 'Parámetros Generales',
             //translate: 'MENU.PAGES.AUTH.LOGIN1',
             type: 'item',

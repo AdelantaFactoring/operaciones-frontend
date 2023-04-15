@@ -10,9 +10,9 @@ export class TablaMaestra {
   editado: boolean = false;
   asignar: boolean = false;
 
-  //extras
-  idTipoAfectacion: number = 0;
-  tipoAfectacion: string = '';
+  idTablaMaestraRelacion: number;
+  idColumna2: number;
+  descripcion2: string;
 
   constructor(params: Partial<TablaMaestra>) {
     Object.assign(this, params);

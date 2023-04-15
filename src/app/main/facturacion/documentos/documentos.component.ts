@@ -14,7 +14,7 @@ import {User} from 'app/shared/models/auth/user';
 import {MaestrosService} from "../../catalogos/maestros/maestros.service";
 import {TablaMaestraRelacion} from "../../../shared/models/shared/tabla-maestra-relacion";
 import {ContentHeader} from "../../../layout/components/content-header/content-header.component";
-import { __spreadArray } from 'tslib';
+import {__spreadArray} from 'tslib';
 
 @Component({
   selector: 'app-documentos',
@@ -90,8 +90,10 @@ export class DocumentosComponent implements OnInit {
   public tipoCambioMoneda: number = 0;
 
   public clearingForm: boolean = false;
-
   public liquidacionDocCabActual: LiquidacionDocumentoCab;
+  public documentosPendientes: LiquidacionDocumentoCab[] = [];
+  public disabledDeclarar: boolean = false;
+  public declaracionEfectuada: boolean = false;
 
   get ReactiveIUForm(): any {
     return this.documentoForm.controls;
@@ -257,7 +259,18 @@ export class DocumentosComponent implements OnInit {
       montoTotal: Number(this.filtroForm.get("montoTotal").value),
       idsEstados: this.filtroForm.get("estado").value.map(m => String(m.idColumna)).join(',')
     }).subscribe((response: LiquidacionDocumentoCab[]) => {
+      response.forEach(el => {
+        el.ok = false;
+        el.estadoActual = 0;
+        el.mensajeRetorno = "";
+        el.added = false;
+      });
       this.documentos = response;
+      this.documentosPendientes.forEach(el => {
+        const row = this.documentos.find(f => f.idLiquidacionDocumentoCab === el.idLiquidacionDocumentoCab)
+        if (row != null)
+          row.added = true;
+      });
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
       this.utilsService.blockUIStop();
     }, error => {
@@ -1013,6 +1026,87 @@ export class DocumentosComponent implements OnInit {
       this.filtroForm.get("fechaEmisionHasta").setValue(null);
     else
       this.filtroForm.get("fechaEmisionDesde").setValue(null);
+  }
+
+  onDeclaracionMultiple(modal: any): void {
+    setTimeout(() => {
+      this.modalService.open(modal, {
+        scrollable: true,
+        backdrop: 'static',
+        size: 'xl',
+        animation: true,
+        beforeDismiss: () => {
+          return true;
+        }
+      });
+    }, 0);
+  }
+
+  onAgregarDeclaracionMasiva(cab: LiquidacionDocumentoCab): void {
+    if (this.documentosPendientes.find(f => f.idLiquidacionDocumentoCab === cab.idLiquidacionDocumentoCab) != null) {
+      this.utilsService.showNotification("El documento ya ha sido agregado", "Validación", 2);
+      return;
+    }
+
+    this.documentosPendientes.push({...cab});
+    this.documentos.find(f => f.idLiquidacionDocumentoCab === cab.idLiquidacionDocumentoCab).added = true;
+    this.utilsService.showNotification("Agregado correctamente", "Información", 4)
+  }
+
+  async onDeclararMultiple(): Promise<void> {
+    if (this.documentosPendientes.length === 0)
+      return;
+
+    this.disabledDeclarar = true;
+    this.declaracionEfectuada = true;
+    for (const cab of this.documentosPendientes) {
+      cab.estadoActual = 1;
+    }
+
+    for (const cab of this.documentosPendientes) {
+      cab.estadoActual = 2;
+      cab.idEmpresa = this.currentUser.idEmpresa;
+      cab.idUsuarioAud = this.currentUser.idUsuario;
+      const response = await this.documentosService.firmaPublicacionDeclaracionAsync(cab)
+        .catch(error => {
+          return {tipo: 0, mensaje: error.message};
+        });
+      cab.ok = response.tipo === 1;
+      cab.estadoActual = 3;
+      cab.mensajeRetorno = (cab.ok ? "Envío a declaración satisfactorio" : "") + response.mensaje;
+    }
+    this.disabledDeclarar = false;
+  }
+
+  onEstado(id: number): string {
+    switch (id) {
+      case 0:
+        return "No iniciado";
+      case 1:
+        return "En espera...";
+      case 2:
+        return "En proceso...";
+      case 3:
+        return "Finalizado";
+    }
+  }
+
+  onLimpiarDeclaracion() {
+    this.documentosPendientes = [];
+    this.declaracionEfectuada = false;
+  }
+
+  onLimpiar(item: LiquidacionDocumentoCab) {
+    this.documentosPendientes = this.documentosPendientes.filter(f => f.idLiquidacionDocumentoCab !== item.idLiquidacionDocumentoCab);
+    this.documentos.find(f => f.idLiquidacionDocumentoCab === item.idLiquidacionDocumentoCab).added = false;
+
+    if (this.documentosPendientes.length === 0)
+      this.declaracionEfectuada = false;
+  }
+
+  onCancelarDeclaracion(modal: any) {
+    this.onListarDocumentos();
+    modal.dismiss();
   }
 }
 

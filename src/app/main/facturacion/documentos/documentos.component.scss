@@ -31,4 +31,28 @@
   //width: 60%;
 }
 
-@import '@core/scss/angular/libs/select.component.scss';
+@import '~@core/scss/angular/libs/select.component.scss';
+
+.badge {
+  display: inline;
+}
+
+@media (max-width: 425px) {
+  .badge {
+    margin-left: 3px;
+  }
+}
+
+#declare, #colState {
+  div {
+    display: inline-block;
+  }
+}
+
+.added {
+  background-color: rgba(135, 229, 255, 0.19);
+}
+
+.ok {
+  background-color: rgba(145, 255, 122, 0.33);
+}

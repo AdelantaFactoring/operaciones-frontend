@@ -16,6 +16,8 @@ import { CorrelativoFacturaComponent } from './correlativo-factura/correlativo-f
 import { CorrelativoNCComponent } from './correlativo-nc/correlativo-nc.component';
 import { CorrelativoNDComponent } from './correlativo-nd/correlativo-nd.component';
 import { MonedaComponent } from './moneda/moneda.component';
+import { TipoOperacionComponent } from './tipo-operacion/tipo-operacion.component';
+import { AsignacionComponent } from './tipo-operacion/asignacion/asignacion.component';
 
 const routes: Routes = [
   {
@@ -33,6 +35,15 @@ const routes: Routes = [
       {
         path: 'conceptoComprobante',
         component: ConceptoComprobanteComponent
+      }
+    ]
+  },
+  {
+    path: '',
+    children: [
+      {
+        path: 'tipoOperacion',
+        component: TipoOperacionComponent
       }
     ]
   },
@@ -81,7 +92,9 @@ const routes: Routes = [
     CorrelativoFacturaComponent,
     CorrelativoNCComponent,
     CorrelativoNDComponent,
-    MonedaComponent
+    MonedaComponent,
+    TipoOperacionComponent,
+    AsignacionComponent
   ],
     imports: [
         CommonModule,

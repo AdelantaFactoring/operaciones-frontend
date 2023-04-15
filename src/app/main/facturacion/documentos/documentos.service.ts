@@ -62,6 +62,16 @@ export class DocumentosService {
     );
   }
 
+  async firmaPublicacionDeclaracionAsync(payload): Promise<any> {
+    return await this.requestMethod.postAsync(
+      `${environment.apiUrl}${DOCUMENTOS.firmaPublicacionDeclaracion}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
   consultarEstado(payload): Observable<any> {
     return this.requestMethod.post(
       `${environment.apiUrl}${DOCUMENTOS.consultarEstado}`,

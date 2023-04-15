@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-12">
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead class="centerall-header">
+        <tr>
+          <th [width]="'100px'" *ngIf="mostrarSubTipo">SubTipo Operación</th>
+          <th [width]="'250px'">Tipo Concepto</th>
+          <th>Concepto</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of asignaciones" class="cursor-pointer" [ngClass]="{'row-edicion': item.editado}">
+          <td *ngIf="mostrarSubTipo"><p>{{onTipoRelacion(item.idTipoRelacion_1)}}</p></td>
+          <td><p>{{onTipoConcepto(item.idTipoRelacion_2)}}</p></td>
+          <td>
+            <ng-select appendTo="body" [clearable]="false" [items]="concepto"
+                       bindLabel="descripcion" [(ngModel)]="item.idColumna_2"
+                       [ngModelOptions]="{standalone: true }"
+                       (ngModelChange)="onEdicion(item)"
+                       placeholder="Tipo Afectación" bindValue="idColumna">
+            </ng-select>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

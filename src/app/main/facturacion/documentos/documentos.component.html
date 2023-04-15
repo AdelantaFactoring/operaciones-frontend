@@ -117,51 +117,51 @@
                 </ng-select>
               </div>
             </div>
-<!--            <div class="col-12">-->
-<!--              <div class="divider divider-secondary">-->
-<!--                <div class="divider-text"><span [data-feather]="'chevrons-down'"></span> (Solo para Exportación)</div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-12" *ngIf="mostrarFiltroExportacion">-->
-<!--              <div class="form-group">-->
-<!--                <div class="text-warning">-->
-<!--                  <i class="mr-0 mr-sm-1" data-feather="alert-circle"></i> Se está utilizando este rango de fechas,-->
-<!--                  basado en el campo "Fecha Creación"-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-4 col-12">-->
-<!--              <div class="form-group">-->
-<!--                <label>Desde</label>-->
-<!--                <div class="input-group">-->
-<!--                  <input #desdeFC class="form-control" placeholder="yyyy-mm-dd"-->
-<!--                         [ngClass]="{ 'warning': mostrarFiltroExportacion }"-->
-<!--                         formControlName="desdeFC" container="body"-->
-<!--                         ngbDatepicker #basicDPDes="ngbDatepicker">-->
-<!--                  <div class="input-group-append">-->
-<!--                    <button class="btn btn-outline-secondary feather icon-calendar"-->
-<!--                            (click)="basicDPDes.toggle()"-->
-<!--                            type="button" rippleEffect></button>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-4 col-12">-->
-<!--              <div class="form-group">-->
-<!--                <label>Hasta</label>-->
-<!--                <div class="input-group">-->
-<!--                  <input class="form-control" placeholder="yyyy-mm-dd"-->
-<!--                         [ngClass]="{ 'warning': mostrarFiltroExportacion }"-->
-<!--                         formControlName="hastaFC" container="body"-->
-<!--                         ngbDatepicker #basicDPHas="ngbDatepicker">-->
-<!--                  <div class="input-group-append">-->
-<!--                    <button class="btn btn-outline-secondary feather icon-calendar"-->
-<!--                            (click)="basicDPHas.toggle()"-->
-<!--                            type="button" rippleEffect></button>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
+            <!--            <div class="col-12">-->
+            <!--              <div class="divider divider-secondary">-->
+            <!--                <div class="divider-text"><span [data-feather]="'chevrons-down'"></span> (Solo para Exportación)</div>-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--            <div class="col-12" *ngIf="mostrarFiltroExportacion">-->
+            <!--              <div class="form-group">-->
+            <!--                <div class="text-warning">-->
+            <!--                  <i class="mr-0 mr-sm-1" data-feather="alert-circle"></i> Se está utilizando este rango de fechas,-->
+            <!--                  basado en el campo "Fecha Creación"-->
+            <!--                </div>-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--            <div class="col-md-4 col-12">-->
+            <!--              <div class="form-group">-->
+            <!--                <label>Desde</label>-->
+            <!--                <div class="input-group">-->
+            <!--                  <input #desdeFC class="form-control" placeholder="yyyy-mm-dd"-->
+            <!--                         [ngClass]="{ 'warning': mostrarFiltroExportacion }"-->
+            <!--                         formControlName="desdeFC" container="body"-->
+            <!--                         ngbDatepicker #basicDPDes="ngbDatepicker">-->
+            <!--                  <div class="input-group-append">-->
+            <!--                    <button class="btn btn-outline-secondary feather icon-calendar"-->
+            <!--                            (click)="basicDPDes.toggle()"-->
+            <!--                            type="button" rippleEffect></button>-->
+            <!--                  </div>-->
+            <!--                </div>-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--            <div class="col-md-4 col-12">-->
+            <!--              <div class="form-group">-->
+            <!--                <label>Hasta</label>-->
+            <!--                <div class="input-group">-->
+            <!--                  <input class="form-control" placeholder="yyyy-mm-dd"-->
+            <!--                         [ngClass]="{ 'warning': mostrarFiltroExportacion }"-->
+            <!--                         formControlName="hastaFC" container="body"-->
+            <!--                         ngbDatepicker #basicDPHas="ngbDatepicker">-->
+            <!--                  <div class="input-group-append">-->
+            <!--                    <button class="btn btn-outline-secondary feather icon-calendar"-->
+            <!--                            (click)="basicDPHas.toggle()"-->
+            <!--                            type="button" rippleEffect></button>-->
+            <!--                  </div>-->
+            <!--                </div>-->
+            <!--              </div>-->
+            <!--            </div>-->
           </div>
         </form>
       </div>
@@ -176,10 +176,18 @@
                 <span class="d-none d-sm-inline-block">Refrescar</span>
               </button>
             </div>
-            <div class="pt-1 pb-1">
+            <div class="pt-1 pb-1 pr-1">
               <button type="submit" rippleEffect class="btn btn-primary" (click)="onNuevo(modalINFO)">
                 <i class="mr-0 mr-sm-1" data-feather="plus"></i>
                 <span class="d-none d-sm-inline-block">Nuevo</span>
+              </button>
+            </div>
+            <div class="pt-1 pb-1">
+              <button type="submit" rippleEffect class="btn btn-warning"
+                      (click)="onDeclaracionMultiple(modalDECLARACION)">
+                <i class="mr-0 mr-sm-1" data-feather="check-square"></i>
+                <span class="d-none d-sm-inline-block mr-1">Declaración Múltiple</span>
+                <span class="badge badge-pill badge-danger">{{documentosPendientes.length}}</span>
               </button>
             </div>
           </div>
@@ -259,7 +267,7 @@
                 </thead>
                 <tbody>
                 <ng-template let-cab ngFor [ngForOf]="documentos">
-                  <tr>
+                  <tr [ngClass]="{'added': cab.added }">
                     <td>
                       <div class="d-flex align-items-center">
                         <a href="javascript:void(0)" title="Ocultar / Mostrar"
@@ -306,13 +314,21 @@
                                class="d-flex align-items-center">
                               <i class="text-warning cursor-pointer mr-50" data-feather="send"></i>Declarar
                             </a>
+                            <a ngbDropdownItem href="javascript:void(0)" title="Agregar a declaración múltiple"
+                               (click)="onAgregarDeclaracionMasiva(cab)"
+                               [class.disabled]="cab.idEstado != 1 ? true : null"
+                               class="d-flex align-items-center">
+                              <i class="text-warning cursor-pointer mr-50" data-feather="shopping-cart"></i>Agregar a
+                              Declaración Múltiple
+                            </a>
                             <a ngbDropdownItem href="javascript:void(0)" title="Consultar y Actualizar el estado"
                                (click)="onConsultarEstado(cab)" [class.disabled]="cab.nroDocumento === '' ? true : null"
                                class="d-flex align-items-center">
                               <i class="text-info fa fa-search mr-50"></i> Actualizar Estado
                             </a>
                             <a ngbDropdownItem href="javascript:void(0)" title="Anular"
-                               (click)="onAnulacion(cab, modalANULACION)" [class.disabled]="cab.idEstado != 3 ? true : null"
+                               (click)="onAnulacion(cab, modalANULACION)"
+                               [class.disabled]="cab.idEstado != 3 ? true : null"
                                class="d-flex align-items-center">
                               <i class="text-danger mr-50" data-feather="slash"></i> Anular
                             </a>
@@ -398,7 +414,8 @@
         <div class="row">
           <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
             <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onListarDocumentos()"
-                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize" [ellipses]="false">
+                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize"
+                            [ellipses]="false">
               <ng-template ngbPaginationFirst>
                 <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
               </ng-template>
@@ -422,7 +439,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body" ngbAutofocus tabindex="0" >
+          <div class="modal-body" ngbAutofocus tabindex="0">
             <form [formGroup]="documentoForm">
               <div class="row spaced">
                 <div class="col-12">
@@ -482,8 +499,8 @@
                   <div class="form-group">
                     <label for="motivo">Motivo</label>
                     <textarea id="motivo" class="form-control" type="text" [ngModelOptions]="{ standalone: true }"
-                           [(ngModel)]="motivo" [readonly]="idEstado != 1 ? true : null" maxlength="200" rows="3"
-                           [ngClass]="{ 'is-invalid': submitted && idTipoDocumento != 1 && motivo === '' }"></textarea>
+                              [(ngModel)]="motivo" [readonly]="idEstado != 1 ? true : null" maxlength="200" rows="3"
+                              [ngClass]="{ 'is-invalid': submitted && idTipoDocumento != 1 && motivo === '' }"></textarea>
                     <div *ngIf="submitted && idTipoDocumento != 1 && motivo === ''" class="invalid-feedback">
                       <div *ngIf="motivo === ''">* Campo obligatorio</div>
                     </div>
@@ -560,12 +577,12 @@
                              (ngModelChange)="onCambioCorrelativo($event)"
                              [readOnly]="true"
                              [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.correlativo.errors }"/>
-<!--                      <div *ngIf="ver" class="input-group-append">-->
-<!--                        <button class="btn btn-outline-secondary feather icon-refresh-cw" *ngIf="idTipoDocumento != 0"-->
-<!--                                [disabled]="ReactiveIUForm.idLiquidacionDocumentoCab.value > 0 ? true : null"-->
-<!--                                type="button" rippleEffect (click)="onRefrescarCorrelativo(idTipoDocumento)">-->
-<!--                        </button>-->
-<!--                      </div>-->
+                      <!--                      <div *ngIf="ver" class="input-group-append">-->
+                      <!--                        <button class="btn btn-outline-secondary feather icon-refresh-cw" *ngIf="idTipoDocumento != 0"-->
+                      <!--                                [disabled]="ReactiveIUForm.idLiquidacionDocumentoCab.value > 0 ? true : null"-->
+                      <!--                                type="button" rippleEffect (click)="onRefrescarCorrelativo(idTipoDocumento)">-->
+                      <!--                        </button>-->
+                      <!--                      </div>-->
                       <div *ngIf="ReactiveIUForm.correlativo.errors" class="invalid-feedback">
                         <div *ngIf="ReactiveIUForm.correlativo.errors?.required">* Campo obligatorio</div>
                         <div *ngIf="ReactiveIUForm.correlativo.errors?.min">* Valor mínimo requerido es 1</div>
@@ -655,7 +672,7 @@
                     <ng-select appendTo="body" [clearable]="false" [items]="moneda" bindLabel="descripcion"
                                [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.moneda.errors }"
                                placeholder="Moneda" bindValue="idColumna" formControlName="moneda"
-                              (ngModelChange)="onCambioMoneda($event)">
+                               (ngModelChange)="onCambioMoneda($event)">
                     </ng-select>
                     <div *ngIf="ReactiveIUForm.moneda.errors" class="invalid-feedback">
                       <div *ngIf="ReactiveIUForm.moneda.errors?.required">* Campo obligatorio</div>
@@ -750,7 +767,7 @@
                            [(ngModel)]="montoDetraccion"
                            [disabled]="true" mask="separator" thousandSeparator=","
                            [ngClass]="{ 'is-invalid': submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && montoDetraccion <= 0 }"
-                          (ngModelChange)="onCalcularMonto()"/>
+                           (ngModelChange)="onCalcularMonto()"/>
                     <div
                       *ngIf="submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && montoDetraccion <= 0"
                       class="invalid-feedback">
@@ -774,26 +791,31 @@
                 <div class="col-md-6 col-12" *ngIf="onDetracciones(idTipoOperacion)">
                   <div class="form-group">
                     <label>Medio de Pago</label>
-                    <div [ngClass]="{ 'is-invalid': submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && idMedioPagoDetraccion === 0 }">
-                    <ng-select appendTo="body" [clearable]="false" [items]="medioPagoSunat" bindLabel="descripcion"
-                               bindValue="idColumna" placeholder="Bien o Servicio" [readonly]="idEstado != 1 ? true : null"
-                               [ngModelOptions]="{ standalone: true }"  [(ngModel)]="idMedioPagoDetraccion">
-                    </ng-select>
+                    <div
+                      [ngClass]="{ 'is-invalid': submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && idMedioPagoDetraccion === 0 }">
+                      <ng-select appendTo="body" [clearable]="false" [items]="medioPagoSunat" bindLabel="descripcion"
+                                 bindValue="idColumna" placeholder="Bien o Servicio"
+                                 [readonly]="idEstado != 1 ? true : null"
+                                 [ngModelOptions]="{ standalone: true }" [(ngModel)]="idMedioPagoDetraccion">
+                      </ng-select>
                     </div>
-                    <div *ngIf="submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && idMedioPagoDetraccion === 0"
-                         class="invalid-feedback">
+                    <div
+                      *ngIf="submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion) && idMedioPagoDetraccion === 0"
+                      class="invalid-feedback">
                       <div *ngIf="idMedioPagoDetraccion === 0">* Campo obligatorio</div>
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6 col-12" *ngIf="onDetracciones(idTipoOperacion) && this.ReactiveIUForm.moneda.value > 1">
+                <div class="col-md-6 col-12"
+                     *ngIf="onDetracciones(idTipoOperacion) && this.ReactiveIUForm.moneda.value > 1">
                   <div class="form-group">
                     <label>Tipo de Cambio (SOLES)</label>
                     <input class="form-control" type="text" [ngModelOptions]="{ standalone: true }"
                            [(ngModel)]="tipoCambioMoneda"
                            [readonly]="idEstado != 1 ? true : null" mask="separator" thousandSeparator=","
                            [ngClass]="{ 'is-invalid': submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion)
-                            && this.ReactiveIUForm.moneda.value > 1 && tipoCambioMoneda <= 0 }" (ngModelChange)="onCalcularMonto()"/>
+                            && this.ReactiveIUForm.moneda.value > 1 && tipoCambioMoneda <= 0 }"
+                           (ngModelChange)="onCalcularMonto()"/>
                     <div *ngIf="submitted && idTipoDocumento === 1 && onDetracciones(idTipoOperacion)
                       && this.ReactiveIUForm.moneda.value > 1 && tipoCambioMoneda <= 0" class="invalid-feedback">
                       <div *ngIf="tipoCambioMoneda <= 0">* El valor debe ser mayor a cero</div>
@@ -982,12 +1004,12 @@
                           </td>
                           <td [ngClass]="{'row-edicion': item.editado}">
                             <p [ngClass]="{ 'eliminado': !item.estado }">{{item.total | number:'1.2-2'}}</p>
-<!--                            <p [ngClass]="{ 'eliminado': !item.estado }"-->
-<!--                               *ngIf="!item.edicion">{{item.montoTotal | number: '1.2-2'}}</p>-->
-<!--                            <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Monto Total"-->
-<!--                                   [(ngModel)]="item.montoTotal" mask="separator" thousandSeparator=","-->
-<!--                                   [disabled]="true"-->
-<!--                                   [ngModelOptions]="{standalone: true}"/>-->
+                            <!--                            <p [ngClass]="{ 'eliminado': !item.estado }"-->
+                            <!--                               *ngIf="!item.edicion">{{item.montoTotal | number: '1.2-2'}}</p>-->
+                            <!--                            <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Monto Total"-->
+                            <!--                                   [(ngModel)]="item.montoTotal" mask="separator" thousandSeparator=","-->
+                            <!--                                   [disabled]="true"-->
+                            <!--                                   [ngModelOptions]="{standalone: true}"/>-->
                           </td>
                           <td [ngClass]="{'row-edicion': item.editado}">
                             <p [ngClass]="{ 'eliminado': !item.estado }"
@@ -1069,7 +1091,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body" ngbAutofocus tabindex="0" >
+          <div class="modal-body" ngbAutofocus tabindex="0">
             <div class="table-responsive" style="max-height: 300px;">
               <table class="table table-hover">
                 <thead>
@@ -1107,7 +1129,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body" ngbAutofocus tabindex="0" >
+          <div class="modal-body" ngbAutofocus tabindex="0">
             <div class="row">
               <div class="col-md-12 col-12">
                 <div class="form-group">
@@ -1145,8 +1167,10 @@
             </div>
             <div class="row">
               <div class="col-12 col-md-12 d-flex justify-content-end">
-                <ngb-pagination [collectionSize]="collectionSizeCli" [(page)]="pageCli" (pageChange)="onListarClientePagador()"
-                                [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSizeCli" [ellipses]="false">
+                <ngb-pagination [collectionSize]="collectionSizeCli" [(page)]="pageCli"
+                                (pageChange)="onListarClientePagador()"
+                                [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSizeCli"
+                                [ellipses]="false">
                   <ng-template ngbPaginationFirst>
                     <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
                   </ng-template>
@@ -1168,6 +1192,91 @@
               <div class="col-md-12 col-12">
                 <div style="float: right">
                   <button class="btn btn-secondary" rippleEffect type="button" (click)="modal.dismiss('Cross click')">
+                    <span [data-feather]="'x-circle'"></span> Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template #modalDECLARACION let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Declaración Múltiple</h4>
+            <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="centerall-header">
+                    <tr>
+                      <th [rowSpan]="2">Acción</th>
+                      <th [rowSpan]="2">N° Liquidación</th>
+                      <th [rowSpan]="2">Tipo Documento</th>
+                      <th [rowSpan]="2">Cliente</th>
+                      <th [rowSpan]="2">Fecha Emisión</th>
+                      <th [rowSpan]="2">Monto Total</th>
+                      <th [colSpan]="2">Declaración</th>
+                    </tr>
+                    <tr>
+                      <th>Estado Actual</th>
+                      <th>Mensaje Retornado</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of documentosPendientes" class="cursor-pointer" [ngClass]="{'ok': item.ok}">
+                      <td>
+                        <a href="javascript:void(0)" title="Limpiar" (click)="onLimpiar(item)"
+                           class="btn btn-raised btn-outline-info btn-sm">
+                          <i class="text-info cursor-pointer" data-feather="trash-2"></i>
+                        </a>
+                      </td>
+                      <td>{{item.codigo}}</td>
+                      <td>{{item.tipoDocumento}}</td>
+                      <td>{{'(' + item.rucCliente + ') ' + item.razonSocialCliente}}</td>
+                      <td>{{item.fechaEmisionFormat}}</td>
+                      <td>{{item.montoTotal}}</td>
+                      <td id="colState">
+                        <div *ngIf="item.estadoActual === 0"><span class="mr-0 mr-sm-1 "
+                                                                   data-feather="alert-octagon"></span></div>
+                        <div *ngIf="item.estadoActual === 1 || item.estadoActual === 2"><span
+                          class="spinner-border spinner-border-sm mr-1"></span></div>
+                        <div *ngIf="item.estadoActual === 3"><span class="mr-0 mr-sm-1 "
+                                                                   data-feather="stop-circle"></span></div>
+                        {{ onEstado(item.estadoActual) }}
+                      </td>
+                      <td>{{item.mensajeRetorno}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div style="float: right">
+                  <button class="btn btn-info" rippleEffect type="button" (click)="onLimpiarDeclaracion()">
+                    <span [data-feather]="'trash-2'"></span> Limpiar
+                  </button>
+                  &nbsp;
+                  <button id="declare" [disabled]="disabledDeclarar || declaracionEfectuada" class="btn btn-warning" rippleEffect type="button"
+                          (click)="onDeclararMultiple()">
+                    <div *ngIf="disabledDeclarar">
+                      <span class="spinner-border spinner-border-sm mr-1"></span>
+                    </div>
+                    <div *ngIf="!disabledDeclarar">
+                      <span [data-feather]="'send'"></span>
+                    </div>
+                    Declarar
+                  </button>
+                  &nbsp;
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelarDeclaracion(modal)">
                     <span [data-feather]="'x-circle'"></span> Cerrar
                   </button>
                 </div>

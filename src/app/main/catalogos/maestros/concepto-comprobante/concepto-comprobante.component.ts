@@ -7,6 +7,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import Swal from "sweetalert2";
 import {TablaMaestraRelacion} from 'app/shared/models/shared/tabla-maestra-relacion';
 import {User} from "../../../../shared/models/auth/user";
+import {ContentHeader} from "../../../../layout/components/content-header/content-header.component";
 
 @Component({
   selector: 'app-concepto-comprobante',
@@ -15,7 +16,7 @@ import {User} from "../../../../shared/models/auth/user";
 })
 export class ConceptoComprobanteComponent implements OnInit {
   public currentUser: User;
-  public contentHeader: any;
+  public contentHeader: ContentHeader;
   public tablaMaestra: TablaMaestra[];
   public tipoAfectacion: TablaMaestra[];
 
@@ -104,9 +105,10 @@ export class ConceptoComprobanteComponent implements OnInit {
         idTabla2: 22
       }).then((response: TablaMaestraRelacion[]) => {
         for (let el of this.tablaMaestra) {
-          let rel = response.find(f => f.idColumna_1 === el.idColumna);
-          el.idTipoAfectacion = rel != null ? rel.idColumna_2 : 0;
-          el.tipoAfectacion = rel != null ? rel.valor_2 + ' - ' + rel.descripcion_2 : '';
+          const rel = response.find(f => f.idColumna_1 === el.idColumna);
+          el.idTablaMaestraRelacion = rel != null ? rel.idTablaMaestraRelacion : 0;
+          el.idColumna2 = rel != null ? rel.idColumna_2 : 0;
+          el.descripcion2 = rel != null ? rel.valor_2 + ' - ' + rel.descripcion_2 : '';
         }
       }).catch(error => []);
 
@@ -127,8 +129,9 @@ export class ConceptoComprobanteComponent implements OnInit {
       valor: this.maestroForm.controls.valor.value,
       descripcion: this.maestroForm.controls.descripcion.value,
       totalRows: 0,
-      tipoAfectacion: '',
-      idTipoAfectacion: 0,
+      descripcion2: '',
+      idColumna2: 0,
+      idTablaMaestraRelacion: 0,
       edicion: false,
       editado: false,
       idFila: this.utilsService.autoIncrement(this.tablaMaestra),
@@ -154,8 +157,8 @@ export class ConceptoComprobanteComponent implements OnInit {
 
   onCancelar(item: TablaMaestra): void {
     if (item.asignar) {
-      item.idTipoAfectacion = this.oldMaestro.idTipoAfectacion;
-      item.tipoAfectacion = this.oldMaestro.tipoAfectacion;
+      item.idColumna2 = this.oldMaestro.idColumna2;
+      item.descripcion2 = this.oldMaestro.descripcion2;
       item.asignar = false;
     } else {
       item.valor = this.oldMaestro.valor;
@@ -209,10 +212,11 @@ export class ConceptoComprobanteComponent implements OnInit {
 
   async onConfirmarCambio(item: TablaMaestra): Promise<void> {
     if (item.asignar) {
-      if (item.idTipoAfectacion === 0) return;
+      if (item.idColumna2 === 0) return;
       if (await this.onGuardarRelacion(item)) {
-        item.tipoAfectacion = this.tipoAfectacion.find(f => f.idColumna === item.idTipoAfectacion).descripcion;
-        item.asignar = false;
+        //item.descripcion2 = this.tipoAfectacion.find(f => f.idColumna === item.idColumna2).descripcion;
+        //item.asignar = false;
+        await this.onListar();
       }
     } else {
       if (this.onInvalido(item)) return;
@@ -243,10 +247,13 @@ export class ConceptoComprobanteComponent implements OnInit {
   private async onGuardarRelacion(item: TablaMaestra): Promise<boolean> {
     this.utilsService.blockUIStart("Guardando...");
     let response = await this.maestrosService.guardarRelacionAsync({
+      idTablaMaestraRelacion: item.idTablaMaestraRelacion,
       idTabla_1: this.idTabla,
       idColumna_1: item.idColumna,
       idTabla_2: 22,
-      idColumna_2: item.idTipoAfectacion,
+      idColumna_2: item.idColumna2,
+      idTipoRelacion_1: 0,
+      idTipoRelacion_2: 0,
       idUsuarioAud: this.currentUser.idUsuario
     }).then((response: any) => response, error => null)
       .catch(error => null);

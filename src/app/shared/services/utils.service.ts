@@ -214,12 +214,13 @@ export class UtilsService {
       valor: '',
       descripcion: '(Todos)',
       totalRows: 0,
-      idTipoAfectacion: 0,
+      idColumna2: 0,
       edicion: false,
       editado: false,
       idFila: 0,
       asignar: false,
-      tipoAfectacion: ''
+      descripcion2: '',
+      idTablaMaestraRelacion: 0
     });
 
     // @ts-ignore

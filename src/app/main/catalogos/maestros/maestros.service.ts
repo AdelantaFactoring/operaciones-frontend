@@ -68,7 +68,7 @@ export class MaestrosService {
       {
         'Content-Type': CONTENT_TYPE.json
       }
-    )
+    );
   }
 
   eliminar(payload): Observable<any> {

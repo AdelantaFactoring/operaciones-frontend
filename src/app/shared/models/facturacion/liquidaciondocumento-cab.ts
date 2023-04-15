@@ -64,4 +64,10 @@ export class LiquidacionDocumentoCab {
   correoClienteContacto: string;
 
   motivoAnulacion: string;
+
+  ok: boolean;
+  estadoActual: number = 1;
+  mensajeRetorno: string;
+
+  added: boolean;
 }

@@ -24,6 +24,10 @@ export class RequestMethod {
     return this.http.post(url, body, {headers: new HttpHeaders(headers)});
   }
 
+  async postAsync(url: string, body: string, headers: any): Promise<any> {
+    return await this.http.post<any>(url, body, {headers: new HttpHeaders(headers)}).toPromise();
+  }
+
   delete(url: string, params: string, headers: any): Observable<any> {
     return this.http.delete(url + ((params) ? params : ''), {headers: new HttpHeaders(headers)});
   }
