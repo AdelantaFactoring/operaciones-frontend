@@ -736,6 +736,7 @@ export class DocumentosComponent implements OnInit {
   onConsultarEstado(cab: LiquidacionDocumentoCab): void {
     this.utilsService.blockUIStart("Actualizando Estado...");
     cab.idEmpresa = this.currentUser.idEmpresa;
+    cab.idUsuarioAud = this.currentUser.idUsuario;
     this.documentosService.consultarEstado(cab).subscribe((response: any) => {
       switch (response.tipo) {
         case 1:
