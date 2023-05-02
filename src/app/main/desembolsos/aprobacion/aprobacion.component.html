@@ -198,6 +198,7 @@
                   <th rowspan="2">N° Liquidación</th>
                   <th rowspan="2">N° Solicitud</th>
                   <th rowspan="2">Fecha operación</th>
+                  <th rowspan="2">Fecha aprobación</th>
                   <th rowspan="2">Cliente</th>
                   <th rowspan="2">Cliente RUC</th>
                   <th rowspan="2">Pagador / Proveedor</th>
@@ -280,6 +281,7 @@
                       </div>
                     </td>
                     <td>{{cab.fechaOperacion_Global_ORG}}</td>
+                    <td>{{cab.fechaAprobacion}}</td>
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
                     <td>{{cab.razonSocialPagProv}}</td>
@@ -295,7 +297,7 @@
                     <td>{{cab.fechaModificacion}}</td>
                   </tr>
                   <tr id="{{ 'tr' + cab.idLiquidacionCab }}" style="visibility: collapse">
-                    <td [colSpan]="19">
+                    <td [colSpan]="20">
                       <div class="table-responsive"
                            style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
                            id="{{ 'detail' + cab.idLiquidacionCab }}">

@@ -1,0 +1,174 @@
+<div class="content-wrapper">
+  <div class="content-body">
+    <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <core-card #coreCard [actions]="['collapse', 'reload']" (events)="onLimpiarFiltro($event)">
+      <div class="card-title">Buscar por <small><i>(click aquí para expandir)</i></small></div>
+      <div class="card-body">
+        <form [formGroup]="filtroForm">
+          <div class="row">
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Módulo o Sub-Módulo</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="tablas" bindLabel="descripcion"
+                           placeholder="Módulo o Sub-Módulo" bindValue="idColumna" formControlName="tabla"
+                           (ngModelChange)="onListar()">
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Desde (F.H.)</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         formControlName="desde" container="body"
+                         ngbDatepicker #basicDP_FHD="ngbDatepicker" (ngModelChange)="onListar()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDP_FHD.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Hasta (F.H.)</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         formControlName="hasta" container="body"
+                         ngbDatepicker #basicDP_FHH="ngbDatepicker" (ngModelChange)="onListar()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDP_FHH.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-8 col-12">
+              <div class="form-group">
+                <label>Usuario</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="usuarios" bindLabel="nombreCompleto"
+                           placeholder="Usuario" bindValue="idUsuario" formControlName="usuario"
+                           (ngModelChange)="onListar()">
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Acción</label>
+                <ng-select appendTo="body" [clearable]="false" [items]="accion" bindLabel="descripcion"
+                           placeholder="Acción" bindValue="idColumna" formControlName="accion"
+                           (ngModelChange)="onListar()">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </core-card>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="d-flex flex-wrap mb-0">
+            <div class="p-1">
+              <button type="submit" rippleEffect class="btn btn-secondary" (click)="onListar()">
+                <i class="mr-0 mr-sm-1" data-feather="refresh-cw"></i>
+                <span class="d-none d-sm-inline-block">Refrescar</span>
+              </button>
+            </div>
+            <div class="pt-1 pb-1">
+              <button type="submit" rippleEffect class="btn btn-success"
+                      (click)="onExportar()">
+                <i class="mr-0 mr-sm-1" data-feather="download"></i>
+                <span class="d-none d-sm-inline-block">Exportar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label class="d-flex align-items-center"
+              >Mostrar
+                <select class="form-control mx-25" [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }"
+                        (change)="onListar()">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                filas</label
+              >
+            </div>
+          </div>
+          <div class="col-md-6 col-12 d-flex justify-content-md-end">
+            <div class="d-flex align-items-center justify-content-end mb-1">
+              <label class="d-flex align-items-center"
+              >Buscar<input
+                type="search"
+                placeholder="Buscar"
+                class="form-control ml-25"
+                [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" (change)="onListar()"
+              /></label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table table-hover min-width-table">
+                <thead class="centerall-header">
+                <tr>
+                  <th>Módulo o Sub-Módulo</th>
+                  <th>Fecha y Hora</th>
+                  <th>Usuario</th>
+                  <th>Acción</th>
+                  <th>PK</th>
+                  <th>Campo</th>
+                  <th>Valor Anterior</th>
+                  <th>Valor Actual</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of auditoria">
+                  <td>{{item.tabla}}</td>
+                  <td>{{item.fechaHora}}</td>
+                  <td>{{item.usuario }}</td>
+                  <td>{{item.accion}}</td>
+                  <td>{{item.pk}}</td>
+                  <td>{{item.columna}}</td>
+                  <td>{{item.valorAntiguo}}</td>
+                  <td>{{item.valorNuevo}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
+            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onListar()"
+                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize"
+                            [ellipses]="false">
+              <ng-template ngbPaginationFirst>
+                <span [data-feather]="'chevrons-left'" [size]="'18'" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationPrevious>
+                <span [data-feather]="'chevron-left'" [size]="'18'" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationNext>
+                <span [data-feather]="'chevron-right'" [size]="'18'" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+              <ng-template ngbPaginationLast>
+                <span [data-feather]="'chevrons-right'" [size]="'18'" [class]="'font-weight-bolder'"></span>
+              </ng-template>
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+
+      <block-ui></block-ui>
+    </div>
+  </div>
+</div>

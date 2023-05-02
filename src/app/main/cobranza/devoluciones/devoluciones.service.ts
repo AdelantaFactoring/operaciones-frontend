@@ -21,7 +21,10 @@ export class DevolucionesService {
   listar(payload): Observable<any> {
     return this.requestMethod.get(
       `${environment.apiUrl}${DEVOLUCIONES.listar}`,
-      `?search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
+      `?search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}&codigoLiquidacion=${payload.codigoLiquidacion}` +
+      `&codigoSolicitud=${payload.codigoSolicitud}&idTipoOperacion=${payload.idTipoOperacion}&cliente=${payload.cliente}&moneda=${payload.moneda}` +
+      `&fechaDesembolsoDesde=${payload.fechaDesembolsoDesde}&fechaDesembolsoHasta=${payload.fechaDesembolsoHasta}&nroDocumento=${payload.nroDocumento}` +
+      `&monto=${payload.monto}&idsEstados=${payload.idsEstados}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }
@@ -56,6 +59,16 @@ export class DevolucionesService {
     return this.requestMethod.post(
       `${environment.apiUrl}${DEVOLUCIONES.enviarCorreo}`,
       payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  eliminar(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${DEVOLUCIONES.eliminar}`,
+      `?idLiquidacionDevolucion=${payload.idLiquidacionDevolucion}&idUsuarioAud=${payload.idUsuarioAud}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

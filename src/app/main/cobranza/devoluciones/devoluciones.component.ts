@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {LiquidacionDevolucion} from "../../../shared/models/cobranza/liquidacion-devolucion";
 import {UtilsService} from "../../../shared/services/utils.service";
 import {DevolucionesService} from "./devoluciones.service";
@@ -11,19 +11,21 @@ import {LiquidacionDevolucionSustento} from "../../../shared/models/cobranza/liq
 import Swal from "sweetalert2";
 import {ClienteCuenta} from "../../../shared/models/comercial/cliente-cuenta";
 import {ClientesService} from "../../comercial/clientes/clientes.service";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbCalendar, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import * as fileSaver from 'file-saver';
 import {User} from "../../../shared/models/auth/user";
+import {ContentHeader} from "../../../layout/components/content-header/content-header.component";
 
 @Component({
   selector: 'app-devoluciones',
   templateUrl: './devoluciones.component.html',
   styleUrls: ['./devoluciones.component.scss']
 })
-export class DevolucionesComponent implements OnInit {
+export class DevolucionesComponent implements OnInit, AfterViewInit {
+  @ViewChild('coreCard') coreCard;
   public currentUser: User;
   public submitted: boolean = false;
-  public contentHeader: object;
+  public contentHeader: ContentHeader;
   public devoluciones: LiquidacionDevolucion[] = [];
   public sustentos: LiquidacionDevolucionSustento[] = [];
   public sustentosOld: LiquidacionDevolucionSustento[] = [];
@@ -31,6 +33,8 @@ export class DevolucionesComponent implements OnInit {
   public cuentas: ClienteCuenta[] = [];
   public seleccionarTodo: boolean = false;
   public devolucionForm: FormGroup;
+  public filtroForm: FormGroup;
+  private oldFiltroForm: FormGroup;
   public ver: boolean = false;
   public hasBaseDropZoneOver: boolean = false;
   public archivosSustento: FileUploader = new FileUploader({
@@ -48,6 +52,10 @@ export class DevolucionesComponent implements OnInit {
   public pageSize: number = 10;
   public page: number = 1;
   public activeId: any = 2;
+  public currency: TablaMaestra[] = [];
+  public operationType: TablaMaestra[] = [];
+  public state: TablaMaestra[] = [];
+  private clearingForm: boolean = false;
 
   get ReactiveIUForm(): any {
     return this.devolucionForm.controls;
@@ -58,7 +66,8 @@ export class DevolucionesComponent implements OnInit {
               private devolucionesService: DevolucionesService,
               private modalService: NgbModal,
               private clienteService: ClientesService,
-              private tablaMaestraService: TablaMaestraService) {
+              private tablaMaestraService: TablaMaestraService,
+              private calendar: NgbCalendar) {
     this.contentHeader = {
       headerTitle: 'Devoluciones',
       actionButton: true,
@@ -93,6 +102,8 @@ export class DevolucionesComponent implements OnInit {
       tipoOperacion: [{value: '', disabled: true}],
       nroDocumento: [{value: '', disabled: true}],
       monto: [{value: 0, disabled: true}],
+      descuento: [0],
+      montoTotal: [{value: 0, disabled: true}],
       tipoCambioMoneda: [{value: 0, disabled: false}],
       montoConversion: [{value: 0, disabled: true}],
       fechaDesembolso: [{value: null}],
@@ -101,16 +112,41 @@ export class DevolucionesComponent implements OnInit {
       bancoDestino: [''],
       nroCuentaBancariaDestino: [''],
       cciDestino: [''],
-      tipoCuentaBancariaDestino: ['']
+      tipoCuentaBancariaDestino: [''],
+      observacion: [''],
     });
+
+    this.filtroForm = this.formBuilder.group({
+      codigoLiquidacion: [''],
+      codigoSolicitud: [''],
+      tipoOperacion: [0],
+      cliente: [''],
+      moneda: [''],
+      fechaDesembolsoDesde: [null],
+      fechaDesembolsoHasta: [null],
+      nroDocumento: [''],
+      monto: [0],
+      estados: [[new TablaMaestra({idColumna: 1, descripcion: 'Pendiente'})]]
+    });
+    this.oldFiltroForm = this.filtroForm.value;
   }
 
   async ngOnInit(): Promise<void> {
     this.currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     this.utilsService.blockUIStart("Obteniendo información de maestros...");
     this.tiposArchivos = await this.onListarMaestros(11, 0);
+    this.currency = this.utilsService.agregarTodos(1, await this.onListarMaestros(1, 0));
+    this.operationType = this.utilsService.agregarTodos(4, await this.onListarMaestros(4, 0));
+    this.state = await this.onListarMaestros(10, 0);
     this.utilsService.blockUIStop();
     this.onListarDevolucion();
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.coreCard.collapse();
+      this.coreCard.onclickEvent.collapseStatus = true;
+    }, 0);
   }
 
   async onListarMaestros(idTabla: number, idColumna: number): Promise<TablaMaestra[]> {
@@ -126,7 +162,17 @@ export class DevolucionesComponent implements OnInit {
     this.devolucionesService.listar({
       search: this.search,
       pageIndex: this.page,
-      pageSize: this.pageSize
+      pageSize: this.pageSize,
+      codigoLiquidacion: this.filtroForm.get("codigoLiquidacion").value,
+      codigoSolicitud: this.filtroForm.get("codigoSolicitud").value,
+      idTipoOperacion: Number(this.filtroForm.get("tipoOperacion").value),
+      cliente: this.filtroForm.get("cliente").value,
+      moneda: this.filtroForm.get("moneda").value,
+      fechaDesembolsoDesde: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.get("fechaDesembolsoDesde").value) ?? "",
+      fechaDesembolsoHasta: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.get("fechaDesembolsoHasta").value) ?? "",
+      nroDocumento: this.filtroForm.get("nroDocumento").value,
+      monto: Number(this.filtroForm.get("monto").value),
+      idsEstados: this.filtroForm.get("estados").value.map(m => String(m.idColumna)).join(',')
     }).subscribe((response: LiquidacionDevolucion[]) => {
       this.devoluciones = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
@@ -159,9 +205,9 @@ export class DevolucionesComponent implements OnInit {
   onConvertirMontoTotal(): void {
     if (this.codigoMonedaCab != this.codigoMonedaDet) {
       if (this.codigoMonedaCab == "PEN") {
-        this.devolucionForm.controls.montoConversion.setValue(Math.round((this.devolucionForm.controls.monto.value / this.tipoCambioMoneda) * 100) / 100);
+        this.devolucionForm.controls.montoConversion.setValue(Math.round((this.devolucionForm.controls.montoTotal.value / this.tipoCambioMoneda) * 100) / 100);
       } else {
-        this.devolucionForm.controls.montoConversion.setValue(Math.round((this.devolucionForm.controls.monto.value * this.tipoCambioMoneda) * 100) / 100);
+        this.devolucionForm.controls.montoConversion.setValue(Math.round((this.devolucionForm.controls.montoTotal.value * this.tipoCambioMoneda) * 100) / 100);
       }
     }
   }
@@ -180,6 +226,8 @@ export class DevolucionesComponent implements OnInit {
     this.devolucionForm.controls.tipoOperacion.setValue(cab.tipoOperacion);
     this.devolucionForm.controls.nroDocumento.setValue(cab.nroDocumento);
     this.devolucionForm.controls.monto.setValue(cab.monto);
+    this.devolucionForm.controls.descuento.setValue(cab.descuento);
+    this.devolucionForm.get('montoTotal').setValue(cab.monto - cab.descuento);
     this.devolucionForm.controls.tipoCambioMoneda.setValue(cab.tipoCambioMoneda);
     this.codigoMonedaCab = cab.moneda;
     this.codigoMonedaDet = cab.tipoCambioMoneda == 0 ? cab.moneda : '';
@@ -198,6 +246,7 @@ export class DevolucionesComponent implements OnInit {
     this.devolucionForm.controls.nroCuentaBancariaDestino.setValue(cab.nroCuentaBancariaDestino);
     this.devolucionForm.controls.cciDestino.setValue(cab.cciDestino);
     this.devolucionForm.controls.tipoCuentaBancariaDestino.setValue(cab.tipoCuentaBancariaDestino);
+    this.devolucionForm.controls.observacion.setValue(cab.observacion);
 
     this.sustentos = cab.liquidacionDevolucionSustento;
 
@@ -368,9 +417,11 @@ export class DevolucionesComponent implements OnInit {
       nroCuentaBancariaDestino: this.devolucionForm.controls.nroCuentaBancariaDestino.value,
       cciDestino: this.devolucionForm.controls.cciDestino.value,
       tipoCuentaBancariaDestino: this.devolucionForm.controls.tipoCuentaBancariaDestino.value,
+      descuento: this.devolucionForm.controls.descuento.value,
       tipoCambioMoneda: this.tipoCambioMoneda,
       montoConversion: this.devolucionForm.controls.montoConversion.value,
       fechaDesembolso: fechaDesembolso === null ? '' : `${fechaDesembolso.year}${String(fechaDesembolso.month).padStart(2, '0')}${String(fechaDesembolso.day).padStart(2, '0')}`,
+      observacion: this.devolucionForm.controls.observacion.value,
       idUsuarioAud: this.currentUser.idUsuario,
       liquidacionDevolucionSustento: this.sustentos.filter(f => f.editado)
     }).subscribe((response: any) => {
@@ -589,6 +640,69 @@ export class DevolucionesComponent implements OnInit {
     }, error => {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();
+    });
+  }
+
+  onLimpiarFiltro($event: string) {
+    if ($event === 'reload') {
+      this.clearingForm = true;
+      this.filtroForm.reset(this.oldFiltroForm);
+      this.clearingForm = false;
+      this.onListarDevolucion();
+    }
+  }
+
+  onLimpiarFechaFiltro(hasta: boolean) {
+    if (hasta)
+      this.filtroForm.get("fechaDesembolsoHasta").setValue(null);
+    else
+      this.filtroForm.get("fechaDesembolsoDesde").setValue(null);
+  }
+
+  onDescuentoCambio($event: number) {
+    this.devolucionForm.get('montoTotal').setValue(this.devolucionForm.get('monto').value - $event);
+    this.onConvertirMontoTotal();
+  }
+
+  onEliminar(cab: LiquidacionDevolucion): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea eliminar el registro de devolución con código '${cab.codigo}'?, esta acción no podrá revertirse`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-primary'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart("Eliminando...");
+        this.devolucionesService.eliminar({
+          idLiquidacionDevolucion: cab.idLiquidacionDevolucion,
+          idUsuarioAud: this.currentUser.idUsuario,
+        }).subscribe((response: any) => {
+          switch (response.tipo) {
+            case 1:
+              this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
+              this.utilsService.blockUIStop();
+              this.onCancelar();
+              break;
+            case 2:
+              this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+              this.utilsService.blockUIStop();
+              break;
+            default:
+              this.utilsService.showNotification(response.mensaje, 'Error', 3);
+              this.utilsService.blockUIStop();
+              break;
+          }
+        }, error => {
+          this.utilsService.blockUIStop();
+          this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+        });
+      }
     });
   }
 }

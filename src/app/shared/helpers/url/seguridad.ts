@@ -20,3 +20,8 @@ export const MENU = {
     listarPorPerfil: '/menu/listarPorPerfil',
     listarPorUsuario: '/menu/listarPorUsuario',
 }
+
+export const AUDITORIA = {
+  listar: '/auditoria/listar',
+  exportar: '/auditoria/exportar',
+}

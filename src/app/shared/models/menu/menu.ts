@@ -411,6 +411,13 @@ export const menu: CoreMenu[] = [
       type: 'item',
       icon: 'tag',
       url: 'seguridad/perfil'
+    }, {
+      id: '15',//cambiar
+      title: 'Auditoría',
+      // translate: 'MENU.DASHBOARD.ANALYTICS',
+      type: 'item',
+      icon: 'eye',
+      url: 'seguridad/auditoria'
     }]
   }
 ];

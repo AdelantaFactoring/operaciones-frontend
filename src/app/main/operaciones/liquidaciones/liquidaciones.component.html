@@ -225,7 +225,15 @@
               >
             </div>
           </div>
-          <div class="col-md-6 col-12 d-flex justify-content-md-end">
+          <div class="col-md-3 col-12 d-flex justify-content-md-end align-items-center">
+            <span class="mb-1" style="margin-right: 0.3em">Leyenda</span>
+            <ngb-alert [type]="'warning'" [dismissible]="false">
+              <div class="alert-body">
+                Correo Enviado
+              </div>
+            </ngb-alert>
+          </div>
+          <div class="col-md-3 col-12 d-flex justify-content-md-end">
             <div class="d-flex align-items-center justify-content-end mb-1">
               <label class="d-flex align-items-center"
               >Buscar<input
@@ -289,7 +297,7 @@
                 </thead>
                 <tbody>
                 <ng-template let-cab ngFor [ngForOf]="liquidaciones">
-                  <tr>
+                  <tr [ngClass]="{'correo-enviado': cab.correoValidacionEnviado && cab.idEstado === 1}">
                     <td>
                       <div class="d-flex align-items-center">
                         <a href="javascript:void(0)" title="Ocultar / Mostrar"

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
 import {DocumentosService} from "./documentos.service";
 import {LiquidacionDocumentoCab} from "../../../shared/models/facturacion/liquidaciondocumento-cab";
@@ -21,7 +21,7 @@ import {__spreadArray} from 'tslib';
   templateUrl: './documentos.component.html',
   styleUrls: ['./documentos.component.scss']
 })
-export class DocumentosComponent implements OnInit {
+export class DocumentosComponent implements OnInit, AfterViewInit {
   @ViewChild('coreCard') coreCard;
   public currentUser: User;
   public contentHeader: ContentHeader;
@@ -201,7 +201,7 @@ export class DocumentosComponent implements OnInit {
     this.oldFiltroForm = this.filtroForm.value;
   }
 
-  onLimpiarFiltro($event): void {
+  onLimpiarFiltro($event: string): void {
     if ($event === 'reload') {
       this.clearingForm = true;
       this.filtroForm.reset(this.oldFiltroForm);

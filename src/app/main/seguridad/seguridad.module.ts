@@ -12,6 +12,8 @@ import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 import { ListaPermisoComponent } from './lista-permiso/lista-permiso.component';
 import {NgSelectModule} from "@ng-select/ng-select";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import { AuditoriaComponent } from './auditoria/auditoria.component';
+import {CoreCardModule} from "../../../@core/components/core-card/core-card.module";
 
 const routes: Routes = [
   {
@@ -32,25 +34,37 @@ const routes: Routes = [
       }
     ]
   },
+  {
+    path: '',
+    children: [
+      {
+        path: 'auditoria',
+        component: AuditoriaComponent
+      }
+    ]
+  }
+
 ]
 
 @NgModule({
   declarations: [
     UsuarioComponent,
     PerfilComponent,
-    ListaPermisoComponent
+    ListaPermisoComponent,
+    AuditoriaComponent
   ],
-    imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        NgbModule,
-        CoreCommonModule,
-        BlockUIModule.forRoot(),
-        ContentHeaderModule,
-        CoreTouchspinModule,
-        NgxDatatableModule,
-        NgSelectModule,
-        PerfectScrollbarModule
-    ]
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    NgbModule,
+    CoreCommonModule,
+    BlockUIModule.forRoot(),
+    ContentHeaderModule,
+    CoreTouchspinModule,
+    NgxDatatableModule,
+    NgSelectModule,
+    PerfectScrollbarModule,
+    CoreCardModule
+  ]
 })
 export class SeguridadModule { }

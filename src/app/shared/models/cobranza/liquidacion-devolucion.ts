@@ -22,9 +22,11 @@ export class LiquidacionDevolucion {
   cciDestino: string;
   tipoCuentaBancariaDestino: string;
   checkList: boolean;
+  descuento: number;
   tipoCambioMoneda: number;
   montoConversion: number;
   fechaDesembolso: string;
+  observacion: string;
   idEstado: number;
   estado: string;
   idUsuarioAud: number;
