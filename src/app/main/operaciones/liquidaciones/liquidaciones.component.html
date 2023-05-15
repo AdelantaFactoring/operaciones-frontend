@@ -348,6 +348,12 @@
                                class="d-flex align-items-center">
                               <i class="text-info cursor-pointer mr-50" data-feather="eye"></i> Ver info. de descuento
                             </a>
+                            <a ngbDropdownItem href="javascript:void(0)" *ngIf="mostrar === 'true'"
+                               title="Editar"
+                               (click)="onVistaPrevia(cab)"
+                               class="d-flex align-items-center">
+                              <i class="text-info cursor-pointer mr-50" data-feather="eye"></i> Previsualizar
+                            </a>
                             <!--                            <a ngbDropdownItem href="javascript:void(0)" *ngIf="mostrar === 'false'" title="Ver"-->
                             <!--                               (click)="onEditarCab(cab,  modalINFO)"-->
                             <!--                               class="d-flex align-items-center">-->

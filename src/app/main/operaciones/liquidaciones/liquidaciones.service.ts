@@ -105,4 +105,11 @@ export class LiquidacionesService {
       }
     );
   }
+
+  vistaPrevia(payload): Observable<Blob> {
+    return this.requestMethod.postFile(
+      `${environment.apiUrl}${LIQUIDACIONES.vistaPrevia}`,
+      payload
+    );
+  }
 }

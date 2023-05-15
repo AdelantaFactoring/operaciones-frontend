@@ -1030,4 +1030,22 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
       });
     }, 0);
   }
+
+  onVistaPrevia(cab: LiquidacionCab): void {
+    const liq = {...cab};
+    liq.idEmpresa = this.currentUser.idEmpresa;
+    liq.idUsuarioAud = this.currentUser.idUsuario;
+    this.utilsService.blockUIStart('Previsualizando...');
+    this.liquidacionesService.vistaPrevia(liq).subscribe(s => {
+      let blob: any = new Blob([s], {type: 'application/pdf'});
+      const url = window.URL.createObjectURL(blob);
+      window.open(url);
+      // fileSaver.saveAs(blob, `${cab.codigo}.pdf`);
+      this.utilsService.showNotification('Previsualización satisfactoria', 'Confirmación', 1);
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
+  }
 }

@@ -53,4 +53,8 @@ export class RequestMethod {
       responseType: 'blob'
     });
   }
+
+  postFile(url: string, body: string): Observable<any> {
+    return this.http.post(url, body, {responseType: 'blob'});
+  }
 }
