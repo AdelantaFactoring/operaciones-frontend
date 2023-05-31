@@ -101,16 +101,16 @@
             <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onRefrescar()"
                             [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize" [ellipses]="false">
               <ng-template ngbPaginationFirst>
-                <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
+                <span [data-feather]="'chevrons-left'" [size]="'18'" [class]="'font-weight-bolder'"></span>
               </ng-template>
               <ng-template ngbPaginationPrevious>
-                <span [data-feather]="'chevron-left'" [size]="18" [class]="'font-weight-bolder'"></span>
+                <span [data-feather]="'chevron-left'" [size]="'18'" [class]="'font-weight-bolder'"></span>
               </ng-template>
               <ng-template ngbPaginationNext>
-                <span [data-feather]="'chevron-right'" [size]="18" [class]="'font-weight-bolder'"></span>
+                <span [data-feather]="'chevron-right'" [size]="'18'" [class]="'font-weight-bolder'"></span>
               </ng-template>
               <ng-template ngbPaginationLast>
-                <span [data-feather]="'chevrons-right'" [size]="18" [class]="'font-weight-bolder'"></span>
+                <span [data-feather]="'chevrons-right'" [size]="'18'" [class]="'font-weight-bolder'"></span>
               </ng-template>
             </ngb-pagination>
           </div>
@@ -509,6 +509,81 @@
                           />
                           <label class="custom-control-label" for="{{'predeterminadoCuenta' + item.idFila}}"></label>
                         </div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="divider divider-secondary">
+              <div class="divider-text">Facturación</div>
+            </div>
+          </div>
+          <div class="col-md-12 col-12">
+            <div class="form-group">
+              <label>Correos de notificación</label>
+              <form [formGroup]="correosFacturacionForm">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                    <tr>
+                      <th>Acción</th>
+                      <th>Apellidos y Nombre(s)</th>
+                      <th>Correo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>
+                        <a href="javascript:void(0)" title="Nuevo" (click)="onAgregarCorreoFacturacion()"
+                           class="btn btn-raised btn-outline-info btn-sm">
+                          <i class="text-info cursor-pointer" data-feather="plus-circle"></i>
+                        </a>
+                      </td>
+                      <td><input class="form-control" type="text" placeholder="Apellidos y Nombre(s)"
+                                 formControlName="nombre"/></td>
+                      <td><input class="form-control" type="text" placeholder="Correo" formControlName="correo"
+                                 [ngClass]="{ 'is-invalid': submittedCorreosFacturacion && ReactiveIUFormCorreoFacturacion.correo.errors }"/>
+                      </td>
+                    </tr>
+                    <tr *ngFor="let item of correosFacturacion">
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Editar"
+                             (click)="onEditarCorreoFacturacion(item)" class="btn btn-raised btn-outline-success btn-sm">
+                            <i class="text-success cursor-pointer" data-feather="edit"></i>
+                          </a>
+                          <a *ngIf="item.edicion" href="javascript:void(0)" title="Cancelar"
+                             class="btn btn-raised btn-outline-secondary btn-sm"
+                             (click)="onCancelarCorreoFacturacion(item)">
+                            <i class="text-secondary cursor-pointer" data-feather="corner-up-left"></i>
+                          </a>
+                          &nbsp;
+                          <a *ngIf="!item.edicion" href="javascript:void(0)" title="Eliminar"
+                             (click)="onEliminarCorreoFacturacion(item)"
+                             class="btn btn-raised btn-outline-danger btn-sm">
+                            <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
+                          </a>
+                          <a *ngIf="item.edicion" href="javascript:void(0)" title="Confirmar cambios"
+                             (click)="onConfirmarCambioCorreoFacturacion(item)" class="btn btn-raised btn-outline-success btn-sm">
+                            <i class="text-success cursor-pointer" data-feather="save"></i>
+                          </a>
+                        </div>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <p *ngIf="!item.edicion">{{item.nombre}}</p>
+                        <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Apellidos y Nombre(s)"
+                               [(ngModel)]="item.nombre"
+                               [ngModelOptions]="{standalone: true}"/>
+                      </td>
+                      <td [ngClass]="{'row-edicion': item.editado}">
+                        <p *ngIf="!item.edicion">{{item.correo}}</p>
+                        <input *ngIf="item.edicion" class="form-control" type="text" placeholder="Correo"
+                               [(ngModel)]="item.correo"
+                               [ngModelOptions]="{standalone: true}"/>
                       </td>
                     </tr>
                     </tbody>

@@ -81,4 +81,14 @@ export class ClientesService {
       }
     );
   }
+
+  eliminarCorreoFacturacion(payload): Observable<any> {
+    return this.requestMethod.delete(
+      `${environment.apiUrl}${CLIENTE.eliminarCorreoFacturacion}`,
+      `?idClienteCorreoFacturacion=${payload.idClienteCorreoFacturacion}&idUsuarioAud=${payload.idUsuarioAud}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }

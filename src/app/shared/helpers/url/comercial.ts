@@ -6,7 +6,8 @@ export const CLIENTE = {
   eliminar: '/cliente/eliminar',
   eliminarCuenta: '/cliente/eliminarcuenta',
   eliminarContacto: '/cliente/eliminarcontacto',
-  eliminarGastos: '/cliente/eliminargastos'
+  eliminarGastos: '/cliente/eliminargastos',
+  eliminarCorreoFacturacion: '/cliente/eliminarCorreoFacturacion'
 };
 
 export const SOLICITUD = {

@@ -11,6 +11,7 @@ import {TablaMaestraService} from "../../../shared/services/tabla-maestra.servic
 import Swal from "sweetalert2";
 import {ClienteGastos} from "../../../shared/models/comercial/cliente-gastos";
 import {User} from "../../../shared/models/auth/user";
+import {ClienteCorreoFacturacion} from "../../../shared/models/comercial/cliente-correo-facturacion";
 
 @Component({
   selector: 'app-clientes',
@@ -25,17 +26,21 @@ export class ClientesComponent implements OnInit {
   public submittedCuenta: boolean;
   public submittedContacto: boolean;
   public submittedGastos: boolean;
+  public submittedCorreosFacturacion: boolean;
   public clienteForm: FormGroup;
   public oldClienteForm: FormGroup;
   public cuentaForm: FormGroup;
   public contactoForm: FormGroup;
   public gastosForm: FormGroup;
+  public correosFacturacionForm: FormGroup;
   public contactos: ClienteContacto[] = [];
   public cuentas: ClienteCuenta[] = [];
   public gastos: ClienteGastos[] = [];
+  public correosFacturacion: ClienteCorreoFacturacion[] = [];
   public monedas: TablaMaestra[];
   public oldCuenta: ClienteCuenta;
   public oldContacto: ClienteContacto;
+  public oldCorreosFacturacion: ClienteCorreoFacturacion;
 
   public search: string = '';
   //Paginación
@@ -53,6 +58,10 @@ export class ClientesComponent implements OnInit {
 
   get ReactiveIUFormContacto(): any {
     return this.contactoForm.controls;
+  }
+
+  get ReactiveIUFormCorreoFacturacion(): any {
+    return this.correosFacturacionForm.controls;
   }
 
   constructor(private modalService: NgbModal,
@@ -108,6 +117,10 @@ export class ClientesComponent implements OnInit {
       telefono: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
       predeterminado: [false]
+    });
+    this.correosFacturacionForm = this.formBuilder.group({
+      nombre: [''],
+      correo: ['', [Validators.required, Validators.email]]
     });
     this.oldClienteForm = this.clienteForm.value;
   }
@@ -183,6 +196,7 @@ export class ClientesComponent implements OnInit {
       this.contactos = response.clienteContacto;
       this.cuentas = response.clienteCuenta;
       this.gastos = response.clienteGastos;
+      this.correosFacturacion = response.clienteCorreoFacturacion;
       this.utilsService.blockUIStop();
 
       setTimeout(() => {
@@ -244,13 +258,14 @@ export class ClientesComponent implements OnInit {
 
   onGuardar(): void {
     this.submitted = true;
-    
+
     if (this.clienteForm.invalid)
       return;
 
-    if (this.cuentas.filter(f => f.edicion).length > 0
-      || this.contactos.filter(f => f.edicion).length > 0
-      || this.gastos.filter(f => f.edicion).length > 0) {
+    if (this.cuentas.some(f => f.edicion)
+      || this.contactos.some(f => f.edicion)
+      || this.gastos.some(f => f.edicion)
+      || this.correosFacturacion.some(f => f.edicion)) {
       this.utilsService.showNotification("Guarda o confirma los cambios primero", "Advertencia", 2);
       return;
     }
@@ -259,7 +274,7 @@ export class ClientesComponent implements OnInit {
       this.submittedContacto = true;
       if (this.contactoForm.invalid) {
         this.utilsService.showNotification("Tener como minimo un contacto", "Advertencia", 2);
-        return; 
+        return;
       }
     }
     this.utilsService.blockUIStart('Guardando...');
@@ -275,7 +290,8 @@ export class ClientesComponent implements OnInit {
       idUsuarioAud: this.currentUser.idUsuario,
       contacto: this.contactos.filter(f => f.editado),
       cuenta: this.cuentas.filter(f => f.editado),
-      gastos: this.gastos.filter(f => f.editado)
+      gastos: this.gastos.filter(f => f.editado),
+      correoFacturacion: this.correosFacturacion.filter(f => f.editado)
     }).subscribe(response => {
       if (response.tipo == 1) {
         this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
@@ -300,6 +316,7 @@ export class ClientesComponent implements OnInit {
     this.contactos = [];
     this.cuentas = [];
     this.gastos = [];
+    this.correosFacturacion = [];
     this.clienteForm.reset(this.oldClienteForm);
     this.modalService.dismissAll();
   }
@@ -332,13 +349,13 @@ export class ClientesComponent implements OnInit {
       idCliente: 0,
       titular: this.cuentaForm.controls.titular.value,
       banco: this.cuentaForm.controls.banco.value,
-      idMoneda: idMoneda,
-      moneda: this.monedas.find(f => f.idColumna === this.cuentaForm.controls.idMoneda.value).descripcion,
+      idMoneda,
+      moneda: this.monedas.find(f => f.idColumna === idMoneda).descripcion,
       codigoMoneda: '',
       nroCuenta: this.cuentaForm.controls.nroCuenta.value,
       cci: this.cuentaForm.controls.cci.value,
       tipoCuenta: this.cuentaForm.controls.tipoCuenta.value,
-      predeterminado: this.cuentaForm.controls.predeterminado.value == null ? false : this.cuentaForm.controls.predeterminado.value,
+      predeterminado: predeterminado ?? false,
       idFila: this.utilsService.autoIncrement(this.cuentas),
       edicion: false,
       editado: true
@@ -577,5 +594,114 @@ export class ClientesComponent implements OnInit {
         }
       });
     }
+  }
+
+  onAgregarCorreoFacturacion(): void {
+    if (this.correosFacturacion.filter(a => a.edicion).length > 0) {
+      this.utilsService.showNotification("Primero debe finalizar la edición del registro actual", 'Alerta', 2);
+      return;
+    }
+
+    const correo = this.correosFacturacionForm.controls.correo.value;
+    if (this.correosFacturacion.some(f => f.correo === correo)) {
+      this.utilsService.showNotification(`El correo ${correo} ya ha sido agregado`, 'Validación',2);
+      return;
+    }
+
+    this.submittedCorreosFacturacion = true;
+    if (this.correosFacturacionForm.invalid)
+      return;
+
+    this.correosFacturacion.push({
+      idClienteCorreoFacturacion: 0,
+      idCliente: 0,
+      nombre: this.correosFacturacionForm.controls.nombre.value,
+      correo,
+      idFila: this.utilsService.autoIncrement(this.correosFacturacion),
+      edicion: false,
+      editado: true
+    });
+    this.correosFacturacionForm.reset();
+    this.submittedCorreosFacturacion = false;
+  }
+
+  onEditarCorreoFacturacion(item: ClienteCorreoFacturacion): void {
+    if (this.correosFacturacion.filter(f => f.edicion && f.idFila != item.idFila).length > 0) {
+      this.utilsService.showNotification("Guarda o confirma los cambios primero", "Advertencia", 2);
+      return;
+    }
+
+    this.oldCorreosFacturacion = {
+      idClienteCorreoFacturacion: item.idClienteCorreoFacturacion,
+      idCliente: item.idCliente,
+      nombre: item.nombre,
+      correo: item.correo,
+      idFila: item.idFila,
+      edicion: item.edicion,
+      editado: item.editado
+    };
+    item.edicion = true;
+  }
+
+  onCancelarCorreoFacturacion(item: ClienteCorreoFacturacion): void {
+    item.idClienteCorreoFacturacion = this.oldCorreosFacturacion.idClienteCorreoFacturacion;
+    item.idCliente = this.oldCorreosFacturacion.idCliente;
+    item.nombre = this.oldCorreosFacturacion.nombre;
+    item.correo = this.oldCorreosFacturacion.correo;
+    item.idFila = this.oldCorreosFacturacion.idFila;
+    item.edicion = this.oldCorreosFacturacion.edicion;
+    item.editado = this.oldCorreosFacturacion.editado;
+  }
+
+  onEliminarCorreoFacturacion(item: ClienteCorreoFacturacion): void {
+    if (item.idClienteCorreoFacturacion == 0) {
+      this.correosFacturacion = this.correosFacturacion.filter(f => f.idFila != item.idFila);
+    } else {
+      Swal.fire({
+        title: 'Confirmación',
+        text: `¿Desea eliminar el registro?, esta acción no podrá revertirse`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'No',
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        }
+      }).then(result => {
+        if (result.value) {
+          this.utilsService.blockUIStart('Eliminando...');
+          this.clienteService.eliminarCorreoFacturacion({
+            idClienteCorreoFacturacion: item.idClienteCorreoFacturacion,
+            idUsuarioAud: this.currentUser.idUsuario
+          }).subscribe(response => {
+            if (response.tipo === 1) {
+              this.correosFacturacion = this.correosFacturacion.filter(f => f.idFila != item.idFila);
+              this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
+              this.utilsService.blockUIStop();
+            } else if (response.tipo === 2) {
+              this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+            } else {
+              this.utilsService.showNotification(response.mensaje, 'Error', 3);
+            }
+
+            this.utilsService.blockUIStop();
+          }, error => {
+            this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+            this.utilsService.blockUIStop();
+          });
+        }
+      });
+    }
+  }
+
+  onConfirmarCambioCorreoFacturacion(item: ClienteCorreoFacturacion): void {
+    if (this.correosFacturacion.some(f => f.correo === item.correo && f.idFila != item.idFila)) {
+      this.utilsService.showNotification(`El correo ${item.correo} ya ha sido agregado`, 'Validación',2);
+      return;
+    }
+
+    item.edicion = false;
+    item.editado = true;
   }
 }
