@@ -117,51 +117,6 @@
                 </ng-select>
               </div>
             </div>
-            <!--            <div class="col-12">-->
-            <!--              <div class="divider divider-secondary">-->
-            <!--                <div class="divider-text"><span [data-feather]="'chevrons-down'"></span> (Solo para Exportación)</div>-->
-            <!--              </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-12" *ngIf="mostrarFiltroExportacion">-->
-            <!--              <div class="form-group">-->
-            <!--                <div class="text-warning">-->
-            <!--                  <i class="mr-0 mr-sm-1" data-feather="alert-circle"></i> Se está utilizando este rango de fechas,-->
-            <!--                  basado en el campo "Fecha Creación"-->
-            <!--                </div>-->
-            <!--              </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-md-4 col-12">-->
-            <!--              <div class="form-group">-->
-            <!--                <label>Desde</label>-->
-            <!--                <div class="input-group">-->
-            <!--                  <input #desdeFC class="form-control" placeholder="yyyy-mm-dd"-->
-            <!--                         [ngClass]="{ 'warning': mostrarFiltroExportacion }"-->
-            <!--                         formControlName="desdeFC" container="body"-->
-            <!--                         ngbDatepicker #basicDPDes="ngbDatepicker">-->
-            <!--                  <div class="input-group-append">-->
-            <!--                    <button class="btn btn-outline-secondary feather icon-calendar"-->
-            <!--                            (click)="basicDPDes.toggle()"-->
-            <!--                            type="button" rippleEffect></button>-->
-            <!--                  </div>-->
-            <!--                </div>-->
-            <!--              </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-md-4 col-12">-->
-            <!--              <div class="form-group">-->
-            <!--                <label>Hasta</label>-->
-            <!--                <div class="input-group">-->
-            <!--                  <input class="form-control" placeholder="yyyy-mm-dd"-->
-            <!--                         [ngClass]="{ 'warning': mostrarFiltroExportacion }"-->
-            <!--                         formControlName="hastaFC" container="body"-->
-            <!--                         ngbDatepicker #basicDPHas="ngbDatepicker">-->
-            <!--                  <div class="input-group-append">-->
-            <!--                    <button class="btn btn-outline-secondary feather icon-calendar"-->
-            <!--                            (click)="basicDPHas.toggle()"-->
-            <!--                            type="button" rippleEffect></button>-->
-            <!--                  </div>-->
-            <!--                </div>-->
-            <!--              </div>-->
-            <!--            </div>-->
           </div>
         </form>
       </div>
@@ -331,6 +286,12 @@
                                [class.disabled]="cab.idEstado != 3 ? true : null"
                                class="d-flex align-items-center">
                               <i class="text-danger mr-50" data-feather="slash"></i> Anular
+                            </a>
+                            <a ngbDropdownItem href="javascript:void(0)" title="Enviar Correo"
+                               (click)="onEnviarCorreo(cab)"
+                               [class.disabled]="cab.idEstado != 3 ? true : null"
+                               class="d-flex align-items-center">
+                              <i class="text-warning mr-50" data-feather="mail"></i> Enviar Correo
                             </a>
                           </div>
                         </div>

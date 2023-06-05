@@ -412,7 +412,7 @@ export const menu: CoreMenu[] = [
       icon: 'tag',
       url: 'seguridad/perfil'
     }, {
-      id: '15',//cambiar
+      id: '23',
       title: 'Auditoría',
       // translate: 'MENU.DASHBOARD.ANALYTICS',
       type: 'item',

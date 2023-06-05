@@ -94,6 +94,7 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
   public documentosPendientes: LiquidacionDocumentoCab[] = [];
   public disabledDeclarar: boolean = false;
   public declaracionEfectuada: boolean = false;
+  public estadoDefault: TablaMaestra[] = [];
 
   get ReactiveIUForm(): any {
     return this.documentoForm.controls;
@@ -132,6 +133,13 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
         ]
       }
     };
+
+    this.estadoDefault.push(
+      new TablaMaestra({idColumna: 1, descripcion: 'Pendiente'}),
+      new TablaMaestra({idColumna: 2, descripcion: 'Enviado a Declarar'}),
+      new TablaMaestra({idColumna: 6, descripcion: 'Enviado a Anular'})
+    );
+
     this.documentoForm = this.formBuilder.group({
       idLiquidacionDocumentoCab: [0],
       idLiquidacionCab: [0],
@@ -194,8 +202,7 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
       fechaEmisionHasta: [null],
       tipoDocumento: [0],
       nroDocumento: [''],
-      estado: [[new TablaMaestra({idColumna: 1, descripcion: 'Pendiente'}),
-        new TablaMaestra({idColumna: 2, descripcion: 'Enviado a Declarar'})]],
+      estado: [this.estadoDefault],
       montoTotal: [0]
     });
     this.oldFiltroForm = this.filtroForm.value;
@@ -1108,6 +1115,39 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
   onCancelarDeclaracion(modal: any) {
     this.onListarDocumentos();
     modal.dismiss();
+  }
+
+  onEnviarCorreo(cab: LiquidacionDocumentoCab): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Está seguro de enviar la notificación del documento '${cab.nroDocumento}'?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-primary'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.utilsService.blockUIStart('Enviando correo...');
+        this.documentosService.enviarCorreo(cab).subscribe(response => {
+          if (response.tipo === 1) {
+            this.utilsService.showNotification('Correo enviado correctamente', 'Confirmación', 1);
+            this.utilsService.blockUIStop();
+          } else if (response.tipo === 2) {
+            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+          } else {
+            this.utilsService.showNotification(response.mensaje, 'Error', 3);
+          }
+          this.utilsService.blockUIStop();
+        }, error => {
+          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+          this.utilsService.blockUIStop();
+        });
+      }
+    });
   }
 }
 

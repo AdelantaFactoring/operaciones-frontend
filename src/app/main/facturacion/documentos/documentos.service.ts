@@ -101,4 +101,14 @@ export class DocumentosService {
       }
     );
   }
+
+  enviarCorreo(payload): Observable<any> {
+    return this.requestMethod.post(
+      `${environment.apiUrl}${DOCUMENTOS.enviarCorreo}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
 }
