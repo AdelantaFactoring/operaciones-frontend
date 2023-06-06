@@ -27,7 +27,7 @@ export class ParametrosComponent implements OnInit {
 
   public numeros: number[] = [2, 3];
   public booleanos: number[] = [1, 12, 13];
-  public items: number[] = [4, 5, 14];
+  public items: number[] = [4, 5, 14, 15];
 
   constructor(private utilsService: UtilsService,
               private maestrosService: MaestrosService) {
