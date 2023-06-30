@@ -105,7 +105,7 @@ export class GastosComponent implements OnInit {
       idTipoOperacion: item.idTipoOperacion,
       idMoneda: item.idMoneda,
       moneda: item.moneda,
-      codigoMoneda: '',
+      codigoMoneda: item.codigoMoneda, //20230626 15:24
       tasaNominalMensual: item.tasaNominalMensual,
       tasaNominalAnual: item.tasaNominalAnual,
       tasaNominalMensualMora: item.tasaNominalMensualMora,
@@ -129,6 +129,7 @@ export class GastosComponent implements OnInit {
     item.idTipoOperacion = this.oldGastos.idTipoOperacion;
     item.idMoneda = this.oldGastos.idMoneda;
     item.moneda = this.oldGastos.moneda;
+    item.codigoMoneda = this.oldGastos.codigoMoneda; //20230626 15:24
     item.tasaNominalMensual = this.oldGastos.tasaNominalMensual;
     item.tasaNominalAnual = this.oldGastos.tasaNominalAnual;
     item.tasaNominalMensualMora = this.oldGastos.tasaNominalMensualMora;
