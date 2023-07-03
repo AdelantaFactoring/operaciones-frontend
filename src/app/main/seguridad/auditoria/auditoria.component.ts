@@ -158,7 +158,7 @@ export class AuditoriaComponent implements OnInit, AfterViewInit {
     }).subscribe(s => {
       let blob: any = new Blob([s], {type: 'application/vnd.ms-excel'});
       const url = window.URL.createObjectURL(blob);
-      fileSaver.saveAs(blob, `Liquidaciones_${desde}_${hasta}.xlsx`);
+      fileSaver.saveAs(blob, `Auditoria_${desde}_${hasta}.xlsx`);
       this.utilsService.showNotification('Exportación satisfactoria', 'Confirmación', 1);
       this.utilsService.blockUIStop();
     }, error => {

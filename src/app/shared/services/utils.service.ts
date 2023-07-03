@@ -163,6 +163,15 @@ export class UtilsService {
     return `${String(obj.day).padStart(2, "0")}/${String(obj.month).padStart(2, "0")}/${obj.year}`;
   }
 
+  objetoFecha(obj: string, character: string, rightToLeft: boolean): any {
+    const date = obj.split(character);
+    return {
+      year: Number(rightToLeft ? date[0] : date[2]),
+      month: Number(date[1]),
+      day: Number(rightToLeft ? date[2] : date[0])
+    };
+  }
+
   getAccess(idMenu): Menu {// '/module/component/'
     //const url = router.routerState.snapshot.url;
     let router: Router;

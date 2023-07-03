@@ -685,6 +685,70 @@
                   </div>
                 </div>
                 <div class="col-12">
+                  <div class="divider divider-danger">
+                    <div class="divider-text">Información de Comisión Interplaza</div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label>¿Incluir Comisión Interplaza?</label>
+                    <div class="form-control custom-control custom-switch custom-control-inline"
+                         style="border: 0px; background-color: transparent">
+                      <label style="padding-right: 0.5rem; line-height: 1.7rem">No</label>
+                      <input type="checkbox" class="custom-control-input"
+                             id="flagComisionInterplaza" formControlName="flagComisionInterplaza"
+                             [attr.disabled]="ver ? true : null">
+                      <label class="custom-control-label"
+                             for="flagComisionInterplaza">Sí</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="ReactiveIUForm.flagComisionInterplaza.value">
+                  <div class="form-group">
+                    <label>Fecha</label>
+                    <div class="input-group">
+                      <input [readonly]="ver" class="form-control" placeholder="yyyy-mm-dd"
+                             formControlName="fechaComisionInterplaza" container="body"
+                             ngbDatepicker #basicDP="ngbDatepicker">
+                      <div class="input-group-append">
+                        <button [disabled]="ver" class="btn btn-outline-secondary feather icon-x"
+                                (click)="onCambioFechaComisionInterplaza()"
+                                type="button" rippleEffect></button>
+                      </div>
+                      <div class="input-group-append">
+                        <button [disabled]="ver" class="btn btn-outline-secondary feather icon-calendar"
+                                (click)="basicDP.toggle()"
+                                type="button" rippleEffect></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12" *ngIf="ReactiveIUForm.flagComisionInterplaza.value">
+                  <div class="form-group">
+                    <label>Monto</label>
+                    <input [readonly]="ver" class="form-control" formControlName="montoComisionInterplaza" type="text"
+                           [ngClass]="{ 'is-invalid': ReactiveIUForm.flagComisionInterplaza.value && (
+                    ReactiveIUForm.montoComisionInterplaza.value === null ||
+                    ReactiveIUForm.montoComisionInterplaza.value === 0
+                    ) }">
+                    <div *ngIf="ReactiveIUForm.flagComisionInterplaza.value && (
+                    ReactiveIUForm.montoComisionInterplaza.value === null ||
+                    ReactiveIUForm.montoComisionInterplaza.value === 0
+                    )" class="invalid-feedback">
+                      <div *ngIf="ReactiveIUForm.montoComisionInterplaza.value === null">* Campo obligatorio</div>
+                      <div *ngIf="ReactiveIUForm.montoComisionInterplaza.value === 0">* El monto debe ser mayor a cero
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="ReactiveIUForm.flagComisionInterplaza.value">
+                  <div class="form-group">
+                    <label>Observación</label>
+                    <textarea [readonly]="ver" class="form-control" formControlName="observacionComisionInterplaza"
+                              type="text"></textarea>
+                  </div>
+                </div>
+                <div class="col-12">
                   <div class="divider divider-secondary">
                     <div class="divider-text">Documento(s) de Sustento</div>
                   </div>

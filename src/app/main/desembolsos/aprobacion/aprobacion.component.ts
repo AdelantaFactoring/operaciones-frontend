@@ -167,7 +167,11 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
       montoConvertido: [{value: 0, disabled: true}, Validators.required],
       observacion: [{value: ''}],
       observacionSolicitud: [{value: ''}],
-      flagPagoInteresAdelantado: [{value: false, disabled: true}]
+      flagPagoInteresAdelantado: [{value: false, disabled: true}],
+      flagComisionInterplaza: [false],
+      fechaComisionInterplaza: [null],
+      montoComisionInterplaza: [0],
+      observacionComisionInterplaza: ['']
     });
     this.filtroForm = this.formBuilder.group({
       codigoLiquidacion: [''],
@@ -266,6 +270,12 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
     this.submitted = true;
     if (this.solicitudForm.invalid)
       return;
+
+    if (this.solicitudForm.controls.flagComisionInterplaza.value
+      && (this.solicitudForm.controls.montoComisionInterplaza.value === null
+        || this.solicitudForm.controls.montoComisionInterplaza.value === 0))
+      return;
+
     if (this.tipoCambioMoneda === 0 && this.codigoMonedaCab !== this.codigoMonedaDet) {
       this.utilsService.showNotification('El Tipo de Cambio no puede se 0', 'Alerta', 2);
       return;
@@ -305,6 +315,10 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
       tipoCuentaBancariaDestino: this.solicitudForm.controls.tipoCuentaBancariaDestino.value,
       tipoCambioMoneda: this.tipoCambioMoneda,
       montoTotalConversion: this.montoConvertido,
+      flagComisionInterplaza: this.solicitudForm.controls.flagComisionInterplaza.value,
+      fechaComisionInterplaza: this.utilsService.formatoFecha_YYYYMMDD(this.solicitudForm.controls.fechaComisionInterplaza.value),
+      montoComisionInterplaza: this.solicitudForm.controls.montoComisionInterplaza.value,
+      observacionComisionInterplaza: this.solicitudForm.controls.observacionComisionInterplaza.value,
       idUsuarioAud: this.currentUser.idUsuario,
       liquidacionCabSustento: this.sustentos.filter(f => f.editado)
     }).subscribe((response: any) => {
@@ -438,6 +452,13 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
     // this.detalle = item.solicitudDet;
     this.sustentos = item.liquidacionCabSustento.filter(x => x.idTipoSustento === 2);
     // this.onCalcularCT(item);
+
+    this.solicitudForm.controls.flagComisionInterplaza.setValue(item.flagComisionInterplaza);
+    this.solicitudForm.controls.fechaComisionInterplaza.setValue(
+      this.utilsService.objetoFecha(item.fechaComisionInterplaza, '/', false)
+    );
+    this.solicitudForm.controls.montoComisionInterplaza.setValue(item.montoComisionInterplaza);
+    this.solicitudForm.controls.observacionComisionInterplaza.setValue(item.observacionComisionInterplaza);
 
     this.utilsService.blockUIStart("Obteniendo información...");
     this.clienteService.obtener({
@@ -913,5 +934,9 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
         });
       }
     });
+  }
+
+  onCambioFechaComisionInterplaza(): void {
+    this.ReactiveIUForm.fechaComisionInterplaza.setValue(null);
   }
 }

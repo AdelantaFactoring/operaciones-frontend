@@ -56,6 +56,11 @@ export class LiquidacionCab {
   flagPagoInteresAdelantado: boolean;
   flagAdelanto: boolean;
 
+  flagComisionInterplaza: boolean;
+  fechaComisionInterplaza: string;
+  montoComisionInterplaza: number;
+  observacionComisionInterplaza: string;
+
   tipoNotificacion: number;
 
   interesConIGV_Total: number;
