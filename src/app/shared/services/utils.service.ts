@@ -164,6 +164,7 @@ export class UtilsService {
   }
 
   objetoFecha(obj: string, character: string, rightToLeft: boolean): any {
+    if (obj === '') return null;
     const date = obj.split(character);
     return {
       year: Number(rightToLeft ? date[0] : date[2]),
