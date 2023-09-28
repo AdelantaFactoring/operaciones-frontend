@@ -236,7 +236,7 @@ export class PagadorComponent implements OnInit {
               if (res.data.length) {
                 this.utilsService.showNotification('Datos obtenidos correctamente', 'Confirmación', 1);
                 this.ReactiveIUForm.razonSocial.setValue(res.data[0].nombreRazonSocial);
-                this.estadoContribuyente = ` ${res.data[0].estadoContribuyente === '' ? '' : '(' + res.data[0].estadoContribuyente + ')' }`;
+                this.estadoContribuyente = `${res.data[0].estadoContribuyente === '' ? '' : '(' + res.data[0].estadoContribuyente + ')' }`;
               }
               else
               {
