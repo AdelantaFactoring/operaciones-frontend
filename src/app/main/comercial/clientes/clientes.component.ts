@@ -738,7 +738,7 @@ export class ClientesComponent implements OnInit {
 
                 direccion = direccion.replace(/[\n\r]/g, '').replace(/\s+/g, ' ');
                 
-                this.ReactiveIUForm.direccionPrincipal.setValue(direccion);
+                this.ReactiveIUForm.direccionPrincipal.setValue(direccion.trim());
                 this.estadoContribuyente = `${res.data[0].estadoContribuyente === '' ? '' : '(' + res.data[0].estadoContribuyente + ')'}`;
                 this.condicionDomicilio = `${res.data[0].condicionDomicilio === '' ? '' : '(' + res.data[0].condicionDomicilio + ')'}`;
               }
