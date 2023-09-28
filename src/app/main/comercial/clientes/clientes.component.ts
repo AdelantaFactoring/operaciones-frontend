@@ -324,6 +324,8 @@ export class ClientesComponent implements OnInit {
     this.correosFacturacion = [];
     this.clienteForm.reset(this.oldClienteForm);
     this.modalService.dismissAll();
+    this.estadoContribuyente = '';
+    this.condicionDomicilio = '';
   }
 
   onAgregarCuenta(): void {
@@ -730,11 +732,13 @@ export class ClientesComponent implements OnInit {
                 this.utilsService.showNotification('Datos obtenidos correctamente', 'Confirmación', 1);
                 this.ReactiveIUForm.razonSocial.setValue(res.data[0].nombreRazonSocial);
 
-                let direccion = `${res.data[0].nombreVia === '-' ? '' : res.data[0].nombreVia}
+                let direccion = `${res.data[0].tipoVia === '-' ? '' : res.data[0].tipoVia}
+                ${res.data[0].nombreVia === '-' ? '' : res.data[0].nombreVia}
                 ${res.data[0].numero === '-' ? '' : 'Nro: ' + res.data[0].numero}
                 ${res.data[0].interior === '-' ? '' : 'Int: ' + res.data[0].interior}
                 ${res.data[0].manzana === '-' ? '' : 'Mz: ' + res.data[0].manzana}
-                ${res.data[0].lote === '-' ? '' : 'Lt: ' + res.data[0].lote}`;
+                ${res.data[0].lote === '-' ? '' : 'Lt: ' + res.data[0].lote}
+                ${res.data[0].tipoZona === '-' ? '' : res.data[0].tipoZona}`;
 
                 direccion = direccion.replace(/[\n\r]/g, '').replace(/\s+/g, ' ');
                 
@@ -761,14 +765,11 @@ export class ClientesComponent implements OnInit {
             this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
             this.utilsService.blockUIStop();
           });
-          this.utilsService.blockUIStop();
         } else if (response.tipo === 2) {
           this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
         } else {
           this.utilsService.showNotification(response.mensaje, 'Error', 3);
         }
-
-        this.utilsService.blockUIStop();
       }, error => {
         this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
         this.utilsService.blockUIStop();
