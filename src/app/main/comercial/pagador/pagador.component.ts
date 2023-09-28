@@ -6,6 +6,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import Swal from 'sweetalert2';
 import {User} from "../../../shared/models/auth/user";
+import { SunatService } from 'app/shared/services/sunat.service';
 
 @Component({
   selector: 'app-pagador',
@@ -20,6 +21,7 @@ export class PagadorComponent implements OnInit {
   public pagadorForm: FormGroup;
   public oldPagadorForm: FormGroup;
   public submitted: boolean;
+  public estadoContribuyente: string = '';
   //Paginación
   public collectionSize: number = 0;
   public pageSize: number = 10;
@@ -32,7 +34,8 @@ export class PagadorComponent implements OnInit {
     private modalService: NgbModal,
     private utilsService: UtilsService,
     private formBuilder: FormBuilder,
-    private pagadorService: PagadorService) {
+    private pagadorService: PagadorService,
+    private sunatService: SunatService) {
       this.contentHeader = {
         headerTitle: 'Pagadores',
         actionButton: true,
@@ -212,5 +215,58 @@ export class PagadorComponent implements OnInit {
     this.submitted = false;
     this.pagadorForm.reset(this.oldPagadorForm);
     this.modalService.dismissAll();
+  }
+
+  onConsultarSunat(): void {
+    if (this.ReactiveIUForm.ruc.value != '') {
+      this.utilsService.blockUIStart('Consultando...');
+
+      this.sunatService.getToken({
+        usuario: 'sunat',
+        clave: 'cX5sZnNpJf9gbhmPUL'
+      }).subscribe(response => {
+        if (response.ok) {
+
+          this.utilsService.showNotification('Token generado correctamente', 'Confirmación', 1);
+          this.sunatService.getData({
+            ruc: this.ReactiveIUForm.ruc.value,
+            token: response.data
+          }).subscribe(res => {
+            if (res.ok) {   
+              if (res.data.length) {
+                this.utilsService.showNotification('Datos obtenidos correctamente', 'Confirmación', 1);
+                this.ReactiveIUForm.razonSocial.setValue(res.data[0].nombreRazonSocial);
+                this.estadoContribuyente = ` ${res.data[0].estadoContribuyente === '' ? '' : '(' + res.data[0].estadoContribuyente + ')' }`;
+              }
+              else
+              {
+                this.utilsService.showNotification(`No se encotrarón datos para el RUC: ${this.ReactiveIUForm.ruc.value}`, 'Alerta', 2);
+                this.ReactiveIUForm.razonSocial.setValue('');
+                this.estadoContribuyente = '';
+              }
+              
+              this.utilsService.blockUIStop();
+            } else {
+              this.utilsService.showNotification(res.mensaje, 'Error', 3);
+            }
+    
+            this.utilsService.blockUIStop();
+          }, error => {
+            this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+            this.utilsService.blockUIStop();
+          });
+          this.utilsService.blockUIStop();
+        } else if (response.tipo === 2) {
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+        } else {
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        }
+
+        this.utilsService.blockUIStop();
+      }, error => {
+        this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+        this.utilsService.blockUIStop();
+      });
+    }
   }
 }

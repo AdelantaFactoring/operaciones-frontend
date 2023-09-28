@@ -7,3 +7,8 @@ export const TABLAMAESTRA = {
   guardarRelacion: '/tablamaestrarelacion/guardar',
   eliminar: '/tablaMaestra/eliminar'
 }
+
+export const SUNAT = {
+  genToken: 'https://sistema.adelantafactoring.com/Sunat-Api/api/Sunat',
+  getDatos: 'https://sistema.adelantafactoring.com/Sunat-Api/api/Sunat/Consulta_RUC'
+}

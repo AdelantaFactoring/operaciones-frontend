@@ -141,13 +141,27 @@
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
+                <label>RUC <span style="color: red;">{{estadoContribuyente}}</span></label>
+                <div class="input-group">
+                  <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.ruc.errors }"
+                         class="form-control" formControlName="ruc" type="text"/>
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-primary" type="button" rippleEffect
+                            (click)="onConsultarSunat()">
+                      <i data-feather="search"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- <div class="form-group">
                 <label>RUC</label>
                 <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.ruc.errors }"
                        class="form-control" formControlName="ruc" type="text"/>
                 <div *ngIf="ReactiveIUForm.ruc.errors" class="invalid-feedback">
                   <div *ngIf="ReactiveIUForm.ruc.errors.required">* Campo obligatorio</div>
                 </div>
-              </div>
+              </div> -->
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
@@ -164,7 +178,7 @@
             </div>
             <div class="col-12 col-md-6">
               <div class="form-group">
-                <label>Dirección Principal</label>
+                <label>Dirección Principal <span style="color: red;">{{condicionDomicilio}}</span></label>
                 <input [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.direccionPrincipal.errors }"
                        class="form-control" formControlName="direccionPrincipal" type="text"/>
                 <div *ngIf="ReactiveIUForm.direccionPrincipal.errors" class="invalid-feedback">

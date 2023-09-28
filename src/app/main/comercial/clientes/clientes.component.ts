@@ -1,17 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import {UtilsService} from "../../../shared/services/utils.service";
-import {ClientesService} from "./clientes.service";
-import {Cliente} from "../../../shared/models/comercial/cliente";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ClienteContacto} from "../../../shared/models/comercial/cliente-contacto";
-import {ClienteCuenta} from "../../../shared/models/comercial/cliente-cuenta";
-import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
-import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
+import { Component, OnInit } from '@angular/core';
+import { UtilsService } from "../../../shared/services/utils.service";
+import { ClientesService } from "./clientes.service";
+import { Cliente } from "../../../shared/models/comercial/cliente";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ClienteContacto } from "../../../shared/models/comercial/cliente-contacto";
+import { ClienteCuenta } from "../../../shared/models/comercial/cliente-cuenta";
+import { TablaMaestra } from "../../../shared/models/shared/tabla-maestra";
+import { TablaMaestraService } from "../../../shared/services/tabla-maestra.service";
 import Swal from "sweetalert2";
-import {ClienteGastos} from "../../../shared/models/comercial/cliente-gastos";
-import {User} from "../../../shared/models/auth/user";
-import {ClienteCorreoFacturacion} from "../../../shared/models/comercial/cliente-correo-facturacion";
+import { ClienteGastos } from "../../../shared/models/comercial/cliente-gastos";
+import { User } from "../../../shared/models/auth/user";
+import { ClienteCorreoFacturacion } from "../../../shared/models/comercial/cliente-correo-facturacion";
+import { SunatService } from 'app/shared/services/sunat.service';
 
 @Component({
   selector: 'app-clientes',
@@ -43,6 +44,9 @@ export class ClientesComponent implements OnInit {
   public oldCorreosFacturacion: ClienteCorreoFacturacion;
 
   public search: string = '';
+
+  public estadoContribuyente: string = '';
+  public condicionDomicilio: string = '';
   //Paginación
   public collectionSize: number = 0;
   public pageSize: number = 10;
@@ -65,10 +69,11 @@ export class ClientesComponent implements OnInit {
   }
 
   constructor(private modalService: NgbModal,
-              private formBuilder: FormBuilder,
-              private utilsService: UtilsService,
-              private clienteService: ClientesService,
-              private tablaMaestraService: TablaMaestraService) {
+    private formBuilder: FormBuilder,
+    private utilsService: UtilsService,
+    private clienteService: ClientesService,
+    private tablaMaestraService: TablaMaestraService,
+    private sunatService: SunatService) {
     this.contentHeader = {
       headerTitle: 'Clientes',
       actionButton: true,
@@ -604,7 +609,7 @@ export class ClientesComponent implements OnInit {
 
     const correo = this.correosFacturacionForm.controls.correo.value;
     if (this.correosFacturacion.some(f => f.correo === correo)) {
-      this.utilsService.showNotification(`El correo ${correo} ya ha sido agregado`, 'Validación',2);
+      this.utilsService.showNotification(`El correo ${correo} ya ha sido agregado`, 'Validación', 2);
       return;
     }
 
@@ -697,11 +702,77 @@ export class ClientesComponent implements OnInit {
 
   onConfirmarCambioCorreoFacturacion(item: ClienteCorreoFacturacion): void {
     if (this.correosFacturacion.some(f => f.correo === item.correo && f.idFila != item.idFila)) {
-      this.utilsService.showNotification(`El correo ${item.correo} ya ha sido agregado`, 'Validación',2);
+      this.utilsService.showNotification(`El correo ${item.correo} ya ha sido agregado`, 'Validación', 2);
       return;
     }
 
     item.edicion = false;
     item.editado = true;
+  }
+
+  onConsultarSunat(): void {
+    if (this.ReactiveIUForm.ruc.value != '') {
+      this.utilsService.blockUIStart('Consultando...');
+
+      this.sunatService.getToken({
+        usuario: 'sunat',
+        clave: 'cX5sZnNpJf9gbhmPUL'
+      }).subscribe(response => {
+        if (response.ok) {
+
+          this.utilsService.showNotification('Token generado correctamente', 'Confirmación', 1);
+          this.sunatService.getData({
+            ruc: this.ReactiveIUForm.ruc.value,
+            token: response.data
+          }).subscribe(res => {
+            if (res.ok) {   
+              if (res.data.length) {
+                this.utilsService.showNotification('Datos obtenidos correctamente', 'Confirmación', 1);
+                this.ReactiveIUForm.razonSocial.setValue(res.data[0].nombreRazonSocial);
+
+                let direccion = `${res.data[0].nombreVia === '-' ? '' : res.data[0].nombreVia}
+                ${res.data[0].numero === '-' ? '' : 'Nro: ' + res.data[0].numero}
+                ${res.data[0].interior === '-' ? '' : 'Int: ' + res.data[0].interior}
+                ${res.data[0].manzana === '-' ? '' : 'Mz: ' + res.data[0].manzana}
+                ${res.data[0].lote === '-' ? '' : 'Lt: ' + res.data[0].lote}`;
+
+                direccion = direccion.replace(/[\n\r]/g, '').replace(/\s+/g, ' ');
+                
+                this.ReactiveIUForm.direccionPrincipal.setValue(direccion);
+                this.estadoContribuyente = ` ${res.data[0].estadoContribuyente === '' ? '' : '(' + res.data[0].estadoContribuyente + ')'}`;
+                this.condicionDomicilio = ` ${res.data[0].condicionDomicilio === '' ? '' : '(' + res.data[0].condicionDomicilio + ')'}`;
+              }
+              else
+              {
+                this.utilsService.showNotification(`No se encotrarón datos para el RUC: ${this.ReactiveIUForm.ruc.value}`, 'Alerta', 2);
+                this.ReactiveIUForm.razonSocial.setValue('');
+                this.ReactiveIUForm.direccionPrincipal.setValue('');
+                this.estadoContribuyente = '';
+                this.condicionDomicilio = '';
+              }
+              
+              this.utilsService.blockUIStop();
+            } else {
+              this.utilsService.showNotification(res.mensaje, 'Error', 3);
+            }
+    
+            this.utilsService.blockUIStop();
+          }, error => {
+            this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+            this.utilsService.blockUIStop();
+          });
+          this.utilsService.blockUIStop();
+        } else if (response.tipo === 2) {
+          this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+        } else {
+          this.utilsService.showNotification(response.mensaje, 'Error', 3);
+        }
+
+        this.utilsService.blockUIStop();
+      }, error => {
+        this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+        this.utilsService.blockUIStop();
+      });
+    }
   }
 }
