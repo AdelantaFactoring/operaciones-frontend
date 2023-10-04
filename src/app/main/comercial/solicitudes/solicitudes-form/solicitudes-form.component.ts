@@ -1,22 +1,23 @@
-import {AfterViewInit, Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {DatePipe, Location} from '@angular/common';
+import { AfterViewInit, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { DatePipe, Location } from '@angular/common';
 import Stepper from 'bs-stepper';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {UtilsService} from "../../../../shared/services/utils.service";
-import {SolicitudesFormService} from "./solicitudes-form.service";
-import {NgbModal, NgbCalendar, NgbDate} from "@ng-bootstrap/ng-bootstrap";
-import {FileItem, FileUploader, ParsedResponseHeaders} from 'ng2-file-upload';
-import {environment} from '../../../../../environments/environment';
-import {SOLICITUD} from "../../../../shared/helpers/url/comercial";
-import {SolicitudArchivos, SolicitudArchivosXlsx} from 'app/shared/models/comercial/SolicitudArchivos';
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UtilsService } from "../../../../shared/services/utils.service";
+import { SolicitudesFormService } from "./solicitudes-form.service";
+import { NgbModal, NgbCalendar, NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { FileItem, FileUploader, ParsedResponseHeaders } from 'ng2-file-upload';
+import { environment } from '../../../../../environments/environment';
+import { SOLICITUD } from "../../../../shared/helpers/url/comercial";
+import { SolicitudArchivos, SolicitudArchivosXlsx } from 'app/shared/models/comercial/SolicitudArchivos';
 import Swal from 'sweetalert2';
-import {SolicitudDetRespuesta} from 'app/shared/models/comercial/SolicitudDet-Respuesta';
-import {ItemsList} from '@ng-select/ng-select/lib/items-list';
-import {ClienteContacto} from 'app/shared/models/comercial/cliente-contacto';
-import {LOADIPHLPAPI} from 'dns';
-import {Router} from '@angular/router';
-import {User} from 'app/shared/models/auth/user';
-import {Comun} from "../../../../shared/models/shared/comun";
+import { SolicitudDetRespuesta } from 'app/shared/models/comercial/SolicitudDet-Respuesta';
+import { ItemsList } from '@ng-select/ng-select/lib/items-list';
+import { ClienteContacto } from 'app/shared/models/comercial/cliente-contacto';
+import { LOADIPHLPAPI } from 'dns';
+import { Router } from '@angular/router';
+import { User } from 'app/shared/models/auth/user';
+import { Comun } from "../../../../shared/models/shared/comun";
+import { SunatService } from 'app/shared/services/sunat.service';
 
 @Component({
   selector: 'app-solicitudes-form',
@@ -103,16 +104,16 @@ export class SolicitudesFormComponent implements OnInit {
   public igvCT: number = 0;
   public selectedRowIds: number[] = [];
   public selectBasic = [
-    {name: 'UK'},
-    {name: 'USA'},
-    {name: 'Spain'},
-    {name: 'France'},
-    {name: 'Italy'},
-    {name: 'Australia'}
+    { name: 'UK' },
+    { name: 'USA' },
+    { name: 'Spain' },
+    { name: 'France' },
+    { name: 'Italy' },
+    { name: 'Australia' }
   ];
   private horizontalWizardStepper: Stepper;
   public contacto: ClienteContacto[] = [];
-  public selectMulti = [{name: 'English'}, {name: 'French'}, {name: 'Spanish'}];
+  public selectMulti = [{ name: 'English' }, { name: 'French' }, { name: 'Spanish' }];
   public selectMultiSelected;
   public zeroPad = (num, places) => String(num).padStart(places, '0');
   public fechaPagoCT = this.calendar.getToday();
@@ -191,7 +192,8 @@ export class SolicitudesFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private location: Location,
     private calendar: NgbCalendar,
-    public router: Router) {
+    public router: Router,
+    private sunatService: SunatService) {
     this.contentHeader = {
       headerTitle: 'Solicitudes',
       actionButton: true,
@@ -303,22 +305,19 @@ export class SolicitudesFormComponent implements OnInit {
         if (row.titularCuentaBancariaDestino == null || row.monedaCuentaBancariaDestino == null || row.bancoDestino == null || row.tipoCuentaBancariaDestino == null
           || row.nombreContacto == null || row.telefonoContacto == null || row.correoContacto == null) {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
-          console.log('Primero');
 
           return;
         } else if (row.nroCuentaBancariaDestino == null && row.cCIDestino == null || row.nroCuentaBancariaDestino == '' && row.cCIDestino == '') {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
-          console.log('Segundo');
           return;
         } else if (row.titularCuentaBancariaDestino == '' || row.monedaCuentaBancariaDestino == '' || row.bancoDestino == '' || row.tipoCuentaBancariaDestino == ''
           || row.nombreContacto == '' || row.telefonoContacto == '' || row.correoContacto == '') {
           this.utilsService.showNotification('Completar los datos requeridos', 'Validación', 2);
-          console.log('Tercero');
           return;
         }
       }
     }
-    else{
+    else {
       for (const item of this.dataXml) {
         if (item.estadoDireccionCab == 0 || item.estadoUbigeoDet == 0 || item.estadoDireccionCab == 0 || item.estadoDireccionDet == 0) {
           this.utilsService.showNotification('Debe de completar toda la información requerida', 'Validación', 2);
@@ -606,7 +605,7 @@ export class SolicitudesFormComponent implements OnInit {
 
     let list = [];
     for (let item of this.uploader.queue) {
-      list.push({'name': item?.file?.name});
+      list.push({ 'name': item?.file?.name });
       nameXml = item?.file?.name.substring(0, item?.file?.name.length - 4);
 
       if (item?.file?.name.includes('.xml') || item?.file?.name.includes('.XML')) {
@@ -1026,7 +1025,7 @@ export class SolicitudesFormComponent implements OnInit {
     }
   }
 
-  onActualizarCampo(item, tipo): void{
+  onActualizarCampo(item, tipo): void {
     if (tipo == 1) {
       if (item.direccionCab != null && item.direccionCab != '') {
         item.estadoDireccionCab = 2;
@@ -1036,7 +1035,7 @@ export class SolicitudesFormComponent implements OnInit {
     }
     if (tipo == 2) {
       item.estadoUbigeoCab = 2;
-      if ( item.codigoUbigeoCab != null && item.codigoUbigeoCab != '' && item.codigoUbigeoCab.length == 6) {
+      if (item.codigoUbigeoCab != null && item.codigoUbigeoCab != '' && item.codigoUbigeoCab.length == 6) {
         item.estadoUbigeoCab = 2;
       } else {
         item.estadoUbigeoCab = 0;
@@ -1057,4 +1056,64 @@ export class SolicitudesFormComponent implements OnInit {
       }
     }
   }
+
+  async onConsultarSunat(): Promise<void> {
+    // dataXml
+    const response = await this.sunatService.genToken({
+      usuario: 'sunat',
+      clave: 'cX5sZnNpJf9gbhmPUL'
+    }).then((response) => response, error => [])
+      .catch(error => []);
+
+    if (response.data) {
+      this.utilsService.blockUIStart('Consultando...');
+      const responseClient = await this.sunatService.getData2({
+        ruc: this.ruc,
+        token: response.data
+      }).then((response) => response, error => [])
+        .catch(error => []);
+
+      for (const row of this.dataXml) {
+
+        const responseDet = await this.sunatService.getData2({
+          ruc: this.idTipoOperacion === 1 ? row.rucDet : row.rucCab,
+          token: response.data
+        }).then((response) => response, error => [])
+          .catch(error => []);
+
+        if (this.idTipoOperacion === 1) {
+          if (row.estadoUbigeoCab === 0 || row.estadoDireccionCab === 0) {
+            row.direccionCab = this.utilsService.getSunat_Direccion(responseClient.data[0]);
+            row.codigoUbigeoCab = responseClient.data[0].ubigeo;
+            row.estadoUbigeoCab = row.codigoUbigeoCab !== '' ? 2 : 0;
+            row.estadoDireccionCab = row.direccionCab !== '' ? 2 : 0;
+          }
+  
+          if (row.estadoUbigeoDet === 0 || row.estadoDireccionDet === 0) {
+            row.direccionDet = this.utilsService.getSunat_Direccion(responseDet.data[0]);
+            row.codigoUbigeoDet = responseDet.data[0].ubigeo;
+            row.estadoUbigeoDet = row.codigoUbigeoDet !== '' ? 2 : 0;
+            row.estadoDireccionDet = row.direccionDet !== '' ? 2 : 0;
+          }
+        }
+        else {
+          if (row.estadoUbigeoCab === 0 || row.estadoDireccionCab === 0) {
+            row.direccionCab = this.utilsService.getSunat_Direccion(responseDet.data[0]);
+            row.codigoUbigeoCab = responseDet.data[0].ubigeo;
+            row.estadoUbigeoCab = row.codigoUbigeoCab !== '' ? 2 : 0;
+            row.estadoDireccionCab = row.direccionCab !== '' ? 2 : 0;
+          }
+
+          if (row.estadoUbigeoDet === 0 || row.estadoDireccionDet === 0) {
+            row.direccionDet = this.utilsService.getSunat_Direccion(responseClient.data[0]);
+            row.codigoUbigeoDet = responseClient.data[0].ubigeo;
+            row.estadoUbigeoDet = row.codigoUbigeoDet !== '' ? 2 : 0;
+            row.estadoDireccionDet = row.direccionDet !== '' ? 2 : 0;
+          }
+        }
+      }
+      this.utilsService.blockUIStop();
+    }
+  }
+
 }

@@ -34,4 +34,26 @@ export class SunatService {
       }
     );
   }
+
+  async genToken(payload): Promise<any> {
+    return await this.requestMethod.postAsync(
+      `${SUNAT.genToken}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  async getData2(payload): Promise<any> {
+  
+    return await this.requestMethod.getAsync(
+      `${SUNAT.getDatos}`,
+      `?RUC=${payload.ruc}`,
+      {
+        'Content-Type': CONTENT_TYPE.json,
+        'Authorization': `Bearer ${payload.token}`
+      }
+    );
+  }
 }

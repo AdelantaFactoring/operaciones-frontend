@@ -240,7 +240,7 @@ export class UtilsService {
   descargarArchivo(url: string): void {
     this.requestMethod.get(url, null, {responseType: 'blob'})
       .subscribe((res: Response) => {
-        console.log(res);
+        // console.log(res);
         let a = document.createElement("a");
         a.href = URL.createObjectURL(res);
         console.log(a.href);
@@ -251,5 +251,24 @@ export class UtilsService {
 
   round(value: number): number {
     return Math.round((value + Number.EPSILON) * 100) / 100;
+  }
+
+  getSunat_Direccion(data: any): string {
+    if (data === null)
+      return null;
+
+      let direccion = `${data.tipoVia === '-' ? '' : data.tipoVia}
+      ${data.nombreVia === '-' ? '' : data.nombreVia}
+      ${data.numero === '-' ? '' : 'Nro: ' + data.numero}
+      ${data.codigoZona === '-' ? '' : data.codigoZona}
+      ${data.interior === '-' ? '' : 'Int: ' + data.interior}
+      ${data.manzana === '-' ? '' : 'Mz: ' + data.manzana}
+      ${data.lote === '-' ? '' : 'Lt: ' + data.lote}
+      ${data.tipoZona === '-' ? '' : data.tipoZona}
+      ${data.departamento === '-' ? '' : data.departamento}
+      ${data.provincia === '-' ? '' : '- ' + data.provincia}
+      ${data.distrito === '-' ? '' : '- ' + data.distrito}`;
+
+      return direccion = direccion.replace(/[\n\r]/g, '').replace(/\s+/g, ' ');
   }
 }

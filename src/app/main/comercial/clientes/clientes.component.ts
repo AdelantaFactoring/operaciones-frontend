@@ -721,7 +721,6 @@ export class ClientesComponent implements OnInit {
         clave: 'cX5sZnNpJf9gbhmPUL'
       }).subscribe(response => {
         if (response.ok) {
-
           this.utilsService.showNotification('Token generado correctamente', 'Confirmación', 1);
           this.sunatService.getData({
             ruc: this.ReactiveIUForm.ruc.value,
@@ -732,17 +731,10 @@ export class ClientesComponent implements OnInit {
                 this.utilsService.showNotification('Datos obtenidos correctamente', 'Confirmación', 1);
                 this.ReactiveIUForm.razonSocial.setValue(res.data[0].nombreRazonSocial);
 
-                let direccion = `${res.data[0].tipoVia === '-' ? '' : res.data[0].tipoVia}
-                ${res.data[0].nombreVia === '-' ? '' : res.data[0].nombreVia}
-                ${res.data[0].numero === '-' ? '' : 'Nro: ' + res.data[0].numero}
-                ${res.data[0].interior === '-' ? '' : 'Int: ' + res.data[0].interior}
-                ${res.data[0].manzana === '-' ? '' : 'Mz: ' + res.data[0].manzana}
-                ${res.data[0].lote === '-' ? '' : 'Lt: ' + res.data[0].lote}
-                ${res.data[0].tipoZona === '-' ? '' : res.data[0].tipoZona}`;
-
-                direccion = direccion.replace(/[\n\r]/g, '').replace(/\s+/g, ' ');
+                let direccion = this.utilsService.getSunat_Direccion(res.data[0]);
                 
                 this.ReactiveIUForm.direccionPrincipal.setValue(direccion.trim());
+                this.ReactiveIUForm.direccionFacturacion.setValue(direccion.trim());
                 this.estadoContribuyente = `${res.data[0].estadoContribuyente === '' ? '' : '(' + res.data[0].estadoContribuyente + ')'}`;
                 this.condicionDomicilio = `${res.data[0].condicionDomicilio === '' ? '' : '(' + res.data[0].condicionDomicilio + ')'}`;
               }
