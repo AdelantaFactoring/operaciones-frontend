@@ -1059,6 +1059,7 @@ export class SolicitudesFormComponent implements OnInit {
 
   async onConsultarSunat(): Promise<void> {
     // dataXml
+    this.utilsService.blockUIStart(`Consultando data cliente...`);
     const response = await this.sunatService.genToken({
       usuario: 'sunat',
       clave: 'cX5sZnNpJf9gbhmPUL'
@@ -1066,7 +1067,7 @@ export class SolicitudesFormComponent implements OnInit {
       .catch(error => []);
 
     if (response.data) {
-      this.utilsService.blockUIStart('Consultando...');
+      let count: number = 1;
       const responseClient = await this.sunatService.getData2({
         ruc: this.ruc,
         token: response.data
@@ -1075,6 +1076,7 @@ export class SolicitudesFormComponent implements OnInit {
 
       for (const row of this.dataXml) {
 
+        this.utilsService.blockUIStart(`Consultando data pagador/proveedor ${count} de ${this.dataXml.length}`);
         const responseDet = await this.sunatService.getData2({
           ruc: this.idTipoOperacion === 1 ? row.rucDet : row.rucCab,
           token: response.data
@@ -1082,38 +1084,52 @@ export class SolicitudesFormComponent implements OnInit {
           .catch(error => []);
 
         if (this.idTipoOperacion === 1) {
-          if (row.estadoUbigeoCab === 0 || row.estadoDireccionCab === 0) {
-            row.direccionCab = this.utilsService.getSunat_Direccion(responseClient.data[0]);
-            row.codigoUbigeoCab = responseClient.data[0].ubigeo;
+          if (row.estadoUbigeoCab === 0) {
+            row.codigoUbigeoCab = responseClient.data.length ? responseClient.data[0].ubigeo : '';
             row.estadoUbigeoCab = row.codigoUbigeoCab !== '' ? 2 : 0;
+          }
+
+          if (row.estadoDireccionCab === 0) {
+            row.direccionCab = this.utilsService.getSunat_Direccion(responseClient.data.length ? responseClient.data.length[0] : null);
             row.estadoDireccionCab = row.direccionCab !== '' ? 2 : 0;
           }
-  
-          if (row.estadoUbigeoDet === 0 || row.estadoDireccionDet === 0) {
-            row.direccionDet = this.utilsService.getSunat_Direccion(responseDet.data[0]);
-            row.codigoUbigeoDet = responseDet.data[0].ubigeo;
+
+          if (row.estadoUbigeoDet === 0) {
+            row.codigoUbigeoDet = responseDet.data.length ? responseDet.data[0].ubigeo : '';
             row.estadoUbigeoDet = row.codigoUbigeoDet !== '' ? 2 : 0;
+          }
+
+          if (row.estadoDireccionDet === 0) {
+            row.direccionDet = this.utilsService.getSunat_Direccion(responseDet.data.length ? responseDet.data[0] : null);
             row.estadoDireccionDet = row.direccionDet !== '' ? 2 : 0;
           }
         }
         else {
-          if (row.estadoUbigeoCab === 0 || row.estadoDireccionCab === 0) {
-            row.direccionCab = this.utilsService.getSunat_Direccion(responseDet.data[0]);
-            row.codigoUbigeoCab = responseDet.data[0].ubigeo;
+          if (row.estadoUbigeoCab === 0) {
+            row.codigoUbigeoCab = responseDet.data.length ? responseDet.data[0].ubigeo : '';
             row.estadoUbigeoCab = row.codigoUbigeoCab !== '' ? 2 : 0;
+          }
+
+          if (row.estadoDireccionCab === 0) {
+            row.direccionCab = this.utilsService.getSunat_Direccion(responseDet.data.length ? responseDet.data[0] : null);
             row.estadoDireccionCab = row.direccionCab !== '' ? 2 : 0;
           }
 
-          if (row.estadoUbigeoDet === 0 || row.estadoDireccionDet === 0) {
-            row.direccionDet = this.utilsService.getSunat_Direccion(responseClient.data[0]);
-            row.codigoUbigeoDet = responseClient.data[0].ubigeo;
+          if (row.estadoUbigeoDet === 0) {
+            row.codigoUbigeoDet = responseClient.data.length ? responseClient.data[0].ubigeo : '';
             row.estadoUbigeoDet = row.codigoUbigeoDet !== '' ? 2 : 0;
+          }
+
+          if (row.estadoDireccionDet === 0) {
+            row.direccionDet = this.utilsService.getSunat_Direccion(responseClient.data.length ? responseClient.data[0] : null);
             row.estadoDireccionDet = row.direccionDet !== '' ? 2 : 0;
           }
         }
+        count++;
+        this.utilsService.blockUIStop();
       }
-      this.utilsService.blockUIStop();
     }
+    this.utilsService.blockUIStop();
   }
 
 }

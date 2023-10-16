@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
-import {Router} from '@angular/router';
-import {BlockUI, NgBlockUI} from 'ng-block-ui';
-import {ToastrService} from 'ngx-toastr';
-import {Menu} from '../models/auth/user';
-import {FormControl} from "@angular/forms";
-import {TablaMaestra} from "../models/shared/tabla-maestra";
-import {RequestMethod} from "../helpers/request-method";
-import {Observable} from "rxjs";
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { ToastrService } from 'ngx-toastr';
+import { Menu } from '../models/auth/user';
+import { FormControl } from "@angular/forms";
+import { TablaMaestra } from "../models/shared/tabla-maestra";
+import { RequestMethod } from "../helpers/request-method";
+import { Observable } from "rxjs";
 
 class Mes {
   idMes: number;
@@ -206,7 +206,7 @@ export class UtilsService {
   nameValidator(control: FormControl): { [key: string]: boolean } {
     const nameRegexp: RegExp = /[!@#$%^&*()_+\=\[\]{};:"\\|,<>\/?]/;
     if (control.value && nameRegexp.test(control.value)) {
-      return {invalidName: true};
+      return { invalidName: true };
     }
   }
 
@@ -238,7 +238,7 @@ export class UtilsService {
   }
 
   descargarArchivo(url: string): void {
-    this.requestMethod.get(url, null, {responseType: 'blob'})
+    this.requestMethod.get(url, null, { responseType: 'blob' })
       .subscribe((res: Response) => {
         // console.log(res);
         let a = document.createElement("a");
@@ -255,9 +255,9 @@ export class UtilsService {
 
   getSunat_Direccion(data: any): string {
     if (data === null)
-      return null;
+      return '';
 
-      let direccion = `${data.tipoVia === '-' ? '' : data.tipoVia}
+    let direccion = `${data.tipoVia === '-' ? '' : data.tipoVia}
       ${data.nombreVia === '-' ? '' : data.nombreVia}
       ${data.numero === '-' ? '' : 'Nro: ' + data.numero}
       ${data.codigoZona === '-' ? '' : data.codigoZona}
@@ -269,6 +269,6 @@ export class UtilsService {
       ${data.provincia === '-' ? '' : '- ' + data.provincia}
       ${data.distrito === '-' ? '' : '- ' + data.distrito}`;
 
-      return direccion = direccion.replace(/[\n\r]/g, '').replace(/\s+/g, ' ');
+    return direccion = direccion.replace(/[\n\r]/g, '').replace(/\s+/g, ' ');
   }
 }
