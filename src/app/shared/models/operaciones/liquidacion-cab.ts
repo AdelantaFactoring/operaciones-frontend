@@ -11,6 +11,7 @@ export class LiquidacionCab {
   idCliente: number;
   rucCliente: string;
   razonSocialCliente: string;
+  direccionFacturacionCliente: string;
   rucPagProv: string;
   razonSocialPagProv: string;
   moneda: string;

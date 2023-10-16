@@ -70,30 +70,33 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    RespuestaPagadorComponent,
-    ConsultaFactrackComponent,
-    LiquidacionesComponent,
-    GenerarLiquidacionComponent,
-    LiquidacionesDetalleComponent,
-    CavaliComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    NgbModule,
-    CoreCommonModule,
-    BlockUIModule.forRoot(),
-    ContentHeaderModule,
-    CoreTouchspinModule,
-    NgSelectModule,
-    NgxMaskModule.forRoot(),
-    NgxDatatableModule,
-    FileUploadModule,
-    PerfectScrollbarModule,
-    CoreCardModule,
-    MiscellaneousModule,
-    PagesModule
-  ]
+    declarations: [
+        RespuestaPagadorComponent,
+        ConsultaFactrackComponent,
+        LiquidacionesComponent,
+        GenerarLiquidacionComponent,
+        LiquidacionesDetalleComponent,
+        CavaliComponent,
+    ],
+    exports: [
+        LiquidacionesComponent
+    ],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        NgbModule,
+        CoreCommonModule,
+        BlockUIModule.forRoot(),
+        ContentHeaderModule,
+        CoreTouchspinModule,
+        NgSelectModule,
+        NgxMaskModule.forRoot(),
+        NgxDatatableModule,
+        FileUploadModule,
+        PerfectScrollbarModule,
+        CoreCardModule,
+        MiscellaneousModule,
+        PagesModule
+    ]
 })
 export class OperacionesModule { }

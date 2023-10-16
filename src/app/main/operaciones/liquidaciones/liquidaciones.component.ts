@@ -1,4 +1,11 @@
-import {AfterViewInit, Component, ElementRef, OnChanges, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef, EventEmitter,
+  Input,
+  OnInit, Output,
+  ViewChild,
+} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {SolicitudCab} from "../../../shared/models/comercial/solicitudCab";
@@ -31,8 +38,10 @@ import {CheckListService} from "../../comercial/check-list/check-list.service";
   //encapsulation: ViewEncapsulation.None
 })
 export class LiquidacionesComponent implements OnInit, AfterViewInit {
+  @Input() isModal: boolean = false;
   @ViewChild('coreCard') coreCard;
   @ViewChild('desdeFC') desdeFC: ElementRef;
+  @Output() selectEvent: EventEmitter<LiquidacionCab> = new EventEmitter<LiquidacionCab>();
 
   public currentUser: User;
   public mostrar: string = 'false';
@@ -1047,5 +1056,9 @@ export class LiquidacionesComponent implements OnInit, AfterViewInit {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();
     });
+  }
+
+  onSelect(cab: LiquidacionCab): void {
+    this.selectEvent.emit(cab);
   }
 }
