@@ -8,7 +8,6 @@ import {ClienteCuenta} from 'app/shared/models/comercial/cliente-cuenta';
 import {LiquidacionCab} from 'app/shared/models/operaciones/liquidacion-cab';
 import {LiquidacionDet} from 'app/shared/models/operaciones/liquidacion-det';
 import {LiquidacionCabSustento} from 'app/shared/models/operaciones/LiquidacionCab-Sustento';
-import {LiquidacionCabSeleccionados} from 'app/shared/models/operaciones/liquidacionCab_Seleccionados';
 import {TablaMaestra} from 'app/shared/models/shared/tabla-maestra';
 import {TablaMaestraService} from 'app/shared/services/tabla-maestra.service';
 import {UtilsService} from 'app/shared/services/utils.service';
