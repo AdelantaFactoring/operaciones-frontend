@@ -402,6 +402,23 @@
           </div>
           <div class="modal-body" ngbAutofocus tabindex="0">
             <form [formGroup]="documentoForm">
+              <div class="row">
+                <div class="col-md-6 col-12">
+                  <div class="form-group">
+                    <label>N° Liquidación</label>
+                    <div class="input-group">
+                      <input class="form-control" formControlName="codigoLiquidacion" type="text" readonly/>
+                      <div class="input-group-append" *ngIf="ver">
+                        <button class="btn btn-outline-secondary feather"
+                                rippleEffect type="button" (click)="onBuscarLiquidacion(modalLIQUIDACION)">
+                        <span ngbTooltip="Buscar Liquidación" placement="left"
+                              container="body" [data-feather]="'search'"></span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="row spaced">
                 <div class="col-12">
                   <div class="divider divider-info">
@@ -554,7 +571,7 @@
                 </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
-                    <label>RUC (Cliente)</label>
+                    <label>RUC (Cliente / Pagador)</label>
                     <div class="input-group">
                       <input class="form-control" formControlName="rucCliente" type="text"
                              [readonly]="this.ReactiveIUForm.idCliente.value != 0 ? true: null"
@@ -562,7 +579,7 @@
                       <div *ngIf="ver" class="input-group-append">
                         <button class="btn btn-outline-secondary feather"
                                 rippleEffect type="button" (click)="onBuscarCliente(modalCLIENTE)">
-                        <span ngbTooltip="Buscar Liquidación" placement="left"
+                        <span ngbTooltip="Buscar Cliente" placement="left"
                               container="body" [data-feather]="'search'"></span>
                         </button>
                       </div>
@@ -574,7 +591,7 @@
                 </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
-                    <label>Razón Social (Cliente)</label>
+                    <label>Razón Social (Cliente / Pagador)</label>
                     <input class="form-control" formControlName="razonSocialCliente" type="text"
                            [readonly]="this.ReactiveIUForm.idCliente.value != 0 ? true: null"
                            [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.razonSocialCliente.errors }"/>
@@ -585,7 +602,7 @@
                 </div>
                 <div class="col-md-6 col-12">
                   <div class="form-group">
-                    <label>Dirección (Cliente)</label>
+                    <label>Dirección (Cliente / Pagador)</label>
                     <input class="form-control" formControlName="direccionCliente" type="text"
                            [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.direccionCliente.errors }"/>
                     <div *ngIf="ReactiveIUForm.direccionCliente.errors" class="invalid-feedback">
@@ -1245,6 +1262,27 @@
             </div>
           </div>
         </ng-template>
+
+        <ng-template #modalLIQUIDACION let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Liquidación(es)</h4>
+          </div>
+          <div class="modal-body">
+            <app-liquidaciones [isModal]="true" (selectEvent)="onSelectLiquidacion($event, modal)"></app-liquidaciones>
+          </div>
+          <div class="modal-footer">
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div style="float: right">
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelarModal(modal)">
+                    <span [data-feather]="'x-circle'"></span> Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
         <block-ui></block-ui>
       </div>
     </div>

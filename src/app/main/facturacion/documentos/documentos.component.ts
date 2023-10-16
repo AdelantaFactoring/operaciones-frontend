@@ -4,7 +4,7 @@ import {DocumentosService} from "./documentos.service";
 import {LiquidacionDocumentoCab} from "../../../shared/models/facturacion/liquidaciondocumento-cab";
 import {LiquidacionDocumentoDet} from "../../../shared/models/facturacion/liquidaciondocumento-det";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {TablaMaestra} from "../../../shared/models/shared/tabla-maestra";
 import {TablaMaestraService} from "../../../shared/services/tabla-maestra.service";
 import Swal from "sweetalert2";
@@ -15,6 +15,7 @@ import {MaestrosService} from "../../catalogos/maestros/maestros.service";
 import {TablaMaestraRelacion} from "../../../shared/models/shared/tabla-maestra-relacion";
 import {ContentHeader} from "../../../layout/components/content-header/content-header.component";
 import {__spreadArray} from 'tslib';
+import {LiquidacionCab} from "../../../shared/models/operaciones/liquidacion-cab";
 
 @Component({
   selector: 'app-documentos',
@@ -153,7 +154,7 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
       // tipoNota: [null],
       // motivo: [''],
       idCliente: [0],
-      // codigo: [{value: '', disabled: true}],
+      codigoLiquidacion: [{value: '', disabled: true}],
       // codigoSolicitud: [{value: '', disabled: true}],
       rucCliente: ['', Validators.required],
       razonSocialCliente: ['', Validators.required],
@@ -439,6 +440,7 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
     this.igv = cab.igv;
     this.ReactiveIUForm.idLiquidacionDocumentoCab.setValue(cab.idLiquidacionDocumentoCab);
     this.ReactiveIUForm.idLiquidacionCab.setValue(cab.idLiquidacionCab);
+    this.ReactiveIUForm.codigoLiquidacion.setValue(cab.codigo);
     this.ReactiveIUForm.tipoDocumento.disable();
     this.ReactiveIUForm.tipoDocumento.setValue(cab.idTipoDocumento);
     this.ReactiveIUForm.prefijo.setValue(cab.prefijo);
@@ -1148,6 +1150,42 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
         });
       }
     });
+  }
+
+  onBuscarLiquidacion(modal: NgbModal): void {
+    this.modalService.open(modal, {
+      scrollable: true,
+      backdrop: 'static',
+      windowClass: 'my-class',
+      animation: true,
+      //size: 'lg',
+    });
+  }
+
+  onCancelarModal(modal: NgbModalRef): void {
+    modal.close();
+  }
+
+  onSelectLiquidacion($event: LiquidacionCab, modal: NgbModalRef): void {
+    const {
+      idLiquidacionCab,
+      codigo: codigoLiquidacion,
+      idCliente,
+      rucCliente,
+      razonSocialCliente,
+      direccionFacturacionCliente: direccionCliente
+    } = $event;
+    const patchValues = {
+      idLiquidacionCab,
+      codigoLiquidacion,
+      idCliente,
+      rucCliente,
+      razonSocialCliente,
+      direccionCliente
+    };
+    this.documentoForm.patchValue(patchValues);
+    this.utilsService.showNotification(`Liquidación ${codigoLiquidacion} seleccionada`, 'Información', 4);
+    modal.close();
   }
 }
 
