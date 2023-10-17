@@ -44,7 +44,9 @@ export class LiquidacionCab {
   netoConfirmadoTotal: number;
   interesRestanteServicioTotal: number;
   pagoTotal: number;
+  pagoCompletoTotal: number;
   saldoTotal: number;
+  saldoCompletoTotal: number;
   porcentajePagoTotal: number;
   idUsuarioAud: number;
   edicion: boolean = false;

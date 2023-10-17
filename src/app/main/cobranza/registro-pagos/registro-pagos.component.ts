@@ -890,4 +890,12 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   onCambioTipoRegistro($event: any): void {
     this.pagoPersonalizado = !this.pagoPersonalizado
   }
+
+  onSumatoria(liquidacionDet: LiquidacionDet[], field: string): number {
+    if (field === 'diasMora') {
+      return liquidacionDet.reduce((a, b) => Math.max(a, b[field] || 0), 0);
+    }
+
+    return liquidacionDet.reduce((a, b) => a + (b[field] || 0), 0);
+  }
 }
