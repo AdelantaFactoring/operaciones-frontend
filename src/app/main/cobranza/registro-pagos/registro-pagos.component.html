@@ -187,8 +187,8 @@
                   <th rowspan="2">IGV restante total (servicio)</th>
                   <th rowspan="2">Pago Total (Capital)</th>
                   <th rowspan="2">Saldo Total (Capital)</th>
-                  <!--                  <th>Progreso Pago Total</th>-->
-                  <!--                  <th>Tipo Operación</th>-->
+                  <th rowspan="2">Pago Total</th>
+                  <th rowspan="2">Saldo Deuda Total</th>
                   <th rowspan="2">Estado</th>
                   <th rowspan="2">¿Intereses y <br> gastos
                     pagados? <br> (Confirming)
@@ -267,14 +267,8 @@
                     <td>{{cab.interesRestanteServicioTotal | number: '1.2-2'}}</td>
                     <td>{{cab.pagoTotal | number: '1.2-2'}}</td>
                     <td>{{saldo(cab.saldoTotal) | number: '1.2-2'}}</td>
-                    <!--                    <td>-->
-                    <!--                      <div class="progress-wrapper">-->
-                    <!--                        <div class="mb-25 text-center">{{porcentajePagoTotal(cab.porcentajePagoTotal)}}%</div>-->
-                    <!--                        <ngb-progressbar [striped]="true" [animated]="true" type="primary"-->
-                    <!--                                         [value]="porcentajePagoTotal(cab.porcentajePagoTotal)"></ngb-progressbar>-->
-                    <!--                      </div>-->
-                    <!--                    </td>-->
-                    <!--                    <td>{{cab.tipoOperacion}}</td>-->
+                    <td>{{cab.pagoCompletoTotal | number: '1.2-2'}}</td>
+                    <td>{{saldo(cab.saldoCompletoTotal) | number: '1.2-2'}}</td>
                     <td>{{cab.estado}}</td>
                     <td>{{(cab.idTipoOperacion == 3) ? ((cab.flagPagoInteresConfirming) ? 'Sí' : 'No') : '-'}}</td>
                     <td>{{cab.usuarioCreacion}}</td>
@@ -283,7 +277,7 @@
                     <td>{{cab.fechaModificacion}}</td>
                   </tr>
                   <tr id="{{ 'trL' + cab.idLiquidacionCab }}" style="visibility: collapse">
-                    <td [colSpan]="20">
+                    <td [colSpan]="22">
                       <div class="row" *ngIf="mostrar === 'true'">
                         <div class="d-flex flex-wrap mb-0">
                           <div class="p-1">
@@ -327,15 +321,34 @@
                               <th class="detail-th-color">IGV restante (servicio)</th>
                               <th class="detail-th-color">Día(s) Mora</th>
                               <th class="detail-th-color">Pago (Capital)</th>
-                              <th class="detail-th-color">Interés</th>
-                              <th class="detail-th-color">Gastos</th>
-                              <th class="detail-th-color">Saldo (Capital)</th>
-                              <!--                              <th *ngIf="cab.idTipoOperacion == 3" class="detail-th-color">¿Intereses y <br> gastos-->
-                              <!--                                pagados? <br> (Confirming)-->
-                              <!--                              </th>-->
+                              <th class="detail-th-color">Interés Mora</th>
+                              <th class="detail-th-color">Gastos Mora</th>
+                              <th class="detail-th-color">Pago Total</th>
+                              <th class="detail-th-color">Saldo Deuda (Capital)</th>
+                              <th class="detail-th-color">Saldo Deuda Total</th>
                             </tr>
                             </thead>
                             <tbody>
+                            <tr class="sumatoria" *ngIf="cab.liquidacionDet.length > 1">
+                                <td [colSpan]="
+                                  cab.idTipoOperacion === 3 && cab.verOpcionesPagoDetalle && mostrar === 'true' ? 9 :
+                                  cab.idTipoOperacion === 3 && !cab.verOpcionesPagoDetalle && mostrar === 'true' ? 7 :
+                                  cab.idTipoOperacion !== 3 && cab.verOpcionesPagoDetalle && mostrar === 'true' ? 7 :
+                                  cab.idTipoOperacion !== 3 && !cab.verOpcionesPagoDetalle && mostrar === 'true' ? 5 :
+                                  cab.idTipoOperacion === 3 && !cab.verOpcionesPagoDetalle && mostrar !== 'true' ? 6 :
+                                  cab.idTipoOperacion !== 3 && !cab.verOpcionesPagoDetalle && mostrar !== 'true' ? 4 : 0
+                                "><i>Total:</i></td>
+                              <td><i>{{onSumatoria(cab.liquidacionDet, 'netoConfirmado') | number: '1.2-2'}}</i></td>
+                              <td *ngIf="cab.flagAdelanto"><i>{{onSumatoria(cab.liquidacionDet, 'netoConfirmadoOriginal') | number: '1.2-2'}}</i></td>
+                              <td><i>{{onSumatoria(cab.liquidacionDet, 'interesRestanteServicio') | number: '1.2-2'}}</i></td>
+                              <td><i>{{onSumatoria(cab.liquidacionDet, 'diasMora') | number: '1.0'}}</i></td>
+                              <td><i>{{onSumatoria(cab.liquidacionDet, 'pago') | number: '1.2-2'}}</i></td>
+                              <td><i>{{onSumatoria(cab.liquidacionDet, 'interesPago') | number: '1.2-2'}}</i></td>
+                              <td><i>{{onSumatoria(cab.liquidacionDet, 'gastosPago') | number: '1.2-2'}}</i></td>
+                              <td><i>{{onSumatoria(cab.liquidacionDet, 'pagoCompleto') | number: '1.2-2'}}</i></td>
+                              <td><i>{{onSumatoria(cab.liquidacionDet, 'saldo') | number: '1.2-2'}}</i></td>
+                              <td><i>{{onSumatoria(cab.liquidacionDet, 'saldoCompleto') | number: '1.2-2'}}</i></td>
+                            </tr>
                             <tr *ngFor="let item of cab.liquidacionDet">
                               <td *ngIf="mostrar === 'true'">
                                 <div class="custom-control custom-checkbox">
@@ -404,7 +417,7 @@
                               <td
                                 [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.netoConfirmado | number: '1.2-2'}}</td>
                               <td *ngIf="cab.flagAdelanto"
-                                [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.netoConfirmadoOriginal | number: '1.2-2'}}</td>
+                                  [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.netoConfirmadoOriginal | number: '1.2-2'}}</td>
                               <td
                                 [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.interesRestanteServicio | number: '1.2-2'}}</td>
                               <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.diasMora}}</td>
@@ -416,8 +429,10 @@
                                 [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.gastosPago | number: '1.2-2'}}</td>
                               <td
                                 [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{saldo(item.saldo) | number: '1.2-2'}}</td>
-                              <!--                              <td *ngIf="cab.idTipoOperacion == 3"-->
-                              <!--                                  [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{(item.flagPagoInteresConfirming) ? 'Sí' : 'No'}}</td>-->
+                              <td
+                                [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.pagoCompleto | number: '1.2-2'}}</td>
+                              <td
+                                [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{saldo(item.saldoCompleto) | number: '1.2-2'}}</td>
                             </tr>
                             </tbody>
                           </table>
@@ -677,7 +692,8 @@
                     <ngb-alert [type]="'warning'"
                                [dismissible]="false">
                       <div class="alert-body" style="font-size: 13px !important;">
-                        <i [data-feather]="'alert-triangle'"></i> El pago personalizado es considerado como pago final, no permite registrar pago parcial.
+                        <i [data-feather]="'alert-triangle'"></i> El pago personalizado es considerado como pago final,
+                        no permite registrar pago parcial.
                       </div>
                     </ngb-alert>
                   </div>

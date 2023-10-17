@@ -47,7 +47,9 @@ export class LiquidacionDet {
   montoDesembolso: number;
   diasMora: number;
   pago: number;
+  pagoCompleto: number;
   saldo: number;
+  saldoCompleto: number;
   porcentajePago: number;
   interesPago: number;
   gastosPago: number;
