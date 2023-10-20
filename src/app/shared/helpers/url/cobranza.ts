@@ -1,5 +1,6 @@
 export const REGISTROPAGOS = {
   listar: '/liquidacion/listar',
+  obtenerSumatoria: '/liquidacion/obtenerSumatoria',
   listarPago: '/liquidacion/listarPago',
   obtenerEstadoPagoFactoringRegular: '/liquidacion/obtenerEstadoPagoFactoringRegular',
   generarComprobanteEspecialFactoringRegular: '/liquidacion/generarComprobanteEspecialFactoringRegular',

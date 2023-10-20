@@ -23,8 +23,21 @@ export class RegistroPagosService {
       `${environment.apiUrl}${REGISTROPAGOS.listar}`,
       `?idConsulta=${payload.idConsulta}&codigoLiquidacion=${payload.codigoLiquidacion}&codigoSolicitud=${payload.codigoSolicitud}` +
       `&cliente=${payload.cliente}&pagProv=${payload.pagProv}&moneda=${payload.moneda}&idTipoOperacion=${payload.idTipoOperacion}&idEstado=${payload.idEstado}` +
-      `&netoConfirmadoTotal=${payload.netoConfirmadoTotal}&pagProvDet=${payload.pagProvDet}&nroDocumento=${payload.nroDocumento}&fechaOperacion=${payload.fechaOperacion}` +
+      `&pagProvDet=${payload.pagProvDet}&nroDocumento=${payload.nroDocumento}&fechaConfirmadaDesde=${payload.fechaConfirmadaDesde}&fechaConfirmadaHasta=${payload.fechaConfirmadaHasta}` +
       `&netoConfirmado=${payload.netoConfirmado}&search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  obtenerSumatoria(payload): Observable<any> {
+    return this.requestMethod.get(
+      `${environment.apiUrl}${REGISTROPAGOS.obtenerSumatoria}`,
+      `?idConsulta=${payload.idConsulta}&codigoLiquidacion=${payload.codigoLiquidacion}&codigoSolicitud=${payload.codigoSolicitud}` +
+      `&cliente=${payload.cliente}&pagProv=${payload.pagProv}&moneda=${payload.moneda}&idTipoOperacion=${payload.idTipoOperacion}&idEstado=${payload.idEstado}` +
+      `&pagProvDet=${payload.pagProvDet}&nroDocumento=${payload.nroDocumento}&fechaConfirmadaDesde=${payload.fechaConfirmadaDesde}&fechaConfirmadaHasta=${payload.fechaConfirmadaHasta}` +
+      `&netoConfirmado=${payload.netoConfirmado}&search=${payload.search}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

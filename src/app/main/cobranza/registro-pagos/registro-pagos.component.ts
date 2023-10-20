@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {LiquidacionCab} from "../../../shared/models/operaciones/liquidacion-cab";
 import {UtilsService} from "../../../shared/services/utils.service";
 import {RegistroPagosService} from "./registro-pagos.service";
@@ -15,13 +15,23 @@ import {
 import Swal from "sweetalert2";
 import {ActivatedRoute} from "@angular/router";
 import {ContentHeader} from "../../../layout/components/content-header/content-header.component";
+import {Subscription} from "rxjs";
+
+interface Sumatoria {
+  netoConfirmadoTotal: number;
+  interesRestanteServicioTotal: number;
+  pagoTotal: number;
+  pagoCompletoTotal: number;
+  saldoTotal: number;
+  saldoCompletoTotal: number;
+};
 
 @Component({
   selector: 'app-registro-pagos',
   templateUrl: './registro-pagos.component.html',
   styleUrls: ['./registro-pagos.component.scss']
 })
-export class RegistroPagosComponent implements OnInit, AfterViewInit {
+export class RegistroPagosComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('coreCard') coreCard;
 
   public currentUser: User;
@@ -67,6 +77,16 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   private seleccionarTodoInicioPagos: boolean = false;
 
   public pagoPersonalizado: boolean = false;
+  private sumatoria: Sumatoria = {
+    netoConfirmadoTotal: 0,
+    interesRestanteServicioTotal: 0,
+    pagoTotal: 0,
+    pagoCompletoTotal: 0,
+    saldoTotal: 0,
+    saldoCompletoTotal: 0
+  };
+  public sumatoriaLoading: boolean = false;
+  private subObSum: Subscription;
 
   get ReactiveIUForm() {
     return this.pagoInfoForm.controls;
@@ -155,7 +175,8 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       estado: [0],
       pagadorProveedorDet: [''],
       nroDocumento: [''],
-      fechaOperacion: [null],
+      fechaConfirmadaDesde: [null],
+      fechaConfirmadaHasta: [null],
       netoConfirmado: [0]
     });
     this.oldFiltroForm = this.filtroForm.value;
@@ -168,6 +189,12 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       monto_PAI: [{value: 0, disabled: true}, [Validators.required, Validators.min(1)]],
       observacion_PAI: ['']
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subObSum) {
+      this.subObSum.unsubscribe();
+    }
   }
 
   async ngOnInit(): Promise<void> {
@@ -192,6 +219,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
         this.filtroForm.controls.estado.enable();
       }
       this.onListarCobranza();
+      this.obtenerSumatoria();
     });
   }
 
@@ -225,7 +253,8 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
       netoConfirmadoTotal: 0,
       pagProvDet: this.filtroForm.controls.pagadorProveedorDet.value,
       nroDocumento: this.filtroForm.controls.nroDocumento.value,
-      fechaOperacion: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaOperacion.value) ?? "",
+      fechaConfirmadaDesde: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaConfirmadaDesde.value) ?? "",
+      fechaConfirmadaHasta: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaConfirmadaHasta.value) ?? "",
       netoConfirmado: this.filtroForm.controls.netoConfirmado.value === '' ? 0 : this.filtroForm.controls.netoConfirmado.value,
       search: this.search,
       pageIndex: this.page,
@@ -240,15 +269,37 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     }
 
     this.utilsService.blockUIStop();
+  }
 
-    //   .subscribe((response: LiquidacionCab[]) => {
-    //   this.cobranza = response;
-    //   this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
-    //   this.utilsService.blockUIStop();
-    // }, error => {
-    //   this.utilsService.blockUIStop();
-    //   this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
-    // });
+  private obtenerSumatoria(): void {
+    if (this.subObSum) {
+      this.subObSum.unsubscribe();
+    }
+
+    this.sumatoriaLoading = true;
+    this.subObSum = this.registroPagosService.obtenerSumatoria({
+      idConsulta: this.mostrar === 'true' ? 3 : 4,
+      codigoLiquidacion: this.filtroForm.controls.codigoLiquidacion.value,
+      codigoSolicitud: this.filtroForm.controls.codigoSolicitud.value,
+      cliente: this.filtroForm.controls.cliente.value,
+      pagProv: this.filtroForm.controls.pagadorProveedor.value,
+      moneda: this.filtroForm.controls.moneda.value,
+      idTipoOperacion: this.filtroForm.controls.tipoOperacion.value,
+      idEstado: this.filtroForm.controls.estado.value,
+      netoConfirmadoTotal: 0,
+      pagProvDet: this.filtroForm.controls.pagadorProveedorDet.value,
+      nroDocumento: this.filtroForm.controls.nroDocumento.value,
+      fechaConfirmadaDesde: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaConfirmadaDesde.value) ?? "",
+      fechaConfirmadaHasta: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaConfirmadaHasta.value) ?? "",
+      netoConfirmado: this.filtroForm.controls.netoConfirmado.value === '' ? 0 : this.filtroForm.controls.netoConfirmado.value,
+      search: this.search
+    }).subscribe((response: Sumatoria) => {
+      this.sumatoria = response;
+      this.sumatoriaLoading = false;
+    }, error => {
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+      this.sumatoriaLoading = false;
+    });
   }
 
   onCambiarVisibilidadDetalleTodo(): void {
@@ -433,6 +484,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     this.pagoPersonalizado = false;
 
     await this.onListarCobranza();
+    this.obtenerSumatoria();
     setTimeout(() => {
       for (const item of this.cobranza) {
         if (this.idsLiquidacionCab.some(a => a == item.idLiquidacionCab)) {
@@ -534,8 +586,12 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
     return value < 0 ? 0 : value;
   }
 
-  onCambioFechaOperacion(): void {
-    this.filtroForm.controls.fechaOperacion.setValue(null);
+  onCambioFechaConfirmada(desde: boolean): void {
+    if (desde) {
+      this.filtroForm.controls.fechaConfirmadaDesde.setValue(null);
+    } else {
+      this.filtroForm.controls.fechaConfirmadaHasta.setValue(null);
+    }
   }
 
   onLimpiarFiltro($event): void {
@@ -547,11 +603,13 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
   onRefrescar(): void {
     this.idsLiquidacionCab = [];
     this.onListarCobranza();
+    this.obtenerSumatoria();
   }
 
   onBuscar(): void {
     this.idsLiquidacionCab = [];
     this.onListarCobranza();
+    this.obtenerSumatoria();
   }
 
   onShowInicioPagos(modal: NgbModal, cab: LiquidacionCab): void {
@@ -668,6 +726,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
           this.utilsService.blockUIStop();
 
           this.onListarCobranza();
+          this.obtenerSumatoria();
         }, error => {
           this.utilsService.blockUIStop();
           this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
@@ -728,6 +787,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
         await this.onGenerarComprobanteEspecialFactoringRegular(this.idLiquidacionCab);
 
         await this.onListarCobranza();
+        this.obtenerSumatoria();
         setTimeout(() => {
           for (const item of this.cobranza) {
             if (this.idsLiquidacionCab.some(a => a == item.idLiquidacionCab)) {
@@ -823,6 +883,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit {
           this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
           this.utilsService.blockUIStop();
           this.onListarCobranza();
+          this.obtenerSumatoria();
           break;
         case 2:
           this.utilsService.showNotification(response.mensaje, 'Alerta', 2);

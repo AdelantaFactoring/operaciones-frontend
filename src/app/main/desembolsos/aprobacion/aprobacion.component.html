@@ -71,35 +71,55 @@
                 <div class="divider-text">Liquidación - Detalle</div>
               </div>
             </div>
-            <div class="col-md-4 col-12">
+            <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Pag. / Prov. (RUC o Razón Social)</label>
                 <input class="form-control" formControlName="pagadorProveedorDet" type="text"
                        (ngModelChange)="onListarDesembolso()"/>
               </div>
             </div>
-            <div class="col-md-4 col-12">
+            <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>N° Documento</label>
                 <input class="form-control" formControlName="nroDocumento" type="text"
                        (ngModelChange)="onListarDesembolso()"/>
               </div>
             </div>
-            <div class="col-md-4 col-12">
+            <div class="col-md-6 col-12">
               <div class="form-group">
-                <label>Fecha Operación</label>
+                <label>Fecha Confirmada (Desde)</label>
                 <div class="input-group">
                   <input class="form-control" placeholder="yyyy-mm-dd"
-                         formControlName="fechaOperacion" container="body"
+                         formControlName="fechaConfirmadaDesde" container="body"
                          ngbDatepicker #basicDP="ngbDatepicker" (ngModelChange)="onListarDesembolso()">
                   <div class="input-group-append">
                     <button class="btn btn-outline-secondary feather icon-x"
-                            (click)="onCambioFechaOperacion()"
+                            (click)="onCambioFechaConfirmada(true)"
                             type="button" rippleEffect></button>
                   </div>
                   <div class="input-group-append">
                     <button class="btn btn-outline-secondary feather icon-calendar"
                             (click)="basicDP.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label>Fecha Confirmada (Hasta)</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         formControlName="fechaConfirmadaHasta" container="body"
+                         ngbDatepicker #basicDP1="ngbDatepicker" (ngModelChange)="onListarDesembolso()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-x"
+                            (click)="onCambioFechaConfirmada(false)"
+                            type="button" rippleEffect></button>
+                  </div>
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDP1.toggle()"
                             type="button" rippleEffect></button>
                   </div>
                 </div>
