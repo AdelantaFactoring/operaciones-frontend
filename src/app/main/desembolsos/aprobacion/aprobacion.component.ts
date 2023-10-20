@@ -182,7 +182,8 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
       estado: [0],
       pagadorProveedorDet: [''],
       nroDocumento: [''],
-      fechaOperacion: [null]
+      fechaConfirmadaDesde: [null],
+      fechaConfirmadaHasta: [null],
     });
     this.oldFiltroForm = this.filtroForm.value;
 
@@ -251,7 +252,9 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
       idEstado: this.filtroForm.controls.estado.value,
       pagProvDet: this.filtroForm.controls.pagadorProveedorDet.value,
       nroDocumento: this.filtroForm.controls.nroDocumento.value,
-      fechaOperacion: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaOperacion.value) ?? "",
+      fechaConfirmadaDesde: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaConfirmadaDesde.value) ?? "",
+      fechaConfirmadaHasta: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.controls.fechaConfirmadaHasta.value) ?? "",
+      netoConfirmado: 0,
       search: this.search,
       pageIndex: this.page,
       pageSize: this.pageSize
@@ -824,8 +827,12 @@ export class AprobacionComponent implements OnInit, AfterViewInit {
     return det.reduce((sum, current) => sum + current.montoDesembolso, 0);
   }
 
-  onCambioFechaOperacion(): void {
-    this.filtroForm.controls.fechaOperacion.setValue(null);
+  onCambioFechaConfirmada(desde: boolean): void {
+    if (desde) {
+      this.filtroForm.controls.fechaConfirmadaDesde.setValue(null);
+    } else {
+      this.filtroForm.controls.fechaConfirmadaHasta.setValue(null);
+    }
   }
 
   onLimpiarFiltro($event): void {
