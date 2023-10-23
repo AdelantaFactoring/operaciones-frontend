@@ -206,7 +206,7 @@
                   <th rowspan="2">Neto Confirmado Total</th>
                   <th rowspan="2">IGV restante total (servicio)</th>
                   <th rowspan="2">Pago Total (Capital)</th>
-                  <th rowspan="2">Saldo Total (Capital)</th>
+                  <th rowspan="2">Saldo Deuda Total (Capital)</th>
                   <th rowspan="2">Pago Total</th>
                   <th rowspan="2">Saldo Deuda Total</th>
                   <!--                  <th rowspan="2">Estado</th>-->
@@ -239,11 +239,11 @@
                   </td>
                   <td>
                     <span *ngIf="sumatoriaLoading" class="spinner-border spinner-border-sm mr-1"></span>
-                    <i *ngIf="!sumatoriaLoading">{{sumatoria.pagoCompletoTotal | number: '1.2-2'}}</i>
+                    <i *ngIf="!sumatoriaLoading">{{sumatoria.saldoTotal | number: '1.2-2'}}</i>
                   </td>
                   <td>
                     <span *ngIf="sumatoriaLoading" class="spinner-border spinner-border-sm mr-1"></span>
-                    <i *ngIf="!sumatoriaLoading">{{sumatoria.saldoTotal | number: '1.2-2'}}</i>
+                    <i *ngIf="!sumatoriaLoading">{{sumatoria.pagoCompletoTotal | number: '1.2-2'}}</i>
                   </td>
                   <td>
                     <span *ngIf="sumatoriaLoading" class="spinner-border spinner-border-sm mr-1"></span>
