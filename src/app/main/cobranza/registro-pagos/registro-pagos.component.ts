@@ -184,6 +184,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit, OnDestroy 
     this.paiForm = this.formBuilder.group({
       interesConIGV_Total: [{value: 0, disabled: true}],
       gastosDiversosConIGV_Total: [{value: 0, disabled: true}],
+      comisionEstructuracionConIGV_Total: [{value: 0, disabled: true}],
       montoFacturado_Total: [{value: 0, disabled: true}],
       fecha_PAI: ['', Validators.required],
       monto_PAI: [{value: 0, disabled: true}, [Validators.required, Validators.min(1)]],
@@ -649,6 +650,7 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit, OnDestroy 
     }).subscribe((response: LiquidacionCab) => {
       this.paiForm.controls.interesConIGV_Total.setValue(response[0].interesConIGV_Total);
       this.paiForm.controls.gastosDiversosConIGV_Total.setValue(response[0].gastosDiversosConIGV_Total);
+      this.paiForm.controls.comisionEstructuracionConIGV_Total.setValue(response[0].comisionEstructuracionConIGV_Total);
       this.paiForm.controls.montoFacturado_Total.setValue(response[0].montoFacturado_Total);
 
       let fechaPago = {

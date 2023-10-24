@@ -68,6 +68,7 @@ export class LiquidacionCab {
 
   interesConIGV_Total: number;
   gastosDiversosConIGV_Total: number;
+  comisionEstructuracionConIGV_Total: number;
   montoFacturado_Total: number;
   fecha_PAI: string;
   monto_PAI: number;
