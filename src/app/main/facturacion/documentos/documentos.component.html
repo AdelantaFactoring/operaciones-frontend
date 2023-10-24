@@ -573,10 +573,15 @@
                   <div class="form-group">
                     <label>RUC (Cliente / Pagador)</label>
                     <div class="input-group">
-                      <input class="form-control" formControlName="rucCliente" type="text"
+                      <input #rucCliente class="form-control" formControlName="rucCliente" type="text"
                              [readonly]="this.ReactiveIUForm.idCliente.value != 0 ? true: null"
                              [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.rucCliente.errors }"/>
                       <div *ngIf="ver" class="input-group-append">
+                        <button class="btn btn-outline-secondary feather"
+                                rippleEffect type="button" (click)="onManual(rucCliente)">
+                        <span ngbTooltip="Cambiar manualmente" placement="left"
+                              container="body" class="fa fa-hand-paper-o"></span>
+                        </button>
                         <button class="btn btn-outline-secondary feather"
                                 rippleEffect type="button" (click)="onBuscarCliente(modalCLIENTE)">
                         <span ngbTooltip="Buscar Cliente" placement="left"
