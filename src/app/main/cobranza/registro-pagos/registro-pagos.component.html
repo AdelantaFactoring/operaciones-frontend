@@ -71,21 +71,21 @@
                 <div class="divider-text">Liquidación - Detalle</div>
               </div>
             </div>
-            <div class="col-md-4 col-12">
+            <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Pag. / Prov. (RUC o Razón Social)</label>
                 <input class="form-control" formControlName="pagadorProveedorDet" type="text"
                        (ngModelChange)="onRefrescar()"/>
               </div>
             </div>
-            <div class="col-md-4 col-12">
-              <div class="form-group">
-                <label>N° Documento</label>
-                <input class="form-control" formControlName="nroDocumento" type="text"
-                       (ngModelChange)="onRefrescar()"/>
-              </div>
-            </div>
-            <div class="col-md-4 col-12">
+<!--            <div class="col-md-4 col-12">-->
+<!--              <div class="form-group">-->
+<!--                <label>N° Documento</label>-->
+<!--                <input class="form-control" formControlName="nroDocumento" type="text"-->
+<!--                       (ngModelChange)="onRefrescar()"/>-->
+<!--              </div>-->
+<!--            </div>-->
+            <div class="col-md-6 col-12">
               <div class="form-group">
                 <label>Neto Confirmado</label>
                 <input class="form-control" formControlName="netoConfirmado" type="text"
@@ -339,7 +339,7 @@
                         <div class="table-responsive"
                              style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
                              id="{{ 'detailL' + cab.idLiquidacionCab }}">
-                          <table class="table table-hover">
+                          <table class="table table-sm table-hover">
                             <thead>
                             <tr>
                               <th *ngIf="mostrar === 'true'" class="detail-th-color" style="width: 81px">
@@ -358,13 +358,13 @@
                                   class="detail-th-color">Monto Pago
                               </th>
                               <th class="detail-th-color">Acción</th>
-                              <th class="detail-th-color">Progreso Pago</th>
-                              <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
-<!--                              <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>-->
                               <th class="detail-th-color">N° Documento</th>
                               <th class="detail-th-color">Fecha Confirmada</th>
                               <th class="detail-th-color">Neto Confirmado</th>
-                              <th *ngIf="cab.flagAdelanto" class="detail-th-color">Neto Confirmado Total</th>
+<!--                              <th *ngIf="cab.flagAdelanto" class="detail-th-color">Neto Confirmado Total</th>-->
+                              <th class="detail-th-color">Progreso Pago</th>
+                              <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
+<!--                              <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>-->
                               <th class="detail-th-color">IGV restante (servicio)</th>
                               <th class="detail-th-color">Día(s) Mora</th>
                               <th class="detail-th-color">Pago (Capital)</th>
@@ -378,17 +378,17 @@
                             <tbody>
                             <tr class="sumatoria" *ngIf="cab.liquidacionDet.length > 1">
                               <td [colSpan]="
-                                  cab.idTipoOperacion === 3 && cab.verOpcionesPagoDetalle && mostrar === 'true' ? 8 :
-                                  cab.idTipoOperacion === 3 && !cab.verOpcionesPagoDetalle && mostrar === 'true' ? 6 :
-                                  cab.idTipoOperacion !== 3 && cab.verOpcionesPagoDetalle && mostrar === 'true' ? 7 :
-                                  cab.idTipoOperacion !== 3 && !cab.verOpcionesPagoDetalle && mostrar === 'true' ? 5 :
-                                  cab.idTipoOperacion === 3 && !cab.verOpcionesPagoDetalle && mostrar !== 'true' ? 5 :
-                                  cab.idTipoOperacion !== 3 && !cab.verOpcionesPagoDetalle && mostrar !== 'true' ? 4 : 0
+                                  cab.idTipoOperacion === 3 && cab.verOpcionesPagoDetalle && mostrar === 'true' ? 9 :
+                                  cab.idTipoOperacion === 3 && !cab.verOpcionesPagoDetalle && mostrar === 'true' ? 7 :
+                                  cab.idTipoOperacion !== 3 && cab.verOpcionesPagoDetalle && mostrar === 'true' ? 8 :
+                                  cab.idTipoOperacion !== 3 && !cab.verOpcionesPagoDetalle && mostrar === 'true' ? 6 :
+                                  cab.idTipoOperacion === 3 && !cab.verOpcionesPagoDetalle && mostrar !== 'true' ? 6 :
+                                  cab.idTipoOperacion !== 3 && !cab.verOpcionesPagoDetalle && mostrar !== 'true' ? 5 : 0
                                 "><i>Total:</i></td>
-                              <td><i>{{onSumatoria(cab.liquidacionDet, 'netoConfirmado') | number: '1.2-2'}}</i></td>
-                              <td *ngIf="cab.flagAdelanto">
-                                <i>{{onSumatoria(cab.liquidacionDet, 'netoConfirmadoOriginal') | number: '1.2-2'}}</i>
-                              </td>
+<!--                              <td><i>{{onSumatoria(cab.liquidacionDet, 'netoConfirmado') | number: '1.2-2'}}</i></td>-->
+<!--                              <td *ngIf="cab.flagAdelanto">-->
+<!--                                <i>{{onSumatoria(cab.liquidacionDet, 'netoConfirmadoOriginal') | number: '1.2-2'}}</i>-->
+<!--                              </td>-->
                               <td>
                                 <i>{{onSumatoria(cab.liquidacionDet, 'interesRestanteServicio') | number: '1.2-2'}}</i>
                               </td>
@@ -451,6 +451,18 @@
                                   </a>
                                 </div>
                               </td>
+                              <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.nroDocumento}}</td>
+                              <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.fechaConfirmado}}</td>
+                              <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">
+                                <div class="cell-line-height">
+                                  <p class="mb-0">
+                                    {{item.netoConfirmado | number: '1.2-2'}}
+                                  </p>
+                                  <span *ngIf="cab.flagAdelanto" class="text-muted font-small-3">{{item.netoConfirmadoOriginal | number: '1.2-2'}}</span>
+                                </div>
+                              </td>
+<!--                              <td *ngIf="cab.flagAdelanto"-->
+<!--                                  [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.netoConfirmadoOriginal | number: '1.2-2'}}</td>-->
                               <td>
                                 <div class="progress-wrapper">
                                   <div class="mb-25 text-center">{{porcentajePagoTotal(item.porcentajePago)}}%</div>
@@ -462,13 +474,6 @@
                                   [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.razonSocialPagProv}}</td>
 <!--                              <td *ngIf="cab.idTipoOperacion === 3"-->
 <!--                                  [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.rucPagProv}}</td>-->
-                              <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.nroDocumento}}</td>
-                              <td
-                                [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.fechaConfirmado}}</td>
-                              <td
-                                [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.netoConfirmado | number: '1.2-2'}}</td>
-                              <td *ngIf="cab.flagAdelanto"
-                                  [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.netoConfirmadoOriginal | number: '1.2-2'}}</td>
                               <td
                                 [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.interesRestanteServicio | number: '1.2-2'}}</td>
                               <td [ngClass]="{'progreso-td-color': item.porcentajePago > 0}">{{item.diasMora}}</td>
