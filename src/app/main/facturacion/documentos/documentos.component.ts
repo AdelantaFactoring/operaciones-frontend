@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {UtilsService} from "../../../shared/services/utils.service";
 import {DocumentosService} from "./documentos.service";
 import {LiquidacionDocumentoCab} from "../../../shared/models/facturacion/liquidaciondocumento-cab";
@@ -111,7 +111,8 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
               private formBuilder: FormBuilder,
               private tablaMaestraService: TablaMaestraService,
               private clientesService: ClientesService,
-              private maestrosService: MaestrosService) {
+              private maestrosService: MaestrosService,
+              private elementRef: ElementRef) {
     this.contentHeader = {
       headerTitle: 'Documentos',
       actionButton: true,
@@ -1187,5 +1188,26 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
     this.utilsService.showNotification(`Liquidación ${codigoLiquidacion} seleccionada`, 'Información', 4);
     modal.close();
   }
-}
 
+  onManual(rucCliente: HTMLInputElement): void {
+    Swal.fire({
+      title: 'Confirmación',
+      text: `Se cambiará el cliente del documento de forma manual. Con tan solo confirmar, se perderá la referencia y afectará al envío de correo. ¿Desea continuar?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-primary'
+      }
+    }).then(result => {
+      if (result.value) {
+        this.ReactiveIUForm.idCliente.setValue(0);
+        setTimeout(() => {
+          rucCliente.focus();
+        }, 500);
+      }
+    });
+  }
+}
