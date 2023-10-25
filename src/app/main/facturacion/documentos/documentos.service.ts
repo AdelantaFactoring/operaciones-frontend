@@ -25,7 +25,18 @@ export class DocumentosService {
         `&codigoLiquidacion=${payload.codigoLiquidacion}&codigoSolicitud=${payload.codigoSolicitud}` +
         `&cliente=${payload.cliente}&idMoneda=${payload.idMoneda}&fechaEmisionDesde=${payload.fechaEmisionDesde}` +
         `&fechaEmisionHasta=${payload.fechaEmisionHasta}&idTipoDocumento=${payload.idTipoDocumento}` +
-        `&nroDocumento=${payload.nroDocumento}&montoTotal=${payload.montoTotal}&idsEstados=${payload.idsEstados}`,
+        `&nroDocumento=${payload.nroDocumento}&montoTotal=${payload.montoTotal}&idsEstados=${payload.idsEstados}` +
+        `&serie=${payload.serie}&correlativoMin=${payload.correlativoMin}&correlativoMax=${payload.correlativoMax}`,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  serieCombo(payload): Observable<any> {
+    return this.requestMethod.get(
+      `${environment.apiUrl}${DOCUMENTOS.serieCombo}`,
+      `?idTipoDocumento=${payload.idTipoDocumento}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }

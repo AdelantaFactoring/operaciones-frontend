@@ -16,6 +16,7 @@ import {TablaMaestraRelacion} from "../../../shared/models/shared/tabla-maestra-
 import {ContentHeader} from "../../../layout/components/content-header/content-header.component";
 import {__spreadArray} from 'tslib';
 import {LiquidacionCab} from "../../../shared/models/operaciones/liquidacion-cab";
+import {Serie} from "../../../shared/models/facturacion/serie";
 
 @Component({
   selector: 'app-documentos',
@@ -96,6 +97,7 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
   public disabledDeclarar: boolean = false;
   public declaracionEfectuada: boolean = false;
   public estadoDefault: TablaMaestra[] = [];
+  public series: Serie[] = [];
 
   get ReactiveIUForm(): any {
     return this.documentoForm.controls;
@@ -205,7 +207,10 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
       tipoDocumento: [0],
       nroDocumento: [''],
       estado: [this.estadoDefault],
-      montoTotal: [0]
+      montoTotal: [0],
+      serie: [null],
+      correlativoMin: [0],
+      correlativoMax: [0],
     });
     this.oldFiltroForm = this.filtroForm.value;
   }
@@ -240,6 +245,7 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
     this.monedaFiltro = this.utilsService.agregarTodos(1, this.monedaFiltro);
 
     this.utilsService.blockUIStop();
+    this.serieCombo();
     this.onListarDocumentos();
   }
 
@@ -248,6 +254,17 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
       this.coreCard.collapse();
       this.coreCard.onclickEvent.collapseStatus = true;
     }, 0);
+  }
+
+  private serieCombo() {
+    this.filtroForm.get("serie").setValue(null);
+    this.documentosService.serieCombo({
+      idTipoDocumento: this.filtroForm.get("tipoDocumento").value,
+    }).subscribe(response => {
+      this.series = response;
+    }, error => {
+      this.utilsService.showNotification('Ha ocurrido un error al obtener la información de series', 'Error', 3);
+    });
   }
 
   onListarDocumentos(): void {
@@ -266,7 +283,10 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
       idTipoDocumento: this.filtroForm.get("tipoDocumento").value,
       nroDocumento: this.filtroForm.get("nroDocumento").value,
       montoTotal: Number(this.filtroForm.get("montoTotal").value),
-      idsEstados: this.filtroForm.get("estado").value.map(m => String(m.idColumna)).join(',')
+      idsEstados: this.filtroForm.get("estado").value.map(m => String(m.idColumna)).join(','),
+      serie: this.filtroForm.get("serie").value ?? 0,
+      correlativoMin: Number(this.filtroForm.get("correlativoMin").value),
+      correlativoMax: Number(this.filtroForm.get("correlativoMax").value),
     }).subscribe((response: LiquidacionDocumentoCab[]) => {
       response.forEach(el => {
         el.ok = false;
@@ -1209,5 +1229,10 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
         }, 500);
       }
     });
+  }
+
+  onFTipoDocumentoChange(): void {
+    this.serieCombo();
+    this.onListarDocumentos();
   }
 }

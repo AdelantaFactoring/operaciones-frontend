@@ -1,5 +1,6 @@
 export const DOCUMENTOS = {
   listar: '/liquidacion/listarDocumento',
+  serieCombo: '/liquidacion/serieComboDocumento',
   obtenerPorNroDocumento: '/liquidacion/obtenerPorNroDocumento',
   guardar: '/liquidacion/guardarDocumento',
   eliminar: '/liquidacion/eliminarDocumento',
