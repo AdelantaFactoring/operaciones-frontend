@@ -79,7 +79,7 @@
                 <label>Tipo Documento</label>
                 <ng-select appendTo="body" [clearable]="false" [items]="tipoDocumentoFiltro" bindLabel="descripcion"
                            placeholder="Tipo Documento" bindValue="idColumna" formControlName="tipoDocumento"
-                           (ngModelChange)="onListarDocumentos()">
+                           (ngModelChange)="onFTipoDocumentoChange()">
                 </ng-select>
               </div>
             </div>
@@ -115,6 +115,29 @@
                     <span class="ng-value-icon right" (click)="clear(item)" aria-hidden="true">×</span>
                   </ng-template>
                 </ng-select>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Serie</label>
+                <ng-select appendTo="body" [clearable]="true" [items]="series" bindLabel="serieFormat"
+                           placeholder="(Todos)" bindValue="serie" formControlName="serie"
+                           (ngModelChange)="onListarDocumentos()">
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Correlativo (Min.)</label>
+                <input class="form-control" formControlName="correlativoMin" type="text"
+                       mask="separator.0" thousandSeparator="," (ngModelChange)="onListarDocumentos()"/>
+              </div>
+            </div>
+            <div class="col-md-4 col-12">
+              <div class="form-group">
+                <label>Correlativo (Max.)</label>
+                <input class="form-control" formControlName="correlativoMax" type="text"
+                       mask="separator.0" thousandSeparator="," (ngModelChange)="onListarDocumentos()"/>
               </div>
             </div>
           </div>
@@ -337,7 +360,7 @@
                   </tr>
                   <tr id="{{ 'tr' + cab.idLiquidacionDocumentoCab }}" style="visibility: collapse"
                       *ngIf="cab.liquidacionDocumentoDet.length > 0">
-                    <td [colSpan]="19">
+                    <td [colSpan]="20">
                       <div class="table-responsive"
                            style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden; max-width: 1000px"
                            id="{{ 'detail' + cab.idLiquidacionDocumentoCab }}">
