@@ -597,10 +597,10 @@
                     <label>RUC (Cliente / Pagador)</label>
                     <div class="input-group">
                       <input #rucCliente class="form-control" formControlName="rucCliente" type="text"
-                             [readonly]="this.ReactiveIUForm.idCliente.value != 0 ? true: null"
+                             [readonly]="this.ReactiveIUForm.idCliente.value !== 0 ? true: null"
                              [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.rucCliente.errors }"/>
                       <div *ngIf="ver" class="input-group-append">
-                        <button class="btn btn-outline-secondary feather"
+                        <button [disabled]="this.ReactiveIUForm.idCliente.value === 0" class="btn btn-outline-secondary feather"
                                 rippleEffect type="button" (click)="onManual(rucCliente)">
                         <span ngbTooltip="Cambiar manualmente" placement="left"
                               container="body" class="fa fa-hand-paper-o"></span>
@@ -621,7 +621,7 @@
                   <div class="form-group">
                     <label>Razón Social (Cliente / Pagador)</label>
                     <input class="form-control" formControlName="razonSocialCliente" type="text"
-                           [readonly]="this.ReactiveIUForm.idCliente.value != 0 ? true: null"
+                           [readonly]="this.ReactiveIUForm.idCliente.value !== 0 ? true: null"
                            [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.razonSocialCliente.errors }"/>
                     <div *ngIf="ReactiveIUForm.razonSocialCliente.errors" class="invalid-feedback">
                       <div *ngIf="ReactiveIUForm.razonSocialCliente.errors?.required">* Campo obligatorio</div>
@@ -631,10 +631,19 @@
                 <div class="col-md-6 col-12">
                   <div class="form-group">
                     <label>Dirección (Cliente / Pagador)</label>
-                    <input class="form-control" formControlName="direccionCliente" type="text"
-                           [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.direccionCliente.errors }"/>
-                    <div *ngIf="ReactiveIUForm.direccionCliente.errors" class="invalid-feedback">
-                      <div *ngIf="ReactiveIUForm.direccionCliente.errors?.required">* Campo obligatorio</div>
+                    <div class="input-group">
+                      <input class="form-control" formControlName="direccionCliente" type="text"
+                             [ngClass]="{ 'is-invalid': submitted && ReactiveIUForm.direccionCliente.errors }"/>
+                      <div *ngIf="ver" class="input-group-append">
+                        <button [disabled]="this.ReactiveIUForm.idCliente.value === 0" class="btn btn-outline-secondary feather"
+                                rippleEffect type="button" (click)="onActualizarDireccion()">
+                        <span ngbTooltip="Actualizar Dirección" placement="left"
+                              container="body" [data-feather]="'refresh-cw'"></span>
+                        </button>
+                      </div>
+                      <div *ngIf="ReactiveIUForm.direccionCliente.errors" class="invalid-feedback">
+                        <div *ngIf="ReactiveIUForm.direccionCliente.errors?.required">* Campo obligatorio</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1271,7 +1280,8 @@
                     <span [data-feather]="'trash-2'"></span> Limpiar
                   </button>
                   &nbsp;
-                  <button id="declare" [disabled]="disabledDeclarar || declaracionEfectuada" class="btn btn-warning" rippleEffect type="button"
+                  <button id="declare" [disabled]="disabledDeclarar || declaracionEfectuada" class="btn btn-warning"
+                          rippleEffect type="button"
                           (click)="onDeclararMultiple()">
                     <div *ngIf="disabledDeclarar">
                       <span class="spinner-border spinner-border-sm mr-1"></span>

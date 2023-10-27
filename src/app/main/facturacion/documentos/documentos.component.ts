@@ -1235,4 +1235,15 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
     this.serieCombo();
     this.onListarDocumentos();
   }
+
+  onActualizarDireccion(): void {
+    const idCliente = this.ReactiveIUForm.idCliente.value;
+    if (idCliente === 0) return;
+    this.clientesService.obtener({idCliente})
+      .subscribe(response => {
+        this.documentoForm.controls.direccionCliente.setValue(response.cliente.direccionFacturacion);
+      }, error => {
+        this.utilsService.showNotification("Ocurrió un error al obtener los datos del cliente", 'Error', 3);
+      });
+  }
 }
