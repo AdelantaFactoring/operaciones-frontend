@@ -52,6 +52,16 @@ export class ClientesService {
     );
   }
 
+  actualizarDireccion(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${CLIENTE.actualizarDireccion}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
   eliminarCuenta(payload): Observable<any> {
     return this.requestMethod.delete(
       `${environment.apiUrl}${CLIENTE.eliminarCuenta}`,
