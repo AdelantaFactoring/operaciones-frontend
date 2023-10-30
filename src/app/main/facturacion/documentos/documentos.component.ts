@@ -17,6 +17,7 @@ import {ContentHeader} from "../../../layout/components/content-header/content-h
 import {__spreadArray} from 'tslib';
 import {LiquidacionCab} from "../../../shared/models/operaciones/liquidacion-cab";
 import {Serie} from "../../../shared/models/facturacion/serie";
+import {SunatService} from "../../../shared/services/sunat.service";
 
 @Component({
   selector: 'app-documentos',
@@ -114,6 +115,7 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
               private tablaMaestraService: TablaMaestraService,
               private clientesService: ClientesService,
               private maestrosService: MaestrosService,
+              private sunatService: SunatService,
               private elementRef: ElementRef) {
     this.contentHeader = {
       headerTitle: 'Documentos',
@@ -1238,12 +1240,70 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
 
   onActualizarDireccion(): void {
     const idCliente = this.ReactiveIUForm.idCliente.value;
+    const rucCliente = this.ReactiveIUForm.rucCliente.value;
     if (idCliente === 0) return;
-    this.clientesService.obtener({idCliente})
-      .subscribe(response => {
-        this.documentoForm.controls.direccionCliente.setValue(response.cliente.direccionFacturacion);
-      }, error => {
-        this.utilsService.showNotification("Ocurrió un error al obtener los datos del cliente", 'Error', 3);
-      });
+    if (rucCliente === '') {
+      this.utilsService.showNotification('Ingrese el RUC del cliente', 'Error', 3);
+      return;
+    }
+    // this.clientesService.obtener({idCliente})
+    //   .subscribe(response => {
+    //     this.documentoForm.controls.direccionCliente.setValue(response.cliente.direccionFacturacion);
+    //   }, error => {
+    //     this.utilsService.showNotification("Ocurrió un error al obtener los datos del cliente", 'Error', 3);
+    //   });
+
+    this.utilsService.blockUIStart('Consultando...');
+
+    this.sunatService.getToken({
+      usuario: 'sunat',
+      clave: 'cX5sZnNpJf9gbhmPUL'
+    }).subscribe(response => {
+      if (response.ok) {
+        this.utilsService.showNotification('Token generado correctamente', 'Confirmación', 1);
+        this.sunatService.getData({
+          ruc: this.ReactiveIUForm.rucCliente.value,
+          token: response.data
+        }).subscribe(res => {
+          if (res.ok) {
+            if (res.data.length) {
+              this.utilsService.showNotification('Datos obtenidos correctamente', 'Confirmación', 1);
+              this.ReactiveIUForm.razonSocialCliente.setValue(res.data[0].nombreRazonSocial);
+              let direccion = this.utilsService.getSunat_Direccion(res.data[0]);
+              this.ReactiveIUForm.direccionCliente.setValue(direccion.trim());
+              this.clientesService.actualizarDireccion({
+                idCliente: this.ReactiveIUForm.idCliente.value,
+                direccionPrincipal: direccion,
+                idUsuarioAud: this.currentUser.idUsuario
+              }).subscribe(response => {
+                this.utilsService.showNotification('Dirección del cliente actualizada', 'Confirmación', 1);
+              }, error => {
+                this.utilsService.showNotification('Ocurrió un error al actualizar la dirección del cliente', 'Error', 3);
+              });
+            }
+            else
+            {
+              this.utilsService.showNotification(`No se encotrarón datos para el RUC: ${this.ReactiveIUForm.rucCliente.value}`, 'Alerta', 2);
+            }
+
+            this.utilsService.blockUIStop();
+          } else {
+            this.utilsService.showNotification(res.mensaje, 'Error', 3);
+          }
+
+          this.utilsService.blockUIStop();
+        }, error => {
+          this.utilsService.showNotification('[F]: Error al obtener los datos del RUC', 'Error', 3);
+          this.utilsService.blockUIStop();
+        });
+      } else if (response.tipo === 2) {
+        this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+      } else {
+        this.utilsService.showNotification(response.mensaje, 'Error', 3);
+      }
+    }, error => {
+      this.utilsService.showNotification('[F]: Error al obtener el token', 'Error', 3);
+      this.utilsService.blockUIStop();
+    });
   }
 }

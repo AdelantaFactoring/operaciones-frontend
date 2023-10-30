@@ -4,6 +4,7 @@ export const CLIENTE = {
   combo: '/cliente/combo',
   guardar: '/cliente/guardar',
   eliminar: '/cliente/eliminar',
+  actualizarDireccion: '/cliente/actualizardireccion',
   eliminarCuenta: '/cliente/eliminarcuenta',
   eliminarContacto: '/cliente/eliminarcontacto',
   eliminarGastos: '/cliente/eliminargastos',
