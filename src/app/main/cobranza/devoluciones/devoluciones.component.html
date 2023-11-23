@@ -122,37 +122,121 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="divider divider-warning divider-dotted">
+                <div class="divider-text">Pagos</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Desde</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         formControlName="fechaPagoDesde" container="body"
+                         ngbDatepicker #basicDP_FPD="ngbDatepicker" (ngModelChange)="onListarDevolucion()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-x"
+                            type="button" rippleEffect (click)="onLimpiarFechaFiltroPago(false)"></button>
+                  </div>
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDP_FPD.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 col-12">
+              <div class="form-group">
+                <label>Hasta</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         formControlName="fechaPagoHasta" container="body"
+                         ngbDatepicker #basicDP_FPH="ngbDatepicker" (ngModelChange)="onListarDevolucion()">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-x"
+                            type="button" rippleEffect (click)="onLimpiarFechaFiltroPago(true)"></button>
+                  </div>
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary feather icon-calendar"
+                            (click)="basicDP_FPH.toggle()"
+                            type="button" rippleEffect></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div class="form-group">
+                <label>Sin Fecha Desembolso</label>
+                <div class="form-control custom-control custom-switch custom-control-inline"
+                     style="border: 0px; background-color: transparent">
+                  <label for="sin-fec-des" style="padding-right: 0.5rem; line-height: 1.7rem">No</label>
+                  <input type="checkbox" readonly class="custom-control-input"
+                         id="sin-fec-des" formControlName="flagSinFecDes" (ngModelChange)="onListarDevolucion()"
+                  />
+                  <label class="custom-control-label"
+                         for="sin-fec-des">Sí</label>
+                </div>
+              </div>
+            </div>
+          </div>
         </form>
       </div>
     </core-card>
     <div class="card">
       <div class="card-body">
         <div class="row">
-          <div class="d-flex flex-wrap mb-0">
-            <div class="p-1">
+          <div class="d-flex flex-wrap flex-gap mb-0 p-1">
+            <div>
               <button type="submit" rippleEffect class="btn btn-secondary" (click)="onListarDevolucion()">
                 <i class="mr-0 mr-sm-1" data-feather="refresh-cw"></i>
                 <span class="d-none d-sm-inline-block">Refrescar</span>
               </button>
             </div>
-            <div class="pt-1 pb-1 pr-1">
+            <div>
               <button type="submit" rippleEffect class="btn btn-success" (click)="onGenerarArchivo()">
                 <i class="mr-0 mr-sm-1" data-feather="layers"></i>
                 <span class="d-none d-sm-inline-block">Generar Archivo(s)</span>
               </button>
             </div>
-            <div class="pt-1 pb-1 pr-1">
+            <div>
               <button type="submit" rippleEffect class="btn btn-primary" (click)="onAprobar(2)">
                 <i class="mr-0 mr-sm-1" data-feather="check"></i>
                 <span class="d-none d-sm-inline-block">Confirmar</span>
               </button>
             </div>
-            <div class="pt-1 pb-1">
+            <div>
               <button type="submit" rippleEffect class="btn btn-warning"
                       (click)="onEnviar(1, null)">
                 <i class="mr-0 mr-sm-1" data-feather="mail"></i>
                 <span class="d-none d-sm-inline-block">Enviar Correo(s)</span>
               </button>
+            </div>
+            <div>
+              <div class="d-flex align-items-center">
+                <div ngbDropdown container="body">
+                  <a ngbDropdownToggle href="javascript:void(0);"
+                     class="btn btn-success" id="ddActualizarMasivo"
+                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                     title="Opciones">
+                    <i class="mr-0 mr-sm-1" data-feather="save"></i>
+                    <span class="d-none d-sm-inline-block">Actualización Masiva</span>
+                  </a>
+                  <div ngbDropdownMenu class="dropdown-menu-right" aria-labelledby="ddActualizarMasivo">
+                    <a ngbDropdownItem href="javascript:void(0)" title="Fecha Desembolso"
+                       class="d-flex align-items-center" (click)="onActualizarFechaDesembolso(modalFD)">
+                      <i class="text-success cursor-pointer mr-50 fa fa-calendar"></i> Fecha Desembolso
+                    </a>
+                    <a ngbDropdownItem href="javascript:void(0)" title="Sustento"
+                       class="d-flex align-items-center" (click)="onActualizarSustento()">
+                      <i class="text-success cursor-pointer mr-50 fa fa-file"></i> Sustento
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -200,7 +284,7 @@
                   <th rowspan="2">Acción</th>
                   <th rowspan="2">N° Liquidación</th>
                   <th rowspan="2">N° Solicitud</th>
-<!--                  <th rowspan="2">Tipo Operación</th>-->
+                  <!--                  <th rowspan="2">Tipo Operación</th>-->
                   <th rowspan="2">Cliente</th>
                   <th rowspan="2">Cliente RUC</th>
                   <!--                  <th rowspan="2" style="min-width: 300px !important;">Pagador / Proveedor</th>-->
@@ -267,7 +351,7 @@
                         <span class="text-muted font-small-3">{{cab.tipoOperacion}}</span>
                       </div>
                     </td>
-<!--                    <td>{{cab.tipoOperacion}}</td>-->
+                    <!--                    <td>{{cab.tipoOperacion}}</td>-->
                     <td>{{cab.razonSocialCliente}}</td>
                     <td>{{cab.rucCliente}}</td>
                     <!--                    <td>{{cab.razonSocialPagProv}}</td>-->
@@ -701,6 +785,50 @@
                       </tbody>
                     </table>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template #modalFD let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Seleccione Fecha Desembolso</h4>
+            <button aria-label="Close" class="close" type="button" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" ngbAutofocus tabindex="0">
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label>Fecha</label>
+                  <div class="input-group">
+                    <input class="form-control" placeholder="yyyy-mm-dd" container="body"
+                           ngbDatepicker #basicDP_FDM="ngbDatepicker" [ngModelOptions]="{standalone: true}"
+                            [(ngModel)]="fechaDesembolso" [ngClass]="{ 'is-invalid': !fechaDesembolso}">
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary feather icon-calendar"
+                              (click)="basicDP_FDM.toggle()" type="button" rippleEffect></button>
+                    </div>
+                    <div *ngIf="!fechaDesembolso" class="invalid-feedback">
+                      <div>* Campo obligatorio</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" style="display: block !important;">
+            <div class="row">
+              <div class="col-md-12 col-12">
+                <div style="float: right">
+                  <button class="btn btn-primary" rippleEffect type="button" (click)="onGuardarFD(modal)">
+                    <span [data-feather]="'save'"></span> Guardar
+                  </button>
+                  &nbsp;
+                  <button class="btn btn-secondary" rippleEffect type="button" (click)="onCancelarFD(modal)">
+                    <span [data-feather]="'x-circle'"></span> Cancelar
+                  </button>
                 </div>
               </div>
             </div>

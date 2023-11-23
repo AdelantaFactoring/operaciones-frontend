@@ -16,6 +16,7 @@ export const DEVOLUCIONES = {
   listar: '/liquidacion/listarDevolucion',
   actualizar: '/liquidacion/actualizarDevolucion',
   cambiarEstado: '/liquidacion/cambiarEstadoDevolucion',
+  actualizarFechaDesembolso: '/liquidacion/actualizarFechaDesembolso',
   generarArchivo: '/liquidacion/generarArchivoDevolucion',
   enviarCorreo: '/liquidacion/enviarCorreoDevolucion',
   eliminar: '/liquidacion/eliminarDevolucion',
