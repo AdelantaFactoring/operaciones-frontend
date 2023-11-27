@@ -11,10 +11,11 @@ import {LiquidacionDevolucionSustento} from "../../../shared/models/cobranza/liq
 import Swal from "sweetalert2";
 import {ClienteCuenta} from "../../../shared/models/comercial/cliente-cuenta";
 import {ClientesService} from "../../comercial/clientes/clientes.service";
-import {NgbCalendar, NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbCalendar, NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import * as fileSaver from 'file-saver';
 import {User} from "../../../shared/models/auth/user";
 import {ContentHeader} from "../../../layout/components/content-header/content-header.component";
+import {__spreadArray} from "tslib";
 
 @Component({
   selector: 'app-devoluciones',
@@ -56,6 +57,7 @@ export class DevolucionesComponent implements OnInit, AfterViewInit {
   public operationType: TablaMaestra[] = [];
   public state: TablaMaestra[] = [];
   private clearingForm: boolean = false;
+  public fechaDesembolso: { year: number, month: number, day: number };
 
   get ReactiveIUForm(): any {
     return this.devolucionForm.controls;
@@ -126,7 +128,10 @@ export class DevolucionesComponent implements OnInit, AfterViewInit {
       fechaDesembolsoHasta: [null],
       nroDocumento: [''],
       monto: [0],
-      estados: [[new TablaMaestra({idColumna: 1, descripcion: 'Pendiente'})]]
+      estados: [[new TablaMaestra({idColumna: 1, descripcion: 'Pendiente'})]],
+      fechaPagoDesde: [null],
+      fechaPagoHasta: [null],
+      flagSinFecDes: [false]
     });
     this.oldFiltroForm = this.filtroForm.value;
   }
@@ -172,7 +177,10 @@ export class DevolucionesComponent implements OnInit, AfterViewInit {
       fechaDesembolsoHasta: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.get("fechaDesembolsoHasta").value) ?? "",
       nroDocumento: this.filtroForm.get("nroDocumento").value,
       monto: Number(this.filtroForm.get("monto").value),
-      idsEstados: this.filtroForm.get("estados").value.map(m => String(m.idColumna)).join(',')
+      idsEstados: this.filtroForm.get("estados").value.map(m => String(m.idColumna)).join(','),
+      fechaPagoDesde: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.get("fechaPagoDesde").value) ?? "",
+      fechaPagoHasta: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.get("fechaPagoHasta").value) ?? "",
+      flagSinFecDes: this.filtroForm.get("flagSinFecDes").value
     }).subscribe((response: LiquidacionDevolucion[]) => {
       this.devoluciones = response;
       this.collectionSize = response.length > 0 ? response[0].totalRows : 0;
@@ -544,14 +552,40 @@ export class DevolucionesComponent implements OnInit, AfterViewInit {
 
     this.utilsService.blockUIStart('Confirmando...');
     this.devolucionesService.cambiarEstado(liquidaciones).subscribe(response => {
-      if (response.tipo == 1) {
-        this.utilsService.showNotification('Confirmación Satisfactoria', 'Confirmación', 1);
+      if (response.comun.tipo == 1) {
         this.utilsService.blockUIStop();
+        // this.utilsService.showNotification('Confirmación Satisfactoria', 'Confirmación', 1);
+        Swal.fire({
+          title: 'Información',
+          html: `
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>N° Liquidación</th>
+                  <th>Correo Enviado</th>
+                </tr>
+                </thead>
+                <tbody>
+                ${this.onFilas(response.liquidacionCabValidacion)}
+                </tbody>
+              </table>
+            </div>
+            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Enviado &nbsp;&nbsp;
+            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Enviado</p>`,
+          icon: 'info',
+          width: '750px',
+          showCancelButton: false,
+          confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
+          customClass: {
+            confirmButton: 'btn btn-info',
+          },
+        }).then(result => {});
         this.onListarDevolucion();
-      } else if (response.tipo == 2) {
+      } else if (response.comun.tipo == 2) {
         this.utilsService.showNotification(response.mensaje, 'Validación', 2);
         this.utilsService.blockUIStop();
-      } else if (response.tipo == 0) {
+      } else if (response.comun.tipo == 0) {
         this.utilsService.showNotification(response.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
       }
@@ -659,6 +693,13 @@ export class DevolucionesComponent implements OnInit, AfterViewInit {
       this.filtroForm.get("fechaDesembolsoDesde").setValue(null);
   }
 
+  onLimpiarFechaFiltroPago(hasta: boolean) {
+    if (hasta)
+      this.filtroForm.get("fechaPagoHasta").setValue(null);
+    else
+      this.filtroForm.get("fechaPagoDesde").setValue(null);
+  }
+
   onDescuentoCambio($event: number) {
     this.devolucionForm.get('montoTotal').setValue(this.devolucionForm.get('monto').value - $event);
     this.onConvertirMontoTotal();
@@ -704,5 +745,206 @@ export class DevolucionesComponent implements OnInit, AfterViewInit {
         });
       }
     });
+  }
+
+  onActualizarFechaDesembolso(modal: NgbModal): void {
+    const devoluciones = __spreadArray([], this.devoluciones.filter(f => f.seleccionado));
+    if (devoluciones.length === 0) {
+      this.utilsService.showNotification(
+        'Seleccione al menos un registro',
+        'Validación',
+        2);
+      return;
+    }
+
+    if (devoluciones.some(f => f.fechaDesembolso !== '')) {
+      this.utilsService.showNotification(
+        'Se encontró registros con fecha desembolso. Filtre o desmarque esos registros',
+        'Validación',
+        2);
+      return;
+    }
+    if (devoluciones.some(f => f.idEstado !== 1)) {
+      this.utilsService.showNotification(
+        'Se encontró registros que no tienen estado pendiente. Filtre o desmarque esos registros',
+        'Validación',
+        2);
+      return;
+    }
+
+    this.modalService.open(modal, {
+      scrollable: true,
+      size: 'sm',
+      animation: true,
+      centered: false,
+      backdrop: "static",
+      beforeDismiss: () => {
+        return true;
+      }
+    });
+  }
+
+  onGuardarFD(modal: NgbModalRef) {
+    if (!this.fechaDesembolso)
+      return;
+
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea actualizar la fecha de desembolso a todos los registros seleccionados?, esta acción no podrá revertirse`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-warning',
+        cancelButton: 'btn btn-primary'
+      }
+    }).then(result => {
+      if (result.value) {
+        const devoluciones = __spreadArray([], this.devoluciones.filter(f => f.seleccionado));
+        const _fechaDesembolso = this.utilsService.formatoFecha_YYYYMMDD(this.fechaDesembolso);
+        devoluciones.forEach(el => {
+          el.fechaDesembolso = _fechaDesembolso;
+          el.idUsuarioAud = this.currentUser.idUsuario;
+        });
+        this.devolucionesService.actualizarFechaDesembolso(devoluciones)
+          .subscribe(response => {
+            if (response.tipo == 1) {
+              this.utilsService.showNotification('Actualización Satisfactoria', 'Confirmación', 1);
+              this.utilsService.blockUIStop();
+              this.onCancelarFD(modal);
+              this.onListarDevolucion();
+            } else if (response.tipo == 2) {
+              this.utilsService.showNotification(response.mensaje, 'Validación', 2);
+              this.utilsService.blockUIStop();
+            } else if (response.tipo == 0) {
+              this.utilsService.showNotification(response.mensaje, 'Error', 3);
+              this.utilsService.blockUIStop();
+            }
+          }, error => {
+            this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+            this.utilsService.blockUIStop();
+          });
+      }
+    });
+  }
+
+  onCancelarFD(modal: NgbModalRef): void {
+    this.fechaDesembolso = null;
+    modal.dismiss();
+  }
+
+  onActualizarSustento(modal: NgbModalRef): void {
+    const liquidaciones = __spreadArray([], this.devoluciones.filter(f => f.seleccionado));
+    if (liquidaciones.length === 0) {
+      this.utilsService.showNotification(
+        'Seleccione al menos un registro',
+        'Validación',
+        2);
+      return;
+    }
+
+    if (liquidaciones.some(f => f.fechaDesembolso === '')) {
+      this.utilsService.showNotification(
+        'Se encontró registros sin fecha desembolso. Filtre o desmarque esos registros',
+        'Validación',
+        2);
+      return;
+    }
+    if (liquidaciones.some(f => f.idEstado !== 1)) {
+      this.utilsService.showNotification(
+        'Se encontró registros que no tienen estado pendiente. Filtre o desmarque esos registros',
+        'Validación',
+        2);
+      return;
+    }
+
+    this.modalService.open(modal, {
+      scrollable: true,
+      size: 'lg',
+      animation: true,
+      centered: false,
+      backdrop: "static",
+      beforeDismiss: () => {
+        return true;
+      }
+    });
+  }
+
+  onGuardarS(modal: NgbModalRef): void {
+    if (!this.archivos.length) {
+      this.utilsService.showNotification('Cargue al menos un archivo', 'Validación', 2);
+      return;
+    }
+
+    Swal.fire({
+      title: 'Confirmación',
+      text: `¿Desea actualizar el sustento a todos los registros seleccionados?, esta acción no podrá revertirse`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      customClass: {
+        confirmButton: 'btn btn-warning',
+        cancelButton: 'btn btn-primary'
+      }
+    }).then(result => {
+      if (result.value) {
+        const devoluciones = __spreadArray([], this.devoluciones.filter(f => f.seleccionado));
+
+        this.sustentos = [];
+        for (let item of this.archivos) {
+          this.sustentos.push({
+            idLiquidacionDevolucionSustento: 0,
+            idLiquidacionDevolucion: 0,
+            idTipo: item.idTipo,
+            tipo: "",
+            archivo: item.nombre,
+            base64: item.base64,
+            rutaArchivo: "",
+            estado: true,
+            editado: true
+          });
+        }
+
+        devoluciones.forEach(el => {
+          el.idUsuarioAud = this.currentUser.idUsuario;
+          el.liquidacionDevolucionSustento = this.sustentos;
+        });
+
+        this.devolucionesService.actualizarSustento({
+          liquidacionDevolucion: this.devoluciones.filter(f => f.seleccionado).map(m => ({
+              idLiquidacionDevolucion: m.idLiquidacionDevolucion,
+              codigo: m.codigo
+            })
+          ),
+          idUsuarioAud: this.currentUser.idUsuario,
+          liquidacionDevolucionSustento: this.sustentos
+        }).subscribe((response: any) => {
+          switch (response.tipo) {
+            case 1:
+              this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+              this.utilsService.blockUIStop();
+              this.onCancelar();
+              break;
+            case 2:
+              this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+              this.utilsService.blockUIStop();
+              break;
+            default:
+              this.utilsService.showNotification(response.mensaje, 'Error', 3);
+              this.utilsService.blockUIStop();
+              break;
+          }
+        }, error => {
+          this.utilsService.blockUIStop();
+          this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+        });
+      }
+    });
+  }
+
+  onCancelarS(modal: NgbModalRef): void {
+    modal.dismiss();
   }
 }

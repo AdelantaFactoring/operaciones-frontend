@@ -19,12 +19,27 @@ export class DevolucionesService {
   }
 
   listar(payload): Observable<any> {
+    const params = new URLSearchParams();
+    params.append('search', payload.search);
+    params.append('pageIndex', payload.pageIndex);
+    params.append('pageSize', payload.pageSize);
+    params.append('codigoLiquidacion', payload.codigoLiquidacion);
+    params.append('codigoSolicitud', payload.codigoSolicitud);
+    params.append('idTipoOperacion', payload.idTipoOperacion);
+    params.append('cliente', payload.cliente);
+    params.append('moneda', payload.moneda);
+    params.append('fechaDesembolsoDesde', payload.fechaDesembolsoDesde);
+    params.append('fechaDesembolsoHasta', payload.fechaDesembolsoHasta);
+    params.append('nroDocumento', payload.nroDocumento);
+    params.append('monto', payload.monto);
+    params.append('idsEstados', payload.idsEstados);
+    params.append('fechaPagoDesde', payload.fechaPagoDesde);
+    params.append('fechaPagoHasta', payload.fechaPagoHasta);
+    params.append('flagSinFecDes', payload.flagSinFecDes);
+
     return this.requestMethod.get(
       `${environment.apiUrl}${DEVOLUCIONES.listar}`,
-      `?search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}&codigoLiquidacion=${payload.codigoLiquidacion}` +
-      `&codigoSolicitud=${payload.codigoSolicitud}&idTipoOperacion=${payload.idTipoOperacion}&cliente=${payload.cliente}&moneda=${payload.moneda}` +
-      `&fechaDesembolsoDesde=${payload.fechaDesembolsoDesde}&fechaDesembolsoHasta=${payload.fechaDesembolsoHasta}&nroDocumento=${payload.nroDocumento}` +
-      `&monto=${payload.monto}&idsEstados=${payload.idsEstados}`,
+      `?${params.toString()}`,
       {
         'Content-Type': CONTENT_TYPE.json
       }
@@ -44,6 +59,26 @@ export class DevolucionesService {
   cambiarEstado(payload): Observable<any> {
     return this.requestMethod.put(
       `${environment.apiUrl}${DEVOLUCIONES.cambiarEstado}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  actualizarFechaDesembolso(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${DEVOLUCIONES.actualizarFechaDesembolso}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
+  actualizarSustento(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${DEVOLUCIONES.actualizarSustento}`,
       payload,
       {
         'Content-Type': CONTENT_TYPE.json

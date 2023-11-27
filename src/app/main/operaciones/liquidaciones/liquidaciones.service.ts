@@ -4,7 +4,6 @@ import {Observable} from "rxjs";
 import {environment} from "../../../../environments/environment";
 import {CONTENT_TYPE} from "../../../shared/helpers/headers";
 import {LIQUIDACIONES} from "../../../shared/helpers/url/operaciones";
-import {DESEMBOLSO} from "../../../shared/helpers/url/desembolso";
 
 @Injectable({
   providedIn: 'root'
