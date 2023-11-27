@@ -76,6 +76,16 @@ export class DevolucionesService {
     );
   }
 
+  actualizarSustento(payload): Observable<any> {
+    return this.requestMethod.put(
+      `${environment.apiUrl}${DEVOLUCIONES.actualizarSustento}`,
+      payload,
+      {
+        'Content-Type': CONTENT_TYPE.json
+      }
+    );
+  }
+
   export(payload: any): Observable<Blob> {
     return this.http.post(environment.apiUrl + DEVOLUCIONES.generarArchivo, payload, {responseType: 'blob'});
   }

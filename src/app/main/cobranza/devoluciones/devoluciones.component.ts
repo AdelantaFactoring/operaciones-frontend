@@ -780,7 +780,7 @@ export class DevolucionesComponent implements OnInit, AfterViewInit {
         devoluciones.forEach(el => {
           el.fechaDesembolso = _fechaDesembolso;
           el.idUsuarioAud = this.currentUser.idUsuario;
-        })
+        });
         this.devolucionesService.actualizarFechaDesembolso(devoluciones)
           .subscribe(response => {
             if (response.tipo == 1) {
@@ -808,7 +808,7 @@ export class DevolucionesComponent implements OnInit, AfterViewInit {
     modal.dismiss();
   }
 
-  onActualizarSustento(): void {
+  onActualizarSustento(modal: NgbModalRef): void {
     const liquidaciones = __spreadArray([], this.devoluciones.filter(f => f.seleccionado));
     if (liquidaciones.length === 0) {
       this.utilsService.showNotification(
@@ -833,6 +833,24 @@ export class DevolucionesComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    this.modalService.open(modal, {
+      scrollable: true,
+      size: 'lg',
+      animation: true,
+      centered: false,
+      backdrop: "static",
+      beforeDismiss: () => {
+        return true;
+      }
+    });
+  }
+
+  onGuardarS(modal: NgbModalRef): void {
+    if (!this.archivos.length) {
+      this.utilsService.showNotification('Cargue al menos un archivo', 'Validación', 2);
+      return;
+    }
+
     Swal.fire({
       title: 'Confirmación',
       text: `¿Desea actualizar el sustento a todos los registros seleccionados?, esta acción no podrá revertirse`,
@@ -846,8 +864,61 @@ export class DevolucionesComponent implements OnInit, AfterViewInit {
       }
     }).then(result => {
       if (result.value) {
+        const devoluciones = __spreadArray([], this.devoluciones.filter(f => f.seleccionado));
 
+        this.sustentos = [];
+        for (let item of this.archivos) {
+          this.sustentos.push({
+            idLiquidacionDevolucionSustento: 0,
+            idLiquidacionDevolucion: 0,
+            idTipo: item.idTipo,
+            tipo: "",
+            archivo: item.nombre,
+            base64: item.base64,
+            rutaArchivo: "",
+            estado: true,
+            editado: true
+          });
+        }
+
+        devoluciones.forEach(el => {
+          el.idUsuarioAud = this.currentUser.idUsuario;
+          el.liquidacionDevolucionSustento = this.sustentos;
+        });
+
+        this.devolucionesService.actualizarSustento({
+          liquidacionDevolucion: this.devoluciones.filter(f => f.seleccionado).map(m => ({
+              idLiquidacionDevolucion: m.idLiquidacionDevolucion,
+              codigo: m.codigo
+            })
+          ),
+          idUsuarioAud: this.currentUser.idUsuario,
+          liquidacionDevolucionSustento: this.sustentos
+        }).subscribe((response: any) => {
+          switch (response.tipo) {
+            case 1:
+              this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+              this.utilsService.blockUIStop();
+              this.onCancelar();
+              break;
+            case 2:
+              this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+              this.utilsService.blockUIStop();
+              break;
+            default:
+              this.utilsService.showNotification(response.mensaje, 'Error', 3);
+              this.utilsService.blockUIStop();
+              break;
+          }
+        }, error => {
+          this.utilsService.blockUIStop();
+          this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
+        });
       }
     });
+  }
+
+  onCancelarS(modal: NgbModalRef): void {
+    modal.dismiss();
   }
 }
