@@ -552,14 +552,40 @@ export class DevolucionesComponent implements OnInit, AfterViewInit {
 
     this.utilsService.blockUIStart('Confirmando...');
     this.devolucionesService.cambiarEstado(liquidaciones).subscribe(response => {
-      if (response.tipo == 1) {
-        this.utilsService.showNotification('Confirmación Satisfactoria', 'Confirmación', 1);
+      if (response.comun.tipo == 1) {
         this.utilsService.blockUIStop();
+        // this.utilsService.showNotification('Confirmación Satisfactoria', 'Confirmación', 1);
+        Swal.fire({
+          title: 'Información',
+          html: `
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>N° Liquidación</th>
+                  <th>Correo Enviado</th>
+                </tr>
+                </thead>
+                <tbody>
+                ${this.onFilas(response.liquidacionCabValidacion)}
+                </tbody>
+              </table>
+            </div>
+            <p style="text-align: right"><i class="text-success cursor-pointer fa fa-check"></i> : Enviado &nbsp;&nbsp;
+            <i class="text-danger cursor-pointer fa fa-ban"></i> : No Enviado</p>`,
+          icon: 'info',
+          width: '750px',
+          showCancelButton: false,
+          confirmButtonText: '<i class="fa fa-check"></i> Aceptar',
+          customClass: {
+            confirmButton: 'btn btn-info',
+          },
+        }).then(result => {});
         this.onListarDevolucion();
-      } else if (response.tipo == 2) {
+      } else if (response.comun.tipo == 2) {
         this.utilsService.showNotification(response.mensaje, 'Validación', 2);
         this.utilsService.blockUIStop();
-      } else if (response.tipo == 0) {
+      } else if (response.comun.tipo == 0) {
         this.utilsService.showNotification(response.mensaje, 'Error', 3);
         this.utilsService.blockUIStop();
       }
