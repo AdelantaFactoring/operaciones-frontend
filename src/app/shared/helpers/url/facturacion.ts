@@ -7,5 +7,6 @@ export const DOCUMENTOS = {
   firmaPublicacionDeclaracion: '/liquidacion/firmaPublicacionDeclaracionDocumento',
   consultarEstado: '/liquidacion/consultarEstadoDocumento',
   anular: '/liquidacion/anulacionDocumento',
-  enviarCorreo: '/liquidacion/enviarCorreoDocumento'
+  enviarCorreo: '/liquidacion/enviarCorreoDocumento',
+  descargar: '/liquidacion/descargarDocumento'
 }

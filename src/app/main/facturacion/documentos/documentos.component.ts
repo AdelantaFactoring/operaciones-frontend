@@ -18,6 +18,8 @@ import {__spreadArray} from 'tslib';
 import {LiquidacionCab} from "../../../shared/models/operaciones/liquidacion-cab";
 import {Serie} from "../../../shared/models/facturacion/serie";
 import {SunatService} from "../../../shared/services/sunat.service";
+import * as fileSaver from 'file-saver';
+import {formatDate} from "@angular/common";
 
 @Component({
   selector: 'app-documentos',
@@ -115,8 +117,7 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
               private tablaMaestraService: TablaMaestraService,
               private clientesService: ClientesService,
               private maestrosService: MaestrosService,
-              private sunatService: SunatService,
-              private elementRef: ElementRef) {
+              private sunatService: SunatService) {
     this.contentHeader = {
       headerTitle: 'Documentos',
       actionButton: true,
@@ -1304,6 +1305,36 @@ export class DocumentosComponent implements OnInit, AfterViewInit {
     }, error => {
       this.utilsService.showNotification('[F]: Error al obtener el token', 'Error', 3);
       this.utilsService.blockUIStop();
+    });
+  }
+
+  onDownload() {
+    this.utilsService.blockUIStart('Obteniendo información...');
+    this.documentosService.descargar({
+      search: this.search,
+      pageIndex: this.page,
+      pageSize: this.pageSize,
+      codigoLiquidacion: this.filtroForm.get("codigoLiquidacion").value,
+      codigoSolicitud: this.filtroForm.get("codigoSolicitud").value,
+      cliente: this.filtroForm.get("cliente").value,
+      idMoneda: this.filtroForm.get("moneda").value,
+      fechaEmisionDesde: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.get("fechaEmisionDesde").value),
+      fechaEmisionHasta: this.utilsService.formatoFecha_YYYYMMDD(this.filtroForm.get("fechaEmisionHasta").value),
+      idTipoDocumento: this.filtroForm.get("tipoDocumento").value,
+      nroDocumento: this.filtroForm.get("nroDocumento").value,
+      montoTotal: Number(this.filtroForm.get("montoTotal").value),
+      idsEstados: this.filtroForm.get("estado").value.map(m => String(m.idColumna)).join(','),
+      serie: this.filtroForm.get("serie").value ?? 0,
+      correlativoMin: Number(this.filtroForm.get("correlativoMin").value),
+      correlativoMax: Number(this.filtroForm.get("correlativoMax").value),
+    }).subscribe((response) => {
+      let blob: any = new Blob([response], {type: 'application/zip'});
+      //const url = window.URL.createObjectURL(blob);
+      fileSaver.saveAs(blob, `documents_${formatDate(new Date(), 'yyyyMMddHHmmss', 'en-US')}`);
+      this.utilsService.blockUIStop();
+    }, error => {
+      this.utilsService.blockUIStop();
+      this.utilsService.showNotification('An internal error has occurred', 'Error', 3);
     });
   }
 }

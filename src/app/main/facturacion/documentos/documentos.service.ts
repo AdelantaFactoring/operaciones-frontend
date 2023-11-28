@@ -122,4 +122,16 @@ export class DocumentosService {
       }
     );
   }
+
+  descargar(payload): Observable<any> {
+    return this.requestMethod.getFile(
+      `${environment.apiUrl}${DOCUMENTOS.descargar}`,
+      `?search=${payload.search}&pageIndex=${payload.pageIndex}&pageSize=${payload.pageSize}` +
+      `&codigoLiquidacion=${payload.codigoLiquidacion}&codigoSolicitud=${payload.codigoSolicitud}` +
+      `&cliente=${payload.cliente}&idMoneda=${payload.idMoneda}&fechaEmisionDesde=${payload.fechaEmisionDesde}` +
+      `&fechaEmisionHasta=${payload.fechaEmisionHasta}&idTipoDocumento=${payload.idTipoDocumento}` +
+      `&nroDocumento=${payload.nroDocumento}&montoTotal=${payload.montoTotal}&idsEstados=${payload.idsEstados}` +
+      `&serie=${payload.serie}&correlativoMin=${payload.correlativoMin}&correlativoMax=${payload.correlativoMax}`
+    );
+  }
 }
