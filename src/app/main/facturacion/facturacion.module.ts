@@ -35,7 +35,6 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
-    CommonModule,
     RouterModule.forChild(routes),
     NgbModule,
     FormsModule,
@@ -51,7 +50,7 @@ const routes: Routes = [
     CoreDirectivesModule,
     PerfectScrollbarModule,
     CoreCardModule,
-    OperacionesModule
+    OperacionesModule,
   ]
 })
 export class FacturacionModule {
