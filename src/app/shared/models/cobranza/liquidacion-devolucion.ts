@@ -27,6 +27,7 @@ export class LiquidacionDevolucion {
   montoConversion: number;
   fechaDesembolso: string;
   observacion: string;
+  correoEnviado: boolean;
   idEstado: number;
   estado: string;
   idUsuarioAud: number;

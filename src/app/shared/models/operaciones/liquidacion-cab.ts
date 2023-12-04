@@ -32,6 +32,7 @@ export class LiquidacionCab {
   idEstado: number;
   estado: string;
   correoValidacionEnviado: boolean;
+  correoDesembolsoEnviado: boolean;
   totalRows: number;
   liquidacionDet: LiquidacionDet[];
   liquidacionCabSustento: LiquidacionCabSustento[];
