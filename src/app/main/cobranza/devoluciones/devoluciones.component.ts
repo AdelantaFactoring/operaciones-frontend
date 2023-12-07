@@ -491,36 +491,36 @@ export class DevolucionesComponent implements OnInit, AfterViewInit {
     });
 
     this.utilsService.blockUIStart('Generando archivo...');
-    this.devolucionesService.cambiarEstado(liquidaciones).subscribe(response => {
-      if (response.tipo == 1) {
-        this.utilsService.blockUIStop();
-        this.utilsService.blockUIStart('Exportando archivo...');
-        this.devolucionesService.export(liquidaciones).subscribe(s => {
-          let blob: any = new Blob([s], {type: 'application/vnd.ms-excel'});
-          const url = window.URL.createObjectURL(blob);
-          fileSaver.saveAs(blob, 'ArchivoDevolucion_'
-            + new Date().getFullYear().toString()
-            + new Date().getMonth().toString().padStart(2, "0")
-            + new Date().getDate().toString().padStart(2, "0")
-            + '.xlsx');
-          this.utilsService.showNotification('Generación satisfactoria', 'Confirmación', 1);
-          this.utilsService.blockUIStop();
-          this.onListarDevolucion();
-        }, error => {
-          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
-          this.utilsService.blockUIStop();
-        });
-      } else if (response.tipo == 2) {
-        this.utilsService.showNotification(response.mensaje, 'Validación', 2);
-        this.utilsService.blockUIStop();
-      } else if (response.tipo == 0) {
-        this.utilsService.showNotification(response.mensaje, 'Error', 3);
-        this.utilsService.blockUIStop();
-      }
+    // this.devolucionesService.cambiarEstado(liquidaciones).subscribe(response => {
+    //   if (response.tipo == 1) {
+    this.utilsService.blockUIStop();
+    this.utilsService.blockUIStart('Exportando archivo...');
+    this.devolucionesService.export(liquidaciones).subscribe(s => {
+      let blob: any = new Blob([s], {type: 'application/vnd.ms-excel'});
+      const url = window.URL.createObjectURL(blob);
+      fileSaver.saveAs(blob, 'ArchivoDevolucion_'
+        + new Date().getFullYear().toString()
+        + new Date().getMonth().toString().padStart(2, "0")
+        + new Date().getDate().toString().padStart(2, "0")
+        + '.xlsx');
+      this.utilsService.showNotification('Generación satisfactoria', 'Confirmación', 1);
+      this.utilsService.blockUIStop();
+      this.onListarDevolucion();
     }, error => {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();
     });
+    //   } else if (response.tipo == 2) {
+    //     this.utilsService.showNotification(response.mensaje, 'Validación', 2);
+    //     this.utilsService.blockUIStop();
+    //   } else if (response.tipo == 0) {
+    //     this.utilsService.showNotification(response.mensaje, 'Error', 3);
+    //     this.utilsService.blockUIStop();
+    //   }
+    // }, error => {
+    //   this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+    //   this.utilsService.blockUIStop();
+    // });
   }
 
   onAprobar(idEstado: number): void {
@@ -580,7 +580,8 @@ export class DevolucionesComponent implements OnInit, AfterViewInit {
           customClass: {
             confirmButton: 'btn btn-info',
           },
-        }).then(result => {});
+        }).then(result => {
+        });
         this.onListarDevolucion();
       } else if (response.comun.tipo == 2) {
         this.utilsService.showNotification(response.mensaje, 'Validación', 2);
