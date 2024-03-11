@@ -153,7 +153,7 @@
                     <!--                    <td>{{item.codigoSolicitud}}</td>-->
                     <td>
                       <a href="javascript:void(0)" title="Reintentar"
-                         class="btn btn-raised btn-outline-warning btn-sm" [class.disabled]="item.idEstado === 1 || item.idTipoProceso > 3 || item.anotacionCavali"
+                         class="btn btn-raised btn-outline-warning btn-sm" [class.disabled]="item.idEstado === 2"
                       (click)="onReintentar(item)">
                         <i class="text-warning cursor-pointer" data-feather="repeat"></i>
                       </a>
