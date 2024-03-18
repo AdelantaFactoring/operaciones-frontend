@@ -76,4 +76,7 @@ export class LiquidacionDet {
   fechaPago: any = null;
   fechaPagoFormat: any = null;
   montoPago: number = 0;
+  incluirMora: boolean;
+
+  deudaActual: number = 0;
 }

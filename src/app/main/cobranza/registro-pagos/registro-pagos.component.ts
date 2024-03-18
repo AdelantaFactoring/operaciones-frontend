@@ -819,11 +819,12 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit, OnDestroy 
         || (cab.idTipoOperacion == 1 && !cab.alterno && !el.flagPagoHabilitado)
         || (cab.idTipoOperacion == 3 && !cab.flagPagoInteresConfirming)) continue;
       el.fechaPago = {
-        year: parseInt(el.fechaConfirmado.split('/')[2]),
-        month: parseInt(el.fechaConfirmado.split('/')[1]),
-        day: parseInt(el.fechaConfirmado.split('/')[0]),
+        year: new Date().getFullYear(),
+        month: new Date().getMonth() + 1,
+        day: new Date().getDate(),
       }
-      el.montoPago = el.porcentajePago > 0 ? el.saldo : cab.flagAdelanto ? el.netoConfirmadoOriginal : el.netoConfirmado;
+      el.montoPago = el.deudaActual;
+      el.incluirMora = true;
       el.verOpcionesPago = el.seleccionado = cab.seleccionarTodo;
     }
   }
@@ -831,11 +832,12 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit, OnDestroy 
   onSeleccionado(cab: LiquidacionCab, item: LiquidacionDet): void {
     cab.verOpcionesPagoDetalle = cab.liquidacionDet.filter(f => f.seleccionado).length > 0;
     item.fechaPago = {
-      year: parseInt(item.fechaConfirmado.split('/')[2]),
-      month: parseInt(item.fechaConfirmado.split('/')[1]),
-      day: parseInt(item.fechaConfirmado.split('/')[0]),
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      day: new Date().getDate(),
     }
-    item.montoPago = item.porcentajePago > 0 ? item.saldo : cab.flagAdelanto ? item.netoConfirmadoOriginal : item.netoConfirmado;
+    item.montoPago = item.deudaActual;
+    item.incluirMora = true;
     item.verOpcionesPago = item.seleccionado;
   }
 
@@ -957,8 +959,31 @@ export class RegistroPagosComponent implements OnInit, AfterViewInit, OnDestroy 
   onSumatoria(liquidacionDet: LiquidacionDet[], field: string): number {
     if (field === 'diasMora') {
       return liquidacionDet.reduce((a, b) => Math.max(a, b[field] || 0), 0);
+    } else if (field === 'montoPago') {
+      return liquidacionDet.filter(f => f.seleccionado).reduce((a, b) => a + (b[field] || 0), 0);
     }
 
     return liquidacionDet.reduce((a, b) => a + (b[field] || 0), 0);
+  }
+
+  async onObtenerDeuda(item: LiquidacionDet): Promise<void> {
+    item.montoPago = await this._obtenerDeuda(
+      item.idLiquidacionDet,
+      this.utilsService.formatoFecha_YYYYMMDD(item.fechaPago),
+      item.incluirMora);
+  }
+
+  private async _obtenerDeuda(idLiquidacionDet: number, fecha: string, incluirMora: boolean): Promise<number> {
+    this.utilsService.blockUIStart('Calculando deuda...');
+    const result = await this.registroPagosService.infoPago({
+      idLiquidacionDet,
+      fecha,
+      tipoPago: true
+    }).toPromise()
+      .then(res => this.utilsService.round(incluirMora ? res.saldoDeuda : (res.saldoDeuda - res.interes - res.gastos)))
+      .catch(err => 0);
+    this.utilsService.blockUIStop();
+
+    return result;
   }
 }

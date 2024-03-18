@@ -162,6 +162,9 @@
                           </div>
                         </div>
                       </div>
+                      <div class="row pl-1 pb-1">
+
+                      </div>
                       <div class="row">
                         <div class="table-responsive"
                              style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
@@ -169,6 +172,13 @@
                           <table class="table table-hover">
                             <thead>
                             <tr>
+                              <th class="detail-th-color"
+                                  [colSpan]="cab.idTipoOperacion === 3 ? 13 : 11">
+                                Total de elementos: {{cab.solicitudDet.length}}
+                              </th>
+                            </tr>
+                            <tr>
+                              <th class="detail-th-color">N°</th>
                               <th class="detail-th-color">Acción</th>
                               <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
                               <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
@@ -184,7 +194,8 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr *ngFor="let item of cab.solicitudDet">
+                            <tr *ngFor="let item of cab.solicitudDet; index as i">
+                              <td>{{i + 1}}</td>
                               <td>
                                 <div class="d-flex align-items-center">
                                   <a href="javascript:void(0)" title="Eliminar" (click)="onEliminar(cab, item)"

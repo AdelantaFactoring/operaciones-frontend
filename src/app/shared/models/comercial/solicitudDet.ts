@@ -32,6 +32,10 @@ export class SolicitudDet {
   anotacionCavali: boolean;
   transferenciaContableCavali: boolean;
   retiroCavali: boolean;
+  tipoProcesoCavali: string;
+  codigoCavali: string;
+  mensajeCavali: string;
+  estadoCavali: string;
 
   editado: boolean = true;
 }

@@ -136,49 +136,79 @@
                   </tr>
                   <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse">
                     <td [colSpan]="14">
-                      <div class="table-responsive" style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
-                           id="{{ 'detail' + cab.idSolicitudCab }}" >
-                        <table class="table table-hover">
-                          <thead>
-                          <tr>
-                            <th class="detail-th-color">Acción</th>
-                            <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
-                            <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
-                            <th class="detail-th-color">N° Documento</th>
-                            <th class="detail-th-color">Forma Pago</th>
-                            <th class="detail-th-color">Monto sin IGV</th>
-                            <th class="detail-th-color">Monto con IGV</th>
-                            <th class="detail-th-color">Fecha Pago</th>
-                            <th class="detail-th-color">Monto Pago Confirmado</th>
-                            <th class="detail-th-color">Fondo Resguardo</th>
-                            <th class="detail-th-color">Estado</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          <tr *ngFor="let item of cab.solicitudDet">
-                            <td>
-                              <div class="d-flex align-items-center">
-                                <a href="javascript:void(0)" title="Eliminar" (click)="onEliminar(cab, item)"
-                                   [class.disabled]="item.idEstado != 4 ? true : null"
-                                   class="btn btn-raised btn-outline-danger btn-sm">
-                                  <i class="text-danger cursor-pointer"
-                                     data-feather="trash-2"></i>
-                                </a>
-                              </div>
-                            </td>
-                            <td *ngIf="cab.idTipoOperacion === 3">{{item.razonSocialPagProv}}</td>
-                            <td *ngIf="cab.idTipoOperacion === 3">{{item.rucPagProv}}</td>
-                            <td>{{item.nroDocumento}}</td>
-                            <td>{{item.formaPago}}</td>
-                            <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
-                            <td>{{item.montoConIGV | number: '1.2-2'}}</td>
-                            <td>{{item.fechaConfirmadoFormat}}</td>
-                            <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
-                            <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
-                            <td>{{item.estado}}</td>
-                          </tr>
-                          </tbody>
-                        </table>
+                      <div class="row">
+                        <div class="table-responsive"
+                             style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
+                             id="{{ 'detail' + cab.idSolicitudCab }}">
+                          <table class="table table-hover">
+                            <thead>
+                            <tr>
+                              <th class="detail-th-color"
+                                  [colSpan]="cab.idTipoOperacion === 3 ? 12 : 10">
+                                Total de elementos: {{cab.solicitudDet.length}}
+                              </th>
+                              <th class="text-center" colspan="2">Cavali</th>
+                            </tr>
+                            <tr>
+                              <th class="detail-th-color">N°</th>
+                              <th class="detail-th-color">Acción</th>
+                              <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
+                              <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
+                              <th class="detail-th-color">N° Documento</th>
+                              <th class="detail-th-color">Forma Pago</th>
+                              <th class="detail-th-color">Monto sin IGV</th>
+                              <th class="detail-th-color">Monto con IGV</th>
+                              <th class="detail-th-color">Fecha Pago</th>
+                              <th class="detail-th-color">Monto Pago Confirmado</th>
+                              <th class="detail-th-color">Fondo Resguardo</th>
+                              <th class="detail-th-color">Estado</th>
+                              <th>Proceso / Estado </th>
+                              <th>Código / Mensaje</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let item of cab.solicitudDet; index as i">
+                              <td>{{i + 1}}</td>
+                              <td>
+                                <div class="d-flex align-items-center">
+                                  <a href="javascript:void(0)" title="Eliminar" (click)="onEliminar(cab, item)"
+                                     [class.disabled]="item.idEstado != 4 ? true : null"
+                                     class="btn btn-raised btn-outline-danger btn-sm">
+                                    <i class="text-danger cursor-pointer"
+                                       data-feather="trash-2"></i>
+                                  </a>
+                                </div>
+                              </td>
+                              <td *ngIf="cab.idTipoOperacion === 3">{{item.razonSocialPagProv}}</td>
+                              <td *ngIf="cab.idTipoOperacion === 3">{{item.rucPagProv}}</td>
+                              <td>{{item.nroDocumento}}</td>
+                              <td>{{item.formaPago}}</td>
+                              <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
+                              <td>{{item.montoConIGV | number: '1.2-2'}}</td>
+                              <td>{{item.fechaConfirmadoFormat}}</td>
+                              <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                              <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                              <td>{{item.estado}}</td>
+                              <td>
+                                <div class="cell-line-height">
+                                  <p class="mb-25">
+                                    {{item.tipoProcesoCavali}}
+                                  </p>
+                                  <span class="text-muted font-small-3">{{item.estadoCavali}}</span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="cell-line-height">
+                                  <p class="mb-25">
+                                    {{item.codigoCavali}}
+                                  </p>
+                                  <span class="text-muted font-small-3">{{item.mensajeCavali}}</span>
+                                </div>
+                              </td>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </td>
                   </tr>
@@ -191,7 +221,8 @@
         <div class="row">
           <div class="col-12 col-md-12 d-flex justify-content-end mt-1">
             <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" (pageChange)="onRefrescar()"
-                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize" [ellipses]="false">
+                            [maxSize]="3" [rotate]="false" [boundaryLinks]="true" [pageSize]="pageSize"
+                            [ellipses]="false">
               <ng-template ngbPaginationFirst>
                 <span [data-feather]="'chevrons-left'" [size]="18" [class]="'font-weight-bolder'"></span>
               </ng-template>
