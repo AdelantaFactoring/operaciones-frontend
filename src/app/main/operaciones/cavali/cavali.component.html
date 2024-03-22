@@ -83,13 +83,13 @@
                 <span class="d-none d-sm-inline-block">Refrescar</span>
               </button>
             </div>
-            <div class="pt-1 pb-1">
-              <button type="submit" rippleEffect class="btn btn-success" (click)="onActualizarEstado()"
-                      [disabled]="true">
-                <i class="mr-0 mr-sm-1" data-feather="refresh-ccw"></i>
-                <span class="d-none d-sm-inline-block">Actualizar Estado</span>
-              </button>
-            </div>
+<!--            <div class="pt-1 pb-1">-->
+<!--              <button type="submit" rippleEffect class="btn btn-success" (click)="onActualizarEstado()"-->
+<!--                      [disabled]="true">-->
+<!--                <i class="mr-0 mr-sm-1" data-feather="refresh-ccw"></i>-->
+<!--                <span class="d-none d-sm-inline-block">Actualizar Estado</span>-->
+<!--              </button>-->
+<!--            </div>-->
           </div>
         </div>
         <div class="row">
@@ -122,52 +122,68 @@
         </div>
         <div class="row">
           <div class="col-12">
-            <!--            <perfect-scrollbar [config]="{ suppressScrollX: false, suppressScrollY: true }">-->
             <div class="table-responsive">
               <table class="table table-hover min-width-table">
                 <thead class="centerall-header">
                 <tr>
-                  <!--                  <th rowspan="2">Código Solicitud</th>-->
-                  <th rowspan="2">Acción</th>
-                  <th rowspan="2">N° Documento</th>
-                  <th rowspan="2">Tipo Proceso</th>
-                  <th rowspan="2">Id. Proceso</th>
-                  <th rowspan="2">Código</th>
-                  <th rowspan="2">Mensaje</th>
-                  <th rowspan="2">Estado</th>
-                  <th colspan="4" class="audit-columns">Auditoría</th>
-                </tr>
-                <tr>
-                  <th class="audit-columns">Creado por</th>
-                  <th class="audit-columns">Fecha creación</th>
-                  <th class="audit-columns">Modificado por</th>
-                  <th class="audit-columns">Fecha modificación</th>
+                  <th>Acción</th>
+                  <th>N° Documento</th>
+                  <th>Tipo Proceso / Id. Proceso</th>
+                  <th>Estado</th>
                 </tr>
                 </thead>
                 <tbody>
                 <ng-template let-cod ngFor [ngForOf]="onCodigos(solicitudes)">
                   <tr>
-                    <td class="detail-td-color" colspan="11" style="text-align: left"><i>Código Solicitud:</i>&nbsp;<b>{{cod}}</b></td>
+                    <td class="detail-td-color" colspan="4" style="text-align: left"><i>Código
+                      Solicitud:</i>&nbsp;<b>{{cod}}</b></td>
                   </tr>
                   <tr *ngFor="let item of onSolicitudPorCodigo(solicitudes, cod)">
                     <!--                    <td>{{item.codigoSolicitud}}</td>-->
                     <td>
                       <a href="javascript:void(0)" title="Reintentar"
-                         class="btn btn-raised btn-outline-warning btn-sm" [class.disabled]="item.idEstado === 2"
-                      (click)="onReintentar(item)">
+                         class="btn btn-raised btn-outline-warning btn-sm"
+                         [class.disabled]="item.idEstado === 2 && item.idTipoProceso === 3"
+                         (click)="onReintentar(item)">
                         <i class="text-warning cursor-pointer" data-feather="repeat"></i>
                       </a>
                     </td>
-                    <td>{{item.nroDocumento}}</td>
-                    <td>{{item.tipoProceso}}</td>
-                    <td>{{item.idProceso}}</td>
-                    <td>{{item.codigo}}</td>
-                    <td>{{item.mensaje}}</td>
-                    <td>{{item.estado}}</td>
-                    <td>{{item.usuarioCreacion}}</td>
-                    <td>{{item.fechaCreacion}}</td>
-                    <td>{{item.usuarioModificacion}}</td>
-                    <td>{{item.fechaModificacion}}</td>
+                    <td>
+                      <div class="cell-line-height">
+                        <p class="mb-25">
+                          {{item.nroDocumento}}
+                        </p>
+                        <ngb-progressbar [striped]="true" [animated]="true" type="primary"
+                                         [value]="item.progreso" [showValue]="true"></ngb-progressbar>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="cell-line-height">
+                        <p class="mb-25">
+                          {{item.tipoProceso}}
+                        </p>
+                        <span class="text-muted font-small-3">{{item.idProceso}}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="cell-line-height">
+                        <div class="mb-25">
+                          <div
+                            class="badge badge-pill"
+                            [ngClass]="{
+                            'badge-light-success': item.idEstado === 2,
+                            'badge-light-danger': item.idEstado === 3,
+                            'badge-light-info': item.idEstado === 1
+                          }"
+                          >
+                            {{item.estado}}
+                          </div>
+                        </div>
+                        <span *ngIf="item.codigo" class="text-muted font-small-3">
+                          {{item.codigo}} - {{item.mensaje}}
+                        </span>
+                      </div>
+                    </td>
                   </tr>
                 </ng-template>
                 </tbody>

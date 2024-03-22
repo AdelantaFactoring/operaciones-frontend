@@ -1,0 +1,105 @@
+<!--<div class="content-wrapper">-->
+<!--  <div class="content-body">-->
+    <app-content-header [contentHeader]="contentHeader"></app-content-header>
+    <div class="card">
+      <div class="card-header justify-content-start">
+        <a href="javascript:void(0)" title="Regresar"
+           class="d-flex align-items-center" (click)="onRegresar()">
+          <i class="text-secondary cursor-pointer mr-50" data-feather="arrow-left-circle" [size]="25"></i>
+        </a>
+        <p class="card-title">Detalle de solicitud N° {{solicitud?.codigo}}</p>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <div class="d-flex align-items-center mb-1">
+              <label class="mt-1">Mostrar {{solicitud?.solicitudDet.length ?? 0}} filas</label>
+            </div>
+          </div>
+          <div class="col-md-6 col-12 d-flex justify-content-md-end">
+            <div class="d-flex align-items-center justify-content-end mb-1">
+              <label class="d-flex align-items-center"
+              >Buscar<input
+                type="search"
+                placeholder="Buscar"
+                class="form-control ml-25"
+                (change)="onBuscar($event)"
+              /></label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table table-sm table-hover">
+                <thead>
+                <tr>
+                  <th [colSpan]="solicitud?.idTipoOperacion === 3 ? 12 : 10"></th>
+                  <th class="text-center" colspan="2">Cavali</th>
+                </tr>
+                <tr>
+                  <th class="detail-th-color">Acción</th>
+                  <th class="detail-th-color">N°</th>
+                  <th *ngIf="solicitud?.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
+                  <th *ngIf="solicitud?.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
+                  <th class="detail-th-color">N° Documento</th>
+                  <th class="detail-th-color">Forma Pago</th>
+                  <th class="detail-th-color">Monto sin IGV</th>
+                  <th class="detail-th-color">Monto con IGV</th>
+                  <th class="detail-th-color">Fecha Pago</th>
+                  <th class="detail-th-color">Monto Pago Confirmado</th>
+                  <th class="detail-th-color">Fondo Resguardo</th>
+                  <th class="detail-th-color">Estado</th>
+                  <th>Proceso / Estado</th>
+                  <th>Código / Mensaje</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of data; index as i">
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <a href="javascript:void(0)" title="Eliminar"
+                         [class.disabled]="item.idEstado != 4 ? true : null"
+                         class="btn btn-raised btn-outline-danger btn-sm">
+                        <i class="text-danger cursor-pointer"
+                           data-feather="trash-2"></i>
+                      </a>
+                    </div>
+                  </td>
+                  <td>{{i + 1}}</td>
+                  <td *ngIf="solicitud?.idTipoOperacion === 3">{{item.razonSocialPagProv}}</td>
+                  <td *ngIf="solicitud?.idTipoOperacion === 3">{{item.rucPagProv}}</td>
+                  <td>{{item.nroDocumento}}</td>
+                  <td>{{item.formaPago}}</td>
+                  <td>{{item.montoSinIGV | number: '1.2-2'}}</td>
+                  <td>{{item.montoConIGV | number: '1.2-2'}}</td>
+                  <td>{{item.fechaConfirmadoFormat}}</td>
+                  <td>{{item.netoConfirmado | number: '1.2-2'}}</td>
+                  <td>{{item.fondoResguardo | number: '1.2-2'}}</td>
+                  <td>{{item.estado}}</td>
+                  <td>
+                    <div class="cell-line-height">
+                      <p class="mb-25">
+                        {{item.tipoProcesoCavali}}
+                      </p>
+                      <span class="text-muted font-small-3">{{item.estadoCavali}}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-line-height">
+                      <p class="mb-25">
+                        {{item.codigoCavali}}
+                      </p>
+                      <span class="text-muted font-small-3">{{item.mensajeCavali}}</span>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!--  </div>-->
+<!--</div>-->

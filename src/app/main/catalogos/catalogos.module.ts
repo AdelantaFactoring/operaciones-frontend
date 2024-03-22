@@ -25,7 +25,8 @@ const routes: Routes = [
         children: [
             {
                 path: 'tipo-cambio',
-                component: TipoCambioComponent
+                component: TipoCambioComponent,
+                data: { animation: 'tipo-cambio'},
             }
         ]
     },
@@ -34,7 +35,8 @@ const routes: Routes = [
     children: [
       {
         path: 'gastosMora',
-        component: GastosMoraComponent
+        component: GastosMoraComponent,
+        data: { animation: 'gastosMora'},
       }
     ]
   },

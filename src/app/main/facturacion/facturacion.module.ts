@@ -23,7 +23,8 @@ const routes: Routes = [
     children: [
       {
         path: 'documentos',
-        component: DocumentosComponent
+        component: DocumentosComponent,
+        data: { animation: 'documentos'},
       }
     ]
   },

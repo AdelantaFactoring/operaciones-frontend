@@ -10,6 +10,7 @@ import {CONTENT_TYPE} from "../../../shared/helpers/headers";
 })
 export class ConsultaFactrackService {
   private requestMethod = new RequestMethod();
+
   constructor() { }
 
   listar(payload): Observable<any> {

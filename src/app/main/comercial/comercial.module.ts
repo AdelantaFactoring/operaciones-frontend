@@ -35,7 +35,8 @@ const routes: Routes = [
     children: [
       {
         path: 'clientes',
-        component: ClientesComponent
+        component: ClientesComponent,
+        data: { animation: 'clientes'},
       }
     ]
   },
@@ -44,7 +45,8 @@ const routes: Routes = [
     children: [
       {
         path: 'pagador',
-        component: PagadorComponent
+        component: PagadorComponent,
+        data: { animation: 'pagador'},
       }
     ]
   },
@@ -53,7 +55,8 @@ const routes: Routes = [
     children: [
       {
         path: 'checklist',
-        component: CheckListComponent
+        component: CheckListComponent,
+        data: { animation: 'checklist'},
       }
     ]
   },
@@ -62,7 +65,8 @@ const routes: Routes = [
     children: [
       {
         path: 'solicitudes',
-        component: SolicitudesComponent
+        component: SolicitudesComponent,
+        data: { animation: 'solicitudes'},
       }
     ]
   },
@@ -71,7 +75,8 @@ const routes: Routes = [
     children: [
       {
         path: 'clientepagador',
-        component: ClientePagadorComponent
+        component: ClientePagadorComponent,
+        data: { animation: 'clientepagador'},
       }
     ]
   },
@@ -80,7 +85,8 @@ const routes: Routes = [
     children: [
       {
         path: 'solicitudes/solicitudes-form',
-        component: SolicitudesFormComponent
+        component: SolicitudesFormComponent,
+        data: { animation: 'solicitudes-form'},
       }
     ]
   }

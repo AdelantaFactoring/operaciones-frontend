@@ -8,6 +8,10 @@
 @import '~@core/scss/angular/libs/toastr.component.scss';
 @import '~@core/scss/angular/libs/sweet-alerts.component.scss';
 
+.block-ui-wrapper {
+  background-color: rgba(0, 0, 0, 0.01) !important;
+}
+
 //.tbody {
 //  display:block;
 //  height:250px;

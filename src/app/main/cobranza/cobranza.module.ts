@@ -22,7 +22,8 @@ const routes: Routes = [
     children: [
       {
         path: 'registroPagos/:mostrar',
-        component: RegistroPagosComponent
+        component: RegistroPagosComponent,
+        data: { animation: 'registroPagos'},
       }
     ]
   },
@@ -31,7 +32,8 @@ const routes: Routes = [
     children: [
       {
         path: 'devoluciones',
-        component: DevolucionesComponent
+        component: DevolucionesComponent,
+        data: { animation: 'devoluciones'},
       }
     ]
   }

@@ -10,6 +10,7 @@ export class SolicitudCavali {
   mensaje: string;
   idEstado: number;
   estado: string;
+  progreso: number;
   anotacionCavali: boolean;
   usuarioCreacion: string;
   fechaCreacion: string;

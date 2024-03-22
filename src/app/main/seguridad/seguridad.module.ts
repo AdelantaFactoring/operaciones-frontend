@@ -21,7 +21,8 @@ const routes: Routes = [
     children: [
       {
         path: 'usuario',
-        component: UsuarioComponent
+        component: UsuarioComponent,
+        data: { animation: 'usuario'}
       }
     ]
   },
@@ -30,7 +31,8 @@ const routes: Routes = [
     children: [
       {
         path: 'perfil',
-        component: PerfilComponent
+        component: PerfilComponent,
+        data: { animation: 'perfil'}
       }
     ]
   },
@@ -39,7 +41,8 @@ const routes: Routes = [
     children: [
       {
         path: 'auditoria',
-        component: AuditoriaComponent
+        component: AuditoriaComponent,
+        data: { animation: 'auditoria'}
       }
     ]
   }

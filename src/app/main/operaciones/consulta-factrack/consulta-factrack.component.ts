@@ -5,6 +5,7 @@ import {ConsultaFactrackService} from "./consulta-factrack.service";
 import Swal from "sweetalert2";
 import {SolicitudDet} from "../../../shared/models/comercial/solicitudDet";
 import {User} from "../../../shared/models/auth/user";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-consulta-factrack',
@@ -19,12 +20,16 @@ export class ConsultaFactrackComponent implements OnInit {
   public cambiarIcono: boolean = false;
   public search: string = '';
 
+  public solicitud: SolicitudCab;
+
   public collectionSize: number = 0;
   public pageSize: number = 10;
   public page: number = 1;
+  public verDetalle: boolean;
 
   constructor(private utilsService: UtilsService,
-              private consultaFactrackService: ConsultaFactrackService) {
+              private consultaFactrackService: ConsultaFactrackService,
+              private router: Router) {
     this.contentHeader = {
       headerTitle: 'Consulta Factrack',
       actionButton: true,
@@ -83,19 +88,11 @@ export class ConsultaFactrackComponent implements OnInit {
     this.onListarSolicitudes();
   }
 
-  onCambiarVisibilidadDetalleTodo() {
-    this.cambiarIcono = !this.cambiarIcono;
-    this.solicitudes.forEach(el => {
-      el.cambiarIcono = this.cambiarIcono;
-      document.getElementById('tr' + el.idSolicitudCab).style.visibility = (el.cambiarIcono) ? "visible" : "collapse";
-      document.getElementById('detail' + el.idSolicitudCab).style.display = (el.cambiarIcono) ? "block" : "none";
-    })
-  }
-
-  onCambiarVisibilidadDetalle(item: any) {
-    item.cambiarIcono = !item.cambiarIcono;
-    document.getElementById('tr' + item.idSolicitudCab).style.visibility = (item.cambiarIcono) ? "visible" : "collapse";
-    document.getElementById('detail' + item.idSolicitudCab).style.display = (item.cambiarIcono) ? "block" : "none";
+  onCambiarVisibilidadDetalle(item: SolicitudCab) {
+    this.solicitud = item;
+    this.verDetalle = true;
+    // this.consultaFactrackService.setSolicitud(item);
+    // this.router.navigateByUrl('/operaciones/consultaFactrack/detalle');
   }
 
   onEliminar(cab: SolicitudCab, item: SolicitudDet): void {
@@ -206,5 +203,10 @@ export class ConsultaFactrackComponent implements OnInit {
       this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
       this.utilsService.blockUIStop();
     });
+  }
+
+  onRegresar() {
+    this.solicitud = null;
+    this.verDetalle = false;
   }
 }

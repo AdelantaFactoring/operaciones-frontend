@@ -29,47 +29,58 @@ const routes: Routes = [
     children: [
       {
         path: 'powerbi',
-        component: PowerBiComponent
+        component: PowerBiComponent,
+        data: { animation: 'powerbi'},
       },
       {
         path: 'kpi',
-        component: KPIComponent
+        component: KPIComponent,
+        data: { animation: 'kpi'},
       },
       {
         path: 'pendientepago/:moneda',
-        component: PendientePagoComponent
+        component: PendientePagoComponent,
+        data: { animation: 'pendientepago'},
       },
       {
         path: 'ejecutivo/:moneda',
-        component: EjecutivoComponent
+        component: EjecutivoComponent,
+        data: { animation: 'ejecutivo'},
       },
       {
         path: 'proyectado/:moneda',
-        component: ProyectadoComponent
+        component: ProyectadoComponent,
+        data: { animation: 'proyectado'},
       },
       {
         path: 'acumEjecutivo',
-        component: AcumEjecutivoComponent
+        component: AcumEjecutivoComponent,
+        data: { animation: 'acumEjecutivo'},
       },
       {
         path: 'acumPagador',
-        component: AcumPagadorComponent
+        component: AcumPagadorComponent,
+        data: { animation: 'acumPagador'},
       },
       {
         path: 'sector',
-        component: SectorComponent
+        component: SectorComponent,
+        data: { animation: 'sector'},
       },
       {
         path: 'vigente',
-        component: VigenteComponent
+        component: VigenteComponent,
+        data: { animation: 'vigente'},
       },
       {
         path: 'vencido',
-        component: VencidoComponent
+        component: VencidoComponent,
+        data: { animation: 'vencido'},
       },
       {
         path: 'confirming',
-        component: ConfirmingComponent
+        component: ConfirmingComponent,
+        data: { animation: 'confirming'},
       }
     ]
   },

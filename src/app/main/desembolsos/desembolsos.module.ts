@@ -23,7 +23,8 @@ const routes: Routes = [
     children: [
       {
         path: 'aprobacion',
-        component: AprobacionComponent
+        component: AprobacionComponent,
+        data: { animation: 'aprobacion'},
       }
     ]
   },
