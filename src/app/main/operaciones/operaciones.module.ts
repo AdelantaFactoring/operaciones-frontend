@@ -23,6 +23,7 @@ import {CavaliComponent} from './cavali/cavali.component';
 import {
   ConsultaFactrackDetalleComponent
 } from './consulta-factrack/consulta-factrack-detalle/consulta-factrack-detalle.component';
+import { RespuestaPagadorDetalleComponent } from './respuesta-pagador/respuesta-pagador-detalle/respuesta-pagador-detalle.component';
 
 const routes: Routes = [
   {
@@ -86,6 +87,7 @@ const routes: Routes = [
     LiquidacionesDetalleComponent,
     CavaliComponent,
     ConsultaFactrackDetalleComponent,
+    RespuestaPagadorDetalleComponent,
   ],
   exports: [
     LiquidacionesComponent

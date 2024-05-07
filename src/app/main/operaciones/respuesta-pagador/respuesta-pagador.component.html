@@ -1,5 +1,5 @@
 <div class="content-wrapper">
-  <div class="content-body">
+  <div class="content-body" *ngIf="!verDetalle">
     <app-content-header [contentHeader]="contentHeader"></app-content-header>
     <div class="card">
       <div class="card-body">
@@ -59,7 +59,7 @@
               <table class="table table-hover min-width-table">
                 <thead class="centerall-header">
                 <tr>
-                  <th rowspan="2">
+                  <!-- <th rowspan="2">
                     <div class="d-flex align-items-center">
                       <a href="javascript:void(0)" title="Ocultar / Mostrar"
                          (click)="onCambiarVisibilidadDetalleTodo()">
@@ -71,7 +71,8 @@
                         </div>
                       </a>
                     </div>
-                  </th>
+                  </th> -->
+                  <th rowspan="2"></th>
                   <th rowspan="2">
                     <div class="custom-control custom-checkbox">
                       <input type="checkbox" class="custom-control-input" id="customCheck" unchecked
@@ -143,139 +144,6 @@
                     <td>{{cab.fechaCreacion}}</td>
                     <td>{{cab.usuarioModificacion}}</td>
                     <td>{{cab.fechaModificacion}}</td>
-                  </tr>
-                  <tr id="{{ 'tr' + cab.idSolicitudCab }}" style="visibility: collapse">
-                    <td [colSpan]="15">
-                      <div class="row" *ngIf="cab.idEstado === 1">
-                        <div class="d-flex flex-wrap mb-0">
-                          <div class="pl-1 pt-1 pb-1">
-                            <button type="submit" rippleEffect class="btn btn-success" (click)="onGuardarCambios(cab)">
-                              <i class="mr-0 mr-sm-1" data-feather="save"></i>
-                              <span class="d-none d-sm-inline-block">Guardar Cambios</span>
-                            </button>
-                          </div>
-                          <div class="p-1">
-                            <button type="submit" rippleEffect class="btn btn-secondary" (click)="onDeshacerCambios()">
-                              <i class="mr-0 mr-sm-1" data-feather="corner-up-left"></i>
-                              <span class="d-none d-sm-inline-block">Deshacer Cambios</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row pl-1 pb-1">
-
-                      </div>
-                      <div class="row">
-                        <div class="table-responsive"
-                             style="padding-left: 20px; display: none; max-height: 300px; overflow-x: hidden"
-                             id="{{ 'detail' + cab.idSolicitudCab }}">
-                          <table class="table table-hover">
-                            <thead>
-                            <tr>
-                              <th class="detail-th-color"
-                                  [colSpan]="cab.idTipoOperacion === 3 ? 13 : 11">
-                                Total de elementos: {{cab.solicitudDet.length}}
-                              </th>
-                            </tr>
-                            <tr>
-                              <th class="detail-th-color">N°</th>
-                              <th class="detail-th-color">Acción</th>
-                              <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor</th>
-                              <th *ngIf="cab.idTipoOperacion === 3" class="detail-th-color">Proveedor RUC</th>
-                              <th class="detail-th-color">N° Documento</th>
-                              <th class="detail-th-color">Forma Pago</th>
-                              <th class="detail-th-color">Monto sin IGV</th>
-                              <th class="detail-th-color">Monto con IGV</th>
-                              <th class="detail-th-color">Fecha Pago</th>
-                              <th class="detail-th-color">Monto Pago Confirmado</th>
-                              <th class="detail-th-color">Fondo Resguardo</th>
-                              <th class="detail-th-color">Archivo PDF</th>
-                              <th class="detail-th-color">Archivo XML</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr *ngFor="let item of cab.solicitudDet; index as i">
-                              <td>{{i + 1}}</td>
-                              <td>
-                                <div class="d-flex align-items-center">
-                                  <a href="javascript:void(0)" title="Eliminar" (click)="onEliminar(cab, item)"
-                                     class="btn btn-raised btn-outline-danger btn-sm">
-                                    <i class="text-danger cursor-pointer" data-feather="trash-2"></i>
-                                  </a>
-                                  <!--                                  &nbsp;-->
-                                  <!--                                  <a href="javascript:void(0)" title="Ver Estado Cavali"-->
-                                  <!--                                     popoverTitle="Estado Cavali"-->
-                                  <!--                                     [ngbPopover]="respuestaCavali" [autoClose]="true" triggers="manual"-->
-                                  <!--                                     #manualOpen="ngbPopover" (click)="onVerRespuesta(cab, item, manualOpen)"-->
-                                  <!--                                     class="btn btn-raised btn-outline-info btn-sm">-->
-                                  <!--                                    <i class="text-info cursor-pointer" data-feather="eye"></i>-->
-                                  <!--                                  </a>-->
-                                </div>
-                              </td>
-                              <td [ngClass]="{'row-edicion': item.editado }"
-                                  *ngIf="cab.idTipoOperacion === 3">{{item.razonSocialPagProv}}</td>
-                              <td [ngClass]="{'row-edicion': item.editado }"
-                                  *ngIf="cab.idTipoOperacion === 3">{{item.rucPagProv}}</td>
-                              <td [ngClass]="{'row-edicion': item.editado }">
-                                <p>{{item.nroDocumento}}</p></td>
-                              <td [ngClass]="{'row-edicion': item.editado }">
-                                <p>{{item.formaPago}}</p></td>
-                              <td [ngClass]="{'row-edicion': item.editado }">
-                                <p>{{item.montoSinIGV | number: '1.2-2'}}</p></td>
-                              <td [ngClass]="{'row-edicion': item.editado }">
-                                <p>{{item.montoConIGV | number: '1.2-2'}}</p></td>
-                              <td>
-                                <p *ngIf="cab.idEstado != 1">{{item.fechaConfirmadoFormat}}</p>
-                                <div *ngIf="cab.idEstado === 1" class="input-group">
-                                  <input class="form-control" placeholder="yyyy-mm-dd"
-                                         [minDate]="fechaMinima"
-                                         [(ngModel)]="item.fechaConfirmado" container="body"
-                                         (ngModelChange)="onCambiarFechaConfirmado($event, item)"
-                                         ngbDatepicker #basicDP="ngbDatepicker">
-                                  <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary feather icon-calendar"
-                                            (click)="basicDP.toggle()"
-                                            type="button" rippleEffect></button>
-                                  </div>
-                                </div>
-                              </td>
-                              <td>
-                                <p *ngIf="cab.idEstado != 1">{{item.netoConfirmado | number: '1.2-2'}}</p>
-                                <input *ngIf="cab.idEstado === 1" class="form-control" type="text"
-                                       [(ngModel)]="item.netoConfirmado"
-                                       placeholder="0.00" (ngModelChange)="onCambiarMontoConfirmado(item, cab)"
-                                       [ngClass]="{ 'is-invalid': item.netoConfirmado > item.montoConIGV }"
-                                       mask="separator" thousandSeparator=","/>
-                                <div *ngIf="item.netoConfirmado > item.montoConIGV" class="invalid-feedback">
-                                  <div *ngIf="item.netoConfirmado > item.montoConIGV">* El monto no debe ser mayor
-                                    a {{ item.montoConIGV | number: '1.2-2' }}</div>
-                                </div>
-                              </td>
-                              <td [ngClass]="{'row-edicion': item.editado }">
-                                <p>{{item.fondoResguardo | number: '1.2-2'}}</p>
-                              </td>
-                              <td>
-                                <div class="d-flex align-items-center">
-                                  <a href="{{item.rutaArchivoPDF}}" title="{{ item.archivoPDF }}" target="_blank"
-                                     class="btn btn-raised btn-outline-info btn-sm">
-                                    <i class="fa fa-file-pdf-o"></i>
-                                  </a>
-                                </div>
-                              </td>
-                              <td>
-                                <div class="d-flex align-items-center">
-                                  <a href="{{item.rutaArchivoXML}}" title="{{ item.archivoXML }}" target="_blank"
-                                     class="btn btn-raised btn-outline-secondary btn-sm">
-                                    <i class="fa fa-file-code-o"></i>
-                                  </a>
-                                </div>
-                              </td>
-                            </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </td>
                   </tr>
                 </ng-template>
                 </tbody>
@@ -409,5 +277,9 @@
     </ng-template>
 
     <block-ui></block-ui>
+  </div>
+  <div class="content-body" *ngIf="verDetalle">
+    <app-respuesta-pagador-detalle
+    [solicitud]="solicitud" (regresarEvent)="onRegresar()"></app-respuesta-pagador-detalle>
   </div>
 </div>

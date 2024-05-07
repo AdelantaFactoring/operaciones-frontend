@@ -41,6 +41,9 @@ export class RespuestaPagadorComponent implements OnInit {
   public codigo: string = "";
   public sustentos: SolicitudCabSustento[] = [];
 
+  solicitud: SolicitudCab;
+  verDetalle: boolean = false;
+
   get ReactiveIUForm(): any {
     return this.solicitudForm.controls;
   }
@@ -229,16 +232,16 @@ export class RespuestaPagadorComponent implements OnInit {
     };
   }
 
-  onCambiarFechaConfirmado($event: any, item: SolicitudDet): void {
-    item.fechaConfirmadoFormat = `${String($event.day).padStart(2, '0')}/${String($event.month).padStart(2, '0')}/${$event.year}`;
-    item.editado = true;
-  }
+  // onCambiarFechaConfirmado($event: any, item: SolicitudDet): void {
+  //   item.fechaConfirmadoFormat = `${String($event.day).padStart(2, '0')}/${String($event.month).padStart(2, '0')}/${$event.year}`;
+  //   item.editado = true;
+  // }
 
-  onCambiarMontoConfirmado(item: SolicitudDet, cab: SolicitudCab) {
-    item.editado = true;
-    let porcentajeFR = (100 - cab.financiamiento) / 100;
-    item.fondoResguardo = item.netoConfirmado * porcentajeFR;
-  }
+  // onCambiarMontoConfirmado(item: SolicitudDet, cab: SolicitudCab) {
+  //   item.editado = true;
+  //   let porcentajeFR = (100 - cab.financiamiento) / 100;
+  //   item.fondoResguardo = item.netoConfirmado * porcentajeFR;
+  // }
 
   onCambiarVisibilidadDetalleTodo() {
     this.cambiarIcono = !this.cambiarIcono;
@@ -249,11 +252,11 @@ export class RespuestaPagadorComponent implements OnInit {
     });
   }
 
-  onCambiarVisibilidadDetalle(item: any) {
-    item.cambiarIcono = !item.cambiarIcono;
-    document.getElementById('tr' + item.idSolicitudCab).style.visibility = (item.cambiarIcono) ? "visible" : "collapse";
-    document.getElementById('detail' + item.idSolicitudCab).style.display = (item.cambiarIcono) ? "block" : "none";
-  }
+  // onCambiarVisibilidadDetalle(item: any) {
+  //   item.cambiarIcono = !item.cambiarIcono;
+  //   document.getElementById('tr' + item.idSolicitudCab).style.visibility = (item.cambiarIcono) ? "visible" : "collapse";
+  //   document.getElementById('detail' + item.idSolicitudCab).style.display = (item.cambiarIcono) ? "block" : "none";
+  // }
 
   onRefrescar(): void {
     this.onListarSolicitudes();
@@ -265,93 +268,93 @@ export class RespuestaPagadorComponent implements OnInit {
     })
   }
 
-  onGuardarCambios(item: SolicitudCab): void {
-    if (item.solicitudDet.filter(f => f.editado).length == 0) return;
+  // onGuardarCambios(item: SolicitudCab): void {
+  //   if (item.solicitudDet.filter(f => f.editado).length == 0) return;
 
-    let valido = true;
+  //   let valido = true;
 
-    for (let el of item.solicitudDet.filter(f => f.editado)) {
-      if (el.fechaConfirmadoFormat.length === 0) {
-        this.utilsService.showNotification("Seleccione Fecha", "", 2);
-        valido = false;
-        return;
-      } else if (el.netoConfirmado <= 0) {
-        this.utilsService.showNotification("Ingrese Neto Confirmado", "", 2);
-        valido = false;
-        return;
-      } else if (el.netoConfirmado > el.montoConIGV) {
-        this.utilsService.showNotification(`El monto neto confirmado no debe ser mayor a ${ Intl.NumberFormat('es-PE').format(el.montoConIGV) } para el documento ${el.nroDocumento}`, "", 2);
-        valido = false;
-        return;
-      }
-    }
+  //   for (let el of item.solicitudDet.filter(f => f.editado)) {
+  //     if (el.fechaConfirmadoFormat.length === 0) {
+  //       this.utilsService.showNotification("Seleccione Fecha", "", 2);
+  //       valido = false;
+  //       return;
+  //     } else if (el.netoConfirmado <= 0) {
+  //       this.utilsService.showNotification("Ingrese Neto Confirmado", "", 2);
+  //       valido = false;
+  //       return;
+  //     } else if (el.netoConfirmado > el.montoConIGV) {
+  //       this.utilsService.showNotification(`El monto neto confirmado no debe ser mayor a ${ Intl.NumberFormat('es-PE').format(el.montoConIGV) } para el documento ${el.nroDocumento}`, "", 2);
+  //       valido = false;
+  //       return;
+  //     }
+  //   }
 
-    if (!valido) return;
-    item.idUsuarioAud = this.currentUser.idUsuario;
-    item.solicitudDet = item.solicitudDet.filter(f => f.editado);
+  //   if (!valido) return;
+  //   item.idUsuarioAud = this.currentUser.idUsuario;
+  //   item.solicitudDet = item.solicitudDet.filter(f => f.editado);
 
-    this.utilsService.blockUIStart('Guardando...');
-    this.respuestaPagadorService.confirmarPago(item).subscribe(response => {
-      if (response.tipo == 1) {
-        this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
-        this.utilsService.blockUIStop();
-        this.onListarSolicitudes();
-      } else if (response.tipo == 2) {
-        this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
-        this.utilsService.blockUIStop();
-      } else {
-        this.utilsService.showNotification(response.mensaje, 'Error', 3);
-        this.utilsService.blockUIStop();
-      }
-    }, error => {
-      this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
-      this.utilsService.blockUIStop();
-    });
-  }
+  //   this.utilsService.blockUIStart('Guardando...');
+  //   this.respuestaPagadorService.confirmarPago(item).subscribe(response => {
+  //     if (response.tipo == 1) {
+  //       this.utilsService.showNotification('Información guardada correctamente', 'Confirmación', 1);
+  //       this.utilsService.blockUIStop();
+  //       this.onListarSolicitudes();
+  //     } else if (response.tipo == 2) {
+  //       this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+  //       this.utilsService.blockUIStop();
+  //     } else {
+  //       this.utilsService.showNotification(response.mensaje, 'Error', 3);
+  //       this.utilsService.blockUIStop();
+  //     }
+  //   }, error => {
+  //     this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+  //     this.utilsService.blockUIStop();
+  //   });
+  // }
 
-  onDeshacerCambios(): void {
-    this.onRefrescar();
-  }
+  // onDeshacerCambios(): void {
+  //   this.onRefrescar();
+  // }
 
-  onEliminar(cab: SolicitudCab, item: SolicitudDet): void {
-    Swal.fire({
-      title: 'Confirmación',
-      text: `¿Desea eliminar el registro '${item.nroDocumento}'?, esta acción no podrá revertirse`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí',
-      cancelButtonText: 'No',
-      customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-primary'
-      }
-    }).then(result => {
-      if (result.value) {
-        this.utilsService.blockUIStart('Eliminando...');
-        // @ts-ignore
-        let newCab = {...cab};
-        newCab.solicitudDet = newCab.solicitudDet.filter(f => f.idSolicitudDet === item.idSolicitudDet);
-        newCab.idUsuarioAud = this.currentUser.idUsuario;
-        this.respuestaPagadorService.eliminarFactura(newCab).subscribe(response => {
-          if (response.tipo === 1) {
-            cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);
-            if (cab.solicitudDet.length === 0)
-              this.onListarSolicitudes();
-            this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
-            this.utilsService.blockUIStop();
-          } else if (response.tipo === 2) {
-            this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
-          } else {
-            this.utilsService.showNotification(response.mensaje, 'Error', 3);
-          }
-          this.utilsService.blockUIStop();
-        }, error => {
-          this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
-          this.utilsService.blockUIStop();
-        });
-      }
-    });
-  }
+  // onEliminar(cab: SolicitudCab, item: SolicitudDet): void {
+  //   Swal.fire({
+  //     title: 'Confirmación',
+  //     text: `¿Desea eliminar el registro '${item.nroDocumento}'?, esta acción no podrá revertirse`,
+  //     icon: 'warning',
+  //     showCancelButton: true,
+  //     confirmButtonText: 'Sí',
+  //     cancelButtonText: 'No',
+  //     customClass: {
+  //       confirmButton: 'btn btn-success',
+  //       cancelButton: 'btn btn-primary'
+  //     }
+  //   }).then(result => {
+  //     if (result.value) {
+  //       this.utilsService.blockUIStart('Eliminando...');
+  //       // @ts-ignore
+  //       let newCab = {...cab};
+  //       newCab.solicitudDet = newCab.solicitudDet.filter(f => f.idSolicitudDet === item.idSolicitudDet);
+  //       newCab.idUsuarioAud = this.currentUser.idUsuario;
+  //       this.respuestaPagadorService.eliminarFactura(newCab).subscribe(response => {
+  //         if (response.tipo === 1) {
+  //           cab.solicitudDet = cab.solicitudDet.filter(f => f.idSolicitudDet != item.idSolicitudDet);
+  //           if (cab.solicitudDet.length === 0)
+  //             this.onListarSolicitudes();
+  //           this.utilsService.showNotification('Registro eliminado correctamente', 'Confirmación', 1);
+  //           this.utilsService.blockUIStop();
+  //         } else if (response.tipo === 2) {
+  //           this.utilsService.showNotification(response.mensaje, 'Alerta', 2);
+  //         } else {
+  //           this.utilsService.showNotification(response.mensaje, 'Error', 3);
+  //         }
+  //         this.utilsService.blockUIStop();
+  //       }, error => {
+  //         this.utilsService.showNotification('[F]: An internal error has occurred', 'Error', 3);
+  //         this.utilsService.blockUIStop();
+  //       });
+  //     }
+  //   });
+  // }
 
   onVer(item: SolicitudCab, modal: any) {
     this.solicitudForm.controls.idSolicitudCab.setValue(item.idSolicitudCab);
@@ -380,5 +383,17 @@ export class RespuestaPagadorComponent implements OnInit {
         }
       });
     }, 0);
+  }
+
+  onCambiarVisibilidadDetalle(item: SolicitudCab) {
+    this.solicitud = item;
+    this.verDetalle = true;
+    // this.consultaFactrackService.setSolicitud(item);
+    // this.router.navigateByUrl('/operaciones/consultaFactrack/detalle');
+  }
+
+  onRegresar() {
+    this.solicitud = null;
+    this.verDetalle = false;
   }
 }
